@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Clem Kart Racing — Le guide de pilotage karting par Clément Daniel, Champion Régional 2023. Comprends pourquoi tu vas vite pour enfin le reproduire."/>
+<title>Clem Kart Racing — Comprends pourquoi tu vas vite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D9171D;--red-dark:#A51115;--red-glow:rgba(217,23,29,0.28);
+  --black:#070707;--b2:#0F0F0F;--b3:#161616;--b4:#1C1C1C;
+  --w:rgb(242,237,232);--wd:rgba(242,237,232,0.6);--wf:rgba(242,237,232,0.08);--wf2:rgba(242,237,232,0.04);
+  --gold:#C9A84C;
+  --fd:'Bebas Neue',sans-serif;--fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cur{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;}
+.cur-dot{width:6px;height:6px;background:var(--red);border-radius:50%;position:absolute;transform:translate(-50%,-50%);}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(242,237,232,0.4);border-radius:50%;position:absolute;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+body.hov .cur-ring{width:48px;height:48px;border-color:var(--red);}
+.blog-card:hover{background:var(--b3) !important;}
+@media(max-width:900px){.cur{display:none;} body{cursor:auto;}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:28px 60px;transition:background .4s,padding .4s;}
+nav.sc{background:rgba(7,7,7,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:16px 60px;border-bottom:1px solid var(--wf);}
+.nlogo{font-family:var(--fd);font-size:1.5rem;letter-spacing:.06em;color:var(--w);text-decoration:none;}
+.nlogo span{color:var(--red);}
+.nlinks{display:flex;gap:40px;list-style:none;}
+.nlinks a{font-family:var(--fc);font-size:.85rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wd);text-decoration:none;transition:color .2s;cursor:none;}
+.nlinks a:hover{color:var(--w);}
+.ncta{font-family:var(--fc);font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;background:var(--red);color:var(--w);padding:10px 26px;text-decoration:none;cursor:none;transition:background .2s,box-shadow .2s;}
+.ncta:hover{background:var(--red-dark);box-shadow:0 0 20px var(--red-glow);}
+
+/* HERO */
+#hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;overflow:hidden;}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 65% 55% at 65% 50%,rgba(217,23,29,.09) 0%,transparent 65%),radial-gradient(ellipse 30% 40% at 15% 75%,rgba(217,23,29,.04) 0%,transparent 55%),var(--black);}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(242,237,232,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(242,237,232,.022) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 0%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 0%,transparent 100%);}
+.hspd{position:absolute;inset:0;overflow:hidden;opacity:.032;}
+.hspd::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-9deg,transparent,transparent 22px,rgba(217,23,29,.9) 22px,rgba(217,23,29,.9) 23px);}
+.hbn{position:absolute;right:4%;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:clamp(180px,26vw,400px);color:transparent;-webkit-text-stroke:1px rgba(242,237,232,.026);line-height:1;user-select:none;pointer-events:none;animation:pn 5s ease-in-out infinite;}
+@keyframes pn{0%,100%{-webkit-text-stroke-color:rgba(242,237,232,.026);}50%{-webkit-text-stroke-color:rgba(217,23,29,.06);}}
+.hc{position:relative;z-index:2;padding:50px 60px 0;max-width:780px;}
+.hey{font-family:var(--fc);font-size:.8rem;letter-spacing:.4em;text-transform:uppercase;color:var(--red);margin-bottom:22px;opacity:0;transform:translateY(18px);animation:fu .7s .3s forwards;}
+.hh1{font-family:var(--fd);font-size:clamp(54px,8.5vw,132px);line-height:.93;letter-spacing:.02em;margin-bottom:30px;opacity:0;transform:translateY(28px);animation:fu .85s .5s forwards;}
+.hh1 .r{color:var(--red);}
+.hh1 .sk{color:transparent;-webkit-text-stroke:1px var(--w);}
+.hsub{font-size:1.05rem;font-weight:300;line-height:1.75;color:var(--wd);max-width:500px;margin-bottom:46px;opacity:0;transform:translateY(18px);animation:fu .75s .75s forwards;}
+.hsub strong{color:var(--w);font-weight:500;}
+.hacts{display:flex;gap:16px;align-items:center;flex-wrap:wrap;opacity:0;transform:translateY(18px);animation:fu .75s 1s forwards;}
+@keyframes fu{to{opacity:1;transform:translateY(0);}}
+.hscr{position:absolute;bottom:40px;left:60px;display:flex;align-items:center;gap:14px;opacity:0;animation:fu .7s 1.4s forwards;}
+.sline{width:36px;height:1px;background:var(--red);position:relative;overflow:hidden;}
+.sline::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--w);animation:sla 2.2s 1.8s ease-in-out infinite;}
+@keyframes sla{0%{left:-100%;}100%{left:100%;}}
+.stxt{font-family:var(--fc);font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--wd);}
+
+/* BUTTONS */
+.btp{display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.95rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;background:var(--red);color:var(--w);padding:15px 34px;text-decoration:none;position:relative;overflow:hidden;transition:box-shadow .3s;cursor:none;}
+.btp::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);transform:translateX(-110%) skewX(-15deg);transition:transform .4s;}
+.btp:hover::after{transform:translateX(110%) skewX(-15deg);}
+.btp:hover{box-shadow:0 0 36px var(--red-glow);}
+.btg{display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.85rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;background:transparent;color:var(--wd);padding:14px 24px;text-decoration:none;border:1px solid var(--wf);transition:border-color .2s,color .2s;cursor:none;}
+.btg:hover{border-color:rgba(242,237,232,.25);color:var(--w);}
+
+/* TICKER */
+.tkw{background:var(--red);overflow:hidden;padding:11px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);}
+.tkt{display:flex;white-space:nowrap;animation:tick 28s linear infinite;}
+.ti{font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;padding:0 44px;color:rgba(255,255,255,.92);}
+.tis{color:rgba(255,255,255,.3);}
+@keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* SECTIONS */
+section{padding:110px 60px;}
+.sl-lab{font-family:var(--fc);font-size:.75rem;letter-spacing:.45em;text-transform:uppercase;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.sl-lab::before{content:'';display:inline-block;width:20px;height:1px;background:var(--red);}
+.sth{font-family:var(--fd);font-size:clamp(36px,4.8vw,68px);line-height:1;letter-spacing:.02em;margin-bottom:16px;}
+.sth .r{color:var(--red);}
+.sth .sk{color:transparent;-webkit-text-stroke:1px rgba(242,237,232,.28);}
+.rv{opacity:0;transform:translateY(36px);transition:opacity .65s ease,transform .65s ease;}
+.rv.v{opacity:1;transform:translateY(0);}
+.rv.d1{transition-delay:.08s;}.rv.d2{transition-delay:.16s;}.rv.d3{transition-delay:.24s;}.rv.d4{transition-delay:.32s;}
+
+/* ABOUT */
+#about{background:var(--b2);position:relative;overflow:hidden;}
+#about::before{content:'CKR';position:absolute;right:-50px;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:280px;color:transparent;-webkit-text-stroke:1px rgba(242,237,232,.02);user-select:none;pointer-events:none;}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1160px;margin:0 auto;}
+.aiw{position:relative;}
+.ai{aspect-ratio:3/4;background:var(--b3);border:1px solid var(--wf);position:relative;overflow:hidden;}
+.ai img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+.abadge{position:absolute;bottom:-18px;right:-18px;background:var(--red);padding:22px 26px;text-align:center;z-index:2;}
+.abn{font-family:var(--fd);font-size:2.8rem;line-height:1;display:block;}
+.abl{font-family:var(--fc);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;display:block;margin-top:4px;opacity:.85;}
+.atxt p{font-size:.97rem;line-height:1.85;color:var(--wd);margin-bottom:18px;font-weight:300;}
+.atxt p strong{color:var(--w);font-weight:500;}
+.str{display:flex;gap:36px;margin-top:40px;padding-top:36px;border-top:1px solid var(--wf);flex-wrap:wrap;}
+.stn .n{font-family:var(--fd);font-size:2.4rem;color:var(--red);line-height:1;display:block;}
+.stn .l{font-family:var(--fc);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wd);margin-top:5px;display:block;}
+.endorse{margin-top:36px;padding:22px 26px;border-left:2px solid var(--red);background:var(--wf2);}
+.endorse p{font-style:italic;font-size:.95rem;line-height:1.72;color:var(--w);margin-bottom:10px;}
+.endorse cite{font-family:var(--fc);font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-style:normal;}
+
+/* PROBLEM */
+#problem{background:var(--black);}
+.pi{max-width:660px;margin:0 auto 70px;text-align:center;}
+.pi p{font-size:1.04rem;line-height:1.82;color:var(--wd);font-weight:300;}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:2px;max-width:1100px;margin:0 auto;}
+.pc{background:var(--b2);padding:40px 36px;position:relative;overflow:hidden;transition:background .3s;}
+.pc:hover{background:var(--b3);}
+.pcn{font-family:var(--fd);font-size:4.5rem;color:transparent;-webkit-text-stroke:1px rgba(217,23,29,.18);line-height:1;position:absolute;top:16px;right:20px;}
+.pc h3{font-family:var(--fc);font-size:1.15rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;color:var(--w);}
+.pc p{font-size:.92rem;line-height:1.8;color:var(--wd);font-weight:300;}
+.solt{text-align:center;padding:80px 60px;position:relative;}
+.solt::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:54px;background:linear-gradient(to bottom,transparent,var(--red));}
+.solt h2{font-family:var(--fd);font-size:clamp(32px,4.2vw,58px);letter-spacing:.025em;max-width:760px;margin:0 auto 24px;line-height:1.05;}
+.solt p{font-size:1rem;color:var(--wd);font-weight:300;max-width:560px;margin:0 auto;line-height:1.8;}
+
+/* WHY */
+#why{background:var(--b3);}
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1100px;margin:0 auto;}
+.wl p{font-size:.97rem;line-height:1.85;color:var(--wd);font-weight:300;margin-bottom:18px;}
+.wl p strong{color:var(--w);font-weight:500;}
+.qbig{font-family:var(--fd);font-size:clamp(22px,2.8vw,36px);line-height:1.15;letter-spacing:.02em;color:var(--w);padding:36px 40px;border-left:3px solid var(--red);background:var(--wf2);}
+.qbig span{color:var(--red);}
+
+/* OFFER */
+#offer{background:var(--b2);}
+.offw{max-width:1100px;margin:0 auto;}
+.ebc{display:grid;grid-template-columns:280px 1fr;gap:60px;align-items:start;background:var(--b3);border:1px solid var(--wf);padding:52px;position:relative;overflow:hidden;margin-bottom:52px;}
+.ebc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);}
+.ecov{aspect-ratio:3/4;background:var(--black);border:1px solid var(--wf);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;position:relative;overflow:hidden;}
+.ecov::after{content:'';position:absolute;bottom:0;left:0;right:0;height:38%;background:linear-gradient(to top,rgba(217,23,29,.12),transparent);}
+.ect{font-family:var(--fd);font-size:1.8rem;color:var(--w);margin-bottom:8px;position:relative;z-index:1;line-height:1.1;}
+.ecs{font-family:var(--fc);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);position:relative;z-index:1;}
+.ecl{position:absolute;bottom:18px;font-family:var(--fd);font-size:.85rem;color:var(--wd);letter-spacing:.1em;z-index:2;}
+.ebi h3{font-family:var(--fd);font-size:clamp(22px,2.8vw,40px);letter-spacing:.025em;line-height:1.05;margin-bottom:14px;}
+.ebtag{display:inline-block;font-family:var(--fc);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;background:rgba(217,23,29,.1);color:var(--red);border:1px solid rgba(217,23,29,.25);padding:4px 13px;margin-bottom:20px;}
+.ebdesc{font-size:.95rem;line-height:1.82;color:var(--wd);font-weight:300;margin-bottom:28px;}
+.ebfl{list-style:none;margin-bottom:36px;}
+.ebfl li{display:flex;align-items:flex-start;gap:12px;font-size:.9rem;color:var(--wd);margin-bottom:10px;font-weight:300;line-height:1.55;}
+.ebfl li::before{content:'▸';color:var(--red);font-size:.75rem;margin-top:3px;flex-shrink:0;}
+.pr{display:flex;align-items:baseline;gap:20px;margin-bottom:22px;}
+.prn{font-family:var(--fd);font-size:3.2rem;color:var(--w);line-height:1;}
+.prnt{font-family:var(--fc);font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wd);line-height:1.5;}
+.guar{display:flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.76rem;letter-spacing:.13em;text-transform:uppercase;color:var(--wd);}
+.guar::before{content:'✓';color:var(--red);}
+
+/* DUAL CTA */
+.dcta{background:var(--b4);border:1px solid var(--wf);padding:44px 48px;margin-top:44px;}
+.dcta-lbl{font-family:var(--fc);font-size:.76rem;letter-spacing:.3em;text-transform:uppercase;color:var(--wd);margin-bottom:28px;text-align:center;}
+.dcta-lbl span{color:var(--red);}
+.dcg{display:grid;grid-template-columns:1fr 1px 1fr;align-items:center;}
+.dcsep{background:var(--wf);align-self:stretch;min-height:160px;}
+.dco{padding:0 36px;}
+.dco:first-child{padding-left:0;}
+.dco:last-child{padding-right:0;}
+.otag{font-family:var(--fc);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:12px;display:block;}
+.otag.fr{color:var(--gold);}
+.otag.pa{color:var(--red);}
+.oti{font-family:var(--fc);font-size:1.1rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;color:var(--w);}
+.ode{font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;margin-bottom:20px;}
+.bfree{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--fc);font-size:.86rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:transparent;color:var(--gold);padding:13px 28px;text-decoration:none;border:1px solid var(--gold);transition:background .25s;cursor:none;width:100%;}
+.bfree:hover{background:rgba(201,168,76,.1);}
+.bpaid{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--fc);font-size:.86rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:var(--red);color:var(--w);padding:14px 28px;text-decoration:none;transition:box-shadow .25s;cursor:none;width:100%;position:relative;overflow:hidden;}
+.bpaid::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);transform:translateX(-110%) skewX(-15deg);transition:transform .4s;}
+.bpaid:hover::after{transform:translateX(110%) skewX(-15deg);}
+.bpaid:hover{box-shadow:0 0 28px var(--red-glow);}
+
+/* COMING SOON */
+.cslbl{font-family:var(--fc);font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--wd);margin-bottom:22px;text-align:center;}
+.csg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.csc{background:var(--b3);padding:32px 28px;border:1px solid var(--wf);position:relative;opacity:.5;transition:opacity .3s;}
+.csc:hover{opacity:.72;}
+.csb{position:absolute;top:14px;right:14px;font-family:var(--fc);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;border:1px solid var(--wf);padding:3px 9px;color:var(--wd);}
+.csc h4{font-family:var(--fc);font-size:1.1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.csc p{font-size:.88rem;color:var(--wd);line-height:1.65;font-weight:300;}
+
+/* TESTIMONIALS */
+#testi{background:var(--black);position:relative;overflow:hidden;}
+#testi::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 50% 50%,rgba(217,23,29,.04) 0%,transparent 70%);pointer-events:none;}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:56px auto 0;}
+.tc{background:var(--b2);border:1px solid var(--wf);padding:32px 28px;position:relative;transition:border-color .3s,transform .3s;}
+.tc:hover{border-color:rgba(217,23,29,.25);transform:translateY(-3px);}
+.tc::before{content:'"';font-family:var(--fd);font-size:4.5rem;color:var(--red);opacity:.22;position:absolute;top:8px;left:22px;line-height:1;}
+.tctxt{font-size:.9rem;line-height:1.82;color:var(--wd);font-weight:300;margin-bottom:20px;padding-top:16px;}
+.tcau{font-family:var(--fc);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--w);}
+.tcro{font-family:var(--fc);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-top:3px;}
+.stars{color:var(--gold);margin-bottom:14px;font-size:.8rem;letter-spacing:2px;}
+
+/* SOCIAL */
+#social{background:var(--b2);padding:70px 60px;}
+.soc-w{max-width:700px;margin:0 auto;text-align:center;}
+.soc-w p{font-family:var(--fc);font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;color:var(--wd);margin-bottom:32px;}
+.soc-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
+.soc-btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.82rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:12px 24px;text-decoration:none;border:1px solid var(--wf);color:var(--wd);transition:border-color .25s,color .25s,background .25s;cursor:none;}
+.soc-btn:hover{border-color:rgba(242,237,232,.28);color:var(--w);background:var(--wf2);}
+.soc-btn svg{width:16px;height:16px;fill:currentColor;flex-shrink:0;}
+
+/* FINAL CTA */
+#cta{background:var(--red);text-align:center;padding:110px 60px;position:relative;overflow:hidden;}
+#cta::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-9deg,transparent,transparent 30px,rgba(255,255,255,.025) 30px,rgba(255,255,255,.025) 31px);}
+#cta h2{font-family:var(--fd);font-size:clamp(42px,5.8vw,86px);letter-spacing:.02em;line-height:1;margin-bottom:22px;position:relative;z-index:1;}
+#cta p{font-size:1rem;font-weight:300;max-width:500px;margin:0 auto 40px;opacity:.85;line-height:1.78;position:relative;z-index:1;}
+.ctabs{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+.btw{display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.9rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;background:var(--w);color:var(--black);padding:16px 44px;text-decoration:none;transition:box-shadow .3s,transform .2s;cursor:none;}
+.btw:hover{box-shadow:0 0 36px rgba(0,0,0,.25);transform:translateY(-2px);}
+.btwout{display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.86rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.85);padding:15px 32px;text-decoration:none;border:1px solid rgba(255,255,255,.38);transition:border-color .2s,color .2s;cursor:none;}
+.btwout:hover{border-color:rgba(255,255,255,.7);color:#fff;}
+.ctanote{margin-top:18px;font-family:var(--fc);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;opacity:.5;position:relative;z-index:1;}
+
+/* FOOTER */
+footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--wf);flex-wrap:wrap;gap:16px;}
+.flogo{font-family:var(--fd);font-size:1.2rem;letter-spacing:.06em;color:var(--w);}
+.flogo span{color:var(--red);}
+.fcopy{font-family:var(--fc);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);}
+.flinks{display:flex;gap:28px;list-style:none;}
+.flinks a{font-family:var(--fc);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);text-decoration:none;transition:color .2s;cursor:none;}
+.flinks a:hover{color:var(--red);}
+
+/* RESPONSIVE */
+.blog-card:hover{background:var(--b3) !important;}
+@media(max-width:900px){
+  nav{padding:20px 24px;}
+  nav.sc{padding:14px 24px;}
+  .nlinks{display:none;}
+  section{padding:80px 24px;}
+  #social{padding:56px 24px;}
+  .hc{padding:0 24px;}
+  .hscr{left:24px;}
+  .hbn{display:none;}
+  .ag,.wg,.pg,.ebc{grid-template-columns:1fr;}
+  .abadge{bottom:-14px;right:-8px;}
+  .dcg{grid-template-columns:1fr;gap:32px;}
+  .dcsep{display:none;}
+  .dco{padding:0;}
+  .csg,.tg{grid-template-columns:1fr;}
+  #blog > div > div[style*="grid"]{grid-template-columns:1fr !important;}
+  footer{flex-direction:column;text-align:center;padding:28px 24px;}
+  #cta{padding:80px 24px;}
+  .solt{padding:60px 24px;}
+  .soc-links{flex-direction:column;align-items:center;}
+  .soc-btn{width:100%;max-width:300px;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur">
+  <div class="cur-ring" id="cr"></div>
+  <div class="cur-dot" id="cd"></div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nlogo">Clem <span>Kart</span> Racing</a>
+  <ul class="nlinks">
+    <li><a href="#about">Mon parcours</a></li>
+    <li><a href="#problem">Le problème</a></li>
+    <li><a href="#offer">Le guide</a></li>
+    <li><a href="#testi">Avis</a></li>
+    <li><a href="#blog">Blog</a></li>
+  </ul>
+  <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="ncta">Obtenir le guide</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hbg"></div>
+  <div class="hgrid"></div>
+  <div class="hspd"></div>
+  <div class="hbn">1</div>
+  <div class="hc">
+    <p class="hey">Champion Régional 2023 · 8 ans de compétition · 10+ victoires &amp; podiums</p>
+    <h1 class="hh1">
+      TU SAIS<br>
+      FAIRE UN <span class="r">BON</span><br>
+      <span class="sk">TOUR.</span>
+    </h1>
+    <p class="hsub">
+      Le vrai problème, c'est que tu ne sais pas encore <strong>pourquoi il était bon</strong>.<br>
+      Et sans ça, tu ne peux pas le reproduire.
+    </p>
+    <div class="hacts">
+      <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btp">
+        <span>Je veux le guide · 27,99&nbsp;€</span><span>→</span>
+      </a>
+      <a href="https://clemkartracing.gumroad.com/l/Extrait" target="_blank" rel="noopener" class="btg">
+        Lire un extrait gratuit
+      </a>
+    </div>
+  </div>
+  <div class="hscr"><div class="sline"></div><span class="stxt">Descendre</span></div>
+</section>
+
+<!-- TICKER -->
+<div class="tkw">
+  <div class="tkt">
+    <span class="ti">Reproductibilité</span><span class="ti tis">✦</span>
+    <span class="ti">Compréhension causale</span><span class="ti tis">✦</span>
+    <span class="ti">Maîtrise</span><span class="ti tis">✦</span>
+    <span class="ti">Régularité</span><span class="ti tis">✦</span>
+    <span class="ti">Lecture du kart</span><span class="ti tis">✦</span>
+    <span class="ti">Trajectoires</span><span class="ti tis">✦</span>
+    <span class="ti">Mental de pilote</span><span class="ti tis">✦</span>
+    <span class="ti">Reproductibilité</span><span class="ti tis">✦</span>
+    <span class="ti">Compréhension causale</span><span class="ti tis">✦</span>
+    <span class="ti">Maîtrise</span><span class="ti tis">✦</span>
+    <span class="ti">Régularité</span><span class="ti tis">✦</span>
+    <span class="ti">Lecture du kart</span><span class="ti tis">✦</span>
+    <span class="ti">Trajectoires</span><span class="ti tis">✦</span>
+    <span class="ti">Mental de pilote</span><span class="ti tis">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="ag">
+    <div class="aiw rv">
+      <div class="ai">
+        <img
+          src="https://res.cloudinary.com/daxmbxr5j/image/upload/f_auto,q_auto,w_800/LCP03651_SD_zzihuy.jpg"
+          onerror="this.onerror=null;this.src='https://res.cloudinary.com/daxmbxr5j/image/upload/f_auto,q_auto/LCP03651_SD_zzihuy';"
+          alt="Clément Daniel, Clem Kart Racing en piste"
+          loading="lazy"
+        />
+      </div>
+      <div class="abadge"><span class="abn">8</span><span class="abl">Ans de compétition</span></div>
+    </div>
+    <div class="atxt">
+      <p class="sl-lab rv">Mon parcours</p>
+      <h2 class="sth rv d1">CHAMPION.<br>PILOTE.<br><span class="r">PAS UN THÉORICIEN.</span></h2>
+      <p class="rv d2">Je m'appelle <strong>Clément Daniel</strong>. 8 ans de karting de compétition. <strong>Champion Régional 2023</strong>, une dizaine de victoires et podiums toutes courses confondues, avec des résultats sur des épreuves nationales et internationales.</p>
+      <p class="rv d3">À un moment, j'ai arrêté de vouloir juste "aller plus vite". J'ai commencé à <strong>comprendre pourquoi certains tours étaient rapides</strong>. Et là, tout a changé. La régularité, la confiance, la lecture du kart : tout est devenu plus clair.</p>
+      <p class="rv d4">Ce guide, c'est ce que j'aurais voulu avoir dès le début. <strong>Sans jargon. Sans théorie creuse.</strong> Juste ce qui produit réellement la vitesse, expliqué clairement.</p>
+      <div class="str rv">
+        <div class="stn"><span class="n">8</span><span class="l">Ans de compétition</span></div>
+        <div class="stn"><span class="n">Champion</span><span class="l">Régional 2023</span></div>
+        <div class="stn"><span class="n">10+</span><span class="l">Victoires &amp; podiums</span></div>
+      </div>
+      <div class="endorse rv">
+        <p>« Clément fait partie des pilotes qui comprennent vraiment la mécanique de la performance. Ce qu'il partage dans ce guide, c'est du concret, du vécu. »</p>
+        <cite>Soutien d'un des meilleurs pilotes français de karting</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="pi rv">
+    <p class="sl-lab" style="justify-content:center;">Le vrai problème</p>
+    <h2 class="sth" style="text-align:center;">POURQUOI TU <span class="r">STAGNES</span></h2>
+    <p>La plupart des pilotes intermédiaires font les mêmes erreurs. Pas par manque de talent, mais parce que personne ne leur a expliqué ce qui <em>produit réellement</em> la vitesse.</p>
+  </div>
+  <div class="pg">
+    <div class="pc rv d1"><span class="pcn">01</span><h3>Tu pilotes au feeling</h3><p>Tu sors parfois un bon tour, mais tu ne sais pas pourquoi il était bon. Alors tu ne peux pas le refaire à volonté. La performance aléatoire, c'est la définition de stagner.</p></div>
+    <div class="pc rv d2"><span class="pcn">02</span><h3>Tes trajectoires te coûtent du temps</h3><p>Sans comprendre le rôle exact du freinage dans la rotation du kart, tu perds des dixièmes à chaque virage sans même le savoir. Tu forces là où il faudrait comprendre.</p></div>
+    <div class="pc rv d3"><span class="pcn">03</span><h3>Tu subis au lieu de piloter</h3><p>Tu réagis aux sensations au lieu d'anticiper. Le regard, la lecture de virage, l'anticipation : ce sont les vrais leviers que personne n'explique clairement.</p></div>
+    <div class="pc rv d4"><span class="pcn">04</span><h3>Tu doutes de toi</h3><p>Après une session irrégulière, tu ne sais pas ce qui a cloché. Ce doute, cette confusion, c'est de l'énergie gaspillée. La compréhension donne une confiance calme.</p></div>
+  </div>
+  <div class="solt">
+    <h2 class="rv">Le problème n'est pas ton <span style="color:var(--red)">talent</span>.<br>C'est ta <span style="color:var(--red)">grille de lecture</span>.</h2>
+    <p class="rv d1">8 ans de compétition distillés en principes clairs, directement applicables dès ta prochaine session.</p>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="wg">
+    <div class="wl">
+      <p class="sl-lab rv">Ce que tu ressens vraiment</p>
+      <p class="rv d1">Tu t'entraînes, tu investis en temps, en argent, en énergie. Et malgré ça, tu as parfois l'impression que <strong>d'autres progressent plus vite que toi</strong>, sans que tu comprennes pourquoi.</p>
+      <p class="rv d2">Ce n'est pas une question de talent. C'est une question de <strong>compréhension causale</strong> : comprendre ce qui produit la vitesse, pas juste l'imiter.</p>
+      <p class="rv d3">Les bons pilotes ne vont pas plus vite parce qu'ils attaquent plus fort. Ils vont plus vite parce qu'ils <strong>comprennent ce qu'ils font</strong>. Et peuvent donc le répéter, l'affiner, le maîtriser.</p>
+      <p class="rv d4">C'est exactement ce que ce guide t'apporte.</p>
+    </div>
+    <div class="rv d2">
+      <div class="qbig">
+        « Le vrai défi n'est pas de sortir un bon tour.<br>Le vrai défi, c'est de <span>comprendre pourquoi</span> il était bon, pour pouvoir le refaire encore et encore. »
+        <br><br>
+        <span style="font-family:var(--fc);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wd);">Clément Daniel, Clem Kart Racing</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section id="offer">
+  <div class="offw">
+    <p class="sl-lab rv">Le guide</p>
+    <h2 class="sth rv d1">PASSE À <span class="r">L'ACTION</span></h2>
+    <div class="ebc rv d2">
+      <div class="ecov">
+        <div class="ect">COMPRENDRE<br>COMMENT<br>ROULER PLUS VITE</div>
+        <div class="ecs">La méthode complète</div>
+        <div class="ecl">Clem Kart Racing</div>
+      </div>
+      <div class="ebi">
+        <span class="ebtag">« Comprendre comment rouler plus vite » · Guide digital</span>
+        <h3>COMPRENDRE COMMENT ROULER PLUS VITE, ET ENFIN LE RÉPÉTER</h3>
+        <p class="ebdesc">Pas un recueil de tips. Pas de la théorie recyclée. Un guide conçu pour transformer tes sensations floues en principes clairs et reproductibles. Ce que tu liras ce soir, tu pourras l'appliquer dès ta prochaine session.</p>
+        <ul class="ebfl">
+          <li>Le rôle exact du freinage dans la rotation du kart, et comment ça change tout à ton pilotage</li>
+          <li>Comment utiliser ton regard pour anticiper au lieu de simplement réagir</li>
+          <li>Découper un virage en points de référence pour te répéter à chaque tour</li>
+          <li>La réaccélération comme facteur décisif du chrono, et comment l'optimiser</li>
+          <li>Pourquoi la vitesse ne vient pas d'attaquer plus fort, mais de comprendre mieux</li>
+          <li>Construire une confiance calme au lieu d'un pilotage nerveux et aléatoire</li>
+        </ul>
+        <div class="pr">
+          <span class="prn">27,99&nbsp;€</span>
+          <span class="prnt">Accès immédiat<br>PDF · ~32 pages</span>
+        </div>
+        <div class="guar">Garantie satisfait ou remboursé 7 jours, sans condition</div>
+      </div>
+    </div>
+
+    <!-- DUAL CTA -->
+    <div class="dcta rv d3">
+      <p class="dcta-lbl">Tu as le choix <span>: les deux options sont ouvertes</span></p>
+      <div class="dcg">
+        <!-- OPTION 1 : LEAD MAGNET TABLEUR -->
+        <div class="dco">
+          <span class="otag fr">Option 1 · Gratuit</span>
+          <p class="oti">Reçois le tableur de réglages</p>
+          <p class="ode">Le tableur Excel que j'utilise pour noter mes réglages après chaque session. Renseigne ton email, il arrive dans ta boîte dans la minute.</p>
+          <form id="lm-form" onsubmit="sendLeadMagnet(event)" style="margin-top:4px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <input
+                id="lm-email"
+                type="email"
+                placeholder="Ton email"
+                required
+                style="background:var(--b2);border:1px solid var(--wf);color:var(--w);font-family:var(--fc);font-size:.9rem;letter-spacing:.08em;padding:13px 16px;outline:none;transition:border-color .2s;width:100%;"
+                onfocus="this.style.borderColor='var(--gold)'"
+                onblur="this.style.borderColor='var(--wf)'"
+              >
+              <button id="lm-btn" type="submit" class="bfree" style="cursor:pointer;border:1px solid var(--gold);">Recevoir le tableur gratuitement →</button>
+            </div>
+            <p id="lm-msg" style="font-family:var(--fc);font-size:.75rem;letter-spacing:.12em;color:var(--wd);margin-top:8px;min-height:1.2em;"></p>
+            <p style="font-family:var(--fc);font-size:.68rem;letter-spacing:.12em;color:var(--wd);margin-top:4px;opacity:.6;">Aucun spam. Désinscription en un clic.</p>
+          </form>
+        </div>
+        <div class="dcsep"></div>
+        <div class="dco">
+          <span class="otag pa">Option 2 · 27,99&nbsp;€</span>
+          <p class="oti">Investir directement</p>
+          <p class="ode">Tu fais déjà confiance à la méthode. Tu veux le guide complet maintenant et commencer à progresser dès aujourd'hui. Accès immédiat après paiement, garantie 7 jours.</p>
+          <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="bpaid">Obtenir le guide complet →</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="cslbl rv" style="margin-top:56px;">Bientôt disponible</p>
+    <div class="csg rv d1">
+      <div class="csc"><span class="csb">Prochainement</span><h4>Coaching 1-to-1</h4><p>Sessions personnalisées pour analyser ta conduite et construire un plan de progression sur-mesure.</p></div>
+      <div class="csc"><span class="csb">Prochainement</span><h4>Programme vidéo</h4><p>Modules vidéo pour visualiser chaque principe en situation réelle, du circuit à l'analyse data.</p></div>
+      <div class="csc"><span class="csb">Prochainement</span><h4>Pack complet</h4><p>Guide + coaching + vidéos. Le pack tout-en-un pour une progression maximale sur une saison entière.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testi">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p class="sl-lab rv">Ce qu'ils en disent</p>
+    <h2 class="sth rv d1">ILS ONT <span class="r">PROGRESSÉ</span></h2>
+    <div class="tg">
+      <div class="tc rv d1">
+        <div class="stars">★★★★★</div>
+        <p class="tctxt">Je stagnais depuis 2 ans. En appliquant juste la partie sur le freinage et la rotation, j'ai compris pourquoi je perdais du temps dans les épingles. Premier test en piste : 4 dixièmes gagnés au tour.</p>
+        <div class="tcau">Maxime R.</div>
+      </div>
+      <div class="tc rv d2">
+        <div class="stars">★★★★★</div>
+        <p class="tctxt">Ce qui m'a marqué, c'est la clarté. Pas de jargon, pas de "ça dépend". Des principes que j'ai compris tout de suite et appliqués directement. Ma régularité a clairement progressé.</p>
+        <div class="tcau">Thomas D.</div>
+      </div>
+      <div class="tc rv d3">
+        <div class="stars">★★★★★</div>
+        <p class="tctxt">J'avais l'impression d'avoir déjà tout lu sur le pilotage. Ce guide m'a fait réaliser que je comprenais le quoi, mais pas le pourquoi. C'est là que la différence se fait vraiment.</p>
+        <div class="tcau">Lucas M.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL -->
+<div id="social">
+  <div class="soc-w">
+    <p>Me suivre sur les réseaux</p>
+    <div class="soc-links">
+      <a href="https://www.instagram.com/clem_kart_racing?igsh=dWRveWV6OHB2ZTVm&utm_source=qr" target="_blank" rel="noopener" class="soc-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        Instagram
+      </a>
+      <a href="https://www.tiktok.com/@clem_kart_racing" target="_blank" rel="noopener" class="soc-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.77 1.52V6.77a4.85 4.85 0 01-1-.08z"/></svg>
+        TikTok
+      </a>
+      <a href="https://youtube.com/@clemkartracing2073" target="_blank" rel="noopener" class="soc-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+        YouTube
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- BLOG -->
+<section id="blog" style="background:var(--b3);padding:110px 60px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p class="sl-lab rv">Ressources gratuites</p>
+    <h2 class="st-h rv d1">APPROFONDIR<br>SA <span class="r">COMPRÉHENSION</span></h2>
+    <p class="rv d2" style="font-size:.97rem;line-height:1.8;color:var(--wd);font-weight:300;max-width:580px;margin-bottom:48px;">Des articles concrets pour commencer à changer ta façon de piloter, avant même d'ouvrir le guide.</p>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px;" class="rv d2">
+
+      <a href="blog-freinage-degressif.html" style="background:var(--b2);padding:36px 32px;border:1px solid var(--wf);text-decoration:none;display:block;transition:background .3s;position:relative;overflow:hidden;" class="blog-card">
+        <span style="font-family:var(--fc);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:14px;">Technique · 5 min</span>
+        <h3 style="font-family:var(--fc);font-size:1.15rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--w);line-height:1.3;margin-bottom:12px;">Le freinage en karting : ce que tu rates à chaque virage</h3>
+        <p style="font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;margin-bottom:20px;">Pourquoi la façon dont tu relâches le frein est plus importante que la façon dont tu appuies dessus.</p>
+        <span style="font-family:var(--fc);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);">Lire l'article →</span>
+      </a>
+
+      <a href="blog-mental-karting.html" style="background:var(--b2);padding:36px 32px;border:1px solid var(--wf);text-decoration:none;display:block;transition:background .3s;position:relative;overflow:hidden;" class="blog-card">
+        <span style="font-family:var(--fc);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:14px;">Mental · 5 min</span>
+        <h3 style="font-family:var(--fc);font-size:1.15rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--w);line-height:1.3;margin-bottom:12px;">Pourquoi l'ego te ralentit en karting</h3>
+        <p style="font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;margin-bottom:20px;">Ce que font les pilotes calmes que les autres ne font pas. Et pourquoi vouloir prouver quelque chose te coûte du temps.</p>
+        <span style="font-family:var(--fc);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);">Lire l'article →</span>
+      </a>
+
+      <a href="blog-trajectoire-grip.html" style="background:var(--b2);padding:36px 32px;border:1px solid var(--wf);text-decoration:none;display:block;transition:background .3s;position:relative;overflow:hidden;" class="blog-card">
+        <span style="font-family:var(--fc);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:14px;">Technique · 6 min</span>
+        <h3 style="font-family:var(--fc);font-size:1.15rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--w);line-height:1.3;margin-bottom:12px;">Lire le grip en deux tours : ce que font les bons pilotes</h3>
+        <p style="font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;margin-bottom:20px;">Comment adapter ta trajectoire en fonction de l'adhérence, sans tâtonner pendant dix tours.</p>
+        <span style="font-family:var(--fc);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);">Lire l'article →</span>
+      </a>
+
+      <a href="blog-volant-karting.html" style="background:var(--b2);padding:36px 32px;border:1px solid var(--wf);text-decoration:none;display:block;transition:background .3s;position:relative;overflow:hidden;" class="blog-card">
+        <span style="font-family:var(--fc);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:14px;">Technique · 5 min</span>
+        <h3 style="font-family:var(--fc);font-size:1.15rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--w);line-height:1.3;margin-bottom:12px;">Le. Volant. Ne fait pas tourner le kart.</h3>
+        <p style="font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;margin-bottom:20px;">Tu crois que tu tournes avec les mains. C'est faux. Et tant que tu gardes cette croyance, tu seras limité.</p>
+        <span style="font-family:var(--fc);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);">Lire l'article →</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta">
+  <h2 class="rv">ARRÊTE DE<br>SUBIR TON<br>PILOTAGE.</h2>
+  <p class="rv d1">Tu as le niveau pour progresser. Il te manque juste la grille de lecture. 8 ans de compétition condensés en principes clairs. Lisibles ce soir, applicables demain matin.</p>
+  <div class="ctabs rv d2">
+    <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btw">Obtenir le guide · 27,99&nbsp;€ →</a>
+    <a href="#offer" class="btwout">Recevoir le tableur gratuit</a>
+  </div>
+  <p class="ctanote rv d3">Téléchargement immédiat · Garantie 7 jours · PDF · ~32 pages</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">Clem <span>Kart</span> Racing</div>
+  <p class="fcopy">© 2026 Clément Daniel · Tous droits réservés</p>
+  <ul class="flinks">
+    <li><a href="mentions-legales.html">Mentions légales</a></li>
+    <li><a href="https://www.instagram.com/clem_kart_racing" target="_blank" rel="noopener">Instagram</a></li>
+    <li><a href="https://www.tiktok.com/@clem_kart_racing" target="_blank" rel="noopener">TikTok</a></li>
+    <li><a href="https://youtube.com/@clemkartracing2073" target="_blank" rel="noopener">YouTube</a></li>
+  </ul>
+</footer>
+
+
+<script>
+// LEAD MAGNET — Brevo API
+async function sendLeadMagnet(e) {
+  e.preventDefault();
+  const email = document.getElementById('lm-email').value.trim();
+  const btn   = document.getElementById('lm-btn');
+  const msg   = document.getElementById('lm-msg');
+
+  if (!email) return;
+
+  btn.textContent = 'Envoi en cours…';
+  btn.disabled = true;
+  msg.style.color = 'var(--wd)';
+  msg.textContent = '';
+
+  try {
+    const res = await fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    if (res.ok) {
+      btn.textContent = '✓ Envoyé ! Vérifie ta boîte mail';
+      btn.style.borderColor = 'var(--gold)';
+      btn.style.color = 'var(--gold)';
+      msg.style.color = 'var(--gold)';
+      msg.textContent = 'Vérifie tes spams si tu ne le vois pas dans 2 minutes.';
+      document.getElementById('lm-email').value = '';
+    } else {
+      const err = await res.json();
+      console.error('Brevo error:', err);
+      throw new Error('API error');
+    }
+  } catch(err) {
+    btn.textContent = 'Recevoir le tableur gratuitement →';
+    btn.disabled = false;
+    msg.style.color = 'var(--red)';
+    msg.textContent = "Erreur d'envoi. Réessaie ou contacte-moi sur Instagram.";
+  }
+}
+</script>
+
+<script>
+// CURSOR
+const cd=document.getElementById('cd'),cr=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function a(){if(cd){cd.style.left=mx+'px';cd.style.top=my+'px';}rx+=(mx-rx)*.11;ry+=(my-ry)*.11;if(cr){cr.style.left=rx+'px';cr.style.top=ry+'px';}requestAnimationFrame(a);})();
+document.querySelectorAll('a,button,.pc,.tc,.csc').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+// NAV
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>60));
+// REVEAL
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');obs.unobserve(el.target);}})},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+// SMOOTH ANCHOR
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}});
+});
+</script>
+</body>
+</html>
+                                                                                                                                                                                            

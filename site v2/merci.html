@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ton tableur arrive — Clem Kart Racing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D9171D;--red-dark:#A51115;--red-glow:rgba(217,23,29,0.28);
+  --black:#070707;--b2:#0F0F0F;--b3:#161616;--b4:#1C1C1C;
+  --w:rgb(242,237,232);--wd:rgba(242,237,232,0.6);--wf:rgba(242,237,232,0.08);--wf2:rgba(242,237,232,0.04);
+  --gold:#C9A84C;
+  --fd:'Bebas Neue',sans-serif;--fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+
+.logo{font-family:var(--fd);font-size:1.4rem;letter-spacing:.06em;margin-bottom:60px;opacity:.5;}
+.logo span{color:var(--red);}
+
+.check{width:72px;height:72px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 32px;animation:pop .5s .2s both;}
+@keyframes pop{0%{transform:scale(.6);opacity:0;}80%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+.check svg{width:32px;height:32px;stroke:var(--gold);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+.eyebrow{font-family:var(--fc);font-size:.78rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
+h1{font-family:var(--fd);font-size:clamp(42px,7vw,90px);line-height:.95;letter-spacing:.02em;margin-bottom:24px;}
+h1 span{color:var(--red);}
+.sub{font-size:1rem;font-weight:300;line-height:1.8;color:var(--wd);max-width:480px;margin:0 auto 48px;}
+.sub strong{color:var(--w);font-weight:500;}
+
+/* DOWNLOAD BUTTON */
+.dl-btn{display:inline-flex;align-items:center;gap:12px;font-family:var(--fc);font-size:1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;background:var(--gold);color:var(--black);padding:16px 36px;text-decoration:none;transition:opacity .2s;margin-bottom:16px;}
+.dl-btn:hover{opacity:.88;}
+.dl-btn svg{width:18px;height:18px;fill:currentColor;}
+
+.or{font-family:var(--fc);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--wd);margin:24px 0;}
+
+.guide-btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.88rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;background:var(--red);color:var(--w);padding:14px 32px;text-decoration:none;position:relative;overflow:hidden;transition:box-shadow .3s;}
+.guide-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);transform:translateX(-110%) skewX(-15deg);transition:transform .4s;}
+.guide-btn:hover::after{transform:translateX(110%) skewX(-15deg);}
+.guide-btn:hover{box-shadow:0 0 36px var(--red-glow);}
+
+.note{font-family:var(--fc);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--wd);margin-top:48px;opacity:.55;}
+
+@media(max-width:600px){
+  .dl-btn{font-size:.82rem;padding:14px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="logo">Clem <span>Kart</span> Racing</div>
+
+<div class="check">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+</div>
+
+<p class="eyebrow">C'est dans ta boîte</p>
+<h1>TON TABLEUR<br><span>EST EN ROUTE</span></h1>
+<p class="sub">
+  Vérifie ta boîte mail dans les <strong>2 minutes</strong> qui viennent.<br>
+  Le tableur Excel de réglages est en pièce jointe.<br><br>
+  En attendant, tu peux le télécharger directement ici :
+</p>
+
+<!-- LIEN DE TÉLÉCHARGEMENT DIRECT — remplace REMPLACE_PAR_LIEN par le vrai lien -->
+<a href="https://ebook-afu.pages.dev/tableur-reglages-kart.xlsx" download class="dl-btn">
+  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+  Télécharger le tableur (.xlsx)
+</a>
+
+<div class="or">— ou —</div>
+
+<a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="guide-btn">
+  Passer au guide complet · 27,99&nbsp;€ →
+</a>
+
+<p class="note">Accès immédiat · PDF ~32 pages · Garantie 7 jours</p>
+
+</body>
+</html>

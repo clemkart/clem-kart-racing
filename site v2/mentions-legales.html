@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mentions légales — Clem Kart Racing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D9171D;--black:#070707;--b2:#0F0F0F;--b3:#161616;--w:rgb(242,237,232);--wd:rgba(242,237,232,0.6);--wf:rgba(242,237,232,0.08);--fd:'Bebas Neue',sans-serif;--fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+.cur{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;}
+.cur-dot{width:6px;height:6px;background:var(--red);border-radius:50%;position:absolute;transform:translate(-50%,-50%);}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(242,237,232,0.45);border-radius:50%;position:absolute;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+body.h .cur-ring{width:48px;height:48px;border-color:var(--red);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(7,7,7,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--wf);}
+.nlogo{font-family:var(--fd);font-size:1.5rem;letter-spacing:.06em;color:var(--w);text-decoration:none;}
+.nlogo span{color:var(--red);}
+.nback{font-family:var(--fc);font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wd);text-decoration:none;transition:color .2s;cursor:none;display:flex;align-items:center;gap:8px;}
+.nback:hover{color:var(--w);}
+
+.hero-ml{padding:160px 60px 80px;border-bottom:1px solid var(--wf);}
+.hero-ml .label{font-family:var(--fc);font-size:.75rem;letter-spacing:.45em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.hero-ml .label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--red);}
+.hero-ml h1{font-family:var(--fd);font-size:clamp(48px,6vw,90px);line-height:.95;letter-spacing:.02em;margin-bottom:20px;}
+.hero-ml p{font-size:.95rem;color:var(--wd);font-weight:300;max-width:580px;line-height:1.75;}
+
+.ml-content{max-width:820px;margin:0 auto;padding:80px 60px 120px;}
+
+.ml-section{margin-bottom:56px;padding-bottom:56px;border-bottom:1px solid var(--wf);}
+.ml-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+
+.ml-section h2{font-family:var(--fd);font-size:clamp(22px,2.8vw,34px);letter-spacing:.03em;color:var(--w);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.ml-section h2::before{content:'';display:inline-block;width:3px;height:28px;background:var(--red);flex-shrink:0;}
+
+.ml-section h3{font-family:var(--fc);font-size:1rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--w);margin-top:24px;margin-bottom:10px;}
+
+.ml-section p{font-size:.95rem;line-height:1.82;color:var(--wd);font-weight:300;margin-bottom:14px;}
+.ml-section p strong{color:var(--w);font-weight:500;}
+.ml-section p:last-child{margin-bottom:0;}
+
+.ml-section ul{list-style:none;margin-bottom:14px;}
+.ml-section ul li{font-size:.95rem;line-height:1.75;color:var(--wd);font-weight:300;padding:6px 0 6px 20px;position:relative;border-bottom:1px solid rgba(242,237,232,0.04);}
+.ml-section ul li:last-child{border-bottom:none;}
+.ml-section ul li::before{content:'—';color:var(--red);position:absolute;left:0;font-size:.8rem;}
+
+.info-box{background:var(--b3);border:1px solid var(--wf);border-left:2px solid var(--red);padding:24px 28px;margin:20px 0;}
+.info-box p{font-size:.92rem;line-height:1.75;color:var(--wd);margin-bottom:8px;font-weight:300;}
+.info-box p:last-child{margin-bottom:0;}
+.info-box p strong{color:var(--w);font-weight:500;}
+
+.update-date{font-family:var(--fc);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wd);margin-bottom:40px;display:block;padding:16px 20px;background:var(--b2);border:1px solid var(--wf);display:inline-block;}
+
+footer{background:var(--b2);padding:36px 60px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--wf);flex-wrap:wrap;gap:16px;}
+.flogo{font-family:var(--fd);font-size:1.2rem;letter-spacing:.06em;color:var(--w);}
+.flogo span{color:var(--red);}
+.fcopy{font-family:var(--fc);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);}
+.flinks{display:flex;gap:28px;list-style:none;}
+.flinks a{font-family:var(--fc);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);text-decoration:none;transition:color .2s;cursor:none;}
+.flinks a:hover{color:var(--red);}
+
+@media(max-width:768px){
+  nav{padding:16px 24px;}
+  .hero-ml{padding:120px 24px 60px;}
+  .ml-content{padding:60px 24px 80px;}
+  footer{flex-direction:column;text-align:center;padding:28px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur">
+  <div class="cur-ring" id="cr"></div>
+  <div class="cur-dot" id="cd"></div>
+</div>
+
+<nav>
+  <a href="index.html" class="nlogo">Clem <span>Kart</span> Racing</a>
+  <a href="index.html" class="nback">← Retour au site</a>
+</nav>
+
+<div class="hero-ml">
+  <p class="label">Informations légales</p>
+  <h1>MENTIONS<br>LÉGALES</h1>
+  <p>Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique (LCEN), les présentes mentions légales sont portées à la connaissance des utilisateurs du site clemkartracing.com.</p>
+</div>
+
+<div class="ml-content">
+
+  <span class="update-date">Dernière mise à jour : Avril 2026</span>
+
+  <!-- 1. ÉDITEUR -->
+  <div class="ml-section">
+    <h2>1. Éditeur du site</h2>
+    <p>Le présent site est édité à titre personnel par :</p>
+    <div class="info-box">
+      <p><strong>Nom :</strong> Clément Daniel</p>
+      <p><strong>Statut :</strong> Particulier</p>
+      <p><strong>Adresse :</strong> France</p>
+      <p><strong>Contact :</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d5b1b4bbbcb0b9fbb6b9b0b8b0bba1a5a7ba95b2b8b4bcb9fbb6bab8">[email&#160;protected]</a></p>
+    </div>
+    <p>Le site est exploité sous le nom commercial <strong>Clem Kart Racing</strong>, sans structure juridique enregistrée à ce jour.</p>
+    <p>En tant que particulier vendant des produits numériques, Clément Daniel est soumis aux obligations légales applicables aux ventes entre particuliers et aux règles de protection du consommateur en vigueur en France.</p>
+  </div>
+
+  <!-- 2. HÉBERGEMENT -->
+  <div class="ml-section">
+    <h2>2. Hébergement</h2>
+    <p>La vente des produits numériques est assurée via la plateforme :</p>
+    <div class="info-box">
+      <p><strong>Plateforme de vente :</strong> Gumroad Inc.</p>
+      <p><strong>Adresse :</strong> 548 Market St #72917, San Francisco, CA 94104, États-Unis</p>
+      <p><strong>Site :</strong> gumroad.com</p>
+    </div>
+    <p>Les paiements, la livraison des produits numériques et la gestion des remboursements sont intégralement gérés par Gumroad Inc., conformément à leurs conditions générales d'utilisation disponibles sur leur site.</p>
+  </div>
+
+  <!-- 3. PROPRIÉTÉ INTELLECTUELLE -->
+  <div class="ml-section">
+    <h2>3. Propriété intellectuelle</h2>
+    <p>L'ensemble des contenus présents sur ce site (textes, visuels, structure, mise en page) ainsi que le produit digital vendu (guide PDF <em>Comprendre comment rouler plus vite</em>) sont la propriété exclusive de <strong>Clément Daniel</strong>.</p>
+    <p>Toute reproduction, représentation, modification, publication ou adaptation, totale ou partielle, de ces éléments est strictement interdite sans l'accord préalable et écrit de leur auteur.</p>
+    <p>Toute exploitation non autorisée de ces contenus constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle.</p>
+  </div>
+
+  <!-- 4. PRODUIT NUMÉRIQUE ET DROIT DE RÉTRACTATION -->
+  <div class="ml-section">
+    <h2>4. Produit numérique & droit de rétractation</h2>
+    <p>Les produits vendus sur ce site sont des <strong>biens numériques à téléchargement immédiat</strong> (fichiers PDF).</p>
+    <h3>Garantie satisfait ou remboursé</h3>
+    <p>Bien que la réglementation européenne (directive 2011/83/UE) prévoie que le droit de rétractation de 14 jours peut être écarté pour les contenus numériques dont l'exécution a commencé avec l'accord du consommateur, <strong>Clem Kart Racing accorde volontairement une garantie de remboursement de 7 jours</strong> à compter de la date d'achat, sans condition ni justification.</p>
+    <p>Pour exercer cette garantie, il suffit d'envoyer un e-mail à l'adresse de contact indiquée ci-dessus dans un délai de 7 jours suivant l'achat. Le remboursement sera traité via Gumroad dans les délais habituels de la plateforme.</p>
+    <h3>Prix</h3>
+    <p>Le prix affiché sur ce site est de <strong>27,99 €</strong>. Le montant final facturé peut légèrement différer selon les frais de traitement de Gumroad et la TVA locale appliquée selon le pays de résidence de l'acheteur. Le prix exact vous est confirmé avant validation sur la page de paiement Gumroad.</p>
+  </div>
+
+  <!-- 5. DONNÉES PERSONNELLES -->
+  <div class="ml-section">
+    <h2>5. Données personnelles & confidentialité</h2>
+    <p>Ce site ne collecte pas directement de données personnelles. Les données relatives aux achats (nom, adresse e-mail, informations de paiement) sont collectées et traitées exclusivement par <strong>Gumroad Inc.</strong>, conformément à leur politique de confidentialité.</p>
+    <h3>Données collectées via Gumroad</h3>
+    <ul>
+      <li>Adresse e-mail (nécessaire à la livraison du produit numérique)</li>
+      <li>Informations de paiement (traitées par Gumroad, non accessibles par l'éditeur)</li>
+      <li>Données de transaction (date, montant, produit acheté)</li>
+    </ul>
+    <h3>Vos droits</h3>
+    <p>Conformément au Règlement Général sur la Protection des Données (RGPD, Règlement UE 2016/679), vous disposez des droits suivants sur vos données personnelles :</p>
+    <ul>
+      <li>Droit d'accès à vos données</li>
+      <li>Droit de rectification</li>
+      <li>Droit à l'effacement (droit à l'oubli)</li>
+      <li>Droit d'opposition au traitement</li>
+      <li>Droit à la portabilité de vos données</li>
+    </ul>
+    <p>Pour exercer ces droits, vous pouvez contacter directement Clément Daniel à l'adresse e-mail de contact indiquée, ou Gumroad Inc. via leur service client pour les données liées à votre achat.</p>
+    <p>Vous avez également le droit d'introduire une réclamation auprès de la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés), disponible sur <a href="https://www.cnil.fr" target="_blank" style="color:var(--red);text-decoration:none;">www.cnil.fr</a>.</p>
+    <h3>Cookies</h3>
+    <p>Ce site ne dépose pas de cookies à des fins de tracking ou publicitaires. Des cookies techniques peuvent être utilisés par la plateforme d'hébergement pour assurer le bon fonctionnement du site.</p>
+  </div>
+
+  <!-- 6. LIMITATION DE RESPONSABILITÉ -->
+  <div class="ml-section">
+    <h2>6. Limitation de responsabilité</h2>
+    <p>Les informations contenues dans le guide <em>Comprendre comment rouler plus vite</em> sont fournies à titre pédagogique et informatif, basées sur l'expérience personnelle de l'auteur en compétition de karting.</p>
+    <p>Clem Kart Racing ne saurait être tenu responsable des dommages directs ou indirects résultant de l'utilisation des informations contenues dans ses produits, notamment en ce qui concerne la pratique du karting sur circuit, qui comporte des risques inhérents à toute activité sportive de compétition.</p>
+    <p>L'utilisateur reste seul responsable de l'application des conseils et techniques décrits dans le guide, et de leur adaptation à sa propre pratique et à son niveau.</p>
+  </div>
+
+  <!-- 7. DROIT APPLICABLE -->
+  <div class="ml-section">
+    <h2>7. Droit applicable & litiges</h2>
+    <p>Les présentes mentions légales sont soumises au <strong>droit français</strong>. En cas de litige, et à défaut de résolution amiable, les tribunaux français seront seuls compétents.</p>
+    <p>Conformément à l'article L.612-1 du Code de la consommation, tout consommateur a le droit de recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable du litige qui l'oppose à un professionnel. Cette disposition s'applique à titre indicatif dans le cadre des ventes entre particuliers.</p>
+    <div class="info-box">
+      <p><strong>Plateforme européenne de règlement des litiges en ligne :</strong></p>
+      <p><a href="https://ec.europa.eu/consumers/odr" target="_blank" style="color:var(--red);text-decoration:none;">https://ec.europa.eu/consumers/odr</a></p>
+    </div>
+  </div>
+
+  <!-- 8. CONTACT -->
+  <div class="ml-section">
+    <h2>8. Contact</h2>
+    <p>Pour toute question relative aux présentes mentions légales, à vos achats ou à vos données personnelles, vous pouvez contacter Clément Daniel à l'adresse suivante :</p>
+    <div class="info-box">
+      <p><strong>E-mail :</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b8dcd9d6d1ddd496dbd4ddd5ddd6ccc8cad7f8dfd5d9d1d496dbd7d5">[email&#160;protected]</a></p>
+      <p><strong>Délai de réponse :</strong> sous 48 à 72 heures ouvrées</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="flogo">Clem <span>Kart</span> Racing</div>
+  <p class="fcopy">© 2026 Clément Daniel · Tous droits réservés</p>
+  <ul class="flinks">
+    <li><a href="mentions-legales.html">Mentions légales</a></li>
+    <li><a href="index.html">Retour au site</a></li>
+  </ul>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const cur=document.getElementById('cur'),cd=document.getElementById('cd'),cr=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function a(){
