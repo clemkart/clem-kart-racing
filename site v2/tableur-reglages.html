@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Le tableur de réglages karting gratuit — l'outil que Clément Daniel utilise après chaque session pour noter, comparer et progresser. Reçois-le directement dans ta boîte mail."/>
+<title>Tableur de réglages karting gratuit — Clem Kart Racing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D9171D;--red-dark:#A51115;--red-glow:rgba(217,23,29,0.28);
+  --black:#070707;--b2:#0F0F0F;--b3:#161616;--b4:#1C1C1C;
+  --w:rgb(242,237,232);--wd:rgba(242,237,232,0.6);--wf:rgba(242,237,232,0.08);--wf2:rgba(242,237,232,0.04);
+  --gold:#C9A84C;
+  --fd:'Bebas Neue',sans-serif;--fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 60px;background:rgba(7,7,7,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--wf);}
+.nlogo{font-family:var(--fd);font-size:1.4rem;letter-spacing:.06em;color:var(--w);text-decoration:none;}
+.nlogo span{color:var(--red);}
+.nback{font-family:var(--fc);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wd);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .2s;}
+.nback:hover{color:var(--w);}
+.nback::before{content:'←';}
+.ncta-nav{font-family:var(--fc);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;background:var(--red);color:var(--w);padding:9px 22px;text-decoration:none;transition:background .2s;}
+.ncta-nav:hover{background:var(--red-dark);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 60px 80px;position:relative;overflow:hidden;}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 60% at 50% 40%,rgba(201,168,76,.06) 0%,transparent 65%),var(--black);}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(242,237,232,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(242,237,232,.018) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 0%,transparent 100%);}
+.hero-inner{position:relative;z-index:2;max-width:620px;margin:0 auto;text-align:center;}
+.badge{display:inline-block;font-family:var(--fc);font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:6px 18px;margin-bottom:28px;}
+.hero-inner h1{font-family:var(--fd);font-size:clamp(48px,7vw,96px);line-height:.95;letter-spacing:.02em;margin-bottom:24px;}
+.hero-inner h1 .r{color:var(--red);}
+.hero-inner h1 .sk{color:transparent;-webkit-text-stroke:1px rgba(242,237,232,.3);}
+.hero-sub{font-size:1rem;font-weight:300;line-height:1.78;color:var(--wd);max-width:480px;margin:0 auto 48px;}
+.hero-sub strong{color:var(--w);font-weight:500;}
+
+/* FORM CARD */
+.form-card{background:var(--b2);border:1px solid rgba(201,168,76,.2);padding:44px 48px;max-width:520px;margin:0 auto;position:relative;}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);}
+.form-label{font-family:var(--fc);font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:block;}
+.form-card input[type="email"]{width:100%;background:var(--b3);border:1px solid var(--wf);color:var(--w);font-family:var(--fc);font-size:.95rem;letter-spacing:.08em;padding:15px 18px;outline:none;transition:border-color .2s;margin-bottom:12px;}
+.form-card input[type="email"]:focus{border-color:var(--gold);}
+.form-card input::placeholder{color:var(--wd);}
+.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--fc);font-size:.9rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;background:var(--gold);color:var(--black);padding:15px 32px;border:none;width:100%;cursor:pointer;transition:opacity .2s;position:relative;overflow:hidden;}
+.btn-gold:hover{opacity:.9;}
+.form-note{font-family:var(--fc);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);margin-top:12px;opacity:.6;text-align:center;}
+.form-msg{font-family:var(--fc);font-size:.78rem;letter-spacing:.12em;color:var(--wd);margin-top:10px;min-height:1.4em;text-align:center;}
+
+/* WHAT'S INSIDE */
+.section{padding:100px 60px;}
+.section-inner{max-width:900px;margin:0 auto;}
+.sl-lab{font-family:var(--fc);font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.sl-lab::before{content:'';display:inline-block;width:16px;height:1px;background:var(--gold);}
+.sth{font-family:var(--fd);font-size:clamp(32px,4vw,58px);line-height:1;letter-spacing:.02em;margin-bottom:40px;}
+.sth .r{color:var(--red);}
+
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:60px;}
+.feat{background:var(--b2);padding:32px 28px;border:1px solid var(--wf);}
+.feat-n{font-family:var(--fd);font-size:3rem;color:var(--gold);opacity:.3;line-height:1;margin-bottom:10px;}
+.feat h3{font-family:var(--fc);font-size:1rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;color:var(--w);}
+.feat p{font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;}
+
+/* WHO */
+.who{background:var(--b2);padding:100px 60px;}
+.who-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.who-txt p{font-size:.97rem;line-height:1.85;color:var(--wd);font-weight:300;margin-bottom:16px;}
+.who-txt p strong{color:var(--w);font-weight:500;}
+.who-quote{background:var(--b3);border-left:3px solid var(--gold);padding:32px 36px;}
+.who-quote p{font-family:var(--fd);font-size:clamp(18px,2.2vw,26px);line-height:1.2;letter-spacing:.02em;color:var(--w);margin-bottom:16px;}
+.who-quote cite{font-family:var(--fc);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-style:normal;}
+
+/* CTA BOTTOM */
+.cta-bottom{padding:100px 60px;text-align:center;background:var(--b3);}
+.cta-bottom h2{font-family:var(--fd);font-size:clamp(36px,4.5vw,64px);letter-spacing:.02em;line-height:1;margin-bottom:16px;}
+.cta-bottom p{font-size:.97rem;color:var(--wd);font-weight:300;max-width:480px;margin:0 auto 40px;line-height:1.78;}
+
+/* REDIRECT CTA */
+.redir{padding:60px 60px;background:var(--black);text-align:center;border-top:1px solid var(--wf);}
+.redir p{font-family:var(--fc);font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:var(--wd);margin-bottom:22px;}
+.redir-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;font-family:var(--fc);font-size:.82rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;background:transparent;color:var(--wd);padding:12px 26px;text-decoration:none;border:1px solid var(--wf);transition:border-color .2s,color .2s;}
+.btn-outline:hover{border-color:rgba(242,237,232,.3);color:var(--w);}
+.btn-red{display:inline-flex;align-items:center;gap:8px;font-family:var(--fc);font-size:.82rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:var(--red);color:var(--w);padding:13px 28px;text-decoration:none;transition:background .2s;}
+.btn-red:hover{background:var(--red-dark);}
+
+/* FOOTER */
+footer{background:var(--b3);padding:28px 60px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--wf);flex-wrap:wrap;gap:12px;}
+.flogo{font-family:var(--fd);font-size:1.1rem;letter-spacing:.06em;color:var(--w);}
+.flogo span{color:var(--red);}
+.fcopy{font-family:var(--fc);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);}
+
+@media(max-width:900px){
+  nav{padding:16px 24px;}
+  .nback span{display:none;}
+  .hero{padding:100px 24px 60px;}
+  .form-card{padding:32px 24px;}
+  .section{padding:70px 24px;}
+  .features{grid-template-columns:1fr;}
+  .who{padding:70px 24px;}
+  .who-inner{grid-template-columns:1fr;gap:36px;}
+  .cta-bottom{padding:70px 24px;}
+  .redir{padding:48px 24px;}
+  .redir-links{flex-direction:column;align-items:center;}
+  .btn-outline,.btn-red{width:100%;max-width:320px;justify-content:center;}
+  footer{flex-direction:column;text-align:center;padding:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nlogo">Clem <span>Kart</span> Racing</a>
+  <a href="index.html" class="nback"><span>Retour au site</span></a>
+  <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="ncta-nav">Le guide · 18,99&nbsp;€</a>
+</nav>
+
+<!-- HERO + FORM -->
+<section class="hero">
+  <div class="hbg"></div>
+  <div class="hgrid"></div>
+  <div class="hero-inner">
+    <span class="badge">Gratuit · Téléchargement immédiat</span>
+    <h1>LE TABLEUR<br>DE <span class="r">RÉGLAGES</span><br><span class="sk">KARTING</span></h1>
+    <p class="hero-sub">L'outil que j'utilise après <strong>chaque session</strong> pour noter mes réglages, comparer les configurations et progresser de façon structurée. Renseigne ton email — il arrive dans ta boîte dans la minute.</p>
+
+    <div class="form-card">
+      <span class="form-label">Reçois le tableur gratuitement</span>
+      <form id="lm-form" onsubmit="sendLeadMagnet(event)">
+        <input
+          id="lm-email"
+          type="email"
+          placeholder="Ton email"
+          required
+          autocomplete="email"
+        >
+        <button id="lm-btn" type="submit" class="btn-gold">Recevoir le tableur gratuitement →</button>
+        <p id="lm-msg" class="form-msg"></p>
+      </form>
+      <p class="form-note">Aucun spam. Désinscription en un clic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CE QUE CONTIENT LE TABLEUR -->
+<section class="section" style="background:var(--b2);">
+  <div class="section-inner">
+    <p class="sl-lab">Ce que tu reçois</p>
+    <h2 class="sth">UN OUTIL <span class="r">CONCRET</span></h2>
+    <div class="features">
+      <div class="feat">
+        <div class="feat-n">01</div>
+        <h3>Réglages session</h3>
+        <p>Note tous tes réglages châssis — barre, voie, pincement, arbre, moyeux — avec les conditions de piste et météo associées.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-n">02</div>
+        <h3>Comparaison circuits</h3>
+        <p>Retrouve instantanément ce que tu avais réglé sur un circuit précis lors de ta dernière session. Fini les approximations.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-n">03</div>
+        <h3>Notes pilote</h3>
+        <p>Une colonne pour noter tes sensations et observations après chaque session — la matière première de ta progression.</p>
+      </div>
+    </div>
+
+    <!-- Second CTA form -->
+    <div class="form-card" style="max-width:520px;margin:0 auto;">
+      <span class="form-label">Recevoir le tableur</span>
+      <form id="lm-form-2" onsubmit="sendLeadMagnet2(event)">
+        <input
+          id="lm-email-2"
+          type="email"
+          placeholder="Ton email"
+          required
+          autocomplete="email"
+        >
+        <button id="lm-btn-2" type="submit" class="btn-gold">Obtenir le tableur gratuitement →</button>
+        <p id="lm-msg-2" class="form-msg"></p>
+      </form>
+      <p class="form-note">Aucun spam. Désinscription en un clic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI C'EST UTILE -->
+<section class="who">
+  <div class="who-inner">
+    <div class="who-txt">
+      <p class="sl-lab" style="--gold:var(--gold);">Pourquoi ce tableur existe</p>
+      <p>Après chaque session, la plupart des pilotes repartent avec des réglages dans la tête — ou notés sur un bout de papier qu'ils retrouveront jamais.</p>
+      <p>Résultat : la session d'après, ils recommencent de zéro. <strong>Les mêmes tâtonnements, le même temps perdu.</strong></p>
+      <p>Ce tableur, c'est celui que j'utilise depuis des années pour garder une trace structurée de chaque configuration. Quand je reviens sur un circuit, je sais exactement d'où je repars.</p>
+    </div>
+    <div class="who-quote">
+      <p>« La régularité ne vient pas du talent. Elle vient d'une mémoire organisée de ce qui fonctionne. »</p>
+      <cite>Clément Daniel · Clem Kart Racing · Champion Régional 2023</cite>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-bottom">
+  <h2>PRÊT À PROGRESSER <span style="color:var(--gold)">PLUS VITE</span>&nbsp;?</h2>
+  <p>Reçois le tableur gratuitement. Et si tu veux aller encore plus loin, le guide complet t'attend.</p>
+
+  <div class="form-card" style="max-width:520px;margin:0 auto 36px;">
+    <form id="lm-form-3" onsubmit="sendLeadMagnet3(event)">
+      <input
+        id="lm-email-3"
+        type="email"
+        placeholder="Ton email"
+        required
+        autocomplete="email"
+        style="margin-bottom:12px;"
+      >
+      <button id="lm-btn-3" type="submit" class="btn-gold">Recevoir le tableur gratuitement →</button>
+      <p id="lm-msg-3" class="form-msg"></p>
+    </form>
+    <p class="form-note">Aucun spam. Désinscription en un clic.</p>
+  </div>
+</section>
+
+<!-- REDIRECTIONS -->
+<div class="redir">
+  <p>Découvrir d'autres ressources</p>
+  <div class="redir-links">
+    <a href="index.html" class="btn-outline">← Retour au site</a>
+    <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btn-red">Le guide complet · 18,99&nbsp;€ →</a>
+    <a href="index.html#blog" class="btn-outline">Lire le blog gratuit</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">Clem <span>Kart</span> Racing</div>
+  <p class="fcopy">© 2026 Clément Daniel · Tous droits réservés</p>
+</footer>
+
+<script>
+// Fonction réutilisable pour un formulaire donné
+async function submitForm(emailId, btnId, msgId) {
+  const email = document.getElementById(emailId).value.trim();
+  const btn   = document.getElementById(btnId);
+  const msg   = document.getElementById(msgId);
+  if (!email) return;
+
+  const original = btn.textContent;
+  btn.textContent = 'Envoi en cours…';
+  btn.disabled = true;
+  msg.style.color = 'var(--wd)';
+  msg.textContent = '';
+
+  try {
+    const res = await fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    if (res.ok) {
+      btn.textContent = '✓ Envoyé ! Vérifie ta boîte mail';
+      btn.style.background = 'rgba(201,168,76,.7)';
+      msg.style.color = 'var(--gold)';
+      msg.textContent = 'Vérifie tes spams si tu ne le vois pas dans 2 minutes.';
+      document.getElementById(emailId).value = '';
+    } else {
+      throw new Error('API error');
+    }
+  } catch(err) {
+    btn.textContent = original;
+    btn.disabled = false;
+    msg.style.color = 'var(--red)';
+    msg.textContent = "Erreur d'envoi. Contacte-moi sur Instagram.";
+  }
+}
+
+function sendLeadMagnet(e)  { e.preventDefault(); submitForm('lm-email',   'lm-btn',   'lm-msg'); }
+function sendLeadMagnet2(e) { e.preventDefault(); submitForm('lm-email-2', 'lm-btn-2', 'lm-msg-2'); }
+function sendLeadMagnet3(e) { e.preventDefault(); submitForm('lm-email-3', 'lm-btn-3', 'lm-msg-3'); }
+</script>
+
+</body>
+</html>

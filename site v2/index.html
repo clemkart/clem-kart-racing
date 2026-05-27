@@ -267,7 +267,7 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
     <li><a href="#testi">Avis</a></li>
     <li><a href="#blog">Blog</a></li>
   </ul>
-  <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="ncta">Obtenir le guide</a>
+  <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="ncta">Obtenir le guide →</a>
 </nav>
 
 <!-- HERO -->
@@ -289,7 +289,7 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
     </p>
     <div class="hacts">
       <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btp">
-        <span>Je veux le guide · 27,99&nbsp;€</span><span>→</span>
+        <span>Je veux le guide · 18,99&nbsp;€</span><span>→</span>
       </a>
       <a href="https://clemkartracing.gumroad.com/l/Extrait" target="_blank" rel="noopener" class="btg">
         Lire un extrait gratuit
@@ -415,7 +415,7 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
           <li>Construire une confiance calme au lieu d'un pilotage nerveux et aléatoire</li>
         </ul>
         <div class="pr">
-          <span class="prn">27,99&nbsp;€</span>
+          <span class="prn">18,99&nbsp;€</span>
           <span class="prnt">Accès immédiat<br>PDF · ~32 pages</span>
         </div>
         <div class="guar">Garantie satisfait ou remboursé 7 jours, sans condition</div>
@@ -426,34 +426,21 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
     <div class="dcta rv d3">
       <p class="dcta-lbl">Tu as le choix <span>: les deux options sont ouvertes</span></p>
       <div class="dcg">
-        <!-- OPTION 1 : LEAD MAGNET TABLEUR -->
-        <div class="dco" id="lead-magnet">
-          <span class="otag fr">Option 1 · Gratuit</span>
-          <p class="oti">Reçois le tableur de réglages</p>
-          <p class="ode">Le tableur Excel que j'utilise pour noter mes réglages après chaque session. Renseigne ton email, il arrive dans ta boîte dans la minute.</p>
-          <form id="lm-form" onsubmit="sendLeadMagnet(event)" style="margin-top:4px;">
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <input
-                id="lm-email"
-                type="email"
-                placeholder="Ton email"
-                required
-                style="background:var(--b2);border:1px solid var(--wf);color:var(--w);font-family:var(--fc);font-size:.9rem;letter-spacing:.08em;padding:13px 16px;outline:none;transition:border-color .2s;width:100%;"
-                onfocus="this.style.borderColor='var(--gold)'"
-                onblur="this.style.borderColor='var(--wf)'"
-              >
-              <button id="lm-btn" type="submit" class="bfree" style="cursor:pointer;border:1px solid var(--gold);">Recevoir le tableur gratuitement →</button>
-            </div>
-            <p id="lm-msg" style="font-family:var(--fc);font-size:.75rem;letter-spacing:.12em;color:var(--wd);margin-top:8px;min-height:1.2em;"></p>
-            <p style="font-family:var(--fc);font-size:.68rem;letter-spacing:.12em;color:var(--wd);margin-top:4px;opacity:.6;">Aucun spam. Désinscription en un clic.</p>
-          </form>
-        </div>
-        <div class="dcsep"></div>
+        <!-- OPTION 1 : GUIDE PAYANT (en premier) -->
         <div class="dco">
-          <span class="otag pa">Option 2 · 27,99&nbsp;€</span>
+          <span class="otag pa">Option 1 · 18,99&nbsp;€</span>
           <p class="oti">Investir directement</p>
           <p class="ode">Tu fais déjà confiance à la méthode. Tu veux le guide complet maintenant et commencer à progresser dès aujourd'hui. Accès immédiat après paiement, garantie 7 jours.</p>
           <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="bpaid">Obtenir le guide complet →</a>
+        </div>
+        <div class="dcsep"></div>
+        <!-- OPTION 2 : LEAD MAGNET TABLEUR -->
+        <div class="dco" id="lead-magnet">
+          <span class="otag fr">Option 2 · Gratuit</span>
+          <p class="oti">Reçois le tableur de réglages</p>
+          <p class="ode">Le tableur Excel que j'utilise pour noter mes réglages après chaque session. Renseigne ton email sur la page dédiée, il arrive dans ta boîte dans la minute.</p>
+          <a href="tableur-reglages.html" class="bfree" style="margin-top:4px;">Obtenir le tableur gratuitement →</a>
+          <p style="font-family:var(--fc);font-size:.68rem;letter-spacing:.12em;color:var(--wd);margin-top:10px;opacity:.6;">Aucun spam. Désinscription en un clic.</p>
         </div>
       </div>
     </div>
@@ -472,21 +459,18 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
   <div style="max-width:1100px;margin:0 auto;">
     <p class="sl-lab rv">Ce qu'ils en disent</p>
     <h2 class="sth rv d1">ILS ONT <span class="r">PROGRESSÉ</span></h2>
-    <div class="tg">
+    <div class="tg" style="grid-template-columns:repeat(2,1fr);max-width:840px;">
       <div class="tc rv d1">
         <div class="stars">★★★★★</div>
-        <p class="tctxt">Je stagnais depuis 2 ans. En appliquant juste la partie sur le freinage et la rotation, j'ai compris pourquoi je perdais du temps dans les épingles. Premier test en piste : 4 dixièmes gagnés au tour.</p>
-        <div class="tcau">Maxime R.</div>
+        <p class="tctxt">Vraiment intéressant et neuf. Ça fait vraiment énormément de bien à lire.</p>
+        <div class="tcau">Pilote débutant</div>
+        <div class="tcro">En progression</div>
       </div>
       <div class="tc rv d2">
         <div class="stars">★★★★★</div>
-        <p class="tctxt">Ce qui m'a marqué, c'est la clarté. Pas de jargon, pas de "ça dépend". Des principes que j'ai compris tout de suite et appliqués directement. Ma régularité a clairement progressé.</p>
-        <div class="tcau">Thomas D.</div>
-      </div>
-      <div class="tc rv d3">
-        <div class="stars">★★★★★</div>
-        <p class="tctxt">J'avais l'impression d'avoir déjà tout lu sur le pilotage. Ce guide m'a fait réaliser que je comprenais le quoi, mais pas le pourquoi. C'est là que la différence se fait vraiment.</p>
-        <div class="tcau">Lucas M.</div>
+        <p class="tctxt">Écrit qui aide à comprendre ce qu'il se passe réellement quand on pilote le kart.</p>
+        <div class="tcau">Pilote intermédiaire</div>
+        <div class="tcro">En progression</div>
       </div>
     </div>
   </div>
@@ -559,7 +543,7 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
   <h2 class="rv">ARRÊTE DE<br>SUBIR TON<br>PILOTAGE.</h2>
   <p class="rv d1">Tu as le niveau pour progresser. Il te manque juste la grille de lecture. 8 ans de compétition condensés en principes clairs. Lisibles ce soir, applicables demain matin.</p>
   <div class="ctabs rv d2">
-    <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btw">Obtenir le guide · 27,99&nbsp;€ →</a>
+    <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btw">Obtenir le guide · 18,99&nbsp;€ →</a>
     <a href="#offer" class="btwout">Recevoir le tableur gratuit</a>
   </div>
   <p class="ctanote rv d3">Téléchargement immédiat · Garantie 7 jours · PDF · ~32 pages</p>
