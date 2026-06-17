@@ -1,0 +1,26 @@
+# Fichiers temporaires d'extraction PDF (utilisés pour construire le skill pilotage-karting)
+_extracted-*.txt
+
+# Dépendances Node (au cas où)
+node_modules/
+
+# Variables d'environnement (Netlify)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Netlify
+.netlify/

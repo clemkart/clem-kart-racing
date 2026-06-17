@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CGU & Mentions légales — Race Engineer AI</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🏁</text></svg>">
+<style>
+:root{--red:#E63946;--dark:#0D0D0D;--dark2:#141414;--border:#2A2A2A;--text:#E0E0E0;--text-dim:#9A9A9A;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:Barlow,Arial,sans-serif;font-size:15px;line-height:1.7;}
+header{background:#0A0A0A;border-bottom:1px solid var(--border);padding:14px 24px;}
+header a{color:#fff;text-decoration:none;font-weight:700;letter-spacing:2px;}
+header a span{color:var(--red);}
+main{max-width:760px;margin:0 auto;padding:32px 20px 80px;}
+main h1{color:#fff;font-size:28px;margin:28px 0 12px;letter-spacing:1px;}
+main h2{color:var(--red);font-size:20px;margin:26px 0 10px;}
+main h3{color:#fff;font-size:16px;margin:20px 0 8px;}
+main p{margin:10px 0;color:var(--text);}
+main li{margin:6px 0 6px 22px;color:var(--text);}
+main strong{color:#fff;}
+main hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
+#loading{color:var(--text-dim);font-style:italic;padding:40px 0;text-align:center;}
+</style>
+</head>
+<body>
+<header><a href="index.html">← CLEM.<span>KART</span> — Race Engineer AI</a></header>
+<main>
+  <div id="loading">Chargement des CGU…</div>
+  <div id="content"></div>
+</main>
+<script>
+// Rend CGU.md (source unique de vérité) en HTML lisible.
+// Tout est échappé d'abord, puis seul un sous-ensemble markdown est ré-autorisé.
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+function renderMarkdown(md) {
+  const lines = escapeHtml(md).split(/\r?\n/);
+  let html = '', inList = false;
+  for (const line of lines) {
+    const isItem = /^\s*[-*]\s+/.test(line);
+    if (inList && !isItem) { html += '</ul>'; inList = false; }
+    if (/^###\s+/.test(line)) html += '<h3>' + line.replace(/^###\s+/, '') + '</h3>';
+    else if (/^##\s+/.test(line)) html += '<h2>' + line.replace(/^##\s+/, '') + '</h2>';
+    else if (/^#\s+/.test(line)) html += '<h1>' + line.replace(/^#\s+/, '') + '</h1>';
+    else if (/^\s*(---|\*\*\*)\s*$/.test(line)) html += '<hr>';
+    else if (isItem) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += '<li>' + line.replace(/^\s*[-*]\s+/, '') + '</li>';
+    }
+    else if (line.trim() === '') html += '';
+    else html += '<p>' + line + '</p>';
+  }
+  if (inList) html += '</ul>';
+  return html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+fetch('CGU.md')
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(md => {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').innerHTML = renderMarkdown(md);
+  })
+  .catch(() => {
+    document.getElementById('loading').textContent = 'Impossible de charger les CGU. Réessaie ou contacte-nous.';
+  });
+</script>
+</body>
+</html>
