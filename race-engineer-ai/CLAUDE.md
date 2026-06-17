@@ -84,7 +84,7 @@ L'idée : reproduire ce qu'un vrai race engineer ferait entre les sessions — a
 
 ## Concepts clés du karting à maîtriser
 
-Ces concepts viennent du guide PDF vendu sur Gumroad (32 pages, 18,99€) :
+Ces concepts viennent du guide PDF vendu sur Gumroad (32 pages, 14,99€) :
 
 - **Light hands (Ch.3)** : le volant est un capteur, pas une commande. Serrer = châssis figé.
 - **Freinage dégressif (Ch.4)** : pic de pression → relâché progressif. Maintenir = kart refuse de pivoter. ~2-3 dixièmes perdus par virage si raté.
@@ -125,7 +125,7 @@ Ces concepts viennent du guide PDF vendu sur Gumroad (32 pages, 18,99€) :
 3. **Club (29,99€/mois)** : multi-pilotes, comparaison équipe
 
 Lien avec l'écosystème existant :
-- Le guide PDF (18,99€) reste le produit d'entrée
+- Le guide PDF (14,99€) reste le produit d'entrée
 - Le tableur gratuit capte les emails
 - Le Race Engineer AI = montée en gamme naturelle
 

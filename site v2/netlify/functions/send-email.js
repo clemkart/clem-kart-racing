@@ -42,7 +42,7 @@ exports.handler = async function(event) {
         </p>
         <a href="https://clemkartracing.gumroad.com/l/umjfwx"
            style="display:inline-block;background:#D9171D;color:#f2ede8;font-family:Arial,sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 28px;">
-          Découvrir le guide complet · 18,99€ →
+          Découvrir le guide complet · 14,99€ →
         </a>
         <p style="color:rgba(242,237,232,0.4);font-size:12px;margin-top:32px;line-height:1.6;">
           Clem Kart Racing · Tu peux te désinscrire à tout moment en répondant STOP à cet email.<br>📬 Si tu ne vois pas cet email, vérifie ton dossier spam ou courrier indésirable.
