@@ -1,4 +1,14 @@
-# Le site est publie depuis "site v2/". On indique a Netlify ou trouver les
-# fonctions (sinon /.netlify/functions/* renvoie 404).
-[functions]
-  directory = "site v2/netlify/functions"
+# ============================================================
+# Configuration Netlify — site vitrine Clem Kart Racing
+# Le site vit dans le sous-dossier "site v2/".
+# SANS ce fichier, Netlify ne déployait PAS les fonctions
+# (site v2/netlify/functions) → /.netlify/functions/* en 404
+# → l'envoi du tableur (send-email) échouait à chaque fois.
+# ============================================================
+
+[build]
+  publish = "site v2"
+  functions = "site v2/netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
