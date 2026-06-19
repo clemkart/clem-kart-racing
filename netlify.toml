@@ -12,3 +12,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # L'URL Supabase n'est PAS un secret (publique cote navigateur).
+  # On l'exclut du scan de secrets Netlify (qui reste actif pour le reste :
+  # la vraie cle SUPABASE_SERVICE_ROLE_KEY, elle, n'est jamais dans le code).
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL"
