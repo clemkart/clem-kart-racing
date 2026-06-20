@@ -6,7 +6,7 @@
 // Analytics = jamais bloquant : non-config ou erreur -> 204 silencieux.
 // =============================================
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://lqhtmwksxwjdspitului.supabase.co';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hkpknrrymgbnjmbewlyc.supabase.co';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Allowlist stricte des types (table dediee) — tout le reste est jete.

@@ -59,7 +59,7 @@ Réutilise l'infra existante : **Supabase + Netlify Functions**, comme l'app `ra
 - **Déployer** quand les crédits Netlify reviennent (~5 juillet 2026).
 
 ## Infra utile
-- Supabase URL : `https://lqhtmwksxwjdspitului.supabase.co`
+- Supabase URL : `https://hkpknrrymgbnjmbewlyc.supabase.co` (l'ancienne `lqhtmwksxwjdspitului…` etait FAUSSE — DNS inexistant — cause du "fetch failed")
 - Pattern de référence : `race-engineer-ai/netlify/functions/track.js` + `race-engineer-ai/supabase/schema.sql` (table `events`).
 - Fonctions du site : `site v2/netlify/functions/` (`send-email.js` = sans dépendance, fetch + process.env).
 - Pas de `netlify.toml` dans `site v2/` (config côté dashboard Netlify).
