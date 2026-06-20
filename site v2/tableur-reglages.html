@@ -172,61 +172,6 @@ footer{background:var(--b3);padding:28px 60px;display:flex;align-items:center;ju
         <p>Une colonne pour noter tes sensations et observations après chaque session — la matière première de ta progression.</p>
       </div>
     </div>
-
-    <!-- Second CTA form -->
-    <div class="form-card" style="max-width:520px;margin:0 auto;">
-      <span class="form-label">Recevoir le tableur</span>
-      <form id="lm-form-2" onsubmit="sendLeadMagnet2(event)">
-        <input
-          id="lm-email-2"
-          type="email"
-          placeholder="Ton email"
-          required
-          autocomplete="email"
-        >
-        <button id="lm-btn-2" type="submit" class="btn-gold">Obtenir le tableur gratuitement →</button>
-        <p id="lm-msg-2" class="form-msg"></p>
-      </form>
-      <p class="form-note">Aucun spam. Désinscription en un clic.</p>
-    </div>
-  </div>
-</section>
-
-<!-- POURQUOI C'EST UTILE -->
-<section class="who">
-  <div class="who-inner">
-    <div class="who-txt">
-      <p class="sl-lab" style="--gold:var(--gold);">Pourquoi ce tableur existe</p>
-      <p>Après chaque session, la plupart des pilotes repartent avec des réglages dans la tête — ou notés sur un bout de papier qu'ils retrouveront jamais.</p>
-      <p>Résultat : la session d'après, ils recommencent de zéro. <strong>Les mêmes tâtonnements, le même temps perdu.</strong></p>
-      <p>Ce tableur, c'est celui que j'utilise depuis des années pour garder une trace structurée de chaque configuration. Quand je reviens sur un circuit, je sais exactement d'où je repars.</p>
-    </div>
-    <div class="who-quote">
-      <p>« La régularité ne vient pas du talent. Elle vient d'une mémoire organisée de ce qui fonctionne. »</p>
-      <cite>Clément Daniel · Clem Kart Racing · Champion Régional 2023</cite>
-    </div>
-  </div>
-</section>
-
-<!-- CTA FINAL -->
-<section class="cta-bottom">
-  <h2>PRÊT À PROGRESSER <span style="color:var(--gold)">PLUS VITE</span>&nbsp;?</h2>
-  <p>Reçois le tableur gratuitement. Et si tu veux aller encore plus loin, le guide complet t'attend.</p>
-
-  <div class="form-card" style="max-width:520px;margin:0 auto 36px;">
-    <form id="lm-form-3" onsubmit="sendLeadMagnet3(event)">
-      <input
-        id="lm-email-3"
-        type="email"
-        placeholder="Ton email"
-        required
-        autocomplete="email"
-        style="margin-bottom:12px;"
-      >
-      <button id="lm-btn-3" type="submit" class="btn-gold">Recevoir le tableur gratuitement →</button>
-      <p id="lm-msg-3" class="form-msg"></p>
-    </form>
-    <p class="form-note">Aucun spam. Désinscription en un clic.</p>
   </div>
 </section>
 
@@ -271,7 +216,7 @@ async function submitForm(emailId, btnId, msgId) {
       btn.textContent = '✓ Envoyé ! Vérifie ta boîte mail';
       btn.style.background = 'rgba(201,168,76,.7)';
       msg.style.color = 'var(--gold)';
-      msg.textContent = 'Vérifie tes spams si tu ne le vois pas dans 2 minutes.';
+      msg.textContent = 'Pense à regarder dans Promotions / Spam si tu ne le vois pas dans 2 minutes.';
       document.getElementById(emailId).value = '';
     } else {
       throw new Error('API error');
@@ -284,9 +229,7 @@ async function submitForm(emailId, btnId, msgId) {
   }
 }
 
-function sendLeadMagnet(e)  { e.preventDefault(); submitForm('lm-email',   'lm-btn',   'lm-msg'); }
-function sendLeadMagnet2(e) { e.preventDefault(); submitForm('lm-email-2', 'lm-btn-2', 'lm-msg-2'); }
-function sendLeadMagnet3(e) { e.preventDefault(); submitForm('lm-email-3', 'lm-btn-3', 'lm-msg-3'); }
+function sendLeadMagnet(e) { e.preventDefault(); submitForm('lm-email', 'lm-btn', 'lm-msg'); }
 </script>
 
 </body>
