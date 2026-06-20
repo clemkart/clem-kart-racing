@@ -15,7 +15,7 @@ const path = require("path");
 // =============================================
 // CONFIG (env vars)
 // =============================================
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://lqhtmwksxwjdspitului.supabase.co";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://hkpknrrymgbnjmbewlyc.supabase.co";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 // Dev local uniquement : ALLOW_ANON_CHAT=true dans .env pour tester sans compte
