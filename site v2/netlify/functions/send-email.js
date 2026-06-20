@@ -50,7 +50,7 @@ exports.handler = async function(event) {
     `,
     attachment: [{
       name: 'Tableur-Reglages-Kart-ClemKartRacing.xlsx',
-      url: 'https://comprendre-comment-rouler-plus-vite.netlify.app/tableur-reglages-kart.xlsx'
+      url: 'https://comprendre-comment-rouler-plus-vite.netlify.app/tableur-reglages-kart-v2.xlsx'
     }]
   };
 
