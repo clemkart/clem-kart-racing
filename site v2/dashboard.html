@@ -14,7 +14,7 @@
     --red:#D9171D; --red-dark:#A51115; --red-glow:rgba(217,23,29,0.28);
     --black:#070707; --b2:#0F0F0F; --b3:#161616; --b4:#1C1C1C;
     --w:rgb(242,237,232); --wd:rgba(242,237,232,0.6); --wf:rgba(242,237,232,0.08); --wf2:rgba(242,237,232,0.04);
-    --gold:#C9A84C;
+    --gold:#C9A84C; --green:#46d17a;
     --fd:'Bebas Neue',sans-serif; --fc:'Barlow Condensed',sans-serif; --fb:'Barlow',sans-serif;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
@@ -34,25 +34,32 @@
   .err{ color:var(--red); font-size:13px; margin-top:12px; min-height:16px; }
 
   /* ---------- Header ---------- */
-  header{ display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:26px; border-bottom:1px solid var(--wf); padding-bottom:18px; }
+  header{ display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:22px; border-bottom:1px solid var(--wf); padding-bottom:18px; }
   header h1{ font-family:var(--fd); font-size:44px; line-height:.9; letter-spacing:1px; }
   header h1 span{ color:var(--red); }
   header .sub{ color:var(--wd); font-family:var(--fc); font-size:15px; letter-spacing:.5px; text-transform:uppercase; }
-  .tools{ display:flex; gap:10px; }
-  .ghost{ padding:9px 15px; background:var(--b3); border:1px solid var(--wf); color:var(--w); border-radius:8px; font-size:13px; letter-spacing:.5px; text-transform:uppercase; }
+  .tools{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .ghost{ padding:9px 14px; background:var(--b3); border:1px solid var(--wf); color:var(--w); border-radius:8px; font-size:13px; letter-spacing:.5px; text-transform:uppercase; }
   .ghost:hover{ border-color:var(--red); color:var(--red); }
+  .periods{ display:flex; gap:6px; }
+  .periods button{ padding:8px 12px; background:var(--b3); border:1px solid var(--wf); color:var(--wd); border-radius:8px; font-size:13px; letter-spacing:.5px; text-transform:uppercase; transition:.15s; }
+  .periods button:hover{ color:var(--w); }
+  .periods button.active{ background:var(--red); color:#fff; border-color:var(--red); }
 
   .note{ background:rgba(217,23,29,0.08); border:1px solid var(--red-glow); color:var(--w); border-radius:10px; padding:13px 16px; font-size:14px; margin-bottom:24px; }
   .note b{ color:var(--red); }
 
   /* ---------- KPI ---------- */
-  .grid-kpi{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:26px; }
+  .grid-kpi{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:18px; }
   .kpi{ background:var(--b2); border:1px solid var(--wf); border-radius:13px; padding:18px 18px 16px; position:relative; overflow:hidden; }
   .kpi::before{ content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--red); opacity:.8; }
   .kpi .label{ color:var(--wd); font-family:var(--fc); font-size:13px; letter-spacing:.6px; text-transform:uppercase; }
-  .kpi .val{ font-family:var(--fd); font-size:46px; line-height:1; margin-top:8px; }
+  .kpi .val{ font-family:var(--fd); font-size:46px; line-height:1; margin-top:8px; display:flex; align-items:baseline; flex-wrap:wrap; }
   .kpi.accent .val{ color:var(--gold); }
   .kpi .hint{ color:var(--wd); font-size:12px; margin-top:5px; }
+  .delta{ font-family:var(--fb); font-size:15px; font-weight:600; color:var(--green); margin-left:8px; }
+  .cmp{ font-family:var(--fb); font-size:12px; font-weight:600; }
+  .cmp.up{ color:var(--green); } .cmp.down{ color:var(--red); } .cmp.flat{ color:var(--wd); }
 
   /* ---------- Panels ---------- */
   .panel{ background:var(--b2); border:1px solid var(--wf); border-radius:13px; padding:20px; margin-bottom:18px; }
@@ -60,7 +67,7 @@
   .panel h2 small{ color:var(--wd); font-weight:400; text-transform:none; letter-spacing:0; }
   .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
   .chart-box{ position:relative; height:230px; }
-  .empty{ color:var(--wd); font-size:14px; text-align:center; padding:40px 0; }
+  .empty{ color:var(--wd); font-size:14px; text-align:center; padding:30px 0; }
 
   /* ---------- Funnel ---------- */
   .funnel-row{ margin-bottom:14px; }
@@ -75,7 +82,15 @@
   .mini{ display:flex; gap:14px; margin-top:4px; }
   .mini .m{ flex:1; background:var(--b3); border:1px solid var(--wf); border-radius:10px; padding:13px 15px; }
   .mini .m .label{ color:var(--wd); font-family:var(--fc); font-size:12px; letter-spacing:.5px; text-transform:uppercase; }
-  .mini .m .val{ font-family:var(--fd); font-size:30px; line-height:1; margin-top:4px; }
+  .mini .m .val{ font-family:var(--fd); font-size:30px; line-height:1; margin-top:4px; display:flex; align-items:baseline; }
+
+  /* ---------- Bar lists (pages / cta / conversion) ---------- */
+  .brow{ margin-bottom:13px; } .brow:last-child{ margin-bottom:0; }
+  .bhead{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:5px; }
+  .blabel{ font-family:var(--fc); font-size:13.5px; color:var(--w); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:62%; }
+  .bval{ font-family:var(--fb); font-size:13px; color:var(--wd); white-space:nowrap; }
+  .bbar{ height:8px; background:var(--wf2); border-radius:5px; overflow:hidden; }
+  .bbar > i{ display:block; height:100%; background:linear-gradient(90deg,var(--red),var(--red-dark)); border-radius:5px; }
 
   @media(max-width:760px){
     .grid-kpi{ grid-template-columns:repeat(2,1fr); }
@@ -102,25 +117,51 @@
   <header>
     <div>
       <h1>ANALY<span>TICS</span></h1>
-      <div class="sub">Site vitrine — 30 derniers jours</div>
+      <div class="sub" id="subLine">Site vitrine — 30 derniers jours</div>
     </div>
     <div class="tools">
+      <div class="periods">
+        <button data-days="7">7j</button>
+        <button data-days="30" class="active">30j</button>
+        <button data-days="90">90j</button>
+        <button data-days="3650">Tout</button>
+      </div>
       <button class="ghost" id="refreshBtn">↻ Rafraîchir</button>
       <button class="ghost" id="logoutBtn">Déconnexion</button>
     </div>
   </header>
 
   <div class="note" id="emptyNote" style="display:none">
-    <b>Pas encore de données.</b> Le suivi se remplira dès que le tracking sera actif sur le site (après déploiement). Tout est prêt côté technique.
+    <b>Pas encore de données.</b> Le suivi se remplit dès qu'il y a des visites sur le site. Tout est en place côté technique.
   </div>
 
   <!-- KPI -->
   <div class="grid-kpi">
-    <div class="kpi"><div class="label">Visiteurs</div><div class="val" id="kVis">—</div><div class="hint">sessions uniques</div></div>
-    <div class="kpi"><div class="label">Pages vues</div><div class="val" id="kPv">—</div><div class="hint">total</div></div>
-    <div class="kpi"><div class="label">Clics Gumroad</div><div class="val" id="kClk">—</div><div class="hint">vers l'achat</div></div>
-    <div class="kpi accent"><div class="label">Taux de clic</div><div class="val" id="kCtr">—</div><div class="hint">visiteurs → clic achat</div></div>
+    <div class="kpi">
+      <div class="label">Visiteurs</div>
+      <div class="val"><span id="kVis">—</span><span class="delta" id="dVis"></span></div>
+      <div class="hint"><span class="cmp" id="cVis"></span> sessions uniques</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Pages vues</div>
+      <div class="val"><span id="kPv">—</span><span class="delta" id="dPv"></span></div>
+      <div class="hint"><span class="cmp" id="cPv"></span> total</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Clics Gumroad</div>
+      <div class="val"><span id="kClk">—</span><span class="delta" id="dClk"></span></div>
+      <div class="hint"><span class="cmp" id="cClk"></span> vers l'achat</div>
+    </div>
+    <div class="kpi accent">
+      <div class="label">Taux de clic</div>
+      <div class="val"><span id="kCtr">—</span></div>
+      <div class="hint"><span class="cmp" id="cCtr"></span> visiteurs → clic achat</div>
+    </div>
   </div>
+  <p style="color:var(--wd);font-size:12px;margin:-6px 0 22px;">
+    <span style="color:var(--green);font-weight:600;">+N en vert</span> = nouveau sur les dernières 24h ·
+    <span style="color:var(--green);font-weight:600;">▲</span>/<span style="color:var(--red);font-weight:600;">▼</span> = vs période précédente
+  </p>
 
   <!-- FUNNEL -->
   <div class="panel">
@@ -141,7 +182,7 @@
 
   <!-- COURBE -->
   <div class="panel">
-    <h2>Évolution sur 30 jours</h2>
+    <h2>Évolution <small>— par jour</small></h2>
     <div class="chart-box"><canvas id="dayChart"></canvas></div>
   </div>
 
@@ -157,12 +198,30 @@
     </div>
   </div>
 
+  <!-- PAGES + CTA -->
+  <div class="grid-2">
+    <div class="panel">
+      <h2>Pages les plus vues</h2>
+      <div id="pagesBox"></div>
+    </div>
+    <div class="panel">
+      <h2>Boutons qui convertissent <small>— clics par bouton</small></h2>
+      <div id="ctaBox"></div>
+    </div>
+  </div>
+
+  <!-- CONVERSION PAR SOURCE -->
+  <div class="panel">
+    <h2>Conversion par source <small>— % de visiteurs qui cliquent Gumroad</small></h2>
+    <div id="convBox"></div>
+  </div>
+
   <!-- CTA SECONDAIRES -->
   <div class="panel">
     <h2>Autres actions</h2>
     <div class="mini">
-      <div class="m"><div class="label">Clics extrait gratuit</div><div class="val" id="kExt">—</div></div>
-      <div class="m"><div class="label">Inscriptions tableur</div><div class="val" id="kTab">—</div></div>
+      <div class="m"><div class="label">Clics extrait gratuit</div><div class="val"><span id="kExt">—</span><span class="delta" id="dExt"></span></div></div>
+      <div class="m"><div class="label">Inscriptions tableur</div><div class="val"><span id="kTab">—</span><span class="delta" id="dTab"></span></div></div>
     </div>
   </div>
 </div>
@@ -173,20 +232,21 @@
   const C = { red:'#D9171D', gold:'#C9A84C', cream:'rgb(242,237,232)', dim:'rgba(242,237,232,0.55)', grid:'rgba(242,237,232,0.08)' };
   const SRC_COLORS = { tiktok:'#D9171D', instagram:'#C9A84C', youtube:'#A51115', google:'rgb(242,237,232)', direct:'#5a5a5a', autre:'#2a2a2a' };
   const charts = {};
+  let currentDays = 30;
   const $ = (id) => document.getElementById(id);
   const fr = (n) => (n ?? 0).toLocaleString('fr-FR');
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 
-  // ---- Chart.js defaults raccord charte ----
   Chart.defaults.color = C.dim;
   Chart.defaults.font.family = "'Barlow', sans-serif";
   Chart.defaults.font.size = 12;
 
-  // ---------- Auth ----------
-  async function fetchData(password){
+  // ---------- Auth / fetch ----------
+  async function fetchData(password, days){
     const res = await fetch(FN_URL, {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ password, days: days || currentDays })
     });
     if(res.status === 401) throw { code:401 };
     if(!res.ok) throw { code:res.status };
@@ -195,7 +255,7 @@
 
   async function tryLogin(password, fromInput){
     try{
-      const data = await fetchData(password);
+      const data = await fetchData(password, currentDays);
       sessionStorage.setItem(PWD_KEY, password);
       $('login').style.display = 'none';
       $('app').style.display = 'block';
@@ -204,28 +264,80 @@
       if(fromInput){
         $('loginErr').textContent = e.code === 401 ? 'Mot de passe invalide.' : 'Erreur serveur ('+(e.code||'réseau')+').';
       }else{
-        sessionStorage.removeItem(PWD_KEY); // mémoire périmée
+        sessionStorage.removeItem(PWD_KEY);
       }
     }
   }
 
-  $('loginBtn').onclick = () => { const p = $('pwd').value.trim(); if(p) tryLogin(p, true); };
-  $('pwd').addEventListener('keydown', e => { if(e.key==='Enter') $('loginBtn').click(); });
-  $('logoutBtn').onclick = () => { sessionStorage.removeItem(PWD_KEY); location.reload(); };
-  $('refreshBtn').onclick = async () => {
+  async function load(days){
     const p = sessionStorage.getItem(PWD_KEY); if(!p) return;
-    try{ render(await fetchData(p)); }catch(e){ alert('Rafraîchissement impossible.'); }
-  };
+    currentDays = days;
+    document.querySelectorAll('.periods button').forEach(b => b.classList.toggle('active', parseInt(b.dataset.days,10) === days));
+    try{ render(await fetchData(p, days)); }
+    catch(e){ if(e.code === 401){ sessionStorage.removeItem(PWD_KEY); location.reload(); } else { alert('Chargement impossible.'); } }
+  }
 
-  // ---------- Render ----------
+  $('loginBtn').onclick = () => { const p = $('pwd').value.trim(); if(p) tryLogin(p, true); };
+  $('pwd').addEventListener('keydown', e => { if(e.key === 'Enter') $('loginBtn').click(); });
+  $('logoutBtn').onclick = () => { sessionStorage.removeItem(PWD_KEY); location.reload(); };
+  $('refreshBtn').onclick = () => load(currentDays);
+  document.querySelectorAll('.periods button').forEach(b => {
+    b.addEventListener('click', () => load(parseInt(b.dataset.days,10)));
+  });
+
+  // ---------- Helpers d'affichage ----------
+  function setDelta(id, n){ const el = $(id); if(!el) return; n = n || 0; el.textContent = n > 0 ? '+'+fr(n) : ''; }
+  function cmpObj(cur, prev){
+    cur = cur || 0; prev = prev || 0;
+    if(prev === 0) return cur > 0 ? { t:'▲ nouv.', c:'up' } : { t:'', c:'flat' };
+    const p = Math.round((cur - prev) / prev * 100);
+    if(p > 0) return { t:'▲ '+p+'%', c:'up' };
+    if(p < 0) return { t:'▼ '+Math.abs(p)+'%', c:'down' };
+    return { t:'= stable', c:'flat' };
+  }
+  function setCmp(id, cur, prev, show){
+    const el = $(id); if(!el) return;
+    if(!show){ el.textContent = ''; el.className = 'cmp'; return; }
+    const r = cmpObj(cur, prev); el.textContent = r.t; el.className = 'cmp ' + r.c;
+  }
+  function periodLabel(days){ days = days || 30; return days >= 3650 ? "tout l'historique" : days + ' derniers jours'; }
+
+  function renderBarList(boxId, items, opt){
+    const box = $(boxId); if(!box) return;
+    if(!items || !items.length){ box.innerHTML = '<div class="empty">Aucune donnée pour l’instant.</div>'; return; }
+    const max = Math.max.apply(null, items.map(opt.value).concat([0]));
+    box.innerHTML = items.map(it => {
+      const v = opt.value(it) || 0;
+      const w = max > 0 ? Math.round(v / max * 100) : 0;
+      return '<div class="brow"><div class="bhead"><span class="blabel">' + esc(opt.label(it)) +
+             '</span><span class="bval">' + esc(opt.fmt(it)) + '</span></div>' +
+             '<div class="bbar"><i style="width:' + w + '%"></i></div></div>';
+    }).join('');
+  }
+
+  // ---------- Render principal ----------
   function render(d){
     const t = d.totals || {};
+    const prev = d.previous || {};
+    const dl = d.deltas24h || {};
+    const showCmp = (d.period_days || 30) <= 180; // pas de comparaison pour "Tout"
+
     $('kVis').textContent = fr(t.visiteurs);
     $('kPv').textContent  = fr(t.pageviews);
     $('kClk').textContent = fr(t.gumroad_clicks);
     $('kCtr').textContent = (t.ctr ?? 0).toLocaleString('fr-FR') + ' %';
     $('kExt').textContent = fr(t.extract_clicks);
     $('kTab').textContent = fr(t.tableur_signups);
+
+    setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.gumroad_clicks);
+    setDelta('dExt', dl.extract_clicks); setDelta('dTab', dl.tableur_signups);
+
+    setCmp('cVis', t.visiteurs, prev.visiteurs, showCmp);
+    setCmp('cPv', t.pageviews, prev.pageviews, showCmp);
+    setCmp('cClk', t.gumroad_clicks, prev.gumroad_clicks, showCmp);
+    setCmp('cCtr', t.ctr, prev.ctr, showCmp);
+
+    $('subLine').textContent = 'Site vitrine — ' + periodLabel(d.period_days);
 
     // Entonnoir
     $('fVis').textContent = fr(t.visiteurs);
@@ -234,18 +346,20 @@
     $('fClkBar').style.width = Math.min(100, pct) + '%';
     $('fClkPct').textContent = t.gumroad_clicks ? '('+pct.toLocaleString('fr-FR',{maximumFractionDigits:1})+'%)' : '';
 
-    // Message "pas de données"
     $('emptyNote').style.display = (t.visiteurs || t.pageviews) ? 'none' : 'block';
 
     renderDay(d.by_day || []);
     renderDoughnut('src', d.by_source || [], 'source', SRC_COLORS);
     renderDoughnut('dev', d.by_device || [], 'device', { mobile:'#D9171D', desktop:'#C9A84C' });
+
+    renderBarList('pagesBox', d.by_page, { label:x=>x.path, value:x=>x.pageviews, fmt:x=>fr(x.pageviews)+' vues' });
+    renderBarList('ctaBox', d.by_cta, { label:x=>x.cta, value:x=>x.total, fmt:x=>fr(x.gumroad)+' achat'+(x.extract?(' · '+fr(x.extract)+' extrait'):'') });
+    renderBarList('convBox', d.conv_by_source, { label:x=>x.source, value:x=>x.rate, fmt:x=>x.rate+'% ('+fr(x.gumroad_clicks)+'/'+fr(x.visiteurs)+')' });
   }
 
   function renderDay(byDay){
     if(charts.day) charts.day.destroy();
-    const ctx = $('dayChart');
-    charts.day = new Chart(ctx, {
+    charts.day = new Chart($('dayChart'), {
       type:'line',
       data:{
         labels: byDay.map(x => x.date.slice(5).replace('-','/')),
@@ -257,10 +371,7 @@
       options:{
         responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
         plugins:{ legend:{ labels:{ usePointStyle:true, boxWidth:8, color:C.cream } } },
-        scales:{
-          x:{ grid:{ color:C.grid }, ticks:{ maxTicksLimit:10 } },
-          y:{ grid:{ color:C.grid }, beginAtZero:true, ticks:{ precision:0 } }
-        }
+        scales:{ x:{ grid:{ color:C.grid }, ticks:{ maxTicksLimit:10 } }, y:{ grid:{ color:C.grid }, beginAtZero:true, ticks:{ precision:0 } } }
       }
     });
   }
@@ -268,7 +379,7 @@
   function renderDoughnut(key, arr, field, colorMap){
     const box = $(key+'Box');
     if(charts[key]) charts[key].destroy();
-    box.querySelector('.empty')?.remove();
+    const old = box.querySelector('.empty'); if(old) old.remove();
     const canvas = $(key+'Chart');
     if(!arr.length){
       canvas.style.display='none';
@@ -290,7 +401,7 @@
     });
   }
 
-  // ---------- Auto-login si déjà connecté ----------
+  // ---------- Auto-login ----------
   (function(){
     const p = sessionStorage.getItem(PWD_KEY);
     if(p) tryLogin(p, false);

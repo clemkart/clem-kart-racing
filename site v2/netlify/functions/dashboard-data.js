@@ -1,6 +1,6 @@
 // =============================================
 // Clem Kart Racing — Dashboard analytics (lecture/agregation)
-// POST { password } -> JSON des metriques du site (30 derniers jours).
+// POST { password, days } -> JSON des metriques du site sur la periode demandee.
 // Protege par DASHBOARD_PASSWORD. Lecture Supabase via REST (service_role), sans SDK.
 // Contrairement a track-site.js, ici on VEUT voir les erreurs -> 500 explicite.
 // =============================================
@@ -9,8 +9,10 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hkpknrrymgbnjmbewlyc.s
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || '';
 
-const PERIOD_DAYS = 30;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const DEFAULT_DAYS = 30;
+const MAX_DAYS = 3650;        // "Tout"
+const MAX_DAY_POINTS = 92;    // points max sur la courbe
 
 const ALLOWED_ORIGINS = [
   process.env.URL,
@@ -31,77 +33,139 @@ function buildHeaders(event) {
   };
 }
 
-// Agrege les lignes brutes en metriques pretes a afficher.
-function aggregate(rows) {
-  const totals = {
-    visiteurs: 0,
-    pageviews: 0,
-    gumroad_clicks: 0,
-    extract_clicks: 0,
-    tableur_signups: 0,
-    ctr: 0, // % de visiteurs ayant clique Gumroad
-  };
+function blankTotals() {
+  return { visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_signups: 0, ctr: 0 };
+}
+function bump(tot, type) {
+  if (type === 'pageview') tot.pageviews++;
+  else if (type === 'gumroad_click') tot.gumroad_clicks++;
+  else if (type === 'extract_click') tot.extract_clicks++;
+  else if (type === 'tableur_signup') tot.tableur_signups++;
+}
+function finalize(tot, sessionsSize) {
+  tot.visiteurs = sessionsSize;
+  tot.ctr = tot.visiteurs ? +((tot.gumroad_clicks / tot.visiteurs) * 100).toFixed(1) : 0;
+  return tot;
+}
 
-  const sessions = new Set();
-  const sessionSource = new Map(); // session_id -> source (1ere vue)
-  const sessionDevice = new Map(); // session_id -> device (1ere vue)
-  const dayVisitors = new Map();   // 'YYYY-MM-DD' -> Set(session_id)
-  const dayGumroad = new Map();    // 'YYYY-MM-DD' -> nb clics gumroad
+// Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
+function aggregate(rows, days) {
+  const now = Date.now();
+  const curStart = now - days * DAY_MS;
+  const prevStart = now - 2 * days * DAY_MS;
+  const dayStart = now - DAY_MS; // pour les deltas 24h
+
+  // Periode courante
+  const cur = blankTotals();
+  const curSessions = new Set();
+  const srcOfSession = new Map(); // session_id -> source (1ere vue)
+  const devOfSession = new Map(); // session_id -> device (1ere vue)
+  const dayVisitors = new Map();  // 'YYYY-MM-DD' -> Set(session_id)
+  const dayGumroad = new Map();   // 'YYYY-MM-DD' -> nb clics gumroad
+  const pageViews = new Map();    // path -> nb pageviews
+  const ctaMap = new Map();       // cta -> { gumroad, extract }
+  const srcGumroad = new Map();   // source -> nb clics gumroad
+
+  // Periode precedente (juste les totaux, pour comparaison)
+  const prev = blankTotals();
+  const prevSessions = new Set();
+
+  // Deltas dernieres 24h
+  const d24 = { visiteurs: new Set(), pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_signups: 0 };
 
   for (const r of rows) {
+    const ts = Date.parse(r.created_at);
+    if (isNaN(ts)) continue;
     const type = r.type;
     const sid = r.session_id || null;
-    const day = (r.created_at || '').slice(0, 10);
 
-    if (type === 'pageview') totals.pageviews++;
-    else if (type === 'gumroad_click') totals.gumroad_clicks++;
-    else if (type === 'extract_click') totals.extract_clicks++;
-    else if (type === 'tableur_signup') totals.tableur_signups++;
-
-    if (sid) {
-      sessions.add(sid);
-      if (!sessionSource.has(sid)) sessionSource.set(sid, r.source || 'autre');
-      if (!sessionDevice.has(sid)) sessionDevice.set(sid, r.device || 'desktop');
+    // --- deltas 24h (independants de la periode) ---
+    if (ts >= dayStart) {
+      if (type === 'pageview') d24.pageviews++;
+      else if (type === 'gumroad_click') d24.gumroad_clicks++;
+      else if (type === 'extract_click') d24.extract_clicks++;
+      else if (type === 'tableur_signup') d24.tableur_signups++;
+      if (sid) d24.visiteurs.add(sid);
     }
 
-    if (day) {
-      if (!dayVisitors.has(day)) dayVisitors.set(day, new Set());
-      if (sid) dayVisitors.get(day).add(sid);
-      if (type === 'gumroad_click') dayGumroad.set(day, (dayGumroad.get(day) || 0) + 1);
+    if (ts >= curStart) {
+      // ---------- PERIODE COURANTE ----------
+      bump(cur, type);
+      if (sid) {
+        curSessions.add(sid);
+        if (!srcOfSession.has(sid)) srcOfSession.set(sid, r.source || 'autre');
+        if (!devOfSession.has(sid)) devOfSession.set(sid, r.device || 'desktop');
+      }
+      const day = (r.created_at || '').slice(0, 10);
+      if (day) {
+        if (!dayVisitors.has(day)) dayVisitors.set(day, new Set());
+        if (sid) dayVisitors.get(day).add(sid);
+        if (type === 'gumroad_click') dayGumroad.set(day, (dayGumroad.get(day) || 0) + 1);
+      }
+      if (type === 'pageview' && r.path) {
+        pageViews.set(r.path, (pageViews.get(r.path) || 0) + 1);
+      }
+      if (type === 'gumroad_click' || type === 'extract_click') {
+        const cta = (r.meta && r.meta.cta) ? String(r.meta.cta).slice(0, 40) : '(sans nom)';
+        if (!ctaMap.has(cta)) ctaMap.set(cta, { gumroad: 0, extract: 0 });
+        if (type === 'gumroad_click') ctaMap.get(cta).gumroad++; else ctaMap.get(cta).extract++;
+      }
+      if (type === 'gumroad_click') {
+        const src = (sid && srcOfSession.get(sid)) || r.source || 'autre';
+        srcGumroad.set(src, (srcGumroad.get(src) || 0) + 1);
+      }
+    } else if (ts >= prevStart) {
+      // ---------- PERIODE PRECEDENTE (comparaison) ----------
+      bump(prev, type);
+      if (sid) prevSessions.add(sid);
     }
   }
 
-  totals.visiteurs = sessions.size;
-  totals.ctr = totals.visiteurs
-    ? +((totals.gumroad_clicks / totals.visiteurs) * 100).toFixed(1)
-    : 0;
+  finalize(cur, curSessions.size);
+  finalize(prev, prevSessions.size);
 
-  // Courbe : 30 jours remplis (zeros inclus), du plus ancien au plus recent.
+  // Courbe (jours remplis, max MAX_DAY_POINTS points)
+  const dayCount = Math.min(days, MAX_DAY_POINTS);
   const by_day = [];
-  for (let i = PERIOD_DAYS - 1; i >= 0; i--) {
-    const d = new Date(Date.now() - i * DAY_MS).toISOString().slice(0, 10);
+  for (let i = dayCount - 1; i >= 0; i--) {
+    const dd = new Date(now - i * DAY_MS).toISOString().slice(0, 10);
     by_day.push({
-      date: d,
-      visiteurs: dayVisitors.has(d) ? dayVisitors.get(d).size : 0,
-      gumroad_clicks: dayGumroad.get(d) || 0,
+      date: dd,
+      visiteurs: dayVisitors.has(dd) ? dayVisitors.get(dd).size : 0,
+      gumroad_clicks: dayGumroad.get(dd) || 0,
     });
   }
 
-  // Visiteurs uniques par source.
+  // Visiteurs uniques par source / appareil
   const srcCount = {};
-  for (const s of sessionSource.values()) srcCount[s] = (srcCount[s] || 0) + 1;
-  const by_source = Object.entries(srcCount)
-    .map(([source, visiteurs]) => ({ source, visiteurs }))
-    .sort((a, b) => b.visiteurs - a.visiteurs);
+  for (const s of srcOfSession.values()) srcCount[s] = (srcCount[s] || 0) + 1;
+  const by_source = Object.entries(srcCount).map(([source, visiteurs]) => ({ source, visiteurs })).sort((a, b) => b.visiteurs - a.visiteurs);
 
-  // Visiteurs uniques par appareil.
   const devCount = {};
-  for (const d of sessionDevice.values()) devCount[d] = (devCount[d] || 0) + 1;
-  const by_device = Object.entries(devCount)
-    .map(([device, visiteurs]) => ({ device, visiteurs }))
-    .sort((a, b) => b.visiteurs - a.visiteurs);
+  for (const d of devOfSession.values()) devCount[d] = (devCount[d] || 0) + 1;
+  const by_device = Object.entries(devCount).map(([device, visiteurs]) => ({ device, visiteurs })).sort((a, b) => b.visiteurs - a.visiteurs);
 
-  return { period_days: PERIOD_DAYS, totals, by_day, by_source, by_device };
+  // Top pages par pages vues
+  const by_page = [...pageViews.entries()].map(([path, pageviews]) => ({ path, pageviews })).sort((a, b) => b.pageviews - a.pageviews).slice(0, 8);
+
+  // Clics par bouton (CTA)
+  const by_cta = [...ctaMap.entries()].map(([cta, c]) => ({ cta, gumroad: c.gumroad, extract: c.extract, total: c.gumroad + c.extract })).sort((a, b) => b.total - a.total).slice(0, 8);
+
+  // Conversion par source (visiteurs -> clics gumroad)
+  const conv_by_source = Object.entries(srcCount).map(([source, visiteurs]) => {
+    const g = srcGumroad.get(source) || 0;
+    return { source, visiteurs, gumroad_clicks: g, rate: visiteurs ? +((g / visiteurs) * 100).toFixed(1) : 0 };
+  }).sort((a, b) => b.visiteurs - a.visiteurs);
+
+  const deltas24h = {
+    visiteurs: d24.visiteurs.size,
+    pageviews: d24.pageviews,
+    gumroad_clicks: d24.gumroad_clicks,
+    extract_clicks: d24.extract_clicks,
+    tableur_signups: d24.tableur_signups,
+  };
+
+  return { period_days: days, totals: cur, previous: prev, deltas24h, by_day, by_source, by_device, by_page, by_cta, conv_by_source };
 }
 
 exports.handler = async (event) => {
@@ -113,34 +177,32 @@ exports.handler = async (event) => {
 
   // Jamais ouvert par defaut : sans config -> on refuse.
   if (!DASHBOARD_PASSWORD || !SUPABASE_SERVICE_KEY) {
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: 'Dashboard non configure (variables env manquantes).' }),
-    };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Dashboard non configure (variables env manquantes).' }) };
   }
 
-  // Mot de passe (dans le corps, jamais dans l'URL).
   let body;
   try { body = JSON.parse(event.body || '{}'); } catch { body = {}; }
   if (body.password !== DASHBOARD_PASSWORD) {
     return { statusCode: 401, headers, body: JSON.stringify({ error: 'Mot de passe invalide.' }) };
   }
 
+  let days = parseInt(body.days, 10);
+  if (!Number.isFinite(days) || days < 1) days = DEFAULT_DAYS;
+  if (days > MAX_DAYS) days = MAX_DAYS;
+
   try {
-    const sinceISO = new Date(Date.now() - PERIOD_DAYS * DAY_MS).toISOString();
+    // On recupere 2x la periode (courante + precedente) pour la comparaison, plafonne.
+    const fetchDays = Math.min(days * 2, 4000);
+    const sinceISO = new Date(Date.now() - fetchDays * DAY_MS).toISOString();
     const url =
       `${SUPABASE_URL}/rest/v1/site_events` +
-      `?select=created_at,type,source,device,session_id` +
+      `?select=created_at,type,source,device,session_id,path,meta` +
       `&created_at=gte.${encodeURIComponent(sinceISO)}` +
       `&order=created_at.asc` +
       `&limit=100000`;
 
     const res = await fetch(url, {
-      headers: {
-        apikey: SUPABASE_SERVICE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
-      },
+      headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` },
     });
 
     if (!res.ok) {
@@ -149,7 +211,7 @@ exports.handler = async (event) => {
     }
 
     const rows = await res.json();
-    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows)) };
+    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows, days)) };
   } catch (e) {
     console.error('dashboard-data failed:', e.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'Erreur serveur.' }) };
