@@ -33,18 +33,34 @@ function buildHeaders(event) {
   };
 }
 
+// Classes CSS des boutons -> libelles lisibles (fallback : la classe brute si inconnue).
+const CTA_LABELS = {
+  ncta: 'CTA haut de page',
+  btp: 'CTA bloc prix',
+  btg: 'CTA extrait (accueil)',
+  bpaid: 'CTA option payante',
+  btw: 'CTA bas de page',
+  'btn-p': 'CTA article (achat)',
+  'btn-g': 'CTA article (extrait)',
+};
+function ctaLabel(raw) { return CTA_LABELS[raw] || raw || '(sans nom)'; }
+
 function blankTotals() {
-  return { visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_signups: 0, ctr: 0 };
+  return { visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, ctr: 0 };
 }
 function bump(tot, type) {
   if (type === 'pageview') tot.pageviews++;
   else if (type === 'gumroad_click') tot.gumroad_clicks++;
   else if (type === 'extract_click') tot.extract_clicks++;
+  else if (type === 'tableur_click') tot.tableur_clicks++;
   else if (type === 'tableur_signup') tot.tableur_signups++;
 }
-function finalize(tot, sessionsSize) {
+// ctr = % de VISITEURS UNIQUES ayant clique au moins une fois vers Gumroad
+// (et non le nombre brut de clics, qui compterait 2x la meme personne si elle
+// clique sur 2 boutons differents).
+function finalize(tot, sessionsSize, uniqueClickersSize) {
   tot.visiteurs = sessionsSize;
-  tot.ctr = tot.visiteurs ? +((tot.gumroad_clicks / tot.visiteurs) * 100).toFixed(1) : 0;
+  tot.ctr = tot.visiteurs ? +((uniqueClickersSize / tot.visiteurs) * 100).toFixed(1) : 0;
   return tot;
 }
 
@@ -58,24 +74,29 @@ function aggregate(rows, days) {
   // Periode courante
   const cur = blankTotals();
   const curSessions = new Set();
+  const curGumroadClickers = new Set(); // session_id ayant clique >=1 fois vers Gumroad (periode courante)
   const srcOfSession = new Map(); // session_id -> source (1ere vue)
   const devOfSession = new Map(); // session_id -> device (1ere vue)
   const dayVisitors = new Map();  // 'YYYY-MM-DD' -> Set(session_id)
   const dayGumroad = new Map();   // 'YYYY-MM-DD' -> nb clics gumroad
   const pageViews = new Map();    // path -> nb pageviews
-  const ctaMap = new Map();       // cta -> { gumroad, extract }
-  const srcGumroad = new Map();   // source -> nb clics gumroad
+  const ctaMap = new Map();       // cta brut -> { gumroad, extract }
+  const srcGumroadClickers = new Map(); // source -> Set(session_id) ayant clique gumroad
 
   // Periode precedente (juste les totaux, pour comparaison)
   const prev = blankTotals();
   const prevSessions = new Set();
+  const prevGumroadClickers = new Set();
 
   // Deltas dernieres 24h
-  const d24 = { visiteurs: new Set(), pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_signups: 0 };
+  const d24 = { visiteurs: new Set(), pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0 };
+
+  let earliestTs = null;
 
   for (const r of rows) {
     const ts = Date.parse(r.created_at);
     if (isNaN(ts)) continue;
+    if (earliestTs === null || ts < earliestTs) earliestTs = ts;
     const type = r.type;
     const sid = r.session_id || null;
 
@@ -84,6 +105,7 @@ function aggregate(rows, days) {
       if (type === 'pageview') d24.pageviews++;
       else if (type === 'gumroad_click') d24.gumroad_clicks++;
       else if (type === 'extract_click') d24.extract_clicks++;
+      else if (type === 'tableur_click') d24.tableur_clicks++;
       else if (type === 'tableur_signup') d24.tableur_signups++;
       if (sid) d24.visiteurs.add(sid);
     }
@@ -95,6 +117,7 @@ function aggregate(rows, days) {
         curSessions.add(sid);
         if (!srcOfSession.has(sid)) srcOfSession.set(sid, r.source || 'autre');
         if (!devOfSession.has(sid)) devOfSession.set(sid, r.device || 'desktop');
+        if (type === 'gumroad_click') curGumroadClickers.add(sid);
       }
       const day = (r.created_at || '').slice(0, 10);
       if (day) {
@@ -106,23 +129,32 @@ function aggregate(rows, days) {
         pageViews.set(r.path, (pageViews.get(r.path) || 0) + 1);
       }
       if (type === 'gumroad_click' || type === 'extract_click') {
-        const cta = (r.meta && r.meta.cta) ? String(r.meta.cta).slice(0, 40) : '(sans nom)';
+        const cta = (r.meta && r.meta.cta) ? String(r.meta.cta).slice(0, 40) : '';
         if (!ctaMap.has(cta)) ctaMap.set(cta, { gumroad: 0, extract: 0 });
         if (type === 'gumroad_click') ctaMap.get(cta).gumroad++; else ctaMap.get(cta).extract++;
       }
-      if (type === 'gumroad_click') {
-        const src = (sid && srcOfSession.get(sid)) || r.source || 'autre';
-        srcGumroad.set(src, (srcGumroad.get(src) || 0) + 1);
+      if (type === 'gumroad_click' && sid) {
+        const src = srcOfSession.get(sid) || r.source || 'autre';
+        if (!srcGumroadClickers.has(src)) srcGumroadClickers.set(src, new Set());
+        srcGumroadClickers.get(src).add(sid);
       }
     } else if (ts >= prevStart) {
       // ---------- PERIODE PRECEDENTE (comparaison) ----------
       bump(prev, type);
-      if (sid) prevSessions.add(sid);
+      if (sid) {
+        prevSessions.add(sid);
+        if (type === 'gumroad_click') prevGumroadClickers.add(sid);
+      }
     }
   }
 
-  finalize(cur, curSessions.size);
-  finalize(prev, prevSessions.size);
+  finalize(cur, curSessions.size, curGumroadClickers.size);
+  finalize(prev, prevSessions.size, prevGumroadClickers.size);
+
+  // Transparence : le suivi ne demarre que depuis earliestTs. Si la periode precedente
+  // remonte avant cette date, la comparaison est partielle (pas assez d'historique).
+  const tracking_since = earliestTs ? new Date(earliestTs).toISOString().slice(0, 10) : null;
+  const previous_partial = earliestTs === null ? true : earliestTs > prevStart;
 
   // Courbe (jours remplis, max MAX_DAY_POINTS points)
   const dayCount = Math.min(days, MAX_DAY_POINTS);
@@ -148,12 +180,15 @@ function aggregate(rows, days) {
   // Top pages par pages vues
   const by_page = [...pageViews.entries()].map(([path, pageviews]) => ({ path, pageviews })).sort((a, b) => b.pageviews - a.pageviews).slice(0, 8);
 
-  // Clics par bouton (CTA)
-  const by_cta = [...ctaMap.entries()].map(([cta, c]) => ({ cta, gumroad: c.gumroad, extract: c.extract, total: c.gumroad + c.extract })).sort((a, b) => b.total - a.total).slice(0, 8);
+  // Clics par bouton (CTA), avec libelle lisible
+  const by_cta = [...ctaMap.entries()]
+    .map(([cta, c]) => ({ cta: ctaLabel(cta), gumroad: c.gumroad, extract: c.extract, total: c.gumroad + c.extract }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 8);
 
-  // Conversion par source (visiteurs -> clics gumroad)
+  // Conversion par source (visiteurs uniques -> visiteurs uniques ayant clique gumroad)
   const conv_by_source = Object.entries(srcCount).map(([source, visiteurs]) => {
-    const g = srcGumroad.get(source) || 0;
+    const g = srcGumroadClickers.has(source) ? srcGumroadClickers.get(source).size : 0;
     return { source, visiteurs, gumroad_clicks: g, rate: visiteurs ? +((g / visiteurs) * 100).toFixed(1) : 0 };
   }).sort((a, b) => b.visiteurs - a.visiteurs);
 
@@ -162,10 +197,24 @@ function aggregate(rows, days) {
     pageviews: d24.pageviews,
     gumroad_clicks: d24.gumroad_clicks,
     extract_clicks: d24.extract_clicks,
+    tableur_clicks: d24.tableur_clicks,
     tableur_signups: d24.tableur_signups,
   };
 
-  return { period_days: days, totals: cur, previous: prev, deltas24h, by_day, by_source, by_device, by_page, by_cta, conv_by_source };
+  return {
+    period_days: days,
+    tracking_since,
+    previous_partial,
+    totals: cur,
+    previous: prev,
+    deltas24h,
+    by_day,
+    by_source,
+    by_device,
+    by_page,
+    by_cta,
+    conv_by_source,
+  };
 }
 
 exports.handler = async (event) => {

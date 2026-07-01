@@ -14,7 +14,8 @@ const ALLOWED_TYPES = new Set([
   'pageview',
   'gumroad_click',
   'extract_click',
-  'tableur_signup',
+  'tableur_click',   // clic vers la page tableur (interet, pas encore une inscription)
+  'tableur_signup',  // email reellement envoye avec succes (evenement reel de conversion)
 ]);
 
 const MAX_META_CHARS = 2000;

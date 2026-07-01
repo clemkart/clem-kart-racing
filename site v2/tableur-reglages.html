@@ -213,6 +213,7 @@ async function submitForm(emailId, btnId, msgId) {
     });
 
     if (res.ok) {
+      if (window.__ckrTrack) window.__ckrTrack('tableur_signup');
       btn.textContent = '✓ Envoyé ! Vérifie ta boîte mail';
       btn.style.background = 'rgba(201,168,76,.7)';
       msg.style.color = 'var(--gold)';
@@ -230,6 +231,32 @@ async function submitForm(emailId, btnId, msgId) {
 }
 
 function sendLeadMagnet(e) { e.preventDefault(); submitForm('lm-email', 'lm-btn', 'lm-msg'); }
+</script>
+
+<!-- Analytics maison (anonyme, sans cookie) -->
+<script>
+(function(){
+  var FN='/.netlify/functions/track-site';
+  var sid;
+  try{ sid=sessionStorage.getItem('ckr_sid'); if(!sid){ sid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2); sessionStorage.setItem('ckr_sid',sid);} }catch(e){ sid=null; }
+  function send(type,meta){
+    try{
+      var u=new URLSearchParams(location.search);
+      var body=JSON.stringify({type:type,path:location.pathname,referrer:document.referrer||'',utm_source:u.get('utm_source'),utm_medium:u.get('utm_medium'),utm_campaign:u.get('utm_campaign'),session_id:sid,meta:meta||null});
+      if(navigator.sendBeacon){ navigator.sendBeacon(FN,new Blob([body],{type:'application/json'})); }
+      else{ fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true}); }
+    }catch(e){}
+  }
+  window.__ckrTrack = send;
+  send('pageview');
+  document.addEventListener('click',function(e){
+    var a=e.target.closest?e.target.closest('a[href]'):null; if(!a) return;
+    var h=a.getAttribute('href')||'';
+    if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
+    else if(h.indexOf('/l/Extrait')>-1) send('extract_click',{cta:a.className||''});
+    else if(h.indexOf('tableur-reglages')>-1) send('tableur_click',{cta:a.className||''});
+  },true);
+})();
 </script>
 
 </body>

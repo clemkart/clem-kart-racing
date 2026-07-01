@@ -79,8 +79,8 @@
   .bar{ height:12px; background:var(--wf2); border-radius:6px; overflow:hidden; }
   .bar > i{ display:block; height:100%; background:linear-gradient(90deg,var(--red),var(--red-dark)); border-radius:6px; transition:width .6s ease; }
   .bar.soon > i{ background:var(--wf); }
-  .mini{ display:flex; gap:14px; margin-top:4px; }
-  .mini .m{ flex:1; background:var(--b3); border:1px solid var(--wf); border-radius:10px; padding:13px 15px; }
+  .mini{ display:flex; gap:14px; margin-top:4px; flex-wrap:wrap; }
+  .mini .m{ flex:1; min-width:130px; background:var(--b3); border:1px solid var(--wf); border-radius:10px; padding:13px 15px; }
   .mini .m .label{ color:var(--wd); font-family:var(--fc); font-size:12px; letter-spacing:.5px; text-transform:uppercase; }
   .mini .m .val{ font-family:var(--fd); font-size:30px; line-height:1; margin-top:4px; display:flex; align-items:baseline; }
 
@@ -221,8 +221,10 @@
     <h2>Autres actions</h2>
     <div class="mini">
       <div class="m"><div class="label">Clics extrait gratuit</div><div class="val"><span id="kExt">—</span><span class="delta" id="dExt"></span></div></div>
+      <div class="m"><div class="label">Clics vers le tableur</div><div class="val"><span id="kTabClk">—</span><span class="delta" id="dTabClk"></span></div></div>
       <div class="m"><div class="label">Inscriptions tableur</div><div class="val"><span id="kTab">—</span><span class="delta" id="dTab"></span></div></div>
     </div>
+    <p style="color:var(--wd);font-size:11px;margin-top:8px;">« Inscriptions » = email réellement envoyé avec succès. « Clics vers le tableur » = simple intérêt, pas encore une inscription confirmée.</p>
   </div>
 </div>
 
@@ -295,12 +297,18 @@
     if(p < 0) return { t:'▼ '+Math.abs(p)+'%', c:'down' };
     return { t:'= stable', c:'flat' };
   }
-  function setCmp(id, cur, prev, show){
+  function setCmp(id, cur, prev, show, partial){
     const el = $(id); if(!el) return;
     if(!show){ el.textContent = ''; el.className = 'cmp'; return; }
+    if(partial){ el.textContent = 'hist. courte'; el.className = 'cmp flat'; return; }
     const r = cmpObj(cur, prev); el.textContent = r.t; el.className = 'cmp ' + r.c;
   }
   function periodLabel(days){ days = days || 30; return days >= 3650 ? "tout l'historique" : days + ' derniers jours'; }
+  function fmtDate(iso){
+    if(!iso) return '';
+    const [y,m,d] = iso.split('-');
+    return d+'/'+m+'/'+y;
+  }
 
   function renderBarList(boxId, items, opt){
     const box = $(boxId); if(!box) return;
@@ -327,17 +335,21 @@
     $('kClk').textContent = fr(t.gumroad_clicks);
     $('kCtr').textContent = (t.ctr ?? 0).toLocaleString('fr-FR') + ' %';
     $('kExt').textContent = fr(t.extract_clicks);
+    $('kTabClk').textContent = fr(t.tableur_clicks);
     $('kTab').textContent = fr(t.tableur_signups);
 
     setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.gumroad_clicks);
-    setDelta('dExt', dl.extract_clicks); setDelta('dTab', dl.tableur_signups);
+    setDelta('dExt', dl.extract_clicks); setDelta('dTabClk', dl.tableur_clicks); setDelta('dTab', dl.tableur_signups);
 
-    setCmp('cVis', t.visiteurs, prev.visiteurs, showCmp);
-    setCmp('cPv', t.pageviews, prev.pageviews, showCmp);
-    setCmp('cClk', t.gumroad_clicks, prev.gumroad_clicks, showCmp);
-    setCmp('cCtr', t.ctr, prev.ctr, showCmp);
+    const partial = !!d.previous_partial;
+    setCmp('cVis', t.visiteurs, prev.visiteurs, showCmp, partial);
+    setCmp('cPv', t.pageviews, prev.pageviews, showCmp, partial);
+    setCmp('cClk', t.gumroad_clicks, prev.gumroad_clicks, showCmp, partial);
+    setCmp('cCtr', t.ctr, prev.ctr, showCmp, partial);
 
-    $('subLine').textContent = 'Site vitrine — ' + periodLabel(d.period_days);
+    let sub = 'Site vitrine — ' + periodLabel(d.period_days);
+    if(d.tracking_since) sub += ' · suivi depuis le ' + fmtDate(d.tracking_since);
+    $('subLine').textContent = sub;
 
     // Entonnoir
     $('fVis').textContent = fr(t.visiteurs);

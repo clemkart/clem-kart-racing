@@ -315,13 +315,14 @@ document.querySelectorAll('a').forEach(el=>{el.addEventListener('mouseenter',()=
         else{ fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true}); }
       }catch(e){}
     }
+    window.__ckrTrack = send;
     send('pageview');
     document.addEventListener('click',function(e){
       var a=e.target.closest?e.target.closest('a[href]'):null; if(!a) return;
       var h=a.getAttribute('href')||'';
       if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
       else if(h.indexOf('/l/Extrait')>-1) send('extract_click',{cta:a.className||''});
-      else if(h.indexOf('tableur-reglages')>-1) send('tableur_signup',{cta:a.className||''});
+      else if(h.indexOf('tableur-reglages')>-1) send('tableur_click',{cta:a.className||''});
     },true);
   })();
   </script>
