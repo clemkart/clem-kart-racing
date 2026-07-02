@@ -50,7 +50,7 @@
   .note b{ color:var(--red); }
 
   /* ---------- KPI ---------- */
-  .grid-kpi{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:18px; }
+  .grid-kpi{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:18px; }
   .kpi{ background:var(--b2); border:1px solid var(--wf); border-radius:13px; padding:18px 18px 16px; position:relative; overflow:hidden; }
   .kpi::before{ content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--red); opacity:.8; }
   .kpi .label{ color:var(--wd); font-family:var(--fc); font-size:13px; letter-spacing:.6px; text-transform:uppercase; }
@@ -157,6 +157,11 @@
       <div class="val"><span id="kCtr">—</span></div>
       <div class="hint"><span class="cmp" id="cCtr"></span> visiteurs → clic achat</div>
     </div>
+    <div class="kpi accent">
+      <div class="label">Chiffre d'affaires</div>
+      <div class="val"><span id="kCa">—</span></div>
+      <div class="hint"><span class="cmp" id="cCa"></span> <span id="kVentesHint">ventes réelles</span></div>
+    </div>
   </div>
   <p style="color:var(--wd);font-size:12px;margin:-6px 0 22px;">
     <span style="color:var(--green);font-weight:600;">+N en vert</span> = nouveau sur les dernières 24h ·
@@ -175,8 +180,8 @@
       <div class="bar"><i id="fClkBar" style="width:0%"></i></div>
     </div>
     <div class="funnel-row">
-      <div class="funnel-head"><span class="name">Ventes</span><span><span class="num">—</span><span class="pct">Phase 2</span></span></div>
-      <div class="bar soon"><i style="width:8%"></i></div>
+      <div class="funnel-head"><span class="name">Ventes</span><span><span class="num" id="fVentes">0</span><span class="pct" id="fVentesPct"></span></span></div>
+      <div class="bar" id="fVentesBarWrap"><i id="fVentesBar" style="width:0%"></i></div>
     </div>
   </div>
 
@@ -304,6 +309,10 @@
     const r = cmpObj(cur, prev); el.textContent = r.t; el.className = 'cmp ' + r.c;
   }
   function periodLabel(days){ days = days || 30; return days >= 3650 ? "tout l'historique" : days + ' derniers jours'; }
+  function fmtMoney(cents, currency){
+    const n = ((cents||0)/100).toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+    return n + ' ' + (currency || '');
+  }
   function fmtDate(iso){
     if(!iso) return '';
     const [y,m,d] = iso.split('-');
@@ -337,6 +346,8 @@
     $('kExt').textContent = fr(t.extract_clicks);
     $('kTabClk').textContent = fr(t.tableur_clicks);
     $('kTab').textContent = fr(t.tableur_signups);
+    $('kCa').textContent = fmtMoney(t.revenu_cents, t.currency);
+    $('kVentesHint').textContent = fr(t.ventes) + ' vente' + (t.ventes > 1 ? 's' : '') + ' réelle' + (t.ventes > 1 ? 's' : '');
 
     setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.gumroad_clicks);
     setDelta('dExt', dl.extract_clicks); setDelta('dTabClk', dl.tableur_clicks); setDelta('dTab', dl.tableur_signups);
@@ -346,6 +357,7 @@
     setCmp('cPv', t.pageviews, prev.pageviews, showCmp, partial);
     setCmp('cClk', t.gumroad_clicks, prev.gumroad_clicks, showCmp, partial);
     setCmp('cCtr', t.ctr, prev.ctr, showCmp, partial);
+    setCmp('cCa', t.ventes, prev.ventes, showCmp, partial);
 
     let sub = 'Site vitrine — ' + periodLabel(d.period_days);
     if(d.tracking_since) sub += ' · suivi depuis le ' + fmtDate(d.tracking_since);
@@ -357,6 +369,11 @@
     const pct = t.visiteurs ? (t.gumroad_clicks / t.visiteurs * 100) : 0;
     $('fClkBar').style.width = Math.min(100, pct) + '%';
     $('fClkPct').textContent = t.gumroad_clicks ? '('+pct.toLocaleString('fr-FR',{maximumFractionDigits:1})+'%)' : '';
+
+    $('fVentes').textContent = fr(t.ventes) + (t.revenu_cents ? ' · ' + fmtMoney(t.revenu_cents, t.currency) : '');
+    const pctVentes = t.visiteurs ? (t.ventes / t.visiteurs * 100) : 0;
+    $('fVentesBar').style.width = Math.min(100, pctVentes) + '%';
+    $('fVentesPct').textContent = t.ventes ? '('+pctVentes.toLocaleString('fr-FR',{maximumFractionDigits:1})+'% des visiteurs)' : '';
 
     $('emptyNote').style.display = (t.visiteurs || t.pageviews) ? 'none' : 'block';
 
@@ -377,7 +394,8 @@
         labels: byDay.map(x => x.date.slice(5).replace('-','/')),
         datasets:[
           { label:'Visiteurs', data:byDay.map(x=>x.visiteurs), borderColor:C.red, backgroundColor:'rgba(217,23,29,0.15)', fill:true, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 },
-          { label:'Clics Gumroad', data:byDay.map(x=>x.gumroad_clicks), borderColor:C.gold, backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 }
+          { label:'Clics Gumroad', data:byDay.map(x=>x.gumroad_clicks), borderColor:C.gold, backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 },
+          { label:'Ventes', data:byDay.map(x=>x.ventes||0), borderColor:'#46d17a', backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4, yAxisID:'y' }
         ]
       },
       options:{

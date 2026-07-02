@@ -46,7 +46,10 @@ const CTA_LABELS = {
 function ctaLabel(raw) { return CTA_LABELS[raw] || raw || '(sans nom)'; }
 
 function blankTotals() {
-  return { visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, ctr: 0 };
+  return {
+    visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, ctr: 0,
+    ventes: 0, revenu_cents: 0, taux_achat: 0,
+  };
 }
 function bump(tot, type) {
   if (type === 'pageview') tot.pageviews++;
@@ -64,8 +67,35 @@ function finalize(tot, sessionsSize, uniqueClickersSize) {
   return tot;
 }
 
+// Agrege les ventes reelles (Gumroad) sur les memes fenetres temporelles que les visites.
+// salesRows est deja filtre (is_test=false, is_refund=false) par la requete Supabase.
+function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
+  const daySales = new Map(); // 'YYYY-MM-DD' -> nb ventes
+  let curVentes = 0, curRevenueCents = 0, prevVentes = 0, d24Ventes = 0, currency = '';
+
+  for (const s of salesRows) {
+    const ts = Date.parse(s.created_at);
+    if (isNaN(ts)) continue;
+    const amount = (s.price_cents || 0) * (s.quantity || 1);
+
+    if (ts >= dayStart) d24Ventes++;
+
+    if (ts >= curStart) {
+      curVentes++;
+      curRevenueCents += amount;
+      if (s.currency) currency = s.currency;
+      const day = (s.created_at || '').slice(0, 10);
+      if (day) daySales.set(day, (daySales.get(day) || 0) + 1);
+    } else if (ts >= prevStart) {
+      prevVentes++;
+    }
+  }
+
+  return { curVentes, curRevenueCents, prevVentes, d24Ventes, daySales, currency };
+}
+
 // Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
-function aggregate(rows, days) {
+function aggregate(rows, days, salesRows) {
   const now = Date.now();
   const curStart = now - days * DAY_MS;
   const prevStart = now - 2 * days * DAY_MS;
@@ -151,6 +181,14 @@ function aggregate(rows, days) {
   finalize(cur, curSessions.size, curGumroadClickers.size);
   finalize(prev, prevSessions.size, prevGumroadClickers.size);
 
+  // ---------- Ventes reelles Gumroad (Phase 2) ----------
+  const salesAgg = aggregateSales(salesRows || [], now, curStart, prevStart, dayStart);
+  cur.ventes = salesAgg.curVentes;
+  cur.revenu_cents = salesAgg.curRevenueCents;
+  cur.currency = salesAgg.currency;
+  cur.taux_achat = cur.visiteurs ? +((cur.ventes / cur.visiteurs) * 100).toFixed(2) : 0;
+  prev.ventes = salesAgg.prevVentes;
+
   // Transparence : le suivi ne demarre que depuis earliestTs. Si la periode precedente
   // remonte avant cette date, la comparaison est partielle (pas assez d'historique).
   const tracking_since = earliestTs ? new Date(earliestTs).toISOString().slice(0, 10) : null;
@@ -165,6 +203,7 @@ function aggregate(rows, days) {
       date: dd,
       visiteurs: dayVisitors.has(dd) ? dayVisitors.get(dd).size : 0,
       gumroad_clicks: dayGumroad.get(dd) || 0,
+      ventes: salesAgg.daySales.get(dd) || 0,
     });
   }
 
@@ -199,6 +238,7 @@ function aggregate(rows, days) {
     extract_clicks: d24.extract_clicks,
     tableur_clicks: d24.tableur_clicks,
     tableur_signups: d24.tableur_signups,
+    ventes: salesAgg.d24Ventes,
   };
 
   return {
@@ -250,17 +290,35 @@ exports.handler = async (event) => {
       `&order=created_at.asc` +
       `&limit=100000`;
 
-    const res = await fetch(url, {
-      headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` },
-    });
+    const salesUrl =
+      `${SUPABASE_URL}/rest/v1/sales` +
+      `?select=created_at,price_cents,quantity,currency` +
+      `&created_at=gte.${encodeURIComponent(sinceISO)}` +
+      `&is_test=eq.false&is_refund=eq.false` +
+      `&order=created_at.asc&limit=100000`;
+
+    const [res, salesRes] = await Promise.all([
+      fetch(url, { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }),
+      // Ventes = amelioration optionnelle : si la table "sales" n'existe pas encore
+      // (SQL pas encore execute), on ne veut pas casser le reste du dashboard.
+      fetch(salesUrl, { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }).catch((e) => e),
+    ]);
 
     if (!res.ok) {
       console.error('dashboard-data read failed:', res.status, await res.text());
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Lecture Supabase echouee.' }) };
     }
 
+    let salesRows = [];
+    if (salesRes instanceof Response && salesRes.ok) {
+      salesRows = await salesRes.json();
+    } else {
+      const detail = salesRes instanceof Response ? `${salesRes.status} ${await salesRes.text()}` : salesRes.message;
+      console.error('dashboard-data sales read failed (degrade sans ventes):', detail);
+    }
+
     const rows = await res.json();
-    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows, days)) };
+    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows, days, salesRows)) };
   } catch (e) {
     console.error('dashboard-data failed:', e.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'Erreur serveur.' }) };
