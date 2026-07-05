@@ -46,7 +46,7 @@ const SKILL_CORE_FILES = [
   "matrice-symptomes.md",
   "methodologie-coach.md",
 ];
-const SKILL_MODULE_FILES = ["racecraft-course.md", "circuits.md"];
+const SKILL_MODULE_FILES = ["racecraft-course.md", "circuits.md", "carburation.md"];
 
 const SKILL_PARTS = {}; // nom fichier → contenu formaté
 let SKILL_CORE = "";
@@ -65,6 +65,8 @@ try {
 const RACECRAFT_TRIGGER = /(course|d[ée]part|d[ée]pass|d[ée]fen[ds]|attaqu|duel|bagarre|qualif|grille|premier\s+virage|aspiration|roue\s+dans\s+roue|position|peloton|strat[ée]gie)/i;
 // Circuits : besoin de la base circuits si un circuit est nommé ou évoqué
 const CIRCUIT_TRIGGER = /(circuit|trac[ée]|piste\s+de|loh[ée]ac|laval|le\s+mans|pless[ée]|ancenis|angerville|varennes|argenton|genk|lonato|wackersdorf|zuera)/i;
+// Carburation : gicleurs, mélange, bougie, symptômes moteur riche/pauvre
+const CARBU_TRIGGER = /(gicleur|carbu|m[ée]lange|bougie|serrage|serr[ée]|d[ée]tonation|cliquetis|quatre[\s-]?temps|4[\s-]?temps|jetting|pop[\s-]?off|richesse|trop\s+(riche|pauvre)|tillotson|dell'?orto|essence|huile\s+moteur)/i;
 
 function selectSkillModules(message, context) {
   const modules = [];
@@ -74,6 +76,9 @@ function selectSkillModules(message, context) {
   }
   if (CIRCUIT_TRIGGER.test(message) || (context && context.circuitName)) {
     modules.push("circuits.md");
+  }
+  if (CARBU_TRIGGER.test(message)) {
+    modules.push("carburation.md");
   }
   return modules.map((f) => SKILL_PARTS[f] || "").join("");
 }

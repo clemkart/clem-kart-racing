@@ -917,7 +917,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         <div class="field" id="gicleur-field">
           <div class="field-label">Gicleur <span id="val-gicleur">125</span></div>
           <input type="range" id="gicleur" min="105" max="160" value="125" step="1" oninput="updateSliderVal('gicleur','val-gicleur','');updateGicleurReco()">
-          <div class="sub-label" id="gicleur-reco">Recommandation basée sur la température air.</div>
+          <div class="sub-label" id="gicleur-reco">Point de départ selon la température air. Confirme avec l'app officielle ROTAX MAX Jetting.</div>
         </div>
       </div>
 
@@ -1669,10 +1669,12 @@ function updateDD2() {
 function updateGicleurReco() {
   const temp = parseInt(document.getElementById('temp-air').value);
   let reco = '';
-  if(temp < 10) reco = `🌡️ < 10°C → Gicleur recommandé : <strong>115–120</strong>`;
-  else if(temp < 20) reco = `🌡️ 10–20°C → Gicleur recommandé : <strong>120–128</strong>`;
-  else if(temp < 30) reco = `🌡️ 20–30°C → Gicleur recommandé : <strong>125–132</strong>`;
-  else reco = `🌡️ > 30°C → Gicleur recommandé : <strong>130–140+</strong>`;
+  // Air froid = dense = enrichir (plus gros gicleur). Air chaud = appauvrir. Plages calées autour du stock #130 (EVO).
+  if(temp < 10) reco = `🌡️ < 10°C (air dense) → point de départ : <strong>132–138</strong>`;
+  else if(temp < 20) reco = `🌡️ 10–20°C → point de départ : <strong>128–134</strong>`;
+  else if(temp < 30) reco = `🌡️ 20–30°C → point de départ : <strong>125–130</strong>`;
+  else reco = `🌡️ > 30°C (air chaud) → point de départ : <strong>122–126</strong>`;
+  reco += `<br><em>T° air seule : confirme avec l'app officielle ROTAX MAX Jetting (pression + altitude comptent). Dans le doute, le plus gros.</em>`;
   document.getElementById('gicleur-reco').innerHTML = reco;
 }
 
@@ -1996,10 +1998,11 @@ function runDiagnostic() {
   const gicleurVal = parseInt(data.gicleur);
   let gicleurAlert = null;
   if (!isLocation) {
-    if(tempAirVal < 10 && gicleurVal > 125) gicleurAlert = {type:'warn', msg:`Gicleur ${gicleurVal} semble riche pour ${tempAirVal}°C. Recommandé : 115–120.`};
-    else if(tempAirVal < 20 && gicleurVal > 132) gicleurAlert = {type:'warn', msg:`Gicleur ${gicleurVal} semble riche pour ${tempAirVal}°C. Recommandé : 120–128.`};
-    else if(tempAirVal >= 30 && gicleurVal < 128) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} trop pauvre pour ${tempAirVal}°C. Risque moteur ! Recommandé : 130–140+.`};
-    else if(tempAirVal >= 20 && gicleurVal < 120) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} trop pauvre pour ${tempAirVal}°C. Recommandé : 125–132.`};
+    // Air froid = dense : un gicleur trop PETIT est pauvre → danger serrage. Air chaud : trop GROS = riche → juste lent.
+    if(tempAirVal < 10 && gicleurVal < 130) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} probablement trop pauvre pour ${tempAirVal}°C (air froid = dense = il faut enrichir). Risque de serrage. Point de départ : 132–138, à confirmer avec l'app ROTAX MAX Jetting.`};
+    else if(tempAirVal < 20 && gicleurVal < 126) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} semble pauvre pour ${tempAirVal}°C. Risque moteur. Point de départ : 128–134, à confirmer avec l'app ROTAX MAX Jetting.`};
+    else if(tempAirVal >= 30 && gicleurVal > 128) gicleurAlert = {type:'warn', msg:`Gicleur ${gicleurVal} semble riche pour ${tempAirVal}°C (air chaud = appauvrir). Moteur étouffé mais sans risque. Point de départ : 122–126.`};
+    else if(tempAirVal >= 20 && gicleurVal > 132) gicleurAlert = {type:'warn', msg:`Gicleur ${gicleurVal} semble riche pour ${tempAirVal}°C. Point de départ : 125–130.`};
   }
 
   if(gicleurAlert) {
