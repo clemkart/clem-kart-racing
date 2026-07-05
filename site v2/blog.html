@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blog — Comprendre le karting | Clem Kart Racing</title>
+<meta name="description" content="Des articles concrets pour comprendre ton pilotage et ton kart : freinage, trajectoire, grip, mental. Par un pilote de compétition."/>
+<link rel="canonical" href="https://comprendre-comment-rouler-plus-vite.netlify.app/blog.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D9171D;--black:#070707;--b2:#0F0F0F;--b3:#161616;--w:rgb(242,237,232);--wd:rgba(242,237,232,0.6);--wf:rgba(242,237,232,0.08);--wf2:rgba(242,237,232,0.04);--fd:'Bebas Neue',sans-serif;--fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+.cur{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;}
+.cur-dot{width:6px;height:6px;background:var(--red);border-radius:50%;position:absolute;transform:translate(-50%,-50%);}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(242,237,232,0.45);border-radius:50%;position:absolute;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+body.h .cur-ring{width:48px;height:48px;border-color:var(--red);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(7,7,7,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--wf);}
+.nlogo{font-family:var(--fd);font-size:1.5rem;letter-spacing:.06em;color:var(--w);text-decoration:none;cursor:none;}
+.nlogo span{color:var(--red);}
+.nlinks{display:flex;gap:32px;align-items:center;}
+.nlinks a{font-family:var(--fc);font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wd);text-decoration:none;transition:color .2s;cursor:none;}
+.nlinks a:hover{color:var(--w);}
+.ncta{background:var(--red);color:var(--w);padding:10px 24px;transition:background .2s;}
+.ncta:hover{background:#A51115 !important;color:var(--w) !important;}
+
+.blog-hero{padding:150px 60px 60px;max-width:1100px;margin:0 auto;}
+.bh-lab{font-family:var(--fc);font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.bh-lab::before{content:'';display:inline-block;width:16px;height:1px;background:var(--red);}
+.blog-hero h1{font-family:var(--fd);font-size:clamp(44px,6vw,84px);line-height:.95;letter-spacing:.02em;margin-bottom:20px;}
+.blog-hero h1 span{color:var(--red);}
+.blog-hero p{font-size:1.05rem;line-height:1.8;color:var(--wd);font-weight:300;max-width:620px;}
+
+.blog-list{max-width:1100px;margin:0 auto;padding:30px 60px 60px;display:grid;grid-template-columns:repeat(2,1fr);gap:2px;}
+.blog-card{background:var(--b2);padding:36px 32px;border:1px solid var(--wf);text-decoration:none;display:block;transition:background .3s;position:relative;overflow:hidden;cursor:none;}
+.blog-card:hover{background:var(--b3);}
+.bc-tag{font-family:var(--fc);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:14px;}
+.blog-card h2{font-family:var(--fc);font-size:1.15rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--w);line-height:1.3;margin-bottom:12px;}
+.blog-card p{font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;margin-bottom:20px;}
+.bc-link{font-family:var(--fc);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);}
+
+.app-banner{max-width:1100px;margin:0 auto 90px;padding:0 60px;}
+.app-banner-in{background:var(--b3);border:1px solid var(--wf);padding:44px 48px;position:relative;overflow:hidden;}
+.app-banner-in::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);}
+.ab-lab{font-family:var(--fc);font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;color:var(--red);margin-bottom:14px;display:block;}
+.app-banner-in h3{font-family:var(--fd);font-size:clamp(24px,3vw,38px);letter-spacing:.02em;margin-bottom:12px;line-height:1.05;}
+.app-banner-in p{font-size:.94rem;line-height:1.75;color:var(--wd);font-weight:300;margin-bottom:24px;max-width:560px;}
+.btn-p{display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.88rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:var(--red);color:var(--w);padding:13px 28px;text-decoration:none;cursor:none;position:relative;overflow:hidden;transition:box-shadow .3s;}
+.btn-p::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);transform:translateX(-110%) skewX(-15deg);transition:transform .4s;}
+.btn-p:hover::after{transform:translateX(110%) skewX(-15deg);}
+.btn-p:hover{box-shadow:0 0 28px rgba(217,23,29,.3);}
+
+footer{background:var(--b2);padding:36px 60px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--wf);flex-wrap:wrap;gap:16px;}
+.flogo{font-family:var(--fd);font-size:1.2rem;letter-spacing:.06em;color:var(--w);}
+.flogo span{color:var(--red);}
+.fcopy{font-family:var(--fc);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);}
+.flinks{display:flex;gap:28px;list-style:none;}
+.flinks a{font-family:var(--fc);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);text-decoration:none;transition:color .2s;cursor:none;}
+.flinks a:hover{color:var(--red);}
+
+@media(max-width:768px){
+  nav{padding:16px 24px;}
+  .nlinks .nback-lbl{display:none;}
+  .blog-hero{padding:120px 24px 40px;}
+  .blog-list{padding:20px 24px 40px;grid-template-columns:1fr;}
+  .app-banner{padding:0 24px;margin-bottom:60px;}
+  .app-banner-in{padding:30px 26px;}
+  footer{flex-direction:column;text-align:center;padding:28px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur">
+  <div class="cur-ring" id="cr"></div>
+  <div class="cur-dot" id="cd"></div>
+</div>
+
+<nav>
+  <a href="index.html" class="nlogo">Clem <span>Kart</span> Racing</a>
+  <div class="nlinks">
+    <a href="index.html" class="nback-lbl">← Retour au site</a>
+    <a href="race-engineer-ai.html">L'app IA</a>
+    <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="ncta">Obtenir le guide</a>
+  </div>
+</nav>
+
+<div class="blog-hero">
+  <p class="bh-lab">Ressources gratuites</p>
+  <h1>COMPRENDRE,<br><span>PUIS ROULER</span> PLUS VITE.</h1>
+  <p>Des articles concrets pour changer ta façon de piloter : freinage, grip, trajectoire, mental. Écrits par un pilote de compétition, pas par une rédaction.</p>
+</div>
+
+<div class="blog-list">
+  <a href="blog-freinage-degressif.html" class="blog-card">
+    <span class="bc-tag">Technique · 5 min</span>
+    <h2>Le freinage en karting : ce que tu rates à chaque virage</h2>
+    <p>Pourquoi la façon dont tu relâches le frein est plus importante que la façon dont tu appuies dessus.</p>
+    <span class="bc-link">Lire l'article →</span>
+  </a>
+  <a href="blog-volant-karting.html" class="blog-card">
+    <span class="bc-tag">Technique · 5 min</span>
+    <h2>Le. Volant. Ne fait pas tourner le kart.</h2>
+    <p>Tu crois que tu tournes avec les mains. C'est faux. Et tant que tu gardes cette croyance, tu seras limité.</p>
+    <span class="bc-link">Lire l'article →</span>
+  </a>
+  <a href="blog-trajectoire-grip.html" class="blog-card">
+    <span class="bc-tag">Technique · 6 min</span>
+    <h2>Lire le grip en deux tours : ce que font les bons pilotes</h2>
+    <p>Comment adapter ta trajectoire en fonction de l'adhérence, sans tâtonner pendant dix tours.</p>
+    <span class="bc-link">Lire l'article →</span>
+  </a>
+  <a href="blog-mental-karting.html" class="blog-card">
+    <span class="bc-tag">Mental · 5 min</span>
+    <h2>Pourquoi l'ego te ralentit en karting</h2>
+    <p>Ce que font les pilotes calmes que les autres ne font pas. Et pourquoi vouloir prouver quelque chose te coûte du temps.</p>
+    <span class="bc-link">Lire l'article →</span>
+  </a>
+</div>
+
+<div class="app-banner">
+  <div class="app-banner-in">
+    <span class="ab-lab">Nouveau</span>
+    <h3>Ton ingénieur de course, version IA.</h3>
+    <p>Lire, c'est comprendre. Race Engineer AI, c'est appliquer : tu décris tes sensations après ta session, il te dit exactement quoi régler sur ton kart. Créé avec la même méthode que ces articles.</p>
+    <a href="race-engineer-ai.html" class="btn-p">Découvrir l'app →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="flogo">Clem <span>Kart</span> Racing</div>
+  <p class="fcopy">© 2026 Clément Daniel · Tous droits réservés</p>
+  <ul class="flinks">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="race-engineer-ai.html">L'app IA</a></li>
+    <li><a href="mentions-legales.html">Mentions légales</a></li>
+  </ul>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),cd=document.getElementById('cd'),cr=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function a(){cd.style.left=mx+'px';cd.style.top=my+'px';rx+=(mx-rx)*.11;ry+=(my-ry)*.11;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('a').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('h'));el.addEventListener('mouseleave',()=>document.body.classList.remove('h'));});
+</script>
+  <!-- Analytics maison (anonyme, sans cookie) -->
+  <script>
+  (function(){
+    var FN='/.netlify/functions/track-site';
+    var sid;
+    try{ sid=sessionStorage.getItem('ckr_sid'); if(!sid){ sid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2); sessionStorage.setItem('ckr_sid',sid);} }catch(e){ sid=null; }
+    function send(type,meta){
+      try{
+        var u=new URLSearchParams(location.search);
+        var body=JSON.stringify({type:type,path:location.pathname,referrer:document.referrer||'',utm_source:u.get('utm_source'),utm_medium:u.get('utm_medium'),utm_campaign:u.get('utm_campaign'),session_id:sid,meta:meta||null});
+        if(navigator.sendBeacon){ navigator.sendBeacon(FN,new Blob([body],{type:'application/json'})); }
+        else{ fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true}); }
+      }catch(e){}
+    }
+    window.__ckrTrack = send;
+    send('pageview');
+    document.addEventListener('click',function(e){
+      var a=e.target.closest?e.target.closest('a[href]'):null; if(!a) return;
+      var h=a.getAttribute('href')||'';
+      if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
+      else if(h.indexOf('race-engineer-ai')>-1) send('app_page_click',{cta:a.className||''});
+    },true);
+  })();
+  </script>
+</body>
+</html>

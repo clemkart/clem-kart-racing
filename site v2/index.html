@@ -265,6 +265,7 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
     <li><a href="#problem">Le problème</a></li>
     <li><a href="#offer">Le guide</a></li>
     <li><a href="#testi">Avis</a></li>
+    <li><a href="race-engineer-ai.html">L'app IA</a></li>
     <li><a href="#blog">Blog</a></li>
   </ul>
   <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="ncta">Obtenir le guide →</a>
@@ -535,6 +536,17 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
       </a>
 
     </div>
+    <p style="margin-top:28px;"><a href="blog.html" style="font-family:var(--fc);font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);text-decoration:none;">Voir tous les articles →</a></p>
+  </div>
+</section>
+
+<!-- APP RACE ENGINEER AI -->
+<section id="app" style="padding:110px 60px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p class="sl-lab rv">Nouveau · L'application</p>
+    <h2 class="st-h rv d1">TON INGÉNIEUR<br>DE COURSE, <span class="r">VERSION IA</span></h2>
+    <p class="rv d2" style="font-size:.97rem;line-height:1.8;color:var(--wd);font-weight:300;max-width:580px;margin:0 0 36px;">Le guide t'apprend à comprendre. L'app applique : tu décris tes sensations après ta session, elle diagnostique le comportement de ton kart et te dit exactement quoi régler. Gratuit pour essayer, pensé pour te suivre toute la saison.</p>
+    <a href="race-engineer-ai.html" class="rv d3" style="display:inline-flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.88rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:var(--red);color:var(--w);padding:14px 30px;text-decoration:none;">Découvrir Race Engineer AI →</a>
   </div>
 </section>
 
@@ -554,6 +566,8 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
   <div class="flogo">Clem <span>Kart</span> Racing</div>
   <p class="fcopy">© 2026 Clément Daniel · Tous droits réservés</p>
   <ul class="flinks">
+    <li><a href="race-engineer-ai.html">L'app IA</a></li>
+    <li><a href="blog.html">Blog</a></li>
     <li><a href="mentions-legales.html">Mentions légales</a></li>
     <li><a href="https://www.instagram.com/clem_kart_racing" target="_blank" rel="noopener">Instagram</a></li>
     <li><a href="https://www.tiktok.com/@clem_kart_racing" target="_blank" rel="noopener">TikTok</a></li>
@@ -649,6 +663,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
       if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
       else if(h.indexOf('/l/Extrait')>-1) send('extract_click',{cta:a.className||''});
       else if(h.indexOf('tableur-reglages')>-1) send('tableur_click',{cta:a.className||''});
+      else if(h.indexOf('race-engineer-ai')>-1) send('app_page_click',{cta:a.className||''});
     },true);
   })();
   </script>
