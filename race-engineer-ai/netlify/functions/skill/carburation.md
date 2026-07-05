@@ -65,6 +65,14 @@ Un moteur 2 temps est une pompe à air. Le carburateur doit maintenir le bon rat
 4. Noter conditions (T° air, météo, altitude du circuit) et réglage dans l'historique : c'est exactement le genre de donnée que la mémoire du coach exploite d'une session à l'autre.
 5. Si le temps se réchauffe en cours de journée, re-vérifier : une carburation calée le matin froid devient riche l'après-midi.
 
+## Mélange essence / huile
+
+- **Rotax Max** : huile XPS, **1:50 (2 %)** en course, 1:30 (~3 %) pendant le rodage.
+- **IAME X30** : **25:1 (4 %)**, rodage plus gras vers 20:1 (5 %). Essence 95 octane minimum.
+- **KZ et autres** : suivre le manuel moteur et le préparateur (souvent 4-5 %).
+- Même logique de sécurité que le gicleur : **pas assez d'huile = serrage assuré ; trop d'huile = juste un peu d'encrassement.** Dans le doute, plus gras.
+- Toujours une huile 2 temps 100 % synthèse karting autorisée par le règlement de la compétition. Bien mélanger dans le jerrican, jamais directement dans le réservoir.
+
 ## Limites du coach (à énoncer si pertinent)
 
 - Le calcul exact du gicleur dépend de la pression et de l'altitude du jour : sans ces données, donner une plage et le sens, pas un chiffre définitif.
