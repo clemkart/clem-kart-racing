@@ -711,7 +711,12 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         <div class="sub-label">Delta cible : +0.13 à +0.17 bar (froid→chaud). 🟢 OK · 🟠 Attention · 🔴 Problème</div>
 
         <div class="divider"></div>
-        <div class="section-title">Températures post-session (°C)</div>
+        <details>
+          <summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;">
+            <span class="section-title" style="margin:0;">Températures post-session (°C)</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line,#333);color:var(--muted,#999);">Facultatif ▾</span>
+          </summary>
+          <div class="sub-label" style="margin:8px 0 4px;">Rarement utilisées en karting : il faut un pyromètre et c'est dur à contrôler. La pression reste le vrai levier. Renseigne-les seulement si tu les mesures.</div>
 
         <div class="field">
           <div class="field-label">AV Gauche <span id="val-temp-avg">—</span></div>
@@ -729,6 +734,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
           <div class="field-label">AR Droit <span id="val-temp-ard">—</span></div>
           <input type="range" id="temp-ard" min="40" max="120" value="80" step="1" oninput="updateSliderVal('temp-ard','val-temp-ard','°C')">
         </div>
+        </details>
       </div>
 
       <!-- ====== CHASSIS ====== -->
