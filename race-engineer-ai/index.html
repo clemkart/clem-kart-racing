@@ -8,12 +8,12 @@
 <meta name="theme-color" content="#0D0D0D">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🏁</text></svg>">
 <link rel="manifest" href="manifest.json">
-<!-- Open Graph : aperçu riche quand le lien est partagé (WhatsApp, etc.).
-     ⚠️ Remplacer og:image par l'URL ABSOLUE une fois le domaine connu (ex: https://ton-domaine/og-image.png) -->
+<!-- Open Graph : aperçu riche quand le lien est partagé (WhatsApp, etc.). -->
 <meta property="og:title" content="Race Engineer AI — Ton ingénieur de course karting">
 <meta property="og:description" content="Décris ta session, obtiens un diagnostic et UN réglage à tester. Gratuit.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="/og-image.png">
+<meta property="og:url" content="https://race-engineer-ai-ckr.netlify.app/">
+<meta property="og:image" content="https://race-engineer-ai-ckr.netlify.app/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -326,7 +326,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
   <div class="nav-brand">CLEM.<span>KART</span></div>
   <div class="nav-right">
     <span class="nav-badge">Race Engineer AI — Beta</span>
-    <span id="nav-quota" class="nav-quota" style="display:none;" title="Analyses IA utilisées ce mois-ci"></span>
+    <span id="nav-quota" class="nav-quota" style="display:none;" title="Crédits coach IA utilisés ce mois-ci"></span>
     <button id="btn-auth-signin" class="btn-clear-history" onclick="openAuthModal()">🔐 Connexion</button>
     <button id="btn-auth-account" class="nav-account" onclick="signOut()" style="display:none;">👤 <span id="auth-user-email">—</span> · Déconnexion</button>
     <button class="btn-clear-history" onclick="clearHistory()">Effacer l'historique</button>
@@ -2213,7 +2213,7 @@ function updateQuotaBadge(q) {
   const el = document.getElementById('nav-quota');
   if (!el) return;
   el.style.display = 'inline-block';
-  el.textContent = `IA ${q.used}/${q.limit}`;
+  el.textContent = `Crédits ${q.used}/${q.limit}`;
   try { localStorage.setItem('re_quota', JSON.stringify(q)); } catch (e) {}
 }
 
@@ -3390,7 +3390,7 @@ async function sendChat() {
 
       // Compteur freemium renvoyé par le serveur
       if(data.quota && data.quota.limit) {
-        botMsg += `<br><span style="font-size:10px;color:var(--text-dim);">${data.quota.used}/${data.quota.limit} analyses IA ce mois-ci</span>`;
+        botMsg += `<br><span style="font-size:10px;color:var(--text-dim);">${data.quota.used}/${data.quota.limit} crédits ce mois-ci</span>`;
         updateQuotaBadge(data.quota);
       }
 

@@ -20,9 +20,19 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 // Dev local uniquement : ALLOW_ANON_CHAT=true dans .env pour tester sans compte
 const ALLOW_ANON_CHAT = process.env.ALLOW_ANON_CHAT === "true";
-// Quota mensuel du plan gratuit (messages IA / mois)
-const FREE_MONTHLY_LIMIT = parseInt(process.env.FREE_MONTHLY_LIMIT, 10) || 30;
-const UNLIMITED_PLANS = ["pro", "club", "founder", "paddock"];
+// =============================================
+// CRÉDITS (aligné sur les offres : Découverte 200 / Saison Pro 500 / Paddock 1500)
+// 1 message coach IA = 10 crédits. Le diagnostic express local reste gratuit.
+// La DB compte les MESSAGES (ai_usage.count) ; la conversion en crédits se fait ici (count × 10).
+// =============================================
+const CREDITS_PER_MESSAGE = 10;
+const PLAN_MONTHLY_CREDITS = {
+  free: parseInt(process.env.FREE_MONTHLY_CREDITS, 10) || 200,
+  pro: 500,
+  founder: 500, // fondateurs = Saison Pro à vie
+  club: 500,    // legacy
+  paddock: 1500,
+};
 
 // Limites de taille des entrées (anti-abus de coût API)
 const MAX_MESSAGE_CHARS = 2000;
@@ -207,21 +217,28 @@ function currentMonth() {
   return new Date().toISOString().slice(0, 7); // 'YYYY-MM'
 }
 
-// Retourne { allowed, used, limit, unlimited } — fail-open si la DB est KO
+// Retourne { allowed, used, limit, unlimited, plan } en CRÉDITS — fail-open si la DB est KO
 // (mieux vaut une réponse IA en trop qu'un produit cassé)
 async function checkQuota(admin, userId) {
-  const noQuota = { allowed: true, used: 0, limit: FREE_MONTHLY_LIMIT, unlimited: true };
+  const noQuota = { allowed: true, used: 0, limit: PLAN_MONTHLY_CREDITS.free, unlimited: true, plan: "free" };
   if (!admin) return noQuota;
   try {
     const { data: profile } = await admin
       .from("profiles").select("plan").eq("id", userId).single();
-    if (profile && UNLIMITED_PLANS.includes(profile.plan)) return noQuota;
+    const plan = (profile && profile.plan) || "free";
+    const limit = PLAN_MONTHLY_CREDITS[plan] != null ? PLAN_MONTHLY_CREDITS[plan] : PLAN_MONTHLY_CREDITS.free;
 
     const { data: usage } = await admin
       .from("ai_usage").select("count")
       .eq("user_id", userId).eq("month", currentMonth()).maybeSingle();
-    const used = (usage && usage.count) || 0;
-    return { allowed: used < FREE_MONTHLY_LIMIT, used, limit: FREE_MONTHLY_LIMIT, unlimited: false };
+    const usedCredits = ((usage && usage.count) || 0) * CREDITS_PER_MESSAGE;
+    return {
+      allowed: usedCredits + CREDITS_PER_MESSAGE <= limit,
+      used: usedCredits,
+      limit,
+      unlimited: false,
+      plan,
+    };
   } catch (e) {
     console.error("checkQuota failed (fail-open):", e.message);
     return noQuota;
@@ -307,18 +324,21 @@ exports.handler = async (event) => {
       };
     }
 
-    // === QUOTA mensuel (plan free) ===
+    // === QUOTA mensuel en crédits (selon le plan) ===
     const admin = user ? getAdminClient() : null;
-    let quota = { allowed: true, used: 0, limit: FREE_MONTHLY_LIMIT, unlimited: true };
+    let quota = { allowed: true, used: 0, limit: PLAN_MONTHLY_CREDITS.free, unlimited: true, plan: "free" };
     if (user) {
       quota = await checkQuota(admin, user.id);
       if (!quota.allowed) {
+        const upsell = quota.plan === "free"
+          ? " Passe en Saison Pro pour 500 crédits chaque mois (guide offert)."
+          : "";
         return {
           statusCode: 403,
           headers,
           body: JSON.stringify({
             code: "quota_exceeded",
-            message: `Tu as utilisé tes ${quota.limit} analyses IA gratuites du mois. Le compteur se remet à zéro le 1er du mois prochain. (Le diagnostic local et l'historique restent dispo sans limite.)`,
+            message: `Tu as utilisé tes ${quota.limit} crédits coach IA du mois. Ils se rechargent le 1er du mois prochain. (Le diagnostic express et ton historique restent dispo sans limite.)${upsell}`,
             quota: { used: quota.used, limit: quota.limit },
             apply: {},
           }),
@@ -476,10 +496,11 @@ ${contextStr}
     }
 
     // === Incrément du compteur d'usage (après succès uniquement) ===
+    // La DB compte les messages ; on renvoie l'usage converti en crédits.
     if (user && !quota.unlimited) {
       const newCount = await incrementUsage(admin, user.id);
       if (newCount !== null) {
-        parsed.quota = { used: newCount, limit: quota.limit };
+        parsed.quota = { used: newCount * CREDITS_PER_MESSAGE, limit: quota.limit };
       }
     }
 
