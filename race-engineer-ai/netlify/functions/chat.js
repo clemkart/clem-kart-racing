@@ -22,7 +22,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const ALLOW_ANON_CHAT = process.env.ALLOW_ANON_CHAT === "true";
 // Quota mensuel du plan gratuit (messages IA / mois)
 const FREE_MONTHLY_LIMIT = parseInt(process.env.FREE_MONTHLY_LIMIT, 10) || 30;
-const UNLIMITED_PLANS = ["pro", "club", "founder"];
+const UNLIMITED_PLANS = ["pro", "club", "founder", "paddock"];
 
 // Limites de taille des entrées (anti-abus de coût API)
 const MAX_MESSAGE_CHARS = 2000;
