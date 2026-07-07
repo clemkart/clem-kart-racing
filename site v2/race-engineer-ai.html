@@ -57,6 +57,8 @@
   .hero p.sub{font-size:clamp(16px,2.4vw,21px);color:var(--muted);max-width:54ch;margin:0 auto 34px;}
   .cta-row{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;}
   .trust{margin-top:30px;font-size:13px;color:var(--muted);}
+  .pill{display:inline-block;margin-top:16px;padding:7px 16px;border:1px solid var(--red);border-radius:999px;font-size:13px;color:var(--ink);background:var(--red-soft);}
+  .prelaunch-note{text-align:center;font-size:14.5px;color:var(--red);font-weight:500;max-width:60ch;margin:18px auto 0;}
 
   /* SECTION TITLES */
   .stitle{font-size:clamp(27px,4.6vw,42px);max-width:18ch;}
@@ -167,6 +169,7 @@
 <header class="hero">
   <div class="wrap">
     <div class="kicker">Race Engineer AI</div>
+    <div class="pill">🚦 Ouverture à la rentrée 2026 · Les 100 premières places à tarif fondateur</div>
     <h1>Arrête de régler ton kart <span class="hl">au pif</span>.</h1>
     <p class="sub">Décris tes sensations après ta session. L'IA diagnostique le comportement de ton kart et te dit exactement quoi changer. En 30 secondes.</p>
     <div class="cta-row">
@@ -250,6 +253,7 @@
     <div class="kicker reveal" style="text-align:center;">Tarifs</div>
     <h2 class="stitle reveal" style="text-align:center;margin:14px auto 0;max-width:22ch;">Commence gratuitement. Passe Pro quand tu es convaincu.</h2>
     <p class="anchor-line reveal">Un coach humain : 150 à 300 € la journée. Les apps de coaching sim racing : environ 140 € par an, en anglais. Ton ingénieur de course IA : à partir de 4 € par mois, en français, pour le kart réel.</p>
+    <p class="prelaunch-note reveal">🚦 L'app ouvre à la rentrée. Réserve ta place maintenant : les 100 premiers comptes gardent 49 €/an à vie, ensuite c'est 69 €.</p>
     <div class="plans reveal">
       <div class="plan free" data-plan="decouverte">
         <div class="plan-inner">
@@ -262,7 +266,7 @@
             <li><i class="ti ti-check"></i> Réglages expliqués, jamais imposés</li>
             <li><i class="ti ti-check"></i> Mode kart de location (pilotage pur)</li>
           </ul>
-          <a href="https://race-engineer-ai-ckr.netlify.app/" class="btn">Commencer gratuitement</a>
+          <a href="#fondateurs" class="btn">Être prévenu à l'ouverture</a>
         </div>
       </div>
       <div class="plan pro" data-plan="pro">
@@ -320,7 +324,7 @@
         <input type="hidden" name="locale" value="fr">
         <button type="submit" class="btn">Réserver ma place</button>
       </form>
-      <p style="margin-top:14px;font-size:13px;color:var(--muted);">Pas de spam. Juste le lancement et tes avantages fondateur.</p>
+      <p style="margin-top:14px;font-size:13px;color:var(--muted);">Confirmation immédiate par email. Pas de spam : juste le lancement et tes avantages fondateur.</p>
     </div>
   </div>
 </section>
@@ -374,6 +378,7 @@
     });
     const tl = gsap.timeline({ defaults:{ ease:'power3.out', duration:1 } });
     tl.from('.hero .kicker',{ opacity:0, y:20 })
+      .from('.hero .pill',{ opacity:0, y:16 },'-=.7')
       .from('.hero h1',{ opacity:0, y:34 },'-=.7')
       .from('.hero .sub',{ opacity:0, y:24 },'-=.7')
       .from('.hero .cta-row',{ opacity:0, y:20 },'-=.7')
