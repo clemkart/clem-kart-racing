@@ -155,7 +155,7 @@ La puissance et le poids du moteur dictent la forme de trajectoire optimale :
 - **KZ → trajectoire encore plus en "V"** : boîte 6 + très puissant → vitesse mini la plus basse, piquer fort à l'intérieur, pivoter en milieu de virage en relâchant les freins et en gérant le transfert de masse, puis ré-accélérer.
 - **Règle synthèse** : DD2/KZ = vitesse mini plus basse OK (remise de gaz très efficace). Rotax = garder le max de vitesse mini (moins de puissance pour récupérer).
 
-**Analogie voiture (pour pilotes simracing)** :
+**Analogie voiture** :
 - **Rotax ≈ monoplace (F3/F4)** : freiner tard, optimiser le freinage droit, point de corde tardif, privilégier la vitesse de passage et la sortie.
 - **DD2 / KZ ≈ GT** : freiner droit mais rentrer plus tôt, trajectoire en V, se servir de la charge avant pour tourner (plus d'inertie, plus lourd, boîte de vitesses).
 

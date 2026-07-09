@@ -2,7 +2,7 @@
 
 Source : Jimmy Grills, "Precision Racing : Mastering the Art of High-Performance Driving" (2024) + "The Racing Bootcamp" (exercices).
 
-⚠️ Ces principes sont **universels au sport automobile** (sim, voiture circuit, karting).
+⚠️ Ces principes sont **universels au sport automobile** (voiture de circuit, karting).
 Pour leur application karting spécifique, croiser **systématiquement** avec `mecanique-kart-specifique.md`.
 
 ---

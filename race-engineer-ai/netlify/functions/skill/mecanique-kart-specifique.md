@@ -121,7 +121,7 @@ Réglages typiquement disponibles :
 
 ### Weight Transfer & Traction Circle
 - Concept des "grip units" : valide en karting.
-- Mais la simulation est plus extrême en kart (transferts plus brutaux, plus rapides). Donc **smoothness encore plus payante**.
+- Mais le phénomène est plus extrême en kart (transferts plus brutaux, plus rapides). Donc **smoothness encore plus payante**.
 - Friction circle : valide. Adaptations conditions piste = même logique.
 
 ### Trail Braking = Freinage Dégressif

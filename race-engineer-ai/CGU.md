@@ -195,7 +195,7 @@ Le Service s'appuie sur des contenus de tiers, notamment :
 - Le modèle d'intelligence artificielle Claude (Anthropic, PBC)
 - Le service d'hébergement et de base de données Supabase
 - L'hébergement et les Functions Netlify
-- Des contenus pédagogiques karting (ebook « Quand comprendre change tout ») et simracing (référencés dans la base de connaissance)
+- Des contenus pédagogiques karting (ebook « Quand comprendre change tout ») référencés dans la base de connaissance
 
 L'Éditeur respecte les droits de propriété intellectuelle de ces tiers et invite l'Utilisateur à faire de même.
 
