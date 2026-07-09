@@ -19,6 +19,7 @@ const ALLOWED_TYPES = new Set([
   'app_page_click',  // clic vers la page Race Engineer AI depuis le site
   'app_plan_click',  // clic sur le CTA d'une carte tarif (meta.plan = decouverte|pro|paddock)
   'app_early_access',// envoi du formulaire early access de l'app
+  'app_video_play',  // clic sur le poster de la video de presentation
 ]);
 
 const MAX_META_CHARS = 2000;
