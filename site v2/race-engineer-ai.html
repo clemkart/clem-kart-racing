@@ -96,7 +96,7 @@
   /* PRICING — deck 3D */
   .anchor-line{text-align:center;font-size:14px;color:var(--muted);max-width:62ch;margin:26px auto 0;}
   .plans{display:grid;grid-template-columns:1fr;gap:22px;margin-top:40px;perspective:1600px;}
-  .plan{transform-style:preserve-3d;}
+  .plan{transform-style:preserve-3d;cursor:pointer;}
   .plan-inner{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:30px 26px;height:100%;display:flex;flex-direction:column;transition:border-color .3s ease,box-shadow .4s ease;will-change:transform;}
   .plan.pro .plan-inner{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 24px 60px rgba(230,57,70,.16);}
   .plan .pname{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
@@ -121,7 +121,7 @@
     .plan.pro{transform:translateZ(34px) scale(1.04);z-index:2;}
     .plan.paddock{transform:rotateY(-7deg) translateZ(-46px);}
     .plans:hover .plan{opacity:.68;}
-    .plans:hover .plan:hover{opacity:1;transform:rotateY(0deg) translateZ(74px) scale(1.055);z-index:3;}
+    .plans:hover .plan:hover{opacity:1;transform:rotateY(0deg) translateZ(44px) scale(1.03);z-index:3;}
     .plans:hover .plan:hover .plan-inner{box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px var(--line);}
     .plans:hover .plan.pro:hover .plan-inner{box-shadow:0 30px 80px rgba(230,57,70,.28),0 0 0 1px var(--red);}
   }
@@ -292,7 +292,7 @@
           <div class="price">0 €</div>
           <div class="sub2">Pour voir l'effet sur ton pilotage, sans engagement.</div>
           <ul>
-            <li><i class="ti ti-check"></i> 200 crédits de coach IA chaque mois (≈ 20 questions)</li>
+            <li><i class="ti ti-check"></i> 100 crédits de coach IA chaque mois (≈ 10 questions)</li>
             <li><i class="ti ti-check"></i> Diagnostic express et historique illimités</li>
             <li><i class="ti ti-check"></i> Réglages expliqués, jamais imposés</li>
             <li><i class="ti ti-check"></i> Mode kart de location (pilotage pur)</li>
@@ -366,7 +366,7 @@
     <h2 class="stitle reveal">Avant de te lancer.</h2>
     <div class="faq">
       <details class="reveal"><summary>En quoi c'est différent d'un ChatGPT ? <i class="ti ti-plus"></i></summary><p>ChatGPT te donne des généralités. Race Engineer AI reste spécialisé karting, raisonne avec la méthode d'un pilote de compétition, et garde l'historique de tes sessions pour te suivre dans le temps.</p></details>
-      <details class="reveal"><summary>Comment fonctionnent les crédits ? <i class="ti ti-plus"></i></summary><p>Chaque question au coach IA utilise 10 crédits (200 offerts chaque mois en Découverte, 500 en Saison Pro, 1 500 en Paddock). Le diagnostic express et ton historique ne consomment rien. Ton compteur se recharge le 1er du mois, et si tu arrives au bout l'app te prévient : jamais de facture surprise.</p></details>
+      <details class="reveal"><summary>Comment fonctionnent les crédits ? <i class="ti ti-plus"></i></summary><p>Chaque question au coach IA utilise 10 crédits (100 offerts chaque mois en Découverte, 500 en Saison Pro, 1 500 en Paddock). Le diagnostic express et ton historique ne consomment rien. Ton compteur se recharge le 1er du mois, et si tu arrives au bout l'app te prévient : jamais de facture surprise.</p></details>
       <details class="reveal"><summary>Ça marche avec mon kart ? <i class="ti ti-plus"></i></summary><p>Oui. L'outil raisonne sur le comportement du kart, sous-virage, survirage, motricité, stabilité au freinage. Pas sur une marque précise.</p></details>
       <details class="reveal"><summary>Je roule en location, c'est utile ? <i class="ti ti-plus"></i></summary><p>Oui. Un mode dédié se concentre sur le pilotage et la trajectoire quand tu ne peux pas régler le kart.</p></details>
       <details class="reveal"><summary>Je débute, c'est trop technique ? <i class="ti ti-plus"></i></summary><p>Non. Chaque conseil est expliqué simplement. L'objectif est que tu comprennes, pas seulement que tu appliques.</p></details>
@@ -465,12 +465,13 @@
   }
   window.__ckrTrack = send;
   send('pageview');
-  // Clic sur un CTA d'une carte tarif → app_plan_click {plan}
-  document.addEventListener('click',function(e){
-    var a=e.target.closest?e.target.closest('.plan .btn'):null; if(!a) return;
-    var card=a.closest('.plan');
-    send('app_plan_click',{plan:(card&&card.getAttribute('data-plan'))||'inconnu'});
-  },true);
+  // Carte tarif ENTIEREMENT cliquable (le petit bouton bougeait en 3D au survol) + tracking
+  document.querySelectorAll('.plan').forEach(function(card){
+    card.addEventListener('click', function(){
+      send('app_plan_click', { plan: card.getAttribute('data-plan') || 'inconnu' });
+      location.hash = 'fondateurs';
+    });
+  });
   // Envoi du formulaire early access → app_early_access
   var f=document.getElementById('early-access');
   if(f){ f.addEventListener('submit',function(){ send('app_early_access',{}); }); }

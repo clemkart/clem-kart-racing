@@ -21,13 +21,13 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 // Dev local uniquement : ALLOW_ANON_CHAT=true dans .env pour tester sans compte
 const ALLOW_ANON_CHAT = process.env.ALLOW_ANON_CHAT === "true";
 // =============================================
-// CRÉDITS (aligné sur les offres : Découverte 200 / Saison Pro 500 / Paddock 1500)
+// CRÉDITS (aligné sur les offres : Découverte 100 / Saison Pro 500 / Paddock 1500)
 // 1 message coach IA = 10 crédits. Le diagnostic express local reste gratuit.
 // La DB compte les MESSAGES (ai_usage.count) ; la conversion en crédits se fait ici (count × 10).
 // =============================================
 const CREDITS_PER_MESSAGE = 10;
 const PLAN_MONTHLY_CREDITS = {
-  free: parseInt(process.env.FREE_MONTHLY_CREDITS, 10) || 200,
+  free: parseInt(process.env.FREE_MONTHLY_CREDITS, 10) || 100,
   pro: 500,
   founder: 500, // fondateurs = Saison Pro à vie
   club: 500,    // legacy
