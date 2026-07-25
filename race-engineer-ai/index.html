@@ -238,6 +238,8 @@ input[type=number]:focus{border-color:var(--red);}
 .auth-modal-content button.primary{background:var(--red);color:#fff;border:none;padding:11px 20px;border-radius:4px;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1.5px;font-size:15px;width:100%;transition:background .2s;}
 .auth-modal-content button.primary:hover{background:#c52a37;}
 .auth-modal-content button.primary:disabled{opacity:0.5;cursor:not-allowed;}
+.auth-modal-content textarea{width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:11px 13px;border-radius:4px;font-family:'Barlow',sans-serif;font-size:14px;margin-bottom:14px;box-sizing:border-box;resize:vertical;min-height:84px;}
+.auth-modal-content textarea:focus{border-color:var(--red);outline:none;}
 .auth-status{font-size:12px;margin:12px 0 0;min-height:18px;line-height:1.4;}
 .auth-status.success{color:var(--green);}
 .auth-status.error{color:var(--red);}
@@ -346,6 +348,33 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
     </label>
     <button class="primary" id="auth-submit" onclick="sendMagicLink()">📧 Recevoir le lien</button>
     <p id="auth-status" class="auth-status"></p>
+  </div>
+</div>
+
+<!-- APERÇU EARLY ACCESS — mur diagnostics + déblocage par témoignage -->
+<div id="diag-limit-modal" class="auth-modal" style="display:none;">
+  <div class="auth-modal-content">
+    <button class="auth-close" onclick="closeDiagLimitModal()">×</button>
+    <!-- État A : proposer un témoignage pour débloquer -->
+    <div id="diag-limit-form">
+      <h2>Tu as fait le tour de l'aperçu 🏁</h2>
+      <p>Tu as utilisé tes 3 diagnostics d'aperçu early access. Envie de continuer à prendre l'app en main ? Laisse-moi un témoignage que je pourrai publier, et je te débloque <strong style="color:var(--text)">5 diagnostics de plus</strong>.</p>
+      <input type="text" id="testi-prenom" placeholder="Ton prénom" autocomplete="given-name">
+      <input type="text" id="testi-cat" placeholder="Ta catégorie / moteur (ex : Senior Rotax)">
+      <textarea id="testi-texte" placeholder="Ce que tu penses de l'app, ce que le diagnostic t'a apporté..."></textarea>
+      <label class="auth-cgu-label">
+        <input type="checkbox" id="testi-consent">
+        <span>J'autorise Clément à publier ce témoignage (avec mon prénom et ma catégorie) sur son site et ses supports.</span>
+      </label>
+      <button class="primary" id="testi-submit" onclick="submitTestimonial()">✅ Débloquer 5 diagnostics</button>
+      <p id="testi-status" class="auth-status"></p>
+    </div>
+    <!-- État B : aperçu terminé -->
+    <div id="diag-limit-done" style="display:none;">
+      <h2>Merci, pilote fondateur 🙌</h2>
+      <p>Tu as fait le tour complet de l'aperçu early access. La version complète ouvre à la rentrée, et ta place fondateur t'y attend, au tarif verrouillé à vie.</p>
+      <button class="primary" onclick="window.open('https://comprendre-comment-rouler-plus-vite.netlify.app/race-engineer-ai.html','_blank')">Voir ce qui t'attend à la rentrée</button>
+    </div>
   </div>
 </div>
 
@@ -1887,6 +1916,8 @@ function computeInsights() {
 // DIAGNOSTIC ENGINE
 // =============================================
 function runDiagnostic() {
+  // 🔒 Aperçu early access : au-delà de la limite, on propose un témoignage (les démos ne comptent pas)
+  if (!_demoMode && diagCount() >= diagLimit()) { showDiagLimitModal(); return; }
   const data = collectData();
   const isLocation = data.mode === 'location';
   const result = document.getElementById('diag-result');
@@ -2135,6 +2166,7 @@ function runDiagnostic() {
   } else {
     saveSession(data);
     track('analyze', { comportement: data.comportement || null, hasChrono: !!parseChrono(data.chronoBest), mode: data.mode || 'proprio', pilote: data.pilote || 'moi' });
+    incDiagCount();
   }
 
   // DISPLAY
@@ -2416,6 +2448,40 @@ function track(event, meta) {
       }).catch(() => {});
     }
   } catch (e) {}
+}
+
+// =============================================
+// APERÇU EARLY ACCESS — limite de diagnostics + déblocage par témoignage.
+// 3 diagnostics gratuits, +5 après un témoignage (enregistré via track → table events).
+// Les démos ("Voir un exemple") ne comptent pas.
+// =============================================
+const DIAG_FREE = 3, DIAG_BONUS = 5;
+function diagCount(){ return parseInt(localStorage.getItem('re_diag_count') || '0', 10) || 0; }
+function diagTestimonialDone(){ return localStorage.getItem('re_testimonial_ok') === '1'; }
+function diagLimit(){ return DIAG_FREE + (diagTestimonialDone() ? DIAG_BONUS : 0); }
+function incDiagCount(){ try { localStorage.setItem('re_diag_count', String(diagCount() + 1)); } catch(e){} }
+
+function showDiagLimitModal(){
+  const done = diagTestimonialDone();
+  document.getElementById('diag-limit-form').style.display = done ? 'none' : 'block';
+  document.getElementById('diag-limit-done').style.display = done ? 'block' : 'none';
+  document.getElementById('diag-limit-modal').style.display = 'flex';
+  track('diag_limit_wall', { testimonial_done: done });
+}
+function closeDiagLimitModal(){ document.getElementById('diag-limit-modal').style.display = 'none'; }
+
+function submitTestimonial(){
+  const prenom = (document.getElementById('testi-prenom').value || '').trim();
+  const cat = (document.getElementById('testi-cat').value || '').trim();
+  const texte = (document.getElementById('testi-texte').value || '').trim();
+  const consent = document.getElementById('testi-consent').checked;
+  const status = document.getElementById('testi-status');
+  if (texte.length < 15) { status.textContent = 'Écris quelques mots de plus pour ton témoignage 🙂'; return; }
+  if (!consent) { status.textContent = "Coche la case d'autorisation pour débloquer."; return; }
+  track('testimonial', { prenom: prenom.slice(0,60), categorie: cat.slice(0,60), texte: texte.slice(0,600), consent: true });
+  try { localStorage.setItem('re_testimonial_ok', '1'); } catch(e){}
+  closeDiagLimitModal();
+  runDiagnostic(); // relance le diagnostic voulu, maintenant débloqué (+5)
 }
 
 // =============================================
