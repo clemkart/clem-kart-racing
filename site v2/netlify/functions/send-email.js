@@ -54,6 +54,29 @@ exports.handler = async function(event) {
     }]
   };
 
+  // Enregistre le contact dans la liste "tableur-reglages" (#6) AVANT l'envoi.
+  // Sans ça, l'adresse est utilisée pour l'envoi puis perdue (aucun lead capturé).
+  // Non bloquant : si ça échoue, on envoie quand même le tableur.
+  const TABLEUR_LIST_ID = parseInt(process.env.BREVO_TABLEUR_LIST_ID || '6', 10);
+  try {
+    await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': BREVO_KEY,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        listIds: [TABLEUR_LIST_ID],
+        updateEnabled: true, // si le contact existe déjà, on l'ajoute à la liste sans erreur
+        attributes: { SOURCE: 'tableur-reglages' }
+      })
+    });
+  } catch (err) {
+    console.error('Brevo contact create failed (non bloquant):', err);
+  }
+
   try {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
