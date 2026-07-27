@@ -66,7 +66,8 @@ exports.handler = async (event) => {
     }
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-    await admin.from('events').insert({ event: name, meta: safeMeta });
+    const { error } = await admin.from('events').insert({ event: name, meta: safeMeta });
+    if (error) console.error('track insert rejected by Supabase:', error.message, error.code || '');
   } catch (e) {
     console.error('track failed:', e.message);
   }
