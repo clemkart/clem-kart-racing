@@ -1,55 +1,58 @@
 -- =============================================
--- Migration du 28/07/2026
--- À jouer dans Supabase : SQL Editor > New query > coller > Run
+-- Race Engineer AI : migration du 28/07/2026
 -- =============================================
--- Sans cette migration, la sauvegarde cloud des sessions échouera :
--- les fonctions écrivent désormais des colonnes qui n'existent pas encore.
+-- OU LA JOUER : Supabase > SQL Editor > New query > coller > Run
 --
--- Sûr à rejouer : IF NOT EXISTS partout, aucune donnée existante touchée.
+-- A FAIRE AVANT LE DEPLOIEMENT. Sans elle, la sauvegarde cloud des sessions
+-- echouera : les fonctions ecrivent desormais des colonnes qui n'existent pas.
+--
+-- Sure a rejouer autant de fois que voulu : tout est en IF NOT EXISTS,
+-- aucune donnee existante n'est modifiee ni supprimee.
 -- =============================================
 
--- 1. L'arbre a DEUX caractéristiques physiques indépendantes.
---    L'ancien champ unique mélangeait longueur (court/standard) et
---    rigidité (tendre/medium/dur), ce qui rendait impossible de décrire
---    un arbre court ET dur. "arbre" ne porte plus que la rigidité.
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS arbre_longueur TEXT;
+-- 1. L'arbre a DEUX caracteristiques physiques independantes.
+--    L'ancien champ unique melangeait longueur (court/standard) et rigidite
+--    (tendre/medium/dur), ce qui rendait impossible de decrire un arbre court
+--    ET dur. Desormais "arbre" ne porte plus que la rigidite.
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS arbre_longueur TEXT;
 
 -- 2. Direct drive : le rapport est couronne / pignon, pas la couronne seule.
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS pignon INTEGER;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS pignon INTEGER;
 
--- 3. Matériel : indispensable pour analyser a posteriori les diagnostics
---    par combo châssis x moteur. Le châssis n'était nulle part en base.
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS chassis TEXT;
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS moteur_type TEXT;
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS moteur_family TEXT;
+-- 3. Materiel. Le chassis n'etait stocke nulle part, ce qui rendait impossible
+--    d'analyser a posteriori les diagnostics par combo chassis x moteur.
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS chassis TEXT;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS moteur_type TEXT;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS moteur_family TEXT;
 
--- 4. Contrôle : la colonne couronne était systématiquement NULL car le code
---    lisait context.couronne, qui n'a jamais existé (c'est couronneMono,
---    couronneDD2 ou couronneKz selon la famille moteur). Corrigé côté code.
---    Cette requête doit renvoyer 0 ligne une fois quelques sessions créées :
--- SELECT count(*) FROM sessions WHERE couronne IS NULL AND created_at > now() - interval '1 day';
+-- 4. Geometrie avant complete, position pilote et gomme montee.
+--    Ces reglages sont parmi les plus determinants du karting et n'etaient
+--    pas demandes au pilote jusqu'ici.
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS carrossage INTEGER;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS siege TEXT;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS siege_hauteur TEXT;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS lestage INTEGER;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS pneu_marque TEXT;
+ALTER TABLE public.sessions ADD COLUMN IF NOT EXISTS pneu_modele TEXT;
 
--- 5. Vérification finale des colonnes ajoutées
-SELECT column_name, data_type
+-- 5. Modele et millesime de chassis, sur le PROFIL pilote.
+--    Le modele change la logique de reglage autant que la marque : un
+--    Sodikart Sigma RS3 (Rotax / X30 / OK, gommes medium) et un Sigma KZ
+--    (shifter) ne se reglent pas pareil.
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS chassis_modele TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS chassis_annee TEXT;
+
+-- =============================================
+-- VERIFICATION : doit renvoyer 13 lignes
+-- =============================================
+SELECT table_name, column_name, data_type
 FROM information_schema.columns
-WHERE table_name = 'sessions'
-  AND column_name IN ('arbre_longueur','pignon','chassis','moteur_type','moteur_family')
-ORDER BY column_name;
-
--- =============================================
--- Complement du 28/07/2026 (2e passe)
--- =============================================
--- 6. Modele et millesime de chassis. Le modele change la logique de reglage
---    autant que la marque : un Sodikart Sigma RS3 (Rotax/X30/OK, gommes
---    medium) et un Sigma KZ (shifter) ne se reglent pas pareil.
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS chassis_modele TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS chassis_annee TEXT;
-
--- 7. Reglages ajoutes au formulaire : geometrie avant complete, position
---    pilote et gomme montee.
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS carrossage INTEGER;
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS siege TEXT;
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS siege_hauteur TEXT;
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS lestage INTEGER;
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS pneu_marque TEXT;
-ALTER TABLE sessions ADD COLUMN IF NOT EXISTS pneu_modele TEXT;
+WHERE table_schema = 'public'
+  AND (
+    (table_name = 'sessions' AND column_name IN (
+      'arbre_longueur','pignon','chassis','moteur_type','moteur_family',
+      'carrossage','siege','siege_hauteur','lestage','pneu_marque','pneu_modele'))
+    OR
+    (table_name = 'profiles' AND column_name IN ('chassis_modele','chassis_annee'))
+  )
+ORDER BY table_name, column_name;
