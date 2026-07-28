@@ -11,6 +11,9 @@ const Anthropic = require("@anthropic-ai/sdk");
 const { createClient } = require("@supabase/supabase-js");
 const fs = require("fs");
 const path = require("path");
+// Registre des spécificités châssis × moteur — c'est lui qui garantit qu'un
+// Sodikart en Rotax ne reçoit pas le même diagnostic qu'un Tony Kart en X30.
+const { buildKartSpecBlock } = require("./kart-specs");
 
 // =============================================
 // CONFIG (env vars)
@@ -127,6 +130,41 @@ function sanitizeApply(apply, context) {
   return { apply: clean, notes };
 }
 
+// Libellés des symptômes — le code interne ne doit jamais atteindre le modèle
+// tel quel ("understeer_entry" est plus pauvre que "sous-virage à l'entrée").
+// ⚠️ Doit rester aligné avec KB.diagnostics dans index.html.
+const SYMPTOM_LABELS = {
+  understeer_entry: "sous-virage à l'entrée du virage",
+  understeer_mid: "sous-virage en milieu de virage (en appui)",
+  oversteer_entry: "survirage à l'entrée du virage",
+  oversteer_exit: "survirage à la sortie du virage",
+  no_rotation: "le kart refuse de tourner, pas de rotation",
+  too_much_rotation: "trop de rotation, kart nerveux",
+  good_entry_bad_exit: "bonne entrée mais mauvaise sortie",
+  general_lack_of_grip: "manque de grip général",
+  instability_straight: "instabilité en ligne droite",
+  balanced: "kart équilibré, pas de défaut marqué",
+};
+
+// Construit la demande de diagnostic à partir de la session.
+// Le contexte détaillé arrive déjà par le system prompt ; ce message ne fait
+// que cadrer la tâche et rappeler l'exigence d'ancrage matériel.
+function buildDiagnosticPrompt(context) {
+  const c = context || {};
+  const chassis = c.chassis || "châssis non renseigné";
+  const moteur = c.moteur || "moteur non renseigné";
+  const symptome = SYMPTOM_LABELS[c.comportement] || c.comportement || "non renseigné";
+  return [
+    `Analyse ma session et donne-moi ton diagnostic de race engineer.`,
+    `Kart : ${chassis} / ${moteur}.`,
+    `Symptôme dominant que j'ai ressenti : ${symptome} (intensité ${c.intensite || "?"}/10).`,
+    `Conditions : grip ${c.grip || "?"}, météo ${c.meteo || "?"}, circuit ${c.circuitName || c.circuit || "?"}.`,
+    ``,
+    `Tous mes réglages actuels, mes chronos et mes butées sont dans le contexte.`,
+    `Ton diagnostic doit être valable pour CE ${chassis} en ${moteur} et pour aucun autre kart.`,
+  ].join("\n");
+}
+
 // Limites de taille des entrées (anti-abus de coût API)
 const MAX_MESSAGE_CHARS = 2000;
 const MAX_HISTORY_ITEMS = 12;
@@ -175,9 +213,16 @@ const TRANSMISSION_TRIGGER = /(couronne|pignon|\bdents?\b|rapport|transmission|d
 // Pneus : pressions, gommes, marques, pluie
 const PNEUS_TRIGGER = /(pression|pneu|gomme|mojo|vega|lecont|le\s+cont|komet|bridgestone|\bdelta\b|pluie|slick|pyrom[eè]tre)/i;
 
-function selectSkillModules(message, context) {
+function selectSkillModules(message, context, isDiagnostic) {
   const modules = [];
   const sessionType = (context && context.session) || "";
+
+  // Le diagnostic analyse SYSTÉMATIQUEMENT les pressions et la carburation :
+  // ces modules ne peuvent pas dépendre du hasard des mots-clés.
+  if (isDiagnostic) {
+    modules.push("pneus-gommes.md");
+    if (context && context.moteur_family !== "4t") modules.push("carburation.md");
+  }
   if (RACECRAFT_TRIGGER.test(message) || sessionType === "qualifs" || sessionType === "course") {
     modules.push("racecraft-course.md");
   }
@@ -193,7 +238,8 @@ function selectSkillModules(message, context) {
   if (PNEUS_TRIGGER.test(message) || (context && (context.meteo === "pluie" || context.meteo === "mixte"))) {
     modules.push("pneus-gommes.md");
   }
-  return modules.map((f) => SKILL_PARTS[f] || "").join("");
+  // Dédoublonnage : un module forcé peut aussi être déclenché par un mot-clé
+  return [...new Set(modules)].map((f) => SKILL_PARTS[f] || "").join("");
 }
 
 // =============================================
@@ -384,9 +430,17 @@ exports.handler = async (event) => {
     } catch (e) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: "JSON invalide" }) };
     }
-    const { message, context, history } = payload;
+    const { context, history, mode } = payload;
+    const isDiagnostic = mode === "diagnostic";
 
-    const validationError = validateInputs(message, history, context);
+    // En mode diagnostic, il n'y a pas de question du pilote : on construit la
+    // demande à partir de la session. Le reste du pipeline (auth, quota,
+    // garde-fous, skill, bornage) est strictement identique au chat.
+    const message = isDiagnostic
+      ? buildDiagnosticPrompt(context)
+      : payload.message;
+
+    const validationError = validateInputs(message, isDiagnostic ? [] : history, context);
     if (validationError) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: validationError }) };
     }
@@ -460,10 +514,7 @@ RÈGLE PARENT (prioritaire) : tu parles à un parent qui gère le kart de son en
 ${context.mode === "location" ? `
 RÈGLE LOCATION (prioritaire) : le pilote roule en location, il ne peut RIEN régler — "apply" doit TOUJOURS être {}. Focalise 100 % du diagnostic sur le pilotage : freinage dégressif, light hands, rotation par délestage, point d'accélération, trajectoire dictée par le grip, régularité, mental. Si le comportement décrit semble venir du matériel (kart fatigué), conseille de le signaler à l'accueil et d'en changer.` : ""}
 
-IMPORTANT — Adapte tes recommandations au matériel :
-- Le châssis "${context.chassis || "?"}" a ses propres terminologies et comportements : tiens-en compte (voir mecanique-kart-specifique.md et tes connaissances de la marque).
-- La famille moteur "${context.moteur_family || "direct_drive"}" conditionne les leviers dispo : direct_drive = couronne + gicleur ; dd2 = couronne + contre-pignon ; kz_shifter = boîte 6 + embrayage + engine braking ; 4t = carburation fixe (pas de gicleur).
-- Croise TOUJOURS châssis × moteur × conditions × style pilote. Un même réglage ne convient pas à deux combos différents.
+${buildKartSpecBlock(context)}
 
 Conditions session :
 - Grip piste : ${context.grip || "non renseigné"}
@@ -472,7 +523,7 @@ Conditions session :
 - Circuit : ${context.circuitName || "non précisé"} (type : ${context.circuit || "non renseigné"})
   ${context.circuitName ? "→ Si ce circuit est documenté dans circuits.md, exploite ses spécificités (profil, secteurs, pièges, réglage type). Sinon, demande au pilote de décrire le tracé, n'invente jamais de specs." : ""}
 - Type session : ${context.session || "non renseigné"}
-- Problème dominant : ${context.comportement || "non renseigné"}
+- Problème dominant : ${SYMPTOM_LABELS[context.comportement] || context.comportement || "non renseigné"}
 - Intensité : ${context.intensite || "?"}/10
 - Chronos : meilleur tour ${context.chronoBest || "non renseigné"}, tour moyen ${context.chronoAvg || "?"}, ${context.chronoLaps || "?"} tours
   → Si meilleur et moyen sont renseignés, l'écart entre les deux mesure la RÉGULARITÉ. Un pilote irrégulier gagne plus en travaillant la constance qu'en cherchant le tour parfait.
@@ -509,13 +560,42 @@ Suivi de test (méthode "un seul changement à la fois") :
       : "Aucun contexte de session fourni — répondre de façon générale en demandant les infos manquantes si nécessaire.";
 
     // === Instructions de format (forcé JSON pour UI) ===
+    // Deux modes partagent le MÊME préfixe de system prompt (skill + modules),
+    // donc le cache Anthropic est mutualisé entre le chat et le diagnostic.
+    // Seul ce bloc final change.
+    const responseShape = isDiagnostic
+      ? `
+Tu réponds UNIQUEMENT en JSON valide avec ces clés :
+
+{
+  "titre":     "une phrase qui nomme le problème dominant, calibrée sur CE kart (max 90 caractères)",
+  "lecture":   "ce que disent les données de la session (chronos, régularité, pressions, conditions). 2 phrases max. Si une donnée manque, dis-le au lieu d'inventer.",
+  "pilotage":  "le réflexe PILOTAGE à vérifier avant tout réglage. Toujours en premier — c'est la règle de la maison. 2 phrases max.",
+  "cause":     "la cause mécanique la plus probable, ANCRÉE sur ce châssis et ce moteur précis. Nomme la marque. 2-3 phrases.",
+  "action":    "LE seul changement à faire maintenant, avec sa valeur chiffrée de départ et d'arrivée. Un seul.",
+  "pourquoi":  "pourquoi ce levier-là sur CE châssis plutôt qu'un autre. 2 phrases max.",
+  "aObserver": "ce que le pilote doit ressentir au prochain relais pour valider ou invalider. 1-2 phrases.",
+  "confiance": "haute" | "moyenne" | "faible",
+  "apply":     { ... }
+}
+
+RÈGLES DU DIAGNOSTIC :
+- "confiance" reflète honnêtement ta certitude. "faible" si les données manquent
+  ou si la marque du châssis n'est pas documentée. Ne bluffe jamais.
+- Si le symptôme dominant n'est pas renseigné, dis dans "lecture" quelle
+  information manque et pose la question dans "aObserver".
+- N'invente JAMAIS une caractéristique de châssis absente de la fiche matériel.
+  Si tu n'as pas la donnée pour cette marque, applique la physique générale et
+  dis-le explicitement dans "cause".`
+      : `
+Tu réponds UNIQUEMENT en JSON valide avec deux clés : "message" et "apply".
+
+"message" : ta réponse en français. Suis le format DIAGNOSTIC / CAUSE PROBABLE / ACTION CONCRÈTE / POURQUOI (2-3 lignes max) / POUR APPROFONDIR / À OBSERVER (cf. methodologie-coach.md). Max 250 mots. Utilise le vocabulaire pilote karting (rotation, délestage, light hands, freinage dégressif, point de corde, point d'accélération, micro-glisse contrôlée, châssis qui respire). Bannis le jargon générique IA.`;
+
     const formatInstructions = `
 
 # FORMAT DE RÉPONSE OBLIGATOIRE
-
-Tu réponds UNIQUEMENT en JSON valide avec deux clés : "message" et "apply".
-
-"message" : ta réponse en français. Suis le format DIAGNOSTIC / CAUSE PROBABLE / ACTION CONCRÈTE / POURQUOI (2-3 lignes max) / POUR APPROFONDIR / À OBSERVER (cf. methodologie-coach.md). Max 250 mots. Utilise le vocabulaire pilote karting (rotation, délestage, light hands, freinage dégressif, point de corde, point d'accélération, micro-glisse contrôlée, châssis qui respire). Bannis le jargon générique IA.
+${responseShape}
 
 "apply" : objet JSON avec UNIQUEMENT les réglages châssis à modifier (laisser {} si aucun changement à appliquer).
 
@@ -545,6 +625,9 @@ RÈGLES NON-NÉGOCIABLES :
 - Adapte les leviers au matériel : famille moteur 4t = pas de gicleur ; DD2 =
   couronne + contre-pignon (somme 100) ; KZ = boîte 6 + embrayage ; direct
   drive = couronne + pignon. Ne propose jamais un levier absent de ce kart.
+- Le vocabulaire employé doit être celui de la marque du châssis (voir la fiche
+  matériel) : parler de "barre plate verticale" à un pilote Sodikart, ou de
+  "bague excentrique" à un pilote OTK, décrédibilise instantanément le conseil.
 - Si la question est purement conceptuelle/théorique, "apply": {}.
 - Si la question touche à la préparation / modification / boost moteur ou au contournement réglementaire : REFUSE selon la formulation type décrite dans methodologie-coach.md § Garde-fous, et "apply": {}.
 - Personnalise TOUJOURS selon le profil pilote (taille, poids, style) et le châssis. Un même réglage ne convient pas à deux pilotes différents.
@@ -555,7 +638,7 @@ ${contextStr}
 `;
 
     // === System prompt : noyau caché + modules conditionnels cachés + format ===
-    const skillModules = selectSkillModules(message, context);
+    const skillModules = selectSkillModules(message, context, isDiagnostic);
     const system = [
       {
         type: "text",
@@ -573,16 +656,19 @@ ${contextStr}
     system.push({ type: "text", text: formatInstructions }); // petit, variable selon contexte
 
     // === Messages : historique de conversation + question actuelle ===
+    // Le diagnostic est une analyse ponctuelle de la session : pas d'historique
+    // de conversation, il partirait du mauvais pied.
     const messages = [
-      ...(Array.isArray(history) ? history.map((h) => ({ role: h.role, content: h.content })) : []),
+      ...(!isDiagnostic && Array.isArray(history) ? history.map((h) => ({ role: h.role, content: h.content })) : []),
       { role: "user", content: message },
     ];
 
-    // max_tokens 1000 : la réponse fait 250 mots max (~400 tokens) + marge JSON.
-    // Limite la latence (timeout Netlify 10s par défaut, pas de streaming en MVP).
+    // Budget de sortie serré : le timeout Netlify synchrone est de 10 s et il
+    // n'y a pas de streaming en MVP. Le diagnostic est structuré en champs
+    // courts, 900 tokens suffisent largement.
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 1000,
+      max_tokens: isDiagnostic ? 900 : 1000,
       system,
       messages,
     });
@@ -596,10 +682,9 @@ ${contextStr}
       parsed = JSON.parse(raw);
     } catch (e) {
       // Si Claude n'a pas respecté le format JSON, on encapsule le texte brut
-      parsed = {
-        message: response.content[0].text,
-        apply: {},
-      };
+      parsed = isDiagnostic
+        ? { titre: "Diagnostic", cause: response.content[0].text, confiance: "faible", apply: {} }
+        : { message: response.content[0].text, apply: {} };
     }
 
     // === Filet de sécurité : bornage de l'apply ===
@@ -608,7 +693,13 @@ ${contextStr}
     const sanitized = sanitizeApply(parsed.apply, context);
     parsed.apply = sanitized.apply;
     if (sanitized.notes.length > 0) {
-      parsed.message = `${parsed.message}\n\n⚠️ ${sanitized.notes.join(" ")}`;
+      if (isDiagnostic) {
+        // En diagnostic le texte est structuré : on expose la note dans son
+        // propre champ plutôt que de la coller au bout d'une phrase.
+        parsed.limitNote = sanitized.notes.join(" ");
+      } else {
+        parsed.message = `${parsed.message}\n\n⚠️ ${sanitized.notes.join(" ")}`;
+      }
     }
 
     // === Incrément du compteur d'usage (après succès uniquement) ===

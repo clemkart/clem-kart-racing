@@ -1125,197 +1125,22 @@ const KB = {
       setup: ["Sans barre avant", "Voie AR à la butée max (140)", "Arbre le plus tendre", "Moyeux longs", "Pressions hautes"]
     }
   },
+  // Libellés des symptômes UNIQUEMENT.
+  // Les tables de causes/actions statiques ont été supprimées : elles
+  // produisaient le même diagnostic pour un Sodikart et un Tony Kart.
+  // Le raisonnement appartient à l IA (voir netlify/functions/kart-specs.js).
+  // ⚠️ Doit rester aligné avec SYMPTOM_LABELS dans netlify/functions/chat.js.
   diagnostics: {
-    understeer_entry: {
-      label: "Sous-virage à l'entrée",
-      causes: [
-        {
-          cause: "Manque de délestage de la roue AR intérieure",
-          actions: ["Augmenter la chasse (+1 à +2 crans)", "Réduire la voie avant (enlever bagues)", "Passer à un arbre plus souple"],
-          explanation: "Le kart ne transfère pas assez de poids sur le train AV à l'entrée. La roue AR intérieure reste au sol et freine la rotation."
-        },
-        {
-          cause: "Barre avant trop rigide",
-          actions: ["Assouplir la barre : verticale → ronde → horizontale", "Tenter sans barre sur piste grippée"],
-          explanation: "Une barre trop rigide empêche le chassis de se déformer, bloquant le transfert de charge latéral."
-        },
-        {
-          cause: "Voie arrière trop étroite",
-          actions: ["Élargir la voie AR de 0.5 à 1 cm", "Passer à des moyeux plus longs"],
-          explanation: "Voie AR étroite = blocage AR = moins de rotation."
-        },
-        {
-          cause: "Pression AV trop basse",
-          actions: ["Augmenter la pression AV de 0.05 bar", "Vérifier le delta froid/chaud AV"],
-          explanation: "Un pneu AV sous-gonflé manque de précision directionnelle et aggrave le sous-virage."
-        }
-      ]
-    },
-    understeer_mid: {
-      label: "Sous-virage en milieu de virage",
-      causes: [
-        {
-          cause: "Manque de grip train avant en appui",
-          actions: ["Augmenter voie avant (+1 à +2 bagues)", "Vérifier pression AV (légèrement baisser)"],
-          explanation: "En milieu de virage, le kart est en appui constant. Le pneu AV doit avoir assez de surface de contact."
-        },
-        {
-          cause: "Voie AR trop large",
-          actions: ["Réduire voie AR de 0.5 cm", "Passer à des moyeux plus courts"],
-          explanation: "Voie AR trop large libère trop le train AR, qui part et force le pilote à corriger, créant un sous-virage apparent."
-        },
-        {
-          cause: "Trajectoire sous-optimale",
-          actions: ["Retravailler le point de corde", "Point d'accélération trop tôt"],
-          explanation: "Remettre les gaz avant la fin de la rotation = roues dans le mauvais axe = kart tout droit."
-        }
-      ]
-    },
-    oversteer_entry: {
-      label: "Survirage à l'entrée",
-      causes: [
-        {
-          cause: "Trop de délestage AR / rotation trop brutale",
-          actions: ["Réduire la chasse (-1 cran)", "Élargir légèrement la voie AR", "Passer à un arbre plus dur"],
-          explanation: "Le train AR se décharge trop rapidement à l'entrée. La roue AR intérieure se lève trop vite."
-        },
-        {
-          cause: "Pression AR trop haute",
-          actions: ["Baisser la pression AR de 0.05 bar", "Vérifier le delta froid/chaud AR"],
-          explanation: "Un pneu AR trop gonflé réduit la surface de contact et diminue l'adhérence en entrée de virage."
-        },
-        {
-          cause: "Voie AR trop étroite pour ce niveau de grip",
-          actions: ["Élargir voie AR (+0.5 cm)", "Sur piste grippée : passer sans barre avant"],
-          explanation: "La combinaison voie étroite + grip élevé peut provoquer un pivotement trop brusque."
-        }
-      ]
-    },
-    oversteer_exit: {
-      label: "Survirage à la sortie",
-      causes: [
-        {
-          cause: "Remise des gaz trop tôt",
-          actions: ["Attendre la fin de la rotation pour accélérer", "Point d'accélération = roues dans l'axe de la piste"],
-          explanation: "Accélérer trop tôt met toute la puissance sur des roues encore dans l'axe du virage. Le train AR part."
-        },
-        {
-          cause: "Pression AR insuffisante",
-          actions: ["Augmenter pression AR de 0.05 à 0.10 bar", "Vérifier delta : doit être +0.13 à +0.17"],
-          explanation: "Un pneu AR sous-gonflé chauffe trop vite en sortie et perd de l'adhérence."
-        },
-        {
-          cause: "Voie AR trop large + arbre trop souple",
-          actions: ["Réduire légèrement voie AR", "Passer arbre medium → dur"],
-          explanation: "La combinaison voie large + arbre souple maximise la rotation — parfois trop."
-        }
-      ]
-    },
-    no_rotation: {
-      label: "Pas de rotation / kart refuse de tourner",
-      causes: [
-        {
-          cause: "Châssis trop rigide pour le niveau de grip",
-          actions: ["Assouplir : retirer la barre, ou passer verticale → ronde → horizontale", "Élargir voie AR", "Arbre plus souple", "Moyeux plus longs"],
-          explanation: "Un châssis trop rigide ne peut pas se déformer pour créer le délestage de la roue AR intérieure. Le kart 'pousse' tout droit."
-        },
-        {
-          cause: "Chasse trop faible",
-          actions: ["Augmenter la chasse de 1 à 2 crans", "Vérifier géométrie AV"],
-          explanation: "La chasse crée l'effet de pivot à l'entrée de virage. Trop peu = pas d'initiation de rotation."
-        },
-        {
-          cause: "Pressions AR trop hautes",
-          actions: ["Baisser pression AR de 0.05 à 0.10 bar"],
-          explanation: "Un pneu AR sur-gonflé 'roule' sans se déformer, réduisant l'adhérence et la rotation."
-        }
-      ]
-    },
-    too_much_rotation: {
-      label: "Trop de rotation / nervosité",
-      causes: [
-        {
-          cause: "Châssis trop souple pour le niveau de grip",
-          actions: ["Ajouter/renforcer barre avant", "Réduire voie AR", "Arbre plus dur", "Serrer pare-chocs"],
-          explanation: "Sur piste à bas grip, un châssis souple perd son efficacité. Sur piste grippée, il peut être trop réactif."
-        },
-        {
-          cause: "Pression AR trop basse",
-          actions: ["Augmenter pression AR de 0.05 bar", "Vérifier qu'un pneu AR n'est pas crevé"],
-          explanation: "Un pneu AR sous-gonflé à grip élevé accroche de façon exponentielle."
-        }
-      ]
-    },
-    good_entry_bad_exit: {
-      label: "Bonne entrée, mauvaise sortie",
-      causes: [
-        {
-          cause: "Point d'accélération prématuré",
-          actions: ["Attendre que le kart soit en ligne droite pour remettre les gaz", "Travail mental : rotation complète d'abord"],
-          explanation: "C'est le problème pilote #1. Remettre les gaz avant la fin de rotation = kart tout droit = temps perdu."
-        },
-        {
-          cause: "Pression AR insuffisante en sortie",
-          actions: ["Augmenter légèrement pression AR (+0.05)", "Vérifier delta chaud AR"],
-          explanation: "Le pneu AR chauffe plus en sortie (traction). Si pression trop basse, il se déforme et perd de l'adhérence."
-        },
-        {
-          cause: "Voie AR trop large",
-          actions: ["Réduire voie AR de 0.5 cm", "Tester arbre plus dur"],
-          explanation: "Voie AR large libère beaucoup en entrée mais peut manquer de stabilité directionnelle en sortie sous accélération."
-        }
-      ]
-    },
-    general_lack_of_grip: {
-      label: "Manque de grip général",
-      causes: [
-        {
-          cause: "Pressions de pneus incorrectes",
-          actions: ["Vérifier delta froid/chaud sur les 4 pneus", "Delta cible : +0.13 à +0.17 bar", "Réduire pression froid si delta trop élevé"],
-          explanation: "Un pneu sur-gonflé réduit la surface de contact. Un sous-gonflé surchauffe. Le delta t'indique si tes pressions sont dans la bonne fenêtre."
-        },
-        {
-          cause: "Piste verte ou sale",
-          actions: ["Patience : le grip vient avec les tours", "Rigidifier le châssis pour créer du délestage mécanique", "Ne pas assouplir (erreur classique)"],
-          explanation: "En piste verte, le grip ne vient pas du caoutchouc mais du délestage mécanique. L'erreur est d'assouplir pour 'chercher' le grip."
-        },
-        {
-          cause: "Température de pneus trop basse",
-          actions: ["Augmenter le nombre de tours de mise en chauffe", "Légèrement baisser pression froid pour accélérer la chauffe"],
-          explanation: "Un pneu froid est dur et glisse. La fenêtre de fonctionnement du pneu karting est entre 60-90°C."
-        }
-      ]
-    },
-    instability_straight: {
-      label: "Instabilité en ligne droite",
-      causes: [
-        {
-          cause: "Pression de pneu trop basse (un ou plusieurs)",
-          actions: ["Vérifier les 4 pressions individuellement", "Un pneu crevé ou fuyant ?", "Augmenter pression globale"],
-          explanation: "Un pneu sous-gonflé en ligne droite crée une dérive progressive. Surtout critique à haute vitesse."
-        },
-        {
-          cause: "Alignement / géométrie déficiente",
-          actions: ["Vérifier le pincement AV (neutre ou légèrement pincé)", "Contrôler visuellement que l'axe AR est droit"],
-          explanation: "Un pincement excessif ou un axe tordu crée une instabilité directionnelle."
-        },
-        {
-          cause: "Voie AR trop large + arbre trop souple",
-          actions: ["Légèrement réduire voie AR", "Passer à arbre plus dur"],
-          explanation: "La combinaison maximise la souplesse mais peut créer des oscillations à haute vitesse."
-        }
-      ]
-    },
-    balanced: {
-      label: "Kart équilibré",
-      causes: [
-        {
-          cause: "Setup correct — optimisation possible",
-          actions: ["Note précisément le setup actuel", "Travailler sur le point d'accélération", "Affiner les pressions de 0.02 bar à la fois"],
-          explanation: "Si le kart est équilibré, les gains viennent du pilotage. Focus sur la technique : freinage dégressif, point d'accélération, light hands."
-        }
-      ]
-    }
+    understeer_entry: { label: "Sous-virage à l'entrée" },
+    understeer_mid: { label: "Sous-virage en milieu de virage" },
+    oversteer_entry: { label: "Survirage à l'entrée" },
+    oversteer_exit: { label: "Survirage à la sortie" },
+    no_rotation: { label: "Pas de rotation / kart refuse de tourner" },
+    too_much_rotation: { label: "Trop de rotation / nervosité" },
+    good_entry_bad_exit: { label: "Bonne entrée, mauvaise sortie" },
+    general_lack_of_grip: { label: "Manque de grip général" },
+    instability_straight: { label: "Instabilité en ligne droite" },
+    balanced: { label: "Kart équilibré" },
   },
   chatbot: {
     'sous-virage': {
@@ -2217,54 +2042,35 @@ function runDiagnostic() {
     html += `</div>`;
   }
 
-  // MAIN BEHAVIOR DIAGNOSTIC
-  if(data.comportement && data.comportement !== '') {
-    const diag = KB.diagnostics[data.comportement];
-    const pil = KB_PILOTAGE[data.comportement];
+  // === DIAGNOSTIC — raisonné par l'IA, calibré châssis × moteur ===
+  // La table statique KB.diagnostics produisait la MÊME sortie pour un Sodikart
+  // et un Tony Kart : c'est ce qu'un pilote de haut niveau a immédiatement
+  // repéré. Le jugement technique appartient désormais à l'IA, qui reçoit la
+  // fiche matériel du kart. Seuls les CALCULS restent locaux (au-dessus).
+  if (data.comportement && data.comportement !== '') {
     const intensiteVal = parseInt(data.intensite);
     const intensiteLabel = intensiteVal <= 3 ? 'Léger' : intensiteVal <= 6 ? 'Modéré' : 'Sévère';
     const intensiteColor = intensiteVal <= 3 ? 'var(--green)' : intensiteVal <= 6 ? 'var(--orange)' : 'var(--red)';
     const gripInfo = KB.grip[gripVal];
+    const label = (KB.diagnostics[data.comportement] && KB.diagnostics[data.comportement].label) || data.comportement;
+    const materiel = isLocation
+      ? 'Kart de location'
+      : [data.chassis, data.moteur].filter(Boolean).join(' × ') || 'matériel non renseigné';
 
-    if (isLocation && pil) {
-      // === MODE LOCATION : pilotage uniquement (rien à régler sur le kart) ===
-      html += `<div class="diag-block">
-        <div class="diag-block-title"><span class="diag-icon">🧠</span> Pilotage — ${diag ? diag.label : data.comportement} <span style="font-size:14px;color:${intensiteColor};margin-left:8px;">${intensiteLabel} (${intensiteVal}/10)</span></div>`;
-      if(gripInfo) {
-        html += `<div class="info-block"><div class="info-title">🏁 Contexte grip : ${gripLabel(gripVal)}</div><p>${gripInfo.philosophy}</p></div>`;
-      }
-      html += `<ul class="diag-actions">`;
-      pil.actions.forEach(a => { html += `<li>${a}</li>`; });
-      html += `</ul>
-        <div class="diag-explanation">${pil.why}</div>
-        <div class="info-block" style="margin-top:10px;"><div class="info-title">🏁 Kart de location</div><p>Si le comportement persiste d'un kart à l'autre, c'est le pilotage — et ça se travaille. S'il change selon le kart, signale-le à l'accueil et demande à en changer.</p></div>
-      </div>`;
-    } else if (diag) {
-      // === MODE PROPRIO : pilotage d'abord, puis les causes setup ===
-      html += `<div class="diag-block">
-        <div class="diag-block-title"><span class="diag-icon">🎯</span> ${diag.label} <span style="font-size:14px;color:${intensiteColor};margin-left:8px;">${intensiteLabel} (${intensiteVal}/10)</span></div>`;
+    html += `<div class="diag-block">
+      <div class="diag-block-title"><span class="diag-icon">🎯</span> ${escapeHtml(label)} <span style="font-size:14px;color:${intensiteColor};margin-left:8px;">${intensiteLabel} (${intensiteVal}/10)</span></div>
+      <div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Analyse calibrée pour ${escapeHtml(materiel)}</div>`;
 
-      if(gripInfo) {
-        html += `<div class="info-block"><div class="info-title">🏁 Contexte grip : ${gripLabel(gripVal)}</div><p>${gripInfo.philosophy}</p></div>`;
-      }
-
-      // Le pilotage avant les réglages — la règle n°1 du guide
-      if (pil) {
-        html += `<div class="info-block"><div class="info-title">🧠 Réflexe pilotage d'abord</div><p>${pil.first}</p></div>`;
-      }
-
-      diag.causes.forEach((c, i) => {
-        html += `<div class="diag-item">
-          <div class="diag-cause">${i+1}. ${c.cause}</div>
-          <ul class="diag-actions">`;
-        c.actions.forEach(a => { html += `<li>${a}</li>`; });
-        html += `</ul>
-          <div class="diag-explanation">${c.explanation}</div>
-        </div>`;
-      });
-
-      html += `</div>`;
+    if (gripInfo) {
+      html += `<div class="info-block"><div class="info-title">🏁 Contexte grip : ${gripLabel(gripVal)}</div><p>${gripInfo.philosophy}</p></div>`;
     }
+
+    // Conteneur rempli par le diagnostic IA (appel lancé après le rendu)
+    html += `<div id="ai-diag-slot">
+        <div class="info-block"><div class="info-title" id="ai-diag-loading">⏳ Analyse de ton ${escapeHtml(materiel)}…</div>
+        <p style="font-size:12px;color:var(--text-dim);">Croisement de tes réglages, de tes chronos et des spécificités de ton châssis.</p></div>
+      </div>
+    </div>`;
   }
 
   // 📈 TENDANCES CROSS-SESSIONS — la mémoire longue du race engineer
@@ -2301,7 +2107,7 @@ function runDiagnostic() {
     incDiagCount();
   }
 
-  // DISPLAY
+  // DISPLAY — la couche factuelle s'affiche immédiatement
   welcome.style.display = 'none';
   result.style.display = 'flex';
   result.innerHTML = html;
@@ -2310,6 +2116,139 @@ function runDiagnostic() {
   if (window.innerWidth <= 900) {
     document.querySelector('.right-panel')?.scrollIntoView({ behavior: 'smooth' });
   }
+
+  // Puis le raisonnement IA vient se greffer dessous
+  if (document.getElementById('ai-diag-slot')) {
+    fetchAiDiagnostic(data);
+  }
+}
+
+// =============================================
+// DIAGNOSTIC IA — le raisonnement, calibré châssis × moteur
+// =============================================
+// La couche factuelle (pressions, chronos, butées) est déjà rendue : ce sont
+// des CALCULS, une IA les ferait moins bien et plus lentement. Ici on demande
+// le JUGEMENT, avec la fiche matériel du kart côté serveur.
+async function fetchAiDiagnostic(data) {
+  const slot = document.getElementById('ai-diag-slot');
+  if (!slot) return;
+
+  // Message de chargement progressif (la latence réelle ne change pas,
+  // la latence perçue si)
+  const materiel = [data.chassis, data.moteur].filter(Boolean).join(' × ') || 'ton kart';
+  const steps = [
+    `⏳ Analyse de ton ${materiel}…`,
+    '⏳ Croisement châssis × conditions piste…',
+    '⏳ Vérification des butées de réglage…',
+    '⏳ Rédaction du diagnostic…',
+  ];
+  let step = 0;
+  const timer = setInterval(() => {
+    step = Math.min(step + 1, steps.length - 1);
+    const el = document.getElementById('ai-diag-loading');
+    if (el) el.textContent = steps[step];
+  }, 2200);
+
+  const finish = (innerHtml) => {
+    clearInterval(timer);
+    const s = document.getElementById('ai-diag-slot');
+    if (s) s.innerHTML = innerHtml;
+  };
+
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (sb) {
+      const token = await getAccessToken();
+      if (!token) {
+        finish(`<div class="info-block"><div class="info-title">🔐 Diagnostic complet réservé aux comptes</div>
+          <p>Les mesures ci-dessus sont à toi. Le diagnostic raisonné sur ton ${escapeHtml(materiel)} nécessite un compte (gratuit).</p>
+          <button class="apply-setup-btn" onclick="openAuthModal()" style="margin-top:6px;">Se connecter</button></div>`);
+        return;
+      }
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ mode: 'diagnostic', context: data }),
+    });
+
+    if (!res.ok) {
+      let err = null;
+      try { err = await res.json(); } catch (e) {}
+      const msg = res.status === 403 && err?.code === 'quota_exceeded'
+        ? escapeHtml(err.message || 'Quota atteint.')
+        : res.status === 401
+        ? 'Session expirée — reconnecte-toi pour le diagnostic complet.'
+        : 'Le diagnostic détaillé est momentanément indisponible.';
+      finish(`<div class="info-block"><div class="info-title">⚠️ ${msg}</div>
+        <p style="font-size:12px;color:var(--text-dim);">Les mesures ci-dessus restent valables : pressions, chronos et butées sont calculées en local.</p></div>`);
+      return;
+    }
+
+    const d = await res.json();
+    finish(renderAiDiagnostic(d, data));
+    if (d.quota && d.quota.limit) updateQuotaBadge(d.quota);
+    track('ai_diagnostic', { chassis: data.chassis || null, moteur: data.moteur || null, confiance: d.confiance || null });
+
+  } catch (e) {
+    console.error('fetchAiDiagnostic failed:', e);
+    finish(`<div class="info-block"><div class="info-title">⚠️ Connexion impossible</div>
+      <p style="font-size:12px;color:var(--text-dim);">Les mesures ci-dessus sont calculées en local et restent valables. Relance l'analyse une fois reconnecté.</p></div>`);
+  }
+}
+
+function renderAiDiagnostic(d, data) {
+  if (!d || (!d.cause && !d.titre)) {
+    return `<div class="info-block"><div class="info-title">⚠️ Réponse inattendue</div><p>Relance l'analyse.</p></div>`;
+  }
+
+  const conf = { haute: ['🟢', 'Confiance haute'], moyenne: ['🟠', 'Confiance moyenne'], faible: ['🔴', 'Confiance faible'] };
+  const c = conf[d.confiance] || conf.moyenne;
+
+  let h = '';
+  if (d.titre) h += `<div class="diag-cause" style="margin-bottom:10px;">${escapeHtml(d.titre)}</div>`;
+
+  // Le pilotage AVANT les réglages — règle n°1 du guide
+  if (d.pilotage) {
+    h += `<div class="info-block"><div class="info-title">🧠 Réflexe pilotage d'abord</div><p>${escapeHtml(d.pilotage)}</p></div>`;
+  }
+  if (d.lecture) {
+    h += `<div class="diag-item"><div class="diag-cause">📊 Ce que disent tes données</div>
+      <div class="diag-explanation">${escapeHtml(d.lecture)}</div></div>`;
+  }
+  if (d.cause) {
+    h += `<div class="diag-item"><div class="diag-cause">🔍 Cause probable</div>
+      <div class="diag-explanation">${escapeHtml(d.cause)}</div></div>`;
+  }
+  if (d.action) {
+    h += `<div class="diag-item"><div class="diag-cause">🔧 Le changement à faire — un seul</div>
+      <ul class="diag-actions"><li>${escapeHtml(d.action)}</li></ul>
+      ${d.pourquoi ? `<div class="diag-explanation">${escapeHtml(d.pourquoi)}</div>` : ''}</div>`;
+  }
+  if (d.aObserver) {
+    h += `<div class="info-block"><div class="info-title">👀 À observer au prochain relais</div><p>${escapeHtml(d.aObserver)}</p></div>`;
+  }
+  if (d.limitNote) {
+    h += `<div class="alert-block"><div class="alert-title">⚠️ Butée de réglage</div><p>${escapeHtml(d.limitNote)}</p></div>`;
+  }
+
+  if (d.apply && Object.keys(d.apply).length > 0) {
+    const id = 'diagapply-' + Date.now();
+    window._pendingApply = window._pendingApply || {};
+    window._pendingApply[id] = d.apply;
+    h += `<div style="text-align:center;margin-top:10px;">
+      <button class="apply-setup-btn" onclick='applyRecommendedSetup(window._pendingApply["${id}"])'>⚡ Appliquer ce réglage</button></div>`;
+  }
+
+  h += `<div style="margin-top:10px;font-size:11px;color:var(--text-dim);">${c[0]} ${c[1]}`;
+  if (d.confiance === 'faible') {
+    h += ` — recoupe ce diagnostic avec ton ressenti avant de l'appliquer.`;
+  }
+  h += `</div>`;
+
+  return h;
 }
 
 function gripLabel(v) {
@@ -3216,196 +3155,88 @@ function selectDiagOption(idx, step) {
   }, 300);
 }
 
-function generateDiagResult() {
+// Traduit les 4 réponses du diagnostic guidé vers un code symptôme du
+// formulaire, pour que le guidé et l'express parlent le même langage —
+// et passent tous les deux par l'IA avec la fiche matériel du kart.
+function diagStateToComportement(phase, behavior) {
+  if (behavior === 'understeer') {
+    if (phase === 'entry') return 'understeer_entry';
+    if (phase === 'mid') return 'understeer_mid';
+    if (phase === 'exit') return 'good_entry_bad_exit';
+    return 'no_rotation';
+  }
+  if (behavior === 'oversteer') {
+    if (phase === 'entry') return 'oversteer_entry';
+    if (phase === 'exit') return 'oversteer_exit';
+    return 'too_much_rotation';
+  }
+  if (behavior === 'no_rotation') return 'no_rotation';
+  if (behavior === 'no_grip') return 'general_lack_of_grip';
+  if (behavior === 'instability') return phase === 'straight' ? 'instability_straight' : 'too_much_rotation';
+  return 'general_lack_of_grip';
+}
+
+async function generateDiagResult() {
   const {phase, behavior, grip, intensity} = diagState;
 
-  // Build recommendation matrix
-  const recs = buildRecommendations(phase, behavior, grip, intensity);
+  // Le guidé enrichit le contexte de session, puis passe par le MÊME moteur IA
+  // que le diagnostic express : un seul raisonnement, une seule fiche matériel.
+  const context = collectData();
+  context.comportement = diagStateToComportement(phase, behavior);
+  if (grip) context.grip = grip;
+  if (intensity) context.intensite = intensity;
 
-  let html = `<strong style="color:var(--green)">✅ Diagnostic complet — Setup recommandé :</strong><br><br>`;
-  html += `<div style="background:var(--dark3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px;">`;
-  html += `<div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Problème identifié</div>`;
-  html += `<div style="color:var(--yellow);font-weight:600;margin-bottom:4px;">${recs.diagnosis}</div>`;
-  html += `<div style="font-size:12px;color:var(--text-dim);">${recs.explanation}</div>`;
-  html += `</div>`;
+  const loadingId = 'guided-' + Date.now();
+  addMsg(`<em style="color:var(--text-dim);" id="${loadingId}">⏳ Analyse de ton ${escapeHtml([context.chassis, context.moteur].filter(Boolean).join(' × ') || 'kart')}…</em>`, 'bot');
 
-  html += `<div style="background:var(--dark3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px;">`;
-  if (recs.changes.length > 0) {
-    html += `<div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Le changement à faire — un seul</div>`;
-    recs.changes.forEach(c => {
-      html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;">
-        <span style="color:var(--red);font-size:16px;">→</span>
-        <span><strong>${escapeHtml(c.label)}</strong> : ${escapeHtml(String(c.from))} → <strong style="color:var(--green)">${escapeHtml(c.to)}</strong></span>
-      </div>`;
-    });
-  } else {
-    html += `<div style="font-size:11px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Aucun levier châssis disponible</div>
-      <div style="font-size:13px;color:var(--text-dim);">Les réglages concernés sont déjà en butée. Le gain est à chercher côté pilotage ou pneus.</div>`;
-  }
-  html += `</div>`;
-
-  // Pistes suivantes : affichées mais JAMAIS appliquées — un seul changement
-  // à la fois, sinon impossible de savoir lequel a produit l'effet.
-  if (recs.nextSteps && recs.nextSteps.length > 0) {
-    html += `<div style="background:var(--dark3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px;">`;
-    html += `<div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Si ça ne suffit pas — dans cet ordre</div>`;
-    recs.nextSteps.forEach(s => {
-      html += `<div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">· ${escapeHtml(s)}</div>`;
-    });
-    html += `<div style="font-size:11px;color:var(--text-dim);margin-top:8px;font-style:italic;">Une seule modification par session : c'est la seule façon de savoir ce qui marche.</div>`;
-    html += `</div>`;
-  }
-
-  html += `<div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;font-style:italic;">${recs.tip}</div>`;
-
-  // Apply button (seulement s'il y a réellement quelque chose à appliquer)
-  if (Object.keys(recs.apply).length > 0) {
-    html += `<button class="apply-setup-btn" onclick="applyRecommendedSetup(${JSON.stringify(recs.apply).replace(/"/g,'&quot;')})">⚡ Appliquer ce réglage dans l'interface</button>`;
-  }
-
-  addMsg(html, 'bot');
-
-  // Reset diag state
-  setTimeout(() => {
-    addMsg('Tu peux modifier les réglages manuellement si besoin, puis cliquer sur <strong>Analyser la session</strong> pour le diagnostic complet.', 'bot');
-    diagState = null;
-  }, 500);
-}
-
-function buildRecommendations(phase, behavior, grip, intensity) {
-  // Combinatoire des recommandations
-  let diagnosis = '';
-  let explanation = '';
-  let tip = '';
-  let changes = [];
-  let apply = {};
-  let nextSteps = [];   // pistes suivantes, NON appliquées (méthode : un seul changement)
-  let candidates = [];  // leviers classés par priorité — on retient le 1er disponible
-
-  const isLowGrip = ['verte','sale'].includes(grip);
-  const isHighGrip = ['grippee','ultra'].includes(grip);
-
-  if(behavior === 'understeer' || behavior === 'no_rotation') {
-    if(phase === 'entry') {
-      diagnosis = 'Sous-virage à l\'entrée — manque de délestage AR';
-      explanation = 'La roue AR intérieure reste au sol à l\'initiation du virage. Le kart ne peut pas pivoter.';
-      tip = 'Rappel : c\'est le freinage dégressif + la chasse qui créent le délestage. Le volant ne fait pas tourner le kart.';
-      candidates = isLowGrip
-        ? [{k:'barre', v:'plate_v', label:'Barre avant', to:'Plate verticale (sur le chant, max rigidité)'},
-           {k:'voieAr', v:-0.5, label:'Voie AR', to:'Réduire de 0.5 cm'},
-           {k:'arbre', v:'dur', label:'Arbre', to:'Dur'}]
-        : [{k:'chasse', v:+1, label:'Chasse', to:'+1 cran'},
-           {k:'barre', v:'ronde', label:'Barre avant', to:'Ronde (assouplir)'},
-           {k:'voieAr', v:+0.5, label:'Voie AR', to:'+0.5 cm'}];
-    } else if(phase === 'mid') {
-      diagnosis = 'Sous-virage en appui — manque de grip AV';
-      explanation = 'En appui constant, le train avant n\'a pas assez d\'adhérence. Élargir la voie AV ou ajuster les pressions.';
-      tip = 'Vérifie aussi ta trajectoire — un apex trop tardif force un appui prolongé qui aggrave le sous-virage.';
-      candidates = [{k:'voieAv', v:+1, label:'Voie avant', to:'+1 bague'}];
-      nextSteps = ['Pressions AV : baisser de 0.05 bar si le sous-virage persiste'];
-    } else {
-      diagnosis = 'Manque de rotation général';
-      explanation = 'Le kart est globalement trop rigide ou la géométrie ne favorise pas le délestage.';
-      tip = isLowGrip ? 'En piste '+grip+' : rigidifie davantage — le délestage est mécanique, pas par adhérence.' : 'Assouplir progressivement — un seul réglage à la fois.';
-      candidates = [{k:'chasse', v:+1, label:'Chasse', to:'+1 cran'},
-                    {k:'voieAr', v:+0.5, label:'Voie AR', to:'+0.5 cm'}];
-      nextSteps = ['Arbre : assouplir d\'un cran si les deux premiers leviers ne suffisent pas'];
-    }
-  }
-
-  else if(behavior === 'oversteer') {
-    if(phase === 'entry') {
-      diagnosis = 'Survirage à l\'entrée — délestage AR trop brutal';
-      explanation = 'La roue AR intérieure se soulève trop vite. Le train AR part avant que tu aies le temps de corriger.';
-      tip = 'Attention : si ça arrive surtout en freinage, travaille aussi le freinage dégressif avant de toucher au setup.';
-      candidates = [{k:'chasse', v:-1, label:'Chasse', to:'-1 cran'},
-                    {k:'arbre', v:'dur', label:'Arbre', to:'Dur'},
-                    {k:'voieAr', v:+0.5, label:'Voie AR', to:'+0.5 cm'}];
-    } else if(phase === 'exit') {
-      diagnosis = 'Survirage en sortie — souvent du pilotage';
-      explanation = 'L\'arrière part à l\'accélération. Cause principale : gaz remis trop tôt, roues pas encore dans l\'axe.';
-      tip = '⚠️ 80% du temps, c\'est un problème de pilotage. Attends que le kart soit aligné AVANT de remettre les gaz.';
-      candidates = [{k:'voieAr', v:-0.5, label:'Voie AR', to:'-0.5 cm'}];
-      nextSteps = ['Pressions AR : +0.05 bar (froid) avant de toucher au châssis'];
-    } else {
-      diagnosis = 'Survirage général — châssis trop souple';
-      explanation = isHighGrip ? 'Piste '+grip+' + châssis souple = trop de rotation. Rigidifier.' : 'Kart nerveux globalement.';
-      tip = 'Rigidifie progressivement. Commence par la barre avant.';
-      candidates = [{k:'barre', v:'plate_v', label:'Barre avant', to:'Plate verticale (rigidifier)'}];
-      nextSteps = ['Pressions AR : +0.05 bar'];
-    }
-  }
-
-  else if(behavior === 'no_grip') {
-    diagnosis = 'Manque de grip global — pressions et setup à vérifier';
-    explanation = isLowGrip
-      ? 'Piste '+grip+' : le grip vient du délestage mécanique, pas du caoutchouc. Rigidifie contre-intuitivement.'
-      : 'Pneus hors fenêtre de température ou pressions incorrectes.';
-    tip = 'Vérifie d\'abord le delta froid/chaud de tes pneus dans l\'onglet Pneus.';
-    if (isLowGrip) {
-      candidates = [{k:'barre', v:'plate_v', label:'Barre avant', to:'Plate verticale (rigide)'},
-                    {k:'arbre', v:'dur', label:'Arbre', to:'Dur'}];
-      nextSteps = ['Voie AR : réduire de 0.5 cm en dernier recours'];
-    } else {
-      nextSteps = ['Pressions : viser le delta cible +0.13 à +0.17 bar',
-                   'Mise en chauffe : 1-2 tours supplémentaires'];
-    }
-  }
-
-  else if(behavior === 'instability') {
-    diagnosis = 'Instabilité — pincement ou pression à vérifier';
-    explanation = 'Souvent causé par une pression inégale, un pincement excessif ou une voie AR trop large.';
-    tip = 'Commence par vérifier les pressions individuellement — un pneu qui fuit crée une instabilité progressive.';
-    // Le pincement se ramène vers le neutre : delta calculé depuis la valeur réelle
-    const pincActuel = parseInt(document.getElementById('pincement')?.value ?? '0', 10) || 0;
-    if (pincActuel !== 0) {
-      candidates = [{k:'pincement', v:-pincActuel, label:'Pincement AV', to:'Neutre (0)'}];
-      nextSteps = ['Voie AR : réduire de 0.5 cm', 'Arbre : passer en dur ou medium'];
-    } else {
-      candidates = [{k:'voieAr', v:-0.5, label:'Voie AR', to:'-0.5 cm'}];
-      nextSteps = ['Arbre : passer en dur ou medium'];
-    }
-  }
-
-  // === Sélection du levier UNIQUE ===
-  // Règle de la maison : un seul changement à la fois, sinon le pilote ne peut
-  // pas savoir lequel a marché. On retient le premier levier disponible, les
-  // autres deviennent des "pistes suivantes" purement informatives.
-  let picked = null;
-  for (const c of candidates) {
-    if (typeof c.v === 'number' && SETUP_LIMITS[c.k]) {
-      const el = document.getElementById(c.k === 'voieAr' ? 'voie-ar' : c.k === 'voieAv' ? 'voie-av' : c.k);
-      const current = el ? parseFloat(el.value) : NaN;
-      if (isAtLimit(c.k, current, Math.sign(c.v))) {
-        const lim = SETUP_LIMITS[c.k];
-        nextSteps.unshift(`${c.label} : déjà en butée (${current}${lim.unit ? ' ' + lim.unit : ''}) — levier indisponible`);
-        continue; // levier saturé → on passe au suivant
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (sb) {
+      const token = await getAccessToken();
+      if (!token) {
+        document.getElementById(loadingId)?.closest('.msg')?.remove();
+        addMsg('🔐 Le diagnostic guidé nécessite un compte (gratuit). <button class="apply-setup-btn" onclick="openAuthModal()" style="margin-top:6px;">Se connecter</button>', 'bot');
+        diagState = null;
+        return;
       }
+      headers['Authorization'] = `Bearer ${token}`;
     }
-    picked = c;
-    break;
+
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST', headers,
+      body: JSON.stringify({ mode: 'diagnostic', context }),
+    });
+    document.getElementById(loadingId)?.closest('.msg')?.remove();
+
+    if (!res.ok) {
+      addMsg('⚠️ Diagnostic momentanément indisponible. Réessaie dans un instant.', 'bot');
+      diagState = null;
+      return;
+    }
+
+    const d = await res.json();
+    addMsg(`<strong style="color:var(--green)">✅ Diagnostic — ${escapeHtml([context.chassis, context.moteur].filter(Boolean).join(' × ') || 'ton kart')}</strong><br><br>`
+      + renderAiDiagnostic(d, context), 'bot');
+    if (d.quota && d.quota.limit) updateQuotaBadge(d.quota);
+    track('ai_diagnostic', { source: 'guide', chassis: context.chassis || null, confiance: d.confiance || null });
+
+  } catch (e) {
+    console.error('generateDiagResult failed:', e);
+    document.getElementById(loadingId)?.closest('.msg')?.remove();
+    addMsg('⚠️ Connexion impossible. Réessaie une fois reconnecté.', 'bot');
   }
 
-  if (picked) {
-    apply = { [picked.k]: picked.v };
-    const el = document.getElementById(picked.k === 'voieAr' ? 'voie-ar' : picked.k === 'voieAv' ? 'voie-av' : picked.k);
-    const from = el ? el.value : 'actuel';
-    changes = [{ label: picked.label, from, to: picked.to }];
-    // Les candidats non retenus rejoignent les pistes suivantes
-    candidates.filter(c => c !== picked).forEach(c => nextSteps.push(`${c.label} : ${c.to}`));
-  }
-
-  if(!diagnosis) {
-    diagnosis = 'Problème à analyser';
-    explanation = 'Basé sur tes réponses, voici les réglages de base à explorer.';
-    tip = 'Utilise aussi l\'onglet Diagnostic après avoir rempli les paramètres de session.';
-    changes = [];
-    nextSteps = ['Revenir à un setup neutre de référence'];
-    apply = {};
-  }
-
-  return {diagnosis, explanation, tip, changes, nextSteps, apply};
+  setTimeout(() => {
+    addMsg('Tu peux aussi remplir la grille complète à gauche et cliquer sur <strong>Analyser la session</strong> pour un diagnostic avec tes chronos et tes pressions.', 'bot');
+    diagState = null;
+  }, 400);
 }
+
+// L'ancien moteur statique (_legacyGenerateDiagResult + buildRecommendations)
+// a ete supprime : il produisait la meme recommandation quel que soit le
+// chassis. Le diagnostic guide passe desormais par le moteur IA, comme
+// le diagnostic express.
+
 
 function applyRecommendedSetup(applyObj) {
   // Validation de base — si applyObj est invalide on sort proprement
