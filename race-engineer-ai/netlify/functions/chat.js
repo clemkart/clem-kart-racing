@@ -90,7 +90,9 @@ const APPLY_ENUMS = {
 // en glisser un. Filet de sécurité : on nettoie tout texte sortant.
 // U+2014 (cadratin) et U+2013 (demi-cadratin) deviennent une ponctuation
 // française naturelle. Le trait d'union U+002D des mots composés est préservé.
-const DASH_RE = /\s*[—–]\s*/g;
+// U+2014 = tiret cadratin, U+2013 = demi-cadratin. Écrits en échappements pour
+// que le caractère lui-même n'apparaisse dans AUCUN fichier du projet.
+const DASH_RE = new RegExp("\s*[\u2014\u2013]\s*", "g");
 
 function stripLongDashes(value) {
   if (typeof value === "string") {

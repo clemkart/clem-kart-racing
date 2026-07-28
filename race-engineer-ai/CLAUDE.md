@@ -1,4 +1,4 @@
-# Race Engineer AI — Contexte projet pour Claude Code
+# Race Engineer AI : Contexte projet pour Claude Code
 
 ## ⚠️ RÈGLE ABSOLUE AVANT DE CODER
 **Ne jamais coder immédiatement.** Avant toute implémentation :
@@ -14,7 +14,7 @@ Les crédits sont limités (abonnement $20). Chaque token compte. Réfléchir av
 ## Vision du projet
 
 Un outil d'assistant Race Engineer personnel pour pilotes de karting amateur/compétitif.
-L'idée : reproduire ce qu'un vrai race engineer ferait entre les sessions — analyser les données, proposer des réglages, identifier les causes de sous-performance.
+L'idée : reproduire ce qu'un vrai race engineer ferait entre les sessions : analyser les données, proposer des réglages, identifier les causes de sous-performance.
 
 **Ce n'est pas un chatbot générique.** C'est un outil spécialisé, ancré dans la réalité du karting, qui parle le langage d'un pilote.
 
@@ -52,9 +52,9 @@ L'idée : reproduire ce qu'un vrai race engineer ferait entre les sessions — a
 
 ## Stack technique envisagée
 
-- **Frontend** : HTML/CSS/JS vanilla (pas de framework pour l'instant — simplicité)
-- **Backend** : Netlify Functions (Node.js) — déjà utilisé sur le site principal
-- **IA** : API Anthropic (Claude) — modèle à définir selon coût/perf
+- **Frontend** : HTML/CSS/JS vanilla (pas de framework pour l'instant : simplicité)
+- **Backend** : Netlify Functions (Node.js) : déjà utilisé sur le site principal
+- **IA** : API Anthropic (Claude) : modèle à définir selon coût/perf
 - **Auth** : Supabase (prévu, pas encore implémenté)
 - **BDD** : Supabase (sessions, historique, utilisateurs)
 - **Hébergement** : Netlify
@@ -73,7 +73,7 @@ L'idée : reproduire ce qu'un vrai race engineer ferait entre les sessions — a
 
 ## Ce qui existe déjà sur le site principal
 
-- `netlify/functions/send-email.js` — fonction Netlify opérationnelle (Brevo API)
+- `netlify/functions/send-email.js` : fonction Netlify opérationnelle (Brevo API)
 - Variables d'environnement Netlify configurées :
   - `BREVO_API_KEY`
   - `SUPABASE_SERVICE_ROLE_KEY` (à ajouter)
@@ -134,9 +134,9 @@ Lien avec l'écosystème existant :
 ## Instructions pour Claude Code
 
 1. **Toujours proposer un plan avant de coder**
-2. **Commencer par le MVP uniquement** — pas de feature creep
-3. **Garder le code simple** — HTML/JS vanilla tant que possible
+2. **Commencer par le MVP uniquement** : pas de feature creep
+3. **Garder le code simple** : HTML/JS vanilla tant que possible
 4. **Chaque fonction Netlify = un fichier séparé**
-5. **Ne jamais hardcoder de clés API** — toujours via variables d'environnement
+5. **Ne jamais hardcoder de clés API** : toujours via variables d'environnement
 6. **Tester localement avec `netlify dev` avant de pusher**
-7. **Un commit = une feature** — commits atomiques et descriptifs
+7. **Un commit = une feature** : commits atomiques et descriptifs

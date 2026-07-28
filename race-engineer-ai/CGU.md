@@ -1,13 +1,13 @@
 # CONDITIONS GÉNÉRALES D'UTILISATION
-## Race Engineer AI — Clem Kart Racing
+## Race Engineer AI : Clem Kart Racing
 
 **Version** : 1.0
 **Date d'entrée en vigueur** : 2026-05-27
-**Éditeur** : Clément DANIEL — projet Clem Kart Racing
+**Éditeur** : Clément DANIEL : projet Clem Kart Racing
 
 ---
 
-## ARTICLE 1 — OBJET
+## ARTICLE 1 : OBJET
 
 Les présentes Conditions Générales d'Utilisation (ci-après « CGU ») régissent l'utilisation du service **Race Engineer AI** (ci-après « le Service »), un outil numérique d'assistance au pilotage karting accessible via le site web de Clem Kart Racing.
 
@@ -17,7 +17,7 @@ L'utilisation du Service implique l'acceptation pleine et entière des présente
 
 ---
 
-## ARTICLE 2 — DÉFINITIONS
+## ARTICLE 2 : DÉFINITIONS
 
 - **Service** : l'application web Race Engineer AI, ses Functions serveur et son contenu pédagogique associé.
 - **Utilisateur** : toute personne physique ou morale qui accède au Service, qu'elle soit inscrite ou non.
@@ -28,7 +28,7 @@ L'utilisation du Service implique l'acceptation pleine et entière des présente
 
 ---
 
-## ARTICLE 3 — ACCEPTATION DES CGU
+## ARTICLE 3 : ACCEPTATION DES CGU
 
 L'acceptation des présentes CGU est matérialisée par :
 - Pour les Utilisateurs non inscrits : l'utilisation du Service en mode local (sans création de compte) vaut acceptation tacite.
@@ -40,9 +40,9 @@ L'Utilisateur reconnaît avoir lu, compris et accepté l'intégralité des prés
 
 ---
 
-## ARTICLE 4 — DESCRIPTION DU SERVICE
+## ARTICLE 4 : DESCRIPTION DU SERVICE
 
-### 4.1 — Fonctionnalités principales
+### 4.1 : Fonctionnalités principales
 
 Le Service propose :
 - Saisie structurée des conditions de session karting (piste, météo, pneus, châssis, moteur)
@@ -53,7 +53,7 @@ Le Service propose :
 - Historique des sessions (local ou cloud selon mode)
 - Profil pilote personnalisé pour adapter les recommandations
 
-### 4.2 — Nature du Service
+### 4.2 : Nature du Service
 
 Le Service est un **outil d'assistance pédagogique et technique**. Il ne se substitue en aucun cas à :
 - Un mécanicien ou préparateur professionnel
@@ -61,7 +61,7 @@ Le Service est un **outil d'assistance pédagogique et technique**. Il ne se sub
 - Le règlement officiel d'une catégorie de compétition (CIK-FIA, FFSA, FIA Karting, etc.)
 - Une formation à la sécurité en karting
 
-### 4.3 — Accessibilité
+### 4.3 : Accessibilité
 
 Le Service est accessible 24h/24, 7j/7, sous réserve :
 - D'une connexion internet fonctionnelle (pour les fonctions cloud et l'IA)
@@ -70,7 +70,7 @@ Le Service est accessible 24h/24, 7j/7, sous réserve :
 
 L'Éditeur ne garantit aucun niveau de service (SLA) particulier, sauf disposition contractuelle expresse.
 
-### 4.4 — Évolution du Service
+### 4.4 : Évolution du Service
 
 L'Éditeur se réserve le droit, à tout moment et sans préavis, de :
 - Modifier les fonctionnalités proposées
@@ -80,15 +80,15 @@ L'Éditeur se réserve le droit, à tout moment et sans préavis, de :
 
 ---
 
-## ARTICLE 5 — COMPTE UTILISATEUR
+## ARTICLE 5 : COMPTE UTILISATEUR
 
-### 5.1 — Création du Compte
+### 5.1 : Création du Compte
 
 La création d'un Compte est facultative. L'Utilisateur peut utiliser le Service en mode local uniquement (données stockées dans son navigateur).
 
 La création d'un Compte se fait par saisie d'une adresse email valide, suivie de la validation d'un lien de connexion envoyé par email (magic link). Aucun mot de passe n'est requis.
 
-### 5.2 — Engagements de l'Utilisateur
+### 5.2 : Engagements de l'Utilisateur
 
 L'Utilisateur s'engage à :
 - Fournir une adresse email valide et personnelle
@@ -97,41 +97,41 @@ L'Utilisateur s'engage à :
 - Signaler tout accès non autorisé à son Compte
 - Ne pas utiliser le Service à des fins illégales, frauduleuses ou contraires aux bonnes mœurs
 
-### 5.3 — Suspension ou suppression du Compte
+### 5.3 : Suspension ou suppression du Compte
 
 L'Éditeur se réserve le droit de suspendre ou supprimer tout Compte :
 - En cas de violation des présentes CGU
 - En cas d'usage frauduleux, abusif ou détourné du Service
 - En cas de comportement portant atteinte au Service ou à d'autres Utilisateurs
-- À la demande expresse de l'Utilisateur (droit de retrait — voir Article 9)
+- À la demande expresse de l'Utilisateur (droit de retrait : voir Article 9)
 
 ---
 
-## ARTICLE 6 — CONDITIONS FINANCIÈRES
+## ARTICLE 6 : CONDITIONS FINANCIÈRES
 
-### 6.1 — Version actuelle (MVP)
+### 6.1 : Version actuelle (MVP)
 
 Le Service est, à la date d'entrée en vigueur des présentes CGU, **gratuit** dans sa version actuelle, sans engagement ni frais cachés.
 
-### 6.2 — Évolutions tarifaires futures
+### 6.2 : Évolutions tarifaires futures
 
 L'Éditeur se réserve le droit d'introduire, à l'avenir, des fonctionnalités payantes ou un modèle d'abonnement (par exemple : tiers Pro et Premium avec quotas et fonctionnalités étendues).
 
 Les nouveaux tarifs et conditions de paiement feront l'objet d'une publication explicite avant leur mise en application. Les Utilisateurs existants seront informés au préalable.
 
-### 6.3 — Modes de paiement (à venir)
+### 6.3 : Modes de paiement (à venir)
 
 Lorsque des fonctions payantes seront mises en place, les paiements seront traités via des prestataires sécurisés (Stripe, Lemon Squeezy ou équivalent). L'Éditeur ne stockera aucune donnée bancaire sur ses serveurs.
 
-### 6.4 — Remboursement
+### 6.4 : Remboursement
 
 Sauf disposition légale contraire, les sommes versées pour des fonctions payantes ne sont pas remboursables une fois la prestation consommée (analyses effectuées, jetons IA utilisés). Pour les abonnements, l'Utilisateur pourra résilier à tout moment avec effet à la fin de la période en cours.
 
 ---
 
-## ARTICLE 7 — LIMITE DE RESPONSABILITÉ — CLAUSE ESSENTIELLE ⚠️
+## ARTICLE 7 : LIMITE DE RESPONSABILITÉ : CLAUSE ESSENTIELLE ⚠️
 
-### 7.1 — Nature indicative des conseils
+### 7.1 : Nature indicative des conseils
 
 **Les conseils, recommandations, diagnostics et analyses produits par le Service sont fournis À TITRE INDICATIF UNIQUEMENT.**
 
@@ -141,7 +141,7 @@ Ils sont générés par une intelligence artificielle (modèle Claude d'Anthropi
 - Une validation officielle de conformité réglementaire
 - Une prescription technique impérative
 
-### 7.2 — Responsabilité du matériel et de la sécurité
+### 7.2 : Responsabilité du matériel et de la sécurité
 
 **L'Utilisateur est et reste seul responsable :**
 - De l'état de son matériel (kart, moteur, châssis, pneus, équipement de protection)
@@ -156,13 +156,13 @@ Ils sont générés par une intelligence artificielle (modèle Claude d'Anthropi
 - Perte de chronos, de classement ou d'opportunité sportive
 - Dommage matériel ou corporel survenant en lien avec l'utilisation du Service ou de ses recommandations
 
-### 7.3 — Respect du règlement de compétition
+### 7.3 : Respect du règlement de compétition
 
 **Il appartient exclusivement à l'Utilisateur de vérifier la conformité de son kart, de ses réglages et de ses modifications avec le règlement officiel de sa catégorie** (CIK-FIA, FFSA, FIA Karting, fédérations nationales, règlements de course).
 
 Le Service inclut des garde-fous pour refuser toute demande relative à des modifications moteur ou à des contournements réglementaires. Cependant, l'Éditeur ne saurait être tenu responsable en cas de disqualification, sanction sportive ou suspension de licence consécutive à l'application d'un conseil mal interprété ou à une initiative personnelle de l'Utilisateur.
 
-### 7.4 — Exactitude des informations
+### 7.4 : Exactitude des informations
 
 L'Éditeur s'efforce de fournir des informations exactes et à jour, mais ne garantit pas :
 - L'exhaustivité, l'exactitude ou la pertinence absolue des conseils générés par l'IA
@@ -171,25 +171,25 @@ L'Éditeur s'efforce de fournir des informations exactes et à jour, mais ne gar
 
 L'IA peut produire des réponses imparfaites, contradictoires ou inadaptées. L'Utilisateur doit toujours exercer son jugement critique et, en cas de doute, consulter un professionnel.
 
-### 7.5 — Disponibilité du Service
+### 7.5 : Disponibilité du Service
 
 L'Éditeur ne garantit pas la disponibilité continue, ininterrompue ou sans erreur du Service. En cas d'indisponibilité, l'Éditeur ne pourra être tenu responsable d'aucun préjudice direct ou indirect.
 
-### 7.6 — Plafond de responsabilité
+### 7.6 : Plafond de responsabilité
 
 En tout état de cause, la responsabilité de l'Éditeur, si elle venait à être engagée, ne pourrait excéder la somme totale effectivement versée par l'Utilisateur au cours des 12 mois précédant le fait générateur. Pour les Utilisateurs n'ayant rien versé (Service gratuit), aucune indemnité ne pourra être réclamée.
 
 ---
 
-## ARTICLE 8 — PROPRIÉTÉ INTELLECTUELLE
+## ARTICLE 8 : PROPRIÉTÉ INTELLECTUELLE
 
-### 8.1 — Propriété du Service
+### 8.1 : Propriété du Service
 
 Tous les éléments composant le Service (code source, interface, base de connaissance, contenus pédagogiques, marque « Clem Kart Racing », logo, identité visuelle) sont la propriété exclusive de l'Éditeur, ou de ses ayants droit, et sont protégés par le droit français et international de la propriété intellectuelle.
 
 Toute reproduction, représentation, modification, publication, adaptation ou exploitation, totale ou partielle, du Service ou de son contenu, par quelque procédé que ce soit, est strictement interdite sans autorisation écrite préalable de l'Éditeur.
 
-### 8.2 — Contenus tiers
+### 8.2 : Contenus tiers
 
 Le Service s'appuie sur des contenus de tiers, notamment :
 - Le modèle d'intelligence artificielle Claude (Anthropic, PBC)
@@ -199,23 +199,23 @@ Le Service s'appuie sur des contenus de tiers, notamment :
 
 L'Éditeur respecte les droits de propriété intellectuelle de ces tiers et invite l'Utilisateur à faire de même.
 
-### 8.3 — Contenus générés par l'IA
+### 8.3 : Contenus générés par l'IA
 
 Les analyses et recommandations générées par l'IA pour chaque Utilisateur lui appartiennent dans leur utilisation personnelle (privée et non commerciale). L'Utilisateur s'interdit toute exploitation commerciale, revente, diffusion massive ou redistribution de ces contenus sans accord exprès de l'Éditeur.
 
-### 8.4 — Données saisies par l'Utilisateur
+### 8.4 : Données saisies par l'Utilisateur
 
 L'Utilisateur conserve la propriété des données qu'il saisit dans le Service (profil pilote, sessions, notes personnelles). En utilisant le Service, il concède à l'Éditeur une licence non exclusive, gratuite et limitée pour stocker, traiter et utiliser ces données aux seules fins d'exécution du Service et, sous forme anonymisée et agrégée, à des fins d'amélioration du Service.
 
 ---
 
-## ARTICLE 9 — DONNÉES PERSONNELLES (RGPD)
+## ARTICLE 9 : DONNÉES PERSONNELLES (RGPD)
 
-### 9.1 — Responsable du traitement
+### 9.1 : Responsable du traitement
 
 Le responsable du traitement des données personnelles est : **Clément DANIEL**, joignable par email à l'adresse de contact du projet.
 
-### 9.2 — Données collectées
+### 9.2 : Données collectées
 
 Dans le cadre de l'utilisation du Service, les données suivantes peuvent être collectées :
 - **Données d'identification** : adresse email (obligatoire pour création de Compte)
@@ -224,7 +224,7 @@ Dans le cadre de l'utilisation du Service, les données suivantes peuvent être 
 - **Données techniques** : adresse IP, type de navigateur, données de connexion (pour rate limiting et sécurité)
 - **Cookies / localStorage** : préférences locales, session active
 
-### 9.3 — Finalités du traitement
+### 9.3 : Finalités du traitement
 
 Ces données sont traitées pour :
 - Fournir le Service et personnaliser les recommandations
@@ -233,13 +233,13 @@ Ces données sont traitées pour :
 - Améliorer le Service (analyses anonymisées et agrégées)
 - Communiquer avec l'Utilisateur si nécessaire (email transactionnel uniquement)
 
-### 9.4 — Base légale
+### 9.4 : Base légale
 
 - **Exécution contractuelle** : pour la fourniture du Service (Compte, persistance, recommandations)
 - **Intérêt légitime** : pour la sécurité du Service et son amélioration
 - **Consentement** : pour les éventuelles communications marketing futures (jamais sans opt-in explicite)
 
-### 9.5 — Destinataires
+### 9.5 : Destinataires
 
 Les données ne sont communiquées qu'aux sous-traitants techniques nécessaires au fonctionnement du Service :
 - **Anthropic, PBC** (États-Unis) : pour le traitement des requêtes IA (les données de session sont envoyées à l'API Claude)
@@ -250,13 +250,13 @@ Les transferts hors UE sont encadrés par les Clauses Contractuelles Types de la
 
 Aucune donnée n'est vendue, échangée ou divulguée à des fins commerciales.
 
-### 9.6 — Durée de conservation
+### 9.6 : Durée de conservation
 
 - **Données de Compte** : conservées tant que le Compte est actif. Suppression dans les 30 jours suivant la demande de l'Utilisateur.
 - **Données de session** : conservées tant que le Compte est actif. L'Utilisateur peut les supprimer à tout moment.
 - **Données techniques** (logs, IP) : 12 mois maximum.
 
-### 9.7 — Droits de l'Utilisateur
+### 9.7 : Droits de l'Utilisateur
 
 Conformément au Règlement Général sur la Protection des Données (RGPD), l'Utilisateur dispose des droits suivants :
 - **Droit d'accès** : obtenir une copie de ses données
@@ -269,7 +269,7 @@ Conformément au Règlement Général sur la Protection des Données (RGPD), l'U
 
 Pour exercer ces droits, l'Utilisateur peut contacter l'Éditeur par email. Une réponse sera apportée dans un délai maximum de 30 jours.
 
-### 9.8 — Sécurité
+### 9.8 : Sécurité
 
 L'Éditeur met en œuvre les mesures techniques et organisationnelles nécessaires pour protéger les données :
 - Authentification par magic link (pas de mot de passe stocké)
@@ -281,16 +281,16 @@ En cas de violation de données susceptible d'engendrer un risque pour les droit
 
 ---
 
-## ARTICLE 10 — COOKIES ET TECHNOLOGIES SIMILAIRES
+## ARTICLE 10 : COOKIES ET TECHNOLOGIES SIMILAIRES
 
-### 10.1 — Types de cookies utilisés
+### 10.1 : Types de cookies utilisés
 
 Le Service utilise les technologies suivantes :
 - **localStorage** : pour stocker localement le profil pilote, les sessions historiques et les préférences (essentiel au fonctionnement, pas de consentement requis)
 - **Cookies de session Supabase** : pour maintenir la session de connexion (essentiel à l'auth)
 - **Aucun cookie publicitaire ou de tracking tiers** n'est utilisé
 
-### 10.2 — Gestion par l'Utilisateur
+### 10.2 : Gestion par l'Utilisateur
 
 L'Utilisateur peut, à tout moment :
 - Effacer les données localStorage via les paramètres de son navigateur ou via le bouton « Effacer l'historique » du Service
@@ -299,7 +299,7 @@ L'Utilisateur peut, à tout moment :
 
 ---
 
-## ARTICLE 11 — MODIFICATIONS DES CGU
+## ARTICLE 11 : MODIFICATIONS DES CGU
 
 L'Éditeur se réserve le droit de modifier les présentes CGU à tout moment pour les adapter à l'évolution du Service, à la réglementation ou à ses besoins opérationnels.
 
@@ -311,22 +311,22 @@ La version applicable est celle en vigueur à la date d'utilisation. La date de 
 
 ---
 
-## ARTICLE 12 — RÉSILIATION
+## ARTICLE 12 : RÉSILIATION
 
-### 12.1 — Par l'Utilisateur
+### 12.1 : Par l'Utilisateur
 
 L'Utilisateur peut à tout moment :
 - Se déconnecter et cesser d'utiliser le Service (mode local conservé)
 - Demander la suppression de son Compte par email, avec effet sous 30 jours
 
-### 12.2 — Par l'Éditeur
+### 12.2 : Par l'Éditeur
 
 L'Éditeur peut résilier l'accès au Service, sans préavis ni indemnité :
 - En cas de violation des CGU
 - En cas d'usage abusif, frauduleux ou contraire à l'ordre public
 - En cas d'arrêt définitif du Service (dans ce cas, l'Utilisateur sera informé au moins 30 jours à l'avance pour récupérer ses données)
 
-### 12.3 — Effets de la résiliation
+### 12.3 : Effets de la résiliation
 
 La résiliation entraîne :
 - La suppression du Compte
@@ -337,19 +337,19 @@ Les données stockées localement (localStorage) ne sont pas affectées par la r
 
 ---
 
-## ARTICLE 13 — DROIT APPLICABLE ET RÈGLEMENT DES LITIGES
+## ARTICLE 13 : DROIT APPLICABLE ET RÈGLEMENT DES LITIGES
 
-### 13.1 — Droit applicable
+### 13.1 : Droit applicable
 
 Les présentes CGU sont régies par le **droit français**.
 
-### 13.2 — Médiation
+### 13.2 : Médiation
 
 En cas de litige relatif à l'exécution des présentes CGU, l'Utilisateur est invité à contacter l'Éditeur en premier lieu pour rechercher une solution amiable.
 
 Conformément aux articles L.611-1 et suivants du Code de la consommation, l'Utilisateur consommateur peut recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable de tout litige.
 
-### 13.3 — Juridiction compétente
+### 13.3 : Juridiction compétente
 
 À défaut de résolution amiable, tout litige sera soumis aux **tribunaux français compétents** selon les règles de droit commun applicables.
 
@@ -357,7 +357,7 @@ Pour les Utilisateurs non consommateurs (professionnels, équipes, structures), 
 
 ---
 
-## ARTICLE 14 — CONTACT
+## ARTICLE 14 : CONTACT
 
 Pour toute question, réclamation, demande d'exercice de droits RGPD ou signalement, l'Utilisateur peut contacter l'Éditeur :
 
@@ -368,7 +368,7 @@ L'Éditeur s'engage à répondre dans un délai raisonnable, sous 30 jours maxim
 
 ---
 
-## ANNEXE — RAPPEL DES POINTS CRITIQUES ⚠️
+## ANNEXE : RAPPEL DES POINTS CRITIQUES ⚠️
 
 À retenir, en quelques lignes :
 
@@ -381,6 +381,6 @@ L'Éditeur s'engage à répondre dans un délai raisonnable, sous 30 jours maxim
 
 ---
 
-*Fin des Conditions Générales d'Utilisation — Race Engineer AI v1.0*
+*Fin des Conditions Générales d'Utilisation : Race Engineer AI v1.0*
 
 *Dernière mise à jour : 2026-05-27*

@@ -485,6 +485,26 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         </div>
 
         <div class="field">
+          <div class="field-label">Modèle de châssis</div>
+          <input type="text" id="profil-chassis-modele" placeholder="ex : Racer 401RR, Sigma RS3, KT4, Le Mans..." onchange="onProfileChange()">
+          <div class="sub-label">Le modèle change la logique de réglage autant que la marque. Un Sodikart RS3 et un Sigma KZ ne se règlent pas pareil.</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Millésime</div>
+          <select id="profil-chassis-annee" onchange="onProfileChange()">
+            <option value="">Je ne sais pas</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="anterieur">2021 ou antérieur</option>
+          </select>
+          <div class="sub-label">Les châssis évoluent chaque année. Sur un modèle de 2021 ou avant, le diagnostic le signalera au lieu d'appliquer les données récentes.</div>
+        </div>
+
+        <div class="field">
           <div class="field-label">Moteur</div>
           <select id="profil-moteur" onchange="onProfileChange()">
             <option value=""> : Choisis ton moteur : </option>
@@ -1412,6 +1432,10 @@ function collectProfile() {
     poids: document.getElementById('profil-poids')?.value || null,
     categorie: document.getElementById('profil-categorie')?.value || '',
     chassis: document.getElementById('profil-chassis')?.value || '',
+    // Le modèle compte autant que la marque : un Sodikart RS3 (Rotax/X30) et un
+    // Sigma KZ ne se règlent pas pareil, et un châssis 2019 n'est pas un 2025.
+    chassisModele: document.getElementById('profil-chassis-modele')?.value?.trim() || '',
+    chassisAnnee: document.getElementById('profil-chassis-annee')?.value || '',
     moteur: document.getElementById('profil-moteur')?.value || '',
     style: document.querySelector('input[name="profil-style"]:checked')?.value || '',
     niveau: document.querySelector('input[name="profil-niveau"]:checked')?.value || '',
@@ -1441,6 +1465,8 @@ function restoreProfile(profile) {
   }
   if (profile.categorie) document.getElementById('profil-categorie').value = profile.categorie;
   if (profile.chassis) document.getElementById('profil-chassis').value = profile.chassis;
+  if (profile.chassisModele) { const el = document.getElementById('profil-chassis-modele'); if (el) el.value = profile.chassisModele; }
+  if (profile.chassisAnnee) { const el = document.getElementById('profil-chassis-annee'); if (el) el.value = profile.chassisAnnee; }
   if (profile.moteur) document.getElementById('profil-moteur').value = profile.moteur;
   if (profile.style) {
     const r = document.querySelector(`input[name="profil-style"][value="${profile.style}"]`);
@@ -2936,6 +2962,8 @@ async function syncProfileOnLogin(session) {
         poids: cloudProfile.poids_kg,
         categorie: cloudProfile.categorie_principale,
         chassis: cloudProfile.chassis,
+        chassisModele: cloudProfile.chassis_modele,
+        chassisAnnee: cloudProfile.chassis_annee,
         moteur: cloudProfile.moteur,
         style: cloudProfile.style_pilotage,
         niveau: cloudProfile.niveau,
@@ -2971,6 +2999,8 @@ async function pushProfileToCloud(profile) {
         poids_kg: parseInt(profile.poids) || null,
         categorie_principale: profile.categorie || null,
         chassis: profile.chassis || null,
+        chassis_modele: profile.chassisModele || null,
+        chassis_annee: profile.chassisAnnee || null,
         moteur: profile.moteur || null,
         style_pilotage: profile.style || null,
         niveau: profile.niveau || null,

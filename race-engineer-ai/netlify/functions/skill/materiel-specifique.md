@@ -15,7 +15,7 @@ Chaque info est marquée :
 
 ### OTK Group (Tony Kart, Kosmic, Exprit, FA Kart, EOS)
 - ✅ Un des 3 grands fabricants mondiaux (avec CRG et Birel ART), le plus populaire, référence de performance.
-- ✅ Tous les châssis OTK sont identiques sauf couleur/nom (multi-marques pour couverture revendeurs).
+- ⚠️ Les marques OTK (Tony Kart, Kosmic, Exprit, FA Kart) partagent la même plateforme et les mêmes pièces, les revendeurs les listant comme compatibles entre elles. La formule "identiques sauf la couleur" circule beaucoup mais n'est confirmée par aucune source technique : dire "performances comparables sur une plateforme commune", jamais "strictement identiques" (revérifié 2026-07).
 - ✅ Décrit comme **"front-biased"** (réactif/grip à l'avant).
 - ✅ **Réglage caster/camber par rondelle excentrique multi-position** (king pin washers). Setup neutre = flèches haut+bas de la rondelle pointant vers l'avant.
 - ✅ **Caster** : effet majeur sur l'entrée de virage. Plus de caster = direction lourde, peut affecter la régularité.

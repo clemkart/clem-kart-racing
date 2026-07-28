@@ -1,5 +1,5 @@
 -- =============================================
--- Race Engineer AI — Schéma Supabase
+-- Race Engineer AI : Schéma Supabase
 -- À exécuter dans Supabase → SQL Editor
 -- =============================================
 
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Migration pour bases existantes (idempotent — safe à ré-exécuter)
+-- Migration pour bases existantes (idempotent : safe à ré-exécuter)
 ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS taille_cm INTEGER,
   ADD COLUMN IF NOT EXISTS poids_kg INTEGER,
@@ -98,7 +98,7 @@ ALTER TABLE public.sessions
 CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON public.sessions(user_id);
 CREATE INDEX IF NOT EXISTS sessions_created_at_idx ON public.sessions(created_at DESC);
 
--- RLS (Row Level Security) — chaque pilote ne voit que ses sessions
+-- RLS (Row Level Security) : chaque pilote ne voit que ses sessions
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sessions ENABLE ROW LEVEL SECURITY;
 

@@ -25,6 +25,12 @@
 
 const OTK_SPEC = {
   group: "OTK",
+  modeles: {
+    "Racer 401 RR": "tubes de cadre Ø32 mm. Décliné en monorapport (OK, OKJ), shifter (KZ) et DD2. Carénage M10. Sorti en 2022 [OK 2026-07]",
+    "Racer 401 S": "évolution de la gamme, diamètre de cadre différent du 401 RR (le RR se distingue justement par ses Ø32 mm). Supports de plancher de section plus large que sur le RR [OK 2026-07]",
+    "Racer 401 T": "génération la plus récente : carénages M11, systèmes de freinage BWD et BWZ [OK 2026-07]",
+    TDX: "modèle récent de la gamme Tony Kart [OK 2026-07]",
+  },
   // Ordre d'essai des leviers [CD] : c'est l'ordre réel de travail de Clément
   leverPriority: ["voieAr", "pressions", "barre", "chasse", "parechocs", "voieAv"],
   barreAv: "présente sur TOUS les OTK. Réglage standard = barre plate HORIZONTALE [CD]",
@@ -59,6 +65,14 @@ const CHASSIS_SPECS = {
     group: "CRG",
     label: "CRG",
     leverPriority: ["voieAr", "barre", "chasse", "pressions", "voieAv"],
+    modeles: {
+      KT2: "Ø30 mm CrMo. Monorapport (OK, OKJ, Rotax, X30, Rok), KZ en option avec kit boîte. Réputé facile à marier avec tous types de pneus et à régler simplement. Plus de grip AVANT que le Heron [OK 2026-07]",
+      KT4: "mix Ø30 et Ø32 mm. Excellent grip latéral, positionné à mi-chemin entre un 30 et un 32. Particulièrement bon sur pistes GLISSANTES et peu gommées. Sa place naturelle est le monorapport [OK 2026-07]",
+      KT5: "corps Ø30 mm, Ø32 mm dans la zone des fusées avant. Très précis à l'AVANT, apprécié des pilotes qui recherchent ce trait [OK 2026-07]",
+      "Road Rebel": "Ø32 mm CrMo. Orienté SHIFTER (KZ, KZ2) mais aussi Rotax, X30, Rok. Points forts : freinage, motricité, grip latéral. Polyvalent en hiver et à bas grip. Version DD possible, sans freins avant [OK 2026-07]",
+      "Black Mirror": "Ø28 mm CrMo. Catégories MINI. Très bon équilibre de base en réglage standard, permet à un pilote peu expérimenté d'être immédiatement à l'aise [OK 2026-07]",
+      Heron: "Ø30 mm, géométrie particulière en partie centrale. Plus de grip ARRIÈRE que le KT2 [OK 2026-07]",
+    },
     barreAv: "barre de torsion tubulaire. Partie plate HORIZONTALE = flexible, tournée VERTICALE = beaucoup plus rigide [OK]",
     geometrie: "caster/camber baseline = II en haut / II en bas aux fusées. Voie avant 45,5\" à 46\". Pare-chocs AVANT TOUJOURS serré [OK]",
     comportement:
@@ -75,6 +89,11 @@ const CHASSIS_SPECS = {
     group: "Birel ART",
     label: "Birel ART",
     leverPriority: ["pressions", "voieAr", "voieAv", "chasse", "arbre"],
+    modeles: {
+      "RY30": "gamme tout Ø30 mm (RY30-S12 à S18 selon millésime). Monorapport OK / OKJ et shifter selon version [OK 2026-07]",
+      "RY32": "gamme tout Ø32 mm, épaisseur 2 mm (RY32-S16, S18...). Structure plus rigide, spécifique shifter à l'origine, déclinée aussi en DD / OK / OKJ. Le S18 2025 apporte de nouvelles fusées, une nouvelle géométrie de direction et un répartiteur de freinage revu [OK 2026-07]",
+      "AM29": "châssis dédié aux moteurs 4 TEMPS. Recherche d'équilibre dynamique et de polyvalence [OK 2026-07]",
+    },
     barreAv: "système de pré-charge avant selon modèles : 'sans barre' ≈ pré-charge libre, 'plate verticale' ≈ pré-charge max [?]",
     geometrie: "solution tube 32 mm = structure plus rigide, meilleures traction et grip [OK]",
     comportement:
@@ -91,6 +110,13 @@ const CHASSIS_SPECS = {
     group: "Sodikart",
     label: "Sodikart (Sigma)",
     leverPriority: ["voieAr", "pressions", "chasse", "arbre", "parechocs"],
+    modeles: {
+      "Sigma RS3":
+        "⚠️ C'EST LE MODÈLE DES CATÉGORIES ROTAX / X30 / OK. Développé spécifiquement pour les gommes de dureté MEDIUM. Avant de châssis redessiné pour augmenter la performance et faciliter l'ENTRÉE en courbe. Système de freinage plus sensible et progressif, réglable sur 2 à 4 positions [OK 2026-07]",
+      "Sigma KZ":
+        "modèle SHIFTER. Freinage hydraulique avant + arrière à étrier 4 pistons, avant du cadre redessiné pour améliorer l'entrée en courbe. Champion du monde KZ 2025 [OK 2026-07]",
+      "Sigma DD2": "déclinaison pour la catégorie Rotax DD2 [OK 2026-07]",
+    },
     barreAv:
       "⚠️ Sur Sigma, la géométrie avant passe par une BAGUE EXCENTRIQUE 4+ positions (haut = caster, bas = camber), pas par une barre de torsion classique comme chez OTK. Ne pas raisonner en 'barre plate horizontale/verticale' avec un pilote Sodikart : ce n'est pas son vocabulaire [OK]",
     geometrie:
@@ -102,6 +128,8 @@ const CHASSIS_SPECS = {
       "Le Sodikart accepte mieux la glisse et perd moins de temps en glissant que d'autres marques : ne pas corriger une micro-glisse qui, sur ce châssis, est normale et rapide [CD]",
       "Petits ajustements à fort impact : proposer des pas PLUS FINS que sur OTK. Un changement large peut faire dépasser la fenêtre [OK]",
       "Le tube lui-même flexe peu ; ce sont les pièces autour qui travaillent. Les leviers périphériques (pare-chocs, paliers, moyeux) comptent proportionnellement plus [CD]",
+      "⚠️ Un pilote Rotax ou X30 sur Sodikart roule normalement en Sigma RS3, PAS en Sigma KZ. Si le modèle n'est pas précisé, le demander avant de conseiller : le RS3 est calibré pour les gommes medium et son avant est spécifiquement conçu pour l'entrée en courbe [OK 2026-07]",
+      "Le frein Sigma est réglable sur 2 à 4 positions : c'est un levier réel sur ce châssis, à ne pas oublier face à un problème d'entrée de virage [OK 2026-07]",
     ],
     terminologie:
       "platine arrière gérée via la voie AR. Parler de 'bague excentrique' et de 'positions', pas de 'crans de barre'.",
@@ -116,8 +144,13 @@ const CHASSIS_SPECS = {
       "Easy Caster System + support de colonne de direction réglable (angle Ackermann modifiable selon circuit et style) + cassette de palier d'axe arrière à 4 vis pour la hauteur [OK]",
     comportement:
       "adaptabilité supérieure à toutes conditions de grip (forme du cadre + type de tubes). Souvent souple, privilégie la rotation [OK]",
+    modeles: {
+      "Le Mans": "monorapport / TAG : Rotax, X30, OK. Tubes CrMo Ø30 mm, sauf la traverse AVANT en Ø32 mm. Vainqueur du Championnat d'Europe FIA OK 2025 [OK 2026-07]",
+      Invader: "catégories SHIFTER (KZ). Tubes Ø32 mm sur tout le cadre, épaisseur 2 mm [OK 2026-07]",
+      Opportunity: "⚠️ châssis CADET / MINI (pilotes 7 à 12 ans), tubes Ø28 mm. Ne JAMAIS le proposer comme alternative à un pilote adulte [OK 2026-07]",
+    },
     pieges: [
-      "Le Mans (tubes CrMo Ø30 mm) est calibré pour grip MEDIUM ; l'Opportunity (Ø28 mm) est le polyvalent toutes conditions. Ne pas confondre les deux modèles [OK]",
+      "⚠️ Ne pas confondre les modèles : Le Mans = monorapport adulte (Ø30), Invader = shifter (Ø32), Opportunity = CADET/MINI (Ø28). L'Opportunity n'est pas une variante polyvalente pour senior [OK 2026-07]",
       "L'angle d'Ackermann est un levier réel sur Parolin : inexistant chez la plupart des concurrents [OK]",
     ],
     terminologie: "parler de 'Easy Caster', de 'cassette de palier', d'angle Ackermann.",
@@ -127,6 +160,11 @@ const CHASSIS_SPECS = {
     group: "Kart Republic",
     label: "Kart Republic (KR)",
     leverPriority: ["voieAr", "pressions", "chasse", "voieAv"],
+    modeles: {
+      KR2: "monorapport, mix Ø30 et Ø32 mm, empattement 1050 mm. Couvre toutes les catégories monorapport, du KA100 au Rotax et X30 jusqu'à l'OK. Permet d'être agressif au maximum tout en restant précis au millimètre : demande un pilotage méticuleux et propre [OK 2026-07]",
+      KR1: "modèle shifter de la gamme [OK 2026-07]",
+      KR3: "modèle de la gamme KR [OK 2026-07]",
+    },
     barreAv: "terminologie 'TUBE' avant et non 'barre'. Garder la logique souplesse/rigidité [?]",
     geometrie: "KR2 : mix de tubes 30 mm et 32 mm, couvre toutes les catégories monorapport (KA100 → Rotax/X30 → OK) [OK]",
     comportement:
@@ -151,9 +189,42 @@ const CHASSIS_GENERIC = {
   terminologie: "demander au pilote sa terminologie si un réglage est ambigu.",
 };
 
-["Praga", "Energy Corse", "Maranello", "IPK", "Top Kart", "Zanardi", "Autre"].forEach((m) => {
+// Groupe IPK : Praga Kart, Formula K, OK1 et RS Kart sortent de la MÊME usine
+// et partagent les mêmes modèles de châssis. Les traiter séparément revenait à
+// ignorer une donnée structurante, exactement comme pour le groupe OTK.
+const IPK_SPEC = {
+  group: "IPK",
+  leverPriority: ["voieAr", "pressions", "chasse", "voieAv", "arbre"],
+  modeles: {
+    "Dragon Evo 3": "tout Ø30 mm [OK 2026-07]",
+    "Fighter Evo": "mix Ø30 et Ø32 mm [OK 2026-07]",
+    "Invictus Evo": "tout Ø32 mm [OK 2026-07]",
+    "Monster Evo 3": "cadet, Ø28 mm. Catégories MINI uniquement [OK 2026-07]",
+  },
+  versions:
+    "Dragon et Fighter existent en trois versions Junior et Senior : XS1 (recommandée SHIFTER), XS3 (recommandée TAG) et DD2 (développée spécifiquement pour la série Rotax DD2). Demander la version avant de conseiller : elle change la logique [OK 2026-07]",
+  barreAv: "terminologie à confirmer avec le pilote [?]",
+  geometrie: "pédalier multi-réglable IPK, avec support de réglage en hauteur du câble d'accélérateur [OK 2026-07]",
+  comportement:
+    "gamme complète couvrant du cadet au shifter. Data comportementale fine non sourcée : appliquer la physique générale et le diamètre de tube du modèle [?]",
+  pieges: [
+    "Praga Kart, Formula K, OK1 et RS Kart sont le MÊME châssis sous quatre marques (groupe IPK). Ne pas raisonner comme s'il s'agissait de constructeurs différents [OK 2026-07]",
+    "Le diamètre de tube du modèle est l'information la plus exploitable : Ø30 = plus de flex et de rotation, Ø32 = plus rigide, plus de traction et de grip [OK]",
+  ],
+  terminologie: "demander la version exacte (XS1 shifter / XS3 TAG / DD2) en plus du modèle.",
+};
+
+["Praga", "IPK"].forEach((m) => {
+  CHASSIS_SPECS[m] = Object.assign({}, IPK_SPEC, { label: m + " (groupe IPK)" });
+});
+
+["Energy Corse", "Maranello", "Top Kart", "Zanardi", "Autre"].forEach((m) => {
   CHASSIS_SPECS[m] = Object.assign({}, CHASSIS_GENERIC, { label: m });
 });
+
+// Maranello : seule précision sourcée disponible
+CHASSIS_SPECS["Maranello"].comportement =
+  "spécialiste des châssis KZ (gammes MK1, MK3, MK4), composants réputés faciles à régler. Data comportementale fine non sourcée [OK 2026-07]";
 
 // --- MOTEURS ---------------------------------------------------------------
 
@@ -286,7 +357,48 @@ function buildKartSpecBlock(context) {
 
   // --- Châssis ---
   if (chassis) {
-    lines.push(`\n### CHÂSSIS : ${chassis.label}`);
+    const modele = (context.chassisModele || "").trim();
+    const annee = context.chassisAnnee || "";
+    lines.push(`\n### CHÂSSIS : ${chassis.label}${modele ? " " + modele : ""}${annee ? " (millésime " + (annee === "anterieur" ? "2021 ou antérieur" : annee) + ")" : ""}`);
+
+    // Fiche du modèle exact si le pilote l'a renseigné et qu'on la connaît
+    if (chassis.modeles) {
+      // Une saisie partielle ("Sigma") peut correspondre à plusieurs modèles
+      // ("Sigma RS3", "Sigma KZ", "Sigma DD2"). Dans ce cas on ne tranche pas :
+      // se tromper de modèle serait pire que de poser la question.
+      const norm = (s) => s.toLowerCase().replace(/[\s\-_]/g, "");
+      const n = norm(modele);
+      const matches = n
+        ? Object.keys(chassis.modeles).filter((k) => norm(k).includes(n) || n.includes(norm(k)))
+        : [];
+
+      if (matches.length === 1) {
+        lines.push(`- ⭐ MODÈLE IDENTIFIÉ, ${matches[0]} : ${chassis.modeles[matches[0]]}`);
+        lines.push("  Ces caractéristiques de modèle priment sur les généralités de marque.");
+      } else if (matches.length > 1) {
+        lines.push(`- ⚠️ SAISIE AMBIGUË : "${modele}" correspond à plusieurs modèles de cette marque :`);
+        matches.forEach((k) => lines.push(`  · ${k} : ${chassis.modeles[k]}`));
+        lines.push(
+          "  DEMANDE au pilote lequel il utilise avant tout conseil qui dépend du modèle. Ne choisis pas à sa place."
+        );
+      } else {
+        lines.push(`- Modèles connus de cette marque : ${Object.keys(chassis.modeles).join(", ")}.`);
+        lines.push(
+          modele
+            ? `  Le pilote a saisi "${modele}", que tu ne trouves pas dans cette liste : ne suppose rien sur ce modèle précis et dis-le honnêtement.`
+            : "  Le pilote n'a pas précisé son modèle. Si le conseil en dépend, demande-le : les modèles d'une même marque n'ont ni le même diamètre de tube ni la même vocation."
+        );
+      }
+    }
+    if (chassis.versions) lines.push(`- Versions : ${chassis.versions}`);
+
+    // Le matériel ancien ne doit pas recevoir les données des millésimes récents
+    if (annee === "anterieur") {
+      lines.push(
+        "- ⚠️ CHÂSSIS DE 2021 OU ANTÉRIEUR : les données ci-dessous décrivent les millésimes récents. Signale au pilote que son châssis peut se comporter différemment, et reste sur la physique générale plutôt que sur des spécificités de modèle récent."
+      );
+    }
+
     lines.push(`- Comportement caractéristique : ${chassis.comportement}`);
     lines.push(`- Train avant : ${chassis.barreAv}`);
     lines.push(`- Géométrie : ${chassis.geometrie}`);

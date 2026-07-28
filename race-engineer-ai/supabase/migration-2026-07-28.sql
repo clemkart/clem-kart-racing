@@ -35,3 +35,21 @@ FROM information_schema.columns
 WHERE table_name = 'sessions'
   AND column_name IN ('arbre_longueur','pignon','chassis','moteur_type','moteur_family')
 ORDER BY column_name;
+
+-- =============================================
+-- Complement du 28/07/2026 (2e passe)
+-- =============================================
+-- 6. Modele et millesime de chassis. Le modele change la logique de reglage
+--    autant que la marque : un Sodikart Sigma RS3 (Rotax/X30/OK, gommes
+--    medium) et un Sigma KZ (shifter) ne se reglent pas pareil.
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS chassis_modele TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS chassis_annee TEXT;
+
+-- 7. Reglages ajoutes au formulaire : geometrie avant complete, position
+--    pilote et gomme montee.
+ALTER TABLE sessions ADD COLUMN IF NOT EXISTS carrossage INTEGER;
+ALTER TABLE sessions ADD COLUMN IF NOT EXISTS siege TEXT;
+ALTER TABLE sessions ADD COLUMN IF NOT EXISTS siege_hauteur TEXT;
+ALTER TABLE sessions ADD COLUMN IF NOT EXISTS lestage INTEGER;
+ALTER TABLE sessions ADD COLUMN IF NOT EXISTS pneu_marque TEXT;
+ALTER TABLE sessions ADD COLUMN IF NOT EXISTS pneu_modele TEXT;

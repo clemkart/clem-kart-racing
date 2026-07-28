@@ -4,7 +4,7 @@ Assistant Race Engineer personnel pour pilotes de karting.
 
 ## Démarrage rapide
 
-Lire `CLAUDE.md` en premier — il contient toute la vision, le contexte business et les règles de développement.
+Lire `CLAUDE.md` en premier : il contient toute la vision, le contexte business et les règles de développement.
 
 ## Structure du dossier
 
@@ -54,7 +54,7 @@ Pour un compte illimité (toi) : `UPDATE profiles SET plan = 'founder' WHERE ema
 
 ### 4. Au premier déploiement
 Dans `index.html`, remplacer `og:image` par l'URL absolue du domaine final
-(ex: `https://ton-domaine/og-image.png`) — sinon WhatsApp n'affiche pas l'aperçu.
+(ex: `https://ton-domaine/og-image.png`) : sinon WhatsApp n'affiche pas l'aperçu.
 
 ## Analytics (first-party, sans cookies)
 
