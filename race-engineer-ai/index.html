@@ -672,6 +672,32 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
           Monte progressivement en pression : commence bas, ajuste après chaque sortie. Priorité à la compréhension du kart.
         </div>
 
+        <!-- La gomme conditionne la pression cible. Sans elle, l'analyse
+             applique un delta universel alors que chaque manufacturier a
+             sa propre fenetre (Mojo D5 : 0,60 bar a froid en officiel Rotax). -->
+        <div class="section-title">Gomme</div>
+
+        <div class="field">
+          <div class="field-label">Marque de pneu</div>
+          <select id="pneu-marque" onchange="updatePneuHint()">
+            <option value="">Je ne sais pas / non précisé</option>
+            <option value="Mojo">Mojo (Rotax)</option>
+            <option value="Vega">Vega</option>
+            <option value="LeCont">LeCont</option>
+            <option value="Komet">Komet</option>
+            <option value="Bridgestone">Bridgestone</option>
+            <option value="Maxxis">Maxxis</option>
+            <option value="Dunlop">Dunlop</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Modèle / dureté</div>
+          <input type="text" id="pneu-modele" placeholder="ex : D5, XM, SV, prime, option..." oninput="updatePneuHint()">
+          <div class="sub-label" id="pneu-hint">La gomme change la pression cible. Renseigne-la pour un diagnostic pression fiable.</div>
+        </div>
+
         <div class="section-title">Pressions (bar)</div>
 
         <div class="tire-grid">
@@ -858,10 +884,53 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         <div class="section-title">Géométrie</div>
 
         <div class="field">
-          <div class="field-label">Chasse <span id="val-chasse">1 (Normal)</span></div>
+          <div class="field-label">Chasse (caster) <span id="val-chasse">1 (Normal)</span></div>
           <input type="range" id="chasse" min="-1" max="4" value="1" step="1" oninput="updateChasse()">
-          <div class="sub-label">-1 = Déchassé · 0 = Moins · 1 = Neutre · 2 = Plus · 3 = Maximum · 4 = Extrême</div>
+          <div class="sub-label">Agit sur l'ENTRÉE de virage. -1 = Déchassé · 1 = Neutre · 4 = Extrême</div>
         </div>
+
+        <!-- Sur OTK, CRG, Sodikart, Parolin, c'est la MÊME bague excentrique qui
+             règle chasse et carrossage. Ne demander que la chasse revenait à
+             ignorer la moitié de la géométrie avant. -->
+        <div class="field">
+          <div class="field-label">Carrossage (camber) <span id="val-carrossage">0 (Neutre)</span></div>
+          <input type="range" id="carrossage" min="-3" max="3" value="0" step="1" oninput="updateCarrossage()">
+          <div class="sub-label">Agit sur le MILIEU/SORTIE. Positif = +grip avant · Négatif = crée du slide avant</div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">Position du pilote</div>
+
+        <!-- reglages-detailles.md §8 : "le placement du siège est LE réglage de
+             poids le plus important du kart". Il n'était pas demandé. -->
+        <div class="field">
+          <div class="field-label">Position du siège</div>
+          <div class="radio-group">
+            <label class="radio-chip" onclick="selectChip(this,'siege','avance')"><input type="radio" name="siege" value="avance">⬅️ Avancé</label>
+            <label class="radio-chip selected" onclick="selectChip(this,'siege','standard')"><input type="radio" name="siege" value="standard" checked>↔️ Standard</label>
+            <label class="radio-chip" onclick="selectChip(this,'siege','recule')"><input type="radio" name="siege" value="recule">➡️ Reculé</label>
+          </div>
+          <div class="sub-label">Avancé = +grip avant, beaucoup de turn-in (peut survirer à l'entrée) · Reculé = +traction en sortie, mais sous-virage à l'entrée</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Hauteur de siège</div>
+          <div class="radio-group">
+            <label class="radio-chip" onclick="selectChip(this,'siegeHauteur','bas')"><input type="radio" name="siegeHauteur" value="bas">⬇️ Bas</label>
+            <label class="radio-chip selected" onclick="selectChip(this,'siegeHauteur','standard')"><input type="radio" name="siegeHauteur" value="standard" checked>↕️ Standard</label>
+            <label class="radio-chip" onclick="selectChip(this,'siegeHauteur','haut')"><input type="radio" name="siegeHauteur" value="haut">⬆️ Haut</label>
+          </div>
+          <div class="sub-label">Bas = centre de gravité abaissé (pilotes grands, haut grip, anti-bouncing)</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Lestage <span id="val-lestage">0 kg</span></div>
+          <input type="range" id="lestage" min="0" max="25" value="0" step="1" oninput="updateSliderVal('lestage','val-lestage',' kg')">
+          <div class="sub-label">Plomb ajouté pour atteindre le poids minimum de la catégorie. Sa position compte autant que sa masse : précise-la dans les notes.</div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">Garde au sol</div>
 
         <div class="field">
           <div class="field-label">Garde au sol : Avant</div>
@@ -1055,7 +1124,9 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 // (bloc "butées atteintes" injecté à chaque appel).
 // Toute évolution de plage se fait ICI et nulle part ailleurs.
 // =============================================
+const SETUP_LIMITS_CARROSSAGE_NOTE = "Sur OTK, CRG, Sodikart et Parolin, chasse et carrossage se règlent par la même bague excentrique.";
 const SETUP_LIMITS = {
+  carrossage: { min: -3, max: 3, step: 1, unit: '', label: 'Carrossage' },
   voieAr:    { min: 135, max: 140, step: 0.5, unit: 'cm', label: 'Voie arrière',
                maxNote: "butée réglementaire (largeur hors-tout 1400 mm)" },
   voieAv:    { min: 0,  max: 6,  step: 1,  unit: 'bagues', label: 'Voie avant' },
@@ -1101,6 +1172,7 @@ function collectLimitsReached(data) {
   check('voieAv', data.voieAv);
   check('pincement', data.pincement);
   check('chasse', data.chasse);
+  check('carrossage', data.carrossage);
   return out;
 }
 
@@ -1602,6 +1674,29 @@ function updatePincement() {
   document.getElementById('val-pincement').textContent = labels[v] || v;
 }
 
+function updateCarrossage() {
+  const v = parseInt(document.getElementById('carrossage').value);
+  const labels = {'-3':'−3 (Max négatif)','-2':'−2 (Négatif)','-1':'−1 (Léger négatif)','0':'0 (Neutre)','1':'+1 (Léger positif)','2':'+2 (Positif)','3':'+3 (Max positif)'};
+  document.getElementById('val-carrossage').textContent = labels[v] || v;
+}
+
+// Rappelle la fenêtre de pression connue pour la gomme choisie.
+// On n'invente jamais un chiffre pour une gomme non identifiée.
+function updatePneuHint() {
+  const marque = document.getElementById('pneu-marque')?.value || '';
+  const hint = document.getElementById('pneu-hint');
+  if (!hint) return;
+  const notes = {
+    Mojo: "Mojo : flancs rigides, le pneu préfère glisser proprement qu'accrocher fort. Pour le D5, la pression à froid officielle Rotax est de 0,60 ± 0,05 bar.",
+    Vega: "Vega : flancs plus souples, gros grip mécanique. Trop basse pression provoque un effet de pompage caractéristique. Plage usuelle 0,55 à 0,75 bar à froid selon modèle.",
+    LeCont: "LeCont : la fenêtre dépend fortement du modèle exact. Pars de la fiche manufacturier ou de la base de ta compétition.",
+    Komet: "Komet : la fenêtre dépend du modèle exact. Pars de la fiche manufacturier ou de la base de ta compétition.",
+    Bridgestone: "Bridgestone : la fenêtre dépend du modèle exact. Pars de la fiche manufacturier ou de la base de ta compétition.",
+  };
+  hint.textContent = notes[marque]
+    || (marque ? "Gomme peu documentée dans la base : le diagnostic partira du delta froid/chaud et de ton ressenti." : "La gomme change la pression cible. Renseigne-la pour un diagnostic pression fiable.");
+}
+
 function updateChasse() {
   const v = parseInt(document.getElementById('chasse').value);
   const labels = {'-1':'−1 (Déchassé)','0':'0 (Moins)','1':'1 (Normal)','2':'2 (Plus)','3':'3 (Maximum)','4':'4 (Extrême)'};
@@ -1721,6 +1816,12 @@ function collectData() {
   // pas dans le radio et remontait une valeur fantôme jusqu'à l'IA.
   const parechocs = document.querySelector('input[name="parechocs"]:checked')?.value || 'serre';
   const chasse = document.getElementById('chasse').value;
+  const carrossage = document.getElementById('carrossage')?.value ?? '0';
+  const siege = document.querySelector('input[name="siege"]:checked')?.value || 'standard';
+  const siegeHauteur = document.querySelector('input[name="siegeHauteur"]:checked')?.value || 'standard';
+  const lestage = document.getElementById('lestage')?.value || '0';
+  const pneuMarque = document.getElementById('pneu-marque')?.value || '';
+  const pneuModele = document.getElementById('pneu-modele')?.value?.trim() || '';
   const gardeAv = document.querySelector('input[name="garde-av"]:checked')?.value || 'medium';
   const gardeAr = document.querySelector('input[name="garde-ar"]:checked')?.value || 'medium';
   const garde = gardeAv; // compat
@@ -1762,7 +1863,11 @@ function collectData() {
     // Pneus
     pressures,
     // Réglages châssis
-    barre, voieAv, pincement, voieAr, arbre, arbreLongueur, moyeux, parechocs, chasse, gardeAv, gardeAr,
+    barre, voieAv, pincement, voieAr, arbre, arbreLongueur, moyeux, parechocs, chasse, carrossage, gardeAv, gardeAr,
+    // Position pilote : le placement du siège est le premier levier de répartition de masse
+    siege, siegeHauteur, lestage,
+    // Gomme : conditionne la pression cible, variable selon le manufacturier
+    pneuMarque, pneuModele,
     // Moteur : famille déduite + détail transmission selon type
     moteur_family, moteur_type, couronneMono, pignonMono, couronneDD2, couronneKz, kzRatio, gicleur,
     // Rapport direct drive (null si pignon non renseigné) : évite à l'IA de le recalculer
@@ -2996,7 +3101,7 @@ function restoreSessionToForm(data) {
     });
   }
   // Châssis (radios)
-  ['barre','arbre','arbreLongueur','moyeux','parechocs','garde-av','garde-ar'].forEach(name => {
+  ['barre','arbre','arbreLongueur','moyeux','parechocs','siege','siegeHauteur','garde-av','garde-ar'].forEach(name => {
     const key = name === 'garde-av' ? 'gardeAv' : name === 'garde-ar' ? 'gardeAr' : name;
     if (!data[key]) return;
     const r = document.querySelector(`input[name="${name}"][value="${data[key]}"]`);
@@ -3009,6 +3114,11 @@ function restoreSessionToForm(data) {
   // ne doit plus l'écraser.
   if (data.voieAr != null) { document.getElementById('voie-ar').value = clampSetting('voieAr', data.voieAr); updateSliderVal('voie-ar','val-voie-ar',' cm'); _voieArTouchedByUser = true; }
   if (data.chasse != null) { document.getElementById('chasse').value = data.chasse; updateChasse(); }
+  if (data.carrossage != null) { const el = document.getElementById('carrossage'); if (el) { el.value = data.carrossage; updateCarrossage(); } }
+  if (data.lestage != null) { const el = document.getElementById('lestage'); if (el) { el.value = data.lestage; updateSliderVal('lestage','val-lestage',' kg'); } }
+  if (data.pneuMarque != null) { const el = document.getElementById('pneu-marque'); if (el) el.value = data.pneuMarque; }
+  if (data.pneuModele != null) { const el = document.getElementById('pneu-modele'); if (el) el.value = data.pneuModele; }
+  updatePneuHint();
   // Moteur
   if (data.moteur_type) {
     const r = document.querySelector(`input[name="moteur"][value="${data.moteur_type}"]`);
@@ -3329,6 +3439,14 @@ function applyRecommendedSetup(applyObj) {
     selectRadioChip('parechocs', applyObj.parechocs, 'Pare-chocs');
   }
 
+  // Position du siège : premier levier de répartition de masse
+  if(applyObj.siege && ['avance','standard','recule'].includes(applyObj.siege)) {
+    selectRadioChip('siege', applyObj.siege, 'Position siège');
+  }
+  if(applyObj.siegeHauteur && ['bas','standard','haut'].includes(applyObj.siegeHauteur)) {
+    selectRadioChip('siegeHauteur', applyObj.siegeHauteur, 'Hauteur siège');
+  }
+
   // Garde au sol AV
   if(applyObj.gardeAv && ['bas','medium','haut'].includes(applyObj.gardeAv)) {
     selectRadioChip('garde-av', applyObj.gardeAv, 'Garde AV');
@@ -3351,6 +3469,7 @@ function applyRecommendedSetup(applyObj) {
     { key: 'voieAv',   el: 'voie-av',  decimals: 0, refresh: () => updateSliderVal('voie-av','val-voie-av',' bagues') },
     { key: 'pincement', el: 'pincement', decimals: 0, refresh: updatePincement },
     { key: 'chasse',   el: 'chasse',   decimals: 0, refresh: updateChasse },
+    { key: 'carrossage', el: 'carrossage', decimals: 0, refresh: updateCarrossage },
   ];
 
   numericFields.forEach(f => {

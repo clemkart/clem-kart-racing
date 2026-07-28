@@ -49,6 +49,7 @@ const SETUP_LIMITS = {
   voieAv:    { min: 0,  max: 6,  unit: 'bagues', label: 'Voie avant' },
   pincement: { min: -3, max: 3,  unit: '',      label: 'Pincement' },
   chasse:    { min: -1, max: 4,  unit: 'crans', label: 'Chasse' },
+  carrossage: { min: -3, max: 3, unit: '',      label: 'Carrossage' },
 };
 
 // Décrit les butées ET signale celles déjà atteintes, pour que Claude ne
@@ -77,6 +78,8 @@ const APPLY_ENUMS = {
   barre: ["sans", "plate_h", "ronde", "plate_v"],
   arbre: ["tendre", "medium", "dur"],            // rigidité
   arbreLongueur: ["court", "standard", "long"],  // longueur, indépendante
+  siege: ["avance", "standard", "recule"],
+  siegeHauteur: ["bas", "standard", "haut"],
   moyeux: ["courts", "medium", "longs"],
   parechocs: ["desserre", "serre"],
   gardeAv: ["bas", "medium", "haut"],
@@ -567,7 +570,11 @@ Réglages actuels (châssis) :
 - Arbre : rigidité ${context.arbre || "?"}, longueur ${context.arbreLongueur || "?"} (deux réglages indépendants : un arbre peut être court ET dur)
 - Moyeux : ${context.moyeux || "?"}
 - Pare-chocs : ${context.parechocs || "?"}
-- Chasse : ${context.chasse || "?"}
+- Chasse (caster, agit sur l'entrée) : ${context.chasse || "?"}
+- Carrossage (camber, agit sur le milieu/sortie) : ${context.carrossage || "?"}
+- Position siège : ${context.siege || "?"} (hauteur : ${context.siegeHauteur || "?"})
+  → Le placement du siège est le premier levier de répartition de masse. Avancé = +grip avant et beaucoup de turn-in, peut survirer à l'entrée. Reculé = +traction en sortie mais sous-virage à l'entrée. Gros moteurs (KZ, TAG) : plutôt reculé. Petits moteurs : plutôt avancé/centré pour faciliter la rotation.
+- Lestage : ${context.lestage && context.lestage !== "0" ? context.lestage + " kg" : "aucun"}
 - Garde au sol AV/AR : ${context.gardeAv || "?"} / ${context.gardeAr || "?"}
 
 ${buildLimitsBlock(context)}
@@ -578,6 +585,11 @@ ${context.moteur_type === "dd2"
     ? `- Couronne KZ (sortie de boîte) : ${context.couronneKz || "?"} dents\n- Réglage boîte : ${context.kzRatio || "?"}`
     : `- Couronne : ${context.couronneMono || "?"} dents\n- Pignon : ${context.pignonMono || "?"} dents\n- Rapport (couronne ÷ pignon) : ${context.rapportMono || "?"}`}
 - Gicleur : ${context.moteur_family === "4t" ? "carburation scellée par le règlement, AUCUN réglage possible, ne propose jamais de modifier le gicleur" : context.gicleur || "?"}
+
+Gomme montée : ${[context.pneuMarque, context.pneuModele].filter(Boolean).join(" ") || "NON RENSEIGNÉE"}
+${context.pneuMarque
+    ? "→ Utilise la fenêtre de pression propre à cette gomme (cf. pneus-gommes.md). N'invente jamais un chiffre précis pour un modèle que tu ne connais pas : dis-le et renvoie à la fiche du manufacturier."
+    : "→ La gomme n'est pas renseignée. Raisonne sur le DELTA froid/chaud uniquement, ne donne aucune pression absolue cible, et demande au pilote quelle gomme il monte."}
 
 Notes pilote : ${context.notes || "aucune"}
 
@@ -640,6 +652,9 @@ Format apply autorisé : ⚠️ TOUTES les valeurs numériques sont des DELTAS
   "moyeux": "courts" | "medium" | "longs",
   "parechocs": "desserre" | "serre",
   "chasse": delta en crans (ex: +1 ou -1),
+  "carrossage": delta (ex: +1 ou -1),
+  "siege": "avance" | "standard" | "recule",
+  "siegeHauteur": "bas" | "standard" | "haut",
   "gardeAv": "bas" | "medium" | "haut",
   "gardeAr": "bas" | "medium" | "haut"
 }
