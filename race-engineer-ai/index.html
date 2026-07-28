@@ -804,8 +804,8 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 
         <div class="field">
           <div class="field-label">Largeur <span id="val-voie-ar">138.0 cm</span></div>
-          <input type="range" id="voie-ar" min="135" max="141" value="138" step="0.5" oninput="updateSliderVal('voie-ar','val-voie-ar',' cm')">
-          <div class="sub-label">135 = étroite (blocage AR, tourne moins) · 141 = large (libre, tourne plus)</div>
+          <input type="range" id="voie-ar" min="135" max="140" value="138" step="0.5" oninput="updateSliderVal('voie-ar','val-voie-ar',' cm')">
+          <div class="sub-label">135 = étroite (blocage AR, tourne moins) · 140 = butée max réglementaire (libre, tourne plus)</div>
         </div>
 
         <div class="divider"></div>
@@ -895,8 +895,20 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
           <div class="section-title">Transmission — Direct Drive</div>
           <div class="field">
             <div class="field-label">Couronne <span id="val-couronne-mono">78 dents</span></div>
-            <input type="range" id="couronne-mono" min="60" max="90" value="78" step="1" oninput="updateSliderVal('couronne-mono','val-couronne-mono',' dents')">
+            <input type="range" id="couronne-mono" min="60" max="90" value="78" step="1" oninput="updateMonoRatio()">
             <div class="sub-label">Plus de dents = accélération · Moins de dents = vitesse max</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Pignon (sortie moteur) <span id="val-pignon-mono">10 dents</span></div>
+            <input type="range" id="pignon-mono" min="9" max="14" value="10" step="1" oninput="updateMonoRatio()">
+            <div class="sub-label">Le rapport = couronne / pignon. Une dent de pignon change beaucoup plus le rapport qu'une dent de couronne.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Rapport de transmission (auto-calculé)</div>
+            <div style="background:var(--dark3);border:1px solid var(--green);border-radius:4px;padding:10px 14px;text-align:center;">
+              <span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);" id="mono-ratio-val">7.80</span>
+              <span style="color:var(--text-dim);font-size:12px;"> (= couronne ÷ pignon)</span>
+            </div>
           </div>
         </div>
 
@@ -1024,6 +1036,62 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 // =============================================
 // KNOWLEDGE BASE
 // =============================================
+// =============================================
+// SETUP_LIMITS — SOURCE DE VÉRITÉ UNIQUE des butées de réglage.
+// Consommée par : le formulaire (bornes des sliders), le diagnostic
+// (on ne conseille jamais un levier déjà en butée) et le prompt IA
+// (bloc "butées atteintes" injecté à chaque appel).
+// Toute évolution de plage se fait ICI et nulle part ailleurs.
+// =============================================
+const SETUP_LIMITS = {
+  voieAr:    { min: 135, max: 140, step: 0.5, unit: 'cm', label: 'Voie arrière',
+               maxNote: "butée réglementaire (largeur hors-tout 1400 mm)" },
+  voieAv:    { min: 0,   max: 6,   step: 1,   unit: 'bagues', label: 'Voie avant' },
+  pincement: { min: -3,  max: 3,   step: 1,   unit: '',       label: 'Pincement' },
+  chasse:    { min: -1,  max: 4,   step: 1,   unit: 'crans',  label: 'Chasse' },
+  gicleur:   { min: 105, max: 160, step: 1,   unit: '',       label: 'Gicleur' },
+};
+
+// Baselines par famille moteur (👤 valeurs de référence Clément) :
+// Rotax ≈ 140, DD2 ≈ 139 — l'arbre DD2 a un diamètre différent.
+const VOIE_AR_BASELINE = { direct_drive: 140, dd2: 139, kz_shifter: 139, '4t': 139.5 };
+
+// Un levier est-il déjà en butée dans le sens demandé ?
+// direction : +1 = on veut augmenter, -1 = on veut diminuer
+function isAtLimit(key, currentValue, direction) {
+  const lim = SETUP_LIMITS[key];
+  if (!lim) return false;
+  const v = parseFloat(currentValue);
+  if (isNaN(v)) return false;
+  return direction > 0 ? v >= lim.max : v <= lim.min;
+}
+
+// Clampe une valeur dans les bornes déclarées
+function clampSetting(key, value) {
+  const lim = SETUP_LIMITS[key];
+  if (!lim) return value;
+  const v = parseFloat(value);
+  if (isNaN(v)) return value;
+  return Math.max(lim.min, Math.min(lim.max, v));
+}
+
+// Liste lisible des leviers en butée, pour l'UI et pour le prompt IA
+function collectLimitsReached(data) {
+  const out = [];
+  const check = (key, val) => {
+    const lim = SETUP_LIMITS[key];
+    const v = parseFloat(val);
+    if (!lim || isNaN(v)) return;
+    if (v >= lim.max) out.push(`${lim.label} = ${v}${lim.unit ? ' ' + lim.unit : ''} → MAXIMUM atteint${lim.maxNote ? ' (' + lim.maxNote + ')' : ''}, impossible d'augmenter`);
+    else if (v <= lim.min) out.push(`${lim.label} = ${v}${lim.unit ? ' ' + lim.unit : ''} → MINIMUM atteint, impossible de réduire`);
+  };
+  check('voieAr', data.voieAr);
+  check('voieAv', data.voieAv);
+  check('pincement', data.pincement);
+  check('chasse', data.chasse);
+  return out;
+}
+
 const KB = {
   grip: {
     verte: {
@@ -1049,12 +1117,12 @@ const KB = {
     grippee: {
       desc: "Piste grippée : caoutchouc bien déposé, fort grip. Kart peut devenir nerveux. Assouplir progressivement.",
       philosophy: "Beaucoup de grip = le kart a tendance à bloquer la roue AR. Assouplir pour laisser le kart respirer.",
-      setup: ["Barre ronde ou sans barre", "Voie AR large (139-141)", "Arbre tendre", "Pressions légèrement plus hautes"]
+      setup: ["Barre ronde ou sans barre", "Voie AR large (139-140)", "Arbre tendre", "Pressions légèrement plus hautes"]
     },
     ultra: {
       desc: "Ultra grippée : grip extrême (fin de journée, piste mouillée qui sèche). Kart très nerveux, risque de blocage AR permanent.",
       philosophy: "Maximum de souplesse. La priorité est de laisser le châssis fléchir pour éviter le blocage complet de la roue AR intérieure.",
-      setup: ["Sans barre avant", "Voie AR maximum (141)", "Arbre le plus tendre", "Moyeux longs", "Pressions hautes"]
+      setup: ["Sans barre avant", "Voie AR à la butée max (140)", "Arbre le plus tendre", "Moyeux longs", "Pressions hautes"]
     }
   },
   diagnostics: {
@@ -1696,6 +1764,17 @@ function updateDD2() {
   document.getElementById('contre-pignon-val').textContent = 100 - couronne;
 }
 
+// Direct drive : couronne ET pignon. Le rapport ne se lit pas sur la seule
+// couronne (cf. transmission.md § Le principe).
+function updateMonoRatio() {
+  const cour = parseInt(document.getElementById('couronne-mono').value);
+  const pign = parseInt(document.getElementById('pignon-mono').value);
+  document.getElementById('val-couronne-mono').textContent = cour + ' dents';
+  document.getElementById('val-pignon-mono').textContent = pign + ' dents';
+  const el = document.getElementById('mono-ratio-val');
+  if (el) el.textContent = (pign > 0) ? (cour / pign).toFixed(2) : '—';
+}
+
 function updateGicleurReco() {
   const temp = parseInt(document.getElementById('temp-air').value);
   let reco = '';
@@ -1778,7 +1857,9 @@ function collectData() {
   const voieAr = document.getElementById('voie-ar').value;
   const arbre = document.querySelector('input[name="arbre"]:checked')?.value || 'standard';
   const moyeux = document.querySelector('input[name="moyeux"]:checked')?.value || 'medium';
-  const parechocs = document.querySelector('input[name="parechocs"]:checked')?.value || 'normal';
+  // Fallback aligné sur l'option cochée par défaut ('serre') — 'normal' n'existe
+  // pas dans le radio et remontait une valeur fantôme jusqu'à l'IA.
+  const parechocs = document.querySelector('input[name="parechocs"]:checked')?.value || 'serre';
   const chasse = document.getElementById('chasse').value;
   const gardeAv = document.querySelector('input[name="garde-av"]:checked')?.value || 'medium';
   const gardeAr = document.querySelector('input[name="garde-ar"]:checked')?.value || 'medium';
@@ -1786,6 +1867,7 @@ function collectData() {
 
   const moteur_type = document.querySelector('input[name="moteur"]:checked')?.value || 'mono';
   const couronneMono = document.getElementById('couronne-mono').value;
+  const pignonMono = document.getElementById('pignon-mono')?.value || null;
   const couronneDD2 = document.getElementById('couronne-dd2').value;
   const couronneKz = document.getElementById('couronne-kz')?.value || null;
   const kzRatio = document.querySelector('input[name="kz-ratio"]:checked')?.value || null;
@@ -1822,7 +1904,10 @@ function collectData() {
     // Réglages châssis
     barre, voieAv, pincement, voieAr, arbre, moyeux, parechocs, chasse, gardeAv, gardeAr,
     // Moteur : famille déduite + détail transmission selon type
-    moteur_family, moteur_type, couronneMono, couronneDD2, couronneKz, kzRatio, gicleur,
+    moteur_family, moteur_type, couronneMono, pignonMono, couronneDD2, couronneKz, kzRatio, gicleur,
+    // Rapport direct drive (null si pignon non renseigné) — évite à l'IA de le recalculer
+    rapportMono: (couronneMono && pignonMono && parseInt(pignonMono, 10) > 0)
+      ? (parseInt(couronneMono, 10) / parseInt(pignonMono, 10)).toFixed(2) : null,
   };
 }
 
@@ -1912,6 +1997,36 @@ function computeInsights() {
   };
 }
 
+// Affichage transmission adapté à la famille moteur.
+// ⚠️ Bug corrigé : le test portait sur data.moteur (libellé profil, ex.
+// "Rotax DD2") comparé au code interne 'dd2' — donc toujours faux. Un pilote
+// DD2 voyait la couronne du slider mono au lieu de son couple couronne /
+// contre-pignon. On teste désormais moteur_type (le toggle réellement actif).
+function transmissionMetaTag(data) {
+  const type = data.moteur_type || 'mono';
+  if (type === 'dd2') {
+    const c = parseInt(data.couronneDD2, 10);
+    if (isNaN(c)) return '';
+    return `<div class="meta-tag">Couronne DD2: <span>${c}</span> / Contre-pignon: <span>${100 - c}</span></div>`;
+  }
+  if (type === 'kz') {
+    const kzLabels = { court: 'Court (technique)', moyen: 'Moyen (mixte)', long: 'Long (rapide)' };
+    return `<div class="meta-tag">Couronne KZ: <span>${data.couronneKz || '?'} dents</span></div>`
+      + (data.kzRatio ? `<div class="meta-tag">Boîte: <span>${kzLabels[data.kzRatio] || data.kzRatio}</span></div>` : '');
+  }
+  // Direct drive : le rapport n'a de sens qu'avec le pignon (cf. transmission.md)
+  const cour = parseInt(data.couronneMono, 10);
+  const pign = parseInt(data.pignonMono, 10);
+  let tag = `<div class="meta-tag">Couronne: <span>${isNaN(cour) ? '?' : cour} dents</span></div>`;
+  if (!isNaN(pign)) {
+    tag += `<div class="meta-tag">Pignon: <span>${pign} dents</span></div>`;
+    if (!isNaN(cour)) {
+      tag += `<div class="meta-tag">Rapport: <span>${(cour / pign).toFixed(2)}</span></div>`;
+    }
+  }
+  return tag;
+}
+
 // =============================================
 // DIAGNOSTIC ENGINE
 // =============================================
@@ -1935,8 +2050,8 @@ function runDiagnostic() {
       <div class="meta-tag">Session: <span>${sessionLabel(data.session)}</span></div>
       <div class="meta-tag">Temp air: <span>${data.tempAir}°C</span></div>
       <div class="meta-tag">Temp piste: <span>${data.tempPiste}°C</span></div>
-      ${isLocation ? '<div class="meta-tag">Kart: <span>Location 🏁</span></div>' : `<div class="meta-tag">Gicleur: <span>${data.gicleur}</span></div>
-      ${data.moteur === 'dd2' ? `<div class="meta-tag">DD2 Couronne: <span>${data.couronneDD2}</span> / Contre-pignon: <span>${100 - parseInt(data.couronneDD2)}</span></div>` : `<div class="meta-tag">Couronne: <span>${data.couronneMono} dents</span></div>`}`}
+      ${isLocation ? '<div class="meta-tag">Kart: <span>Location 🏁</span></div>' : `${data.moteur_family === '4t' ? '' : `<div class="meta-tag">Gicleur: <span>${data.gicleur}</span></div>`}
+      ${transmissionMetaTag(data)}`}
     </div>
     ${data.notes ? `<p style="font-size:12px;color:var(--text-dim);font-style:italic;">"${escapeHtml(data.notes)}"</p>` : ''}
   </div>`;
@@ -2029,7 +2144,9 @@ function runDiagnostic() {
   const tempAirVal = parseInt(data.tempAir);
   const gicleurVal = parseInt(data.gicleur);
   let gicleurAlert = null;
-  if (!isLocation) {
+  // Un KA100 / 4T réglementé a une carburation scellée : lui parler de gicleur
+  // est un contresens technique immédiatement repéré par un pilote.
+  if (!isLocation && data.moteur_family !== '4t') {
     // Air froid = dense : un gicleur trop PETIT est pauvre → danger serrage. Air chaud : trop GROS = riche → juste lent.
     if(tempAirVal < 10 && gicleurVal < 130) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} probablement trop pauvre pour ${tempAirVal}°C (air froid = dense = il faut enrichir). Risque de serrage. Point de départ : 132–138, à confirmer avec l'app ROTAX MAX Jetting.`};
     else if(tempAirVal < 20 && gicleurVal < 126) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} semble pauvre pour ${tempAirVal}°C. Risque moteur. Point de départ : 128–134, à confirmer avec l'app ROTAX MAX Jetting.`};
@@ -2071,6 +2188,21 @@ function runDiagnostic() {
     }
     if(voieArVal <= 135.5 && arbreVal === 'tendre') {
       coherenceAlerts.push({type:'info', msg:'Voie AR étroite + arbre tendre : combinaison inhabituelle. L\'arbre souple peut compenser mais vérifier le comportement global.'});
+    }
+  }
+
+  // BUTÉES ATTEINTES — le pilote doit savoir quels leviers sont épuisés,
+  // sinon il attend un conseil qui ne peut pas venir.
+  if (!isLocation) {
+    const limitsReached = collectLimitsReached(data);
+    if (limitsReached.length > 0) {
+      html += `<div class="diag-block">
+        <div class="diag-block-title"><span class="diag-icon">🚫</span> Leviers en butée</div>`;
+      limitsReached.forEach(l => {
+        html += `<div class="info-block"><div class="info-title">⛔ ${escapeHtml(l)}</div></div>`;
+      });
+      html += `<div style="margin-top:8px;font-size:11px;color:var(--text-dim);">Ces réglages sont au bout de leur plage : le gain devra venir d'un autre levier (ou du pilotage).</div>
+      </div>`;
     }
   }
 
@@ -2629,6 +2761,33 @@ function updateAuthUI() {
   }
 }
 
+// Le JWT Supabase expire au bout d'1h. Le SDK le renouvelle tout seul, mais
+// authState.session resterait sur l'ancien jeton → 401 en boucle alors que
+// l'UI affiche toujours le compte connecté. On repasse donc TOUJOURS par
+// getSession() avant un appel réseau : le SDK renvoie un jeton frais (et le
+// rafraîchit si besoin) sans coût réseau quand il est encore valide.
+async function getAccessToken() {
+  if (!sb) return null;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      authState.session = session;
+      authState.user = session.user;
+      return session.access_token;
+    }
+  } catch (e) {
+    console.error('getAccessToken failed:', e);
+  }
+  return null;
+}
+
+// En-têtes authentifiés prêts à l'emploi (null si pas de session valide)
+async function authHeaders(extra) {
+  const token = await getAccessToken();
+  if (!token) return null;
+  return Object.assign({ 'Authorization': `Bearer ${token}` }, extra || {});
+}
+
 async function initAuth() {
   if (!sb) {
     console.warn('Supabase non initialisé — mode local only');
@@ -2641,12 +2800,25 @@ async function initAuth() {
     await onAuthLogin(session);
   }
   sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN') {
+    if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+      if (!session) return;
+      const wasLoggedOut = !authState.session;
       authState.session = session;
       authState.user = session.user;
-      track('login');
-      closeAuthModal();
-      await onAuthLogin(session);
+      if (wasLoggedOut) {
+        track('login');
+        closeAuthModal();
+        await onAuthLogin(session);
+      } else {
+        updateAuthUI();
+      }
+    } else if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+      // Jeton renouvelé : on met à jour la référence locale, sans re-synchroniser
+      // le profil ni recharger l'historique (l'utilisateur n'a rien fait).
+      if (session) {
+        authState.session = session;
+        authState.user = session.user;
+      }
     } else if (event === 'SIGNED_OUT') {
       authState.session = null;
       authState.user = null;
@@ -2665,10 +2837,12 @@ async function onAuthLogin(session) {
 
 async function syncProfileOnLogin(session) {
   try {
+    const token = await getAccessToken();
+    if (!token) return;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${session.user.id}&select=*`, {
       headers: {
         'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${session.access_token}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
     if (!res.ok) return;
@@ -2703,11 +2877,13 @@ async function syncProfileOnLogin(session) {
 async function pushProfileToCloud(profile) {
   if (!authState.session) return;
   try {
+    const token = await getAccessToken();
+    if (!token) return;
     await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${authState.user.id}`, {
       method: 'PATCH',
       headers: {
         'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${authState.session.access_token}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal',
       },
@@ -2749,12 +2925,11 @@ async function saveSession(data) {
   // 2) Si auth, sauver aussi en cloud via Netlify function
   if (authState.session) {
     try {
+      const headers = await authHeaders({ 'Content-Type': 'application/json' });
+      if (!headers) throw new Error('session expirée');
       const res = await fetch('/.netlify/functions/session/save', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authState.session.access_token}`,
-        },
+        headers,
         body: JSON.stringify({
           context: data,
           diagnostic_html: document.getElementById('diag-result')?.innerHTML || null,
@@ -2776,9 +2951,9 @@ async function renderHistory() {
   // Si connecté → pull depuis cloud
   if (authState.session) {
     try {
-      const res = await fetch('/.netlify/functions/session/list', {
-        headers: { 'Authorization': `Bearer ${authState.session.access_token}` },
-      });
+      const headers = await authHeaders();
+      if (!headers) throw new Error('session expirée');
+      const res = await fetch('/.netlify/functions/session/list', { headers });
       if (res.ok) {
         const { sessions } = await res.json();
         if (!sessions || sessions.length === 0) {
@@ -2863,7 +3038,10 @@ function restoreSessionToForm(data) {
     const r = document.querySelector(`input[name="moteur"][value="${data.moteur_type}"]`);
     if (r) { r.checked = true; selectChip(r.closest('.radio-chip'), 'moteur', data.moteur_type); updateMoteurUI(); }
   }
-  if (data.couronneMono) { document.getElementById('couronne-mono').value = data.couronneMono; updateSliderVal('couronne-mono','val-couronne-mono',' dents'); }
+  if (data.couronneMono) document.getElementById('couronne-mono').value = data.couronneMono;
+  // Sessions d'avant l'ajout du pignon : on laisse la valeur par défaut du slider
+  if (data.pignonMono) { const pgEl = document.getElementById('pignon-mono'); if (pgEl) pgEl.value = data.pignonMono; }
+  updateMonoRatio();
   if (data.couronneDD2) { document.getElementById('couronne-dd2').value = data.couronneDD2; updateDD2(); }
   if (data.couronneKz) { const kzEl = document.getElementById('couronne-kz'); if (kzEl) { kzEl.value = data.couronneKz; updateSliderVal('couronne-kz','val-couronne-kz',' dents'); } }
   if (data.gicleur) { document.getElementById('gicleur').value = data.gicleur; updateSliderVal('gicleur','val-gicleur',''); updateGicleurReco(); }
@@ -2880,10 +3058,12 @@ function loadSession(id) {
 async function loadSessionFromCloud(id) {
   if (!authState.session) return;
   try {
+    const token = await getAccessToken();
+    if (!token) return;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/sessions?id=eq.${id}&select=*`, {
       headers: {
         'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${authState.session.access_token}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
     if (!res.ok) return;
@@ -3050,19 +3230,38 @@ function generateDiagResult() {
   html += `</div>`;
 
   html += `<div style="background:var(--dark3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px;">`;
-  html += `<div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Réglages recommandés</div>`;
-  recs.changes.forEach(c => {
-    html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;">
-      <span style="color:var(--red);font-size:16px;">→</span>
-      <span><strong>${c.label}</strong> : ${c.from} → <strong style="color:var(--green)">${c.to}</strong></span>
-    </div>`;
-  });
+  if (recs.changes.length > 0) {
+    html += `<div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Le changement à faire — un seul</div>`;
+    recs.changes.forEach(c => {
+      html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;">
+        <span style="color:var(--red);font-size:16px;">→</span>
+        <span><strong>${escapeHtml(c.label)}</strong> : ${escapeHtml(String(c.from))} → <strong style="color:var(--green)">${escapeHtml(c.to)}</strong></span>
+      </div>`;
+    });
+  } else {
+    html += `<div style="font-size:11px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Aucun levier châssis disponible</div>
+      <div style="font-size:13px;color:var(--text-dim);">Les réglages concernés sont déjà en butée. Le gain est à chercher côté pilotage ou pneus.</div>`;
+  }
   html += `</div>`;
+
+  // Pistes suivantes : affichées mais JAMAIS appliquées — un seul changement
+  // à la fois, sinon impossible de savoir lequel a produit l'effet.
+  if (recs.nextSteps && recs.nextSteps.length > 0) {
+    html += `<div style="background:var(--dark3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px;">`;
+    html += `<div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Si ça ne suffit pas — dans cet ordre</div>`;
+    recs.nextSteps.forEach(s => {
+      html += `<div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">· ${escapeHtml(s)}</div>`;
+    });
+    html += `<div style="font-size:11px;color:var(--text-dim);margin-top:8px;font-style:italic;">Une seule modification par session : c'est la seule façon de savoir ce qui marche.</div>`;
+    html += `</div>`;
+  }
 
   html += `<div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;font-style:italic;">${recs.tip}</div>`;
 
-  // Apply button
-  html += `<button class="apply-setup-btn" onclick="applyRecommendedSetup(${JSON.stringify(recs.apply).replace(/"/g,'&quot;')})">⚡ Appliquer ces réglages dans l'interface</button>`;
+  // Apply button (seulement s'il y a réellement quelque chose à appliquer)
+  if (Object.keys(recs.apply).length > 0) {
+    html += `<button class="apply-setup-btn" onclick="applyRecommendedSetup(${JSON.stringify(recs.apply).replace(/"/g,'&quot;')})">⚡ Appliquer ce réglage dans l'interface</button>`;
+  }
 
   addMsg(html, 'bot');
 
@@ -3080,6 +3279,8 @@ function buildRecommendations(phase, behavior, grip, intensity) {
   let tip = '';
   let changes = [];
   let apply = {};
+  let nextSteps = [];   // pistes suivantes, NON appliquées (méthode : un seul changement)
+  let candidates = [];  // leviers classés par priorité — on retient le 1er disponible
 
   const isLowGrip = ['verte','sale'].includes(grip);
   const isHighGrip = ['grippee','ultra'].includes(grip);
@@ -3089,40 +3290,26 @@ function buildRecommendations(phase, behavior, grip, intensity) {
       diagnosis = 'Sous-virage à l\'entrée — manque de délestage AR';
       explanation = 'La roue AR intérieure reste au sol à l\'initiation du virage. Le kart ne peut pas pivoter.';
       tip = 'Rappel : c\'est le freinage dégressif + la chasse qui créent le délestage. Le volant ne fait pas tourner le kart.';
-      if(isLowGrip) {
-        changes = [
-          {label:'Barre avant', from:'actuelle', to:'Plate verticale (sur le chant, max rigidité)'},
-          {label:'Voie AR', from:'actuelle', to:'Réduire de 0.5 cm'},
-          {label:'Arbre', from:'actuel', to:'Dur'}
-        ];
-        apply = {barre:'plate_v', voieAr:-0.5, arbre:'dur'};
-      } else {
-        changes = [
-          {label:'Chasse', from:'actuelle', to:'+1 cran'},
-          {label:'Barre avant', from:'actuelle', to:'Ronde ou retirer'},
-          {label:'Voie AR', from:'actuelle', to:'+0.5 cm'}
-        ];
-        apply = {chasse:+1, barre:'ronde', voieAr:+0.5};
-      }
+      candidates = isLowGrip
+        ? [{k:'barre', v:'plate_v', label:'Barre avant', to:'Plate verticale (sur le chant, max rigidité)'},
+           {k:'voieAr', v:-0.5, label:'Voie AR', to:'Réduire de 0.5 cm'},
+           {k:'arbre', v:'dur', label:'Arbre', to:'Dur'}]
+        : [{k:'chasse', v:+1, label:'Chasse', to:'+1 cran'},
+           {k:'barre', v:'ronde', label:'Barre avant', to:'Ronde (assouplir)'},
+           {k:'voieAr', v:+0.5, label:'Voie AR', to:'+0.5 cm'}];
     } else if(phase === 'mid') {
       diagnosis = 'Sous-virage en appui — manque de grip AV';
-      explanation = 'En appui constant, le train avant n\'a pas assez d\'adhérence. Augmenter la voie AV ou ajuster les pressions.';
+      explanation = 'En appui constant, le train avant n\'a pas assez d\'adhérence. Élargir la voie AV ou ajuster les pressions.';
       tip = 'Vérifie aussi ta trajectoire — un apex trop tardif force un appui prolongé qui aggrave le sous-virage.';
-      changes = [
-        {label:'Voie avant', from:'actuelle', to:'+1 à +2 bagues'},
-        {label:'Pressions AV', from:'actuelles', to:'Baisser de 0.05 bar'}
-      ];
-      apply = {voieAv:+1};
+      candidates = [{k:'voieAv', v:+1, label:'Voie avant', to:'+1 bague'}];
+      nextSteps = ['Pressions AV : baisser de 0.05 bar si le sous-virage persiste'];
     } else {
       diagnosis = 'Manque de rotation général';
       explanation = 'Le kart est globalement trop rigide ou la géométrie ne favorise pas le délestage.';
       tip = isLowGrip ? 'En piste '+grip+' : rigidifie davantage — le délestage est mécanique, pas par adhérence.' : 'Assouplir progressivement — un seul réglage à la fois.';
-      changes = [
-        {label:'Chasse', from:'actuelle', to:'+1 cran'},
-        {label:'Voie AR', from:'actuelle', to:'+0.5 cm'},
-        {label:'Arbre', from:'actuel', to:'Souplir d\'un cran'}
-      ];
-      apply = {chasse:+1, voieAr:+0.5};
+      candidates = [{k:'chasse', v:+1, label:'Chasse', to:'+1 cran'},
+                    {k:'voieAr', v:+0.5, label:'Voie AR', to:'+0.5 cm'}];
+      nextSteps = ['Arbre : assouplir d\'un cran si les deux premiers leviers ne suffisent pas'];
     }
   }
 
@@ -3131,30 +3318,21 @@ function buildRecommendations(phase, behavior, grip, intensity) {
       diagnosis = 'Survirage à l\'entrée — délestage AR trop brutal';
       explanation = 'La roue AR intérieure se soulève trop vite. Le train AR part avant que tu aies le temps de corriger.';
       tip = 'Attention : si ça arrive surtout en freinage, travaille aussi le freinage dégressif avant de toucher au setup.';
-      changes = [
-        {label:'Chasse', from:'actuelle', to:'-1 cran'},
-        {label:'Arbre', from:'actuel', to:'Dur'},
-        {label:'Voie AR', from:'actuelle', to:'+0.5 cm'}
-      ];
-      apply = {chasse:-1, arbre:'dur', voieAr:+0.5};
+      candidates = [{k:'chasse', v:-1, label:'Chasse', to:'-1 cran'},
+                    {k:'arbre', v:'dur', label:'Arbre', to:'Dur'},
+                    {k:'voieAr', v:+0.5, label:'Voie AR', to:'+0.5 cm'}];
     } else if(phase === 'exit') {
       diagnosis = 'Survirage en sortie — souvent du pilotage';
       explanation = 'L\'arrière part à l\'accélération. Cause principale : gaz remis trop tôt, roues pas encore dans l\'axe.';
       tip = '⚠️ 80% du temps, c\'est un problème de pilotage. Attends que le kart soit aligné AVANT de remettre les gaz.';
-      changes = [
-        {label:'Pressions AR', from:'actuelles', to:'+0.05 bar (froid)'},
-        {label:'Voie AR', from:'actuelle', to:'-0.5 cm si problème persistant'}
-      ];
-      apply = {voieAr:-0.5};
+      candidates = [{k:'voieAr', v:-0.5, label:'Voie AR', to:'-0.5 cm'}];
+      nextSteps = ['Pressions AR : +0.05 bar (froid) avant de toucher au châssis'];
     } else {
       diagnosis = 'Survirage général — châssis trop souple';
       explanation = isHighGrip ? 'Piste '+grip+' + châssis souple = trop de rotation. Rigidifier.' : 'Kart nerveux globalement.';
       tip = 'Rigidifie progressivement. Commence par la barre avant.';
-      changes = [
-        {label:'Barre avant', from:'actuelle', to:'Renforcer (ronde → plate verticale)'},
-        {label:'Pressions AR', from:'actuelles', to:'+0.05 bar'}
-      ];
-      apply = {barre:'plate_v'};
+      candidates = [{k:'barre', v:'plate_v', label:'Barre avant', to:'Plate verticale (rigidifier)'}];
+      nextSteps = ['Pressions AR : +0.05 bar'];
     }
   }
 
@@ -3164,33 +3342,69 @@ function buildRecommendations(phase, behavior, grip, intensity) {
       ? 'Piste '+grip+' : le grip vient du délestage mécanique, pas du caoutchouc. Rigidifie contre-intuitivement.'
       : 'Pneus hors fenêtre de température ou pressions incorrectes.';
     tip = 'Vérifie d\'abord le delta froid/chaud de tes pneus dans l\'onglet Pneus.';
-    changes = isLowGrip
-      ? [{label:'Barre avant', from:'actuelle', to:'Plate verticale (rigide)'},{label:'Arbre', from:'actuel', to:'Dur'},{label:'Voie AR', from:'actuelle', to:'Réduire de 0.5 cm'}]
-      : [{label:'Pressions', from:'actuelles', to:'Vérifier delta cible +0.13 à +0.17'},{label:'Mise en chauffe', from:'normale', to:'Augmenter de 1-2 tours supplémentaires'}];
-    apply = isLowGrip ? {barre:'plate_v', arbre:'dur'} : {};
+    if (isLowGrip) {
+      candidates = [{k:'barre', v:'plate_v', label:'Barre avant', to:'Plate verticale (rigide)'},
+                    {k:'arbre', v:'dur', label:'Arbre', to:'Dur'}];
+      nextSteps = ['Voie AR : réduire de 0.5 cm en dernier recours'];
+    } else {
+      nextSteps = ['Pressions : viser le delta cible +0.13 à +0.17 bar',
+                   'Mise en chauffe : 1-2 tours supplémentaires'];
+    }
   }
 
   else if(behavior === 'instability') {
     diagnosis = 'Instabilité — pincement ou pression à vérifier';
     explanation = 'Souvent causé par une pression inégale, un pincement excessif ou une voie AR trop large.';
     tip = 'Commence par vérifier les pressions individuellement — un pneu qui fuit crée une instabilité progressive.';
-    changes = [
-      {label:'Pincement AV', from:'actuel', to:'Neutre (0)'},
-      {label:'Voie AR', from:'actuelle', to:'Réduire de 0.5 cm'},
-      {label:'Arbre', from:'actuel', to:'Dur ou Medium'}
-    ];
-    apply = {pincement:0, voieAr:-0.5, arbre:'dur'};
+    // Le pincement se ramène vers le neutre : delta calculé depuis la valeur réelle
+    const pincActuel = parseInt(document.getElementById('pincement')?.value ?? '0', 10) || 0;
+    if (pincActuel !== 0) {
+      candidates = [{k:'pincement', v:-pincActuel, label:'Pincement AV', to:'Neutre (0)'}];
+      nextSteps = ['Voie AR : réduire de 0.5 cm', 'Arbre : passer en dur ou medium'];
+    } else {
+      candidates = [{k:'voieAr', v:-0.5, label:'Voie AR', to:'-0.5 cm'}];
+      nextSteps = ['Arbre : passer en dur ou medium'];
+    }
+  }
+
+  // === Sélection du levier UNIQUE ===
+  // Règle de la maison : un seul changement à la fois, sinon le pilote ne peut
+  // pas savoir lequel a marché. On retient le premier levier disponible, les
+  // autres deviennent des "pistes suivantes" purement informatives.
+  let picked = null;
+  for (const c of candidates) {
+    if (typeof c.v === 'number' && SETUP_LIMITS[c.k]) {
+      const el = document.getElementById(c.k === 'voieAr' ? 'voie-ar' : c.k === 'voieAv' ? 'voie-av' : c.k);
+      const current = el ? parseFloat(el.value) : NaN;
+      if (isAtLimit(c.k, current, Math.sign(c.v))) {
+        const lim = SETUP_LIMITS[c.k];
+        nextSteps.unshift(`${c.label} : déjà en butée (${current}${lim.unit ? ' ' + lim.unit : ''}) — levier indisponible`);
+        continue; // levier saturé → on passe au suivant
+      }
+    }
+    picked = c;
+    break;
+  }
+
+  if (picked) {
+    apply = { [picked.k]: picked.v };
+    const el = document.getElementById(picked.k === 'voieAr' ? 'voie-ar' : picked.k === 'voieAv' ? 'voie-av' : picked.k);
+    const from = el ? el.value : 'actuel';
+    changes = [{ label: picked.label, from, to: picked.to }];
+    // Les candidats non retenus rejoignent les pistes suivantes
+    candidates.filter(c => c !== picked).forEach(c => nextSteps.push(`${c.label} : ${c.to}`));
   }
 
   if(!diagnosis) {
     diagnosis = 'Problème à analyser';
     explanation = 'Basé sur tes réponses, voici les réglages de base à explorer.';
     tip = 'Utilise aussi l\'onglet Diagnostic après avoir rempli les paramètres de session.';
-    changes = [{label:'Setup', from:'actuel', to:'Revenir à un setup neutre de référence'}];
+    changes = [];
+    nextSteps = ['Revenir à un setup neutre de référence'];
     apply = {};
   }
 
-  return {diagnosis, explanation, tip, changes, apply};
+  return {diagnosis, explanation, tip, changes, nextSteps, apply};
 }
 
 function applyRecommendedSetup(applyObj) {
@@ -3201,6 +3415,7 @@ function applyRecommendedSetup(applyObj) {
   }
 
   let applied = [];
+  let blocked = []; // conseils refusés/tronqués par une butée — affichés au pilote
 
   // Fonction utilitaire pour sélectionner un chip radio
   function selectRadioChip(name, value, label) {
@@ -3251,41 +3466,45 @@ function applyRecommendedSetup(applyObj) {
     selectRadioChip('garde-ar', applyObj.gardeAr, 'Garde AR');
   }
 
-  // Chasse (delta)
-  if(applyObj.chasse !== undefined && typeof applyObj.chasse === 'number') {
-    const el = document.getElementById('chasse');
-    const newVal = Math.max(-1, Math.min(4, parseInt(el.value) + applyObj.chasse));
-    el.value = newVal;
-    updateChasse();
-    applied.push(`Chasse → ${newVal}`);
-  }
+  // === Réglages numériques ===
+  // Convention STRICTE (identique côté IA et côté diagnostic guidé) :
+  // toutes les valeurs numériques sont des DELTAS relatifs au réglage courant.
+  // C'était la source d'un bug grave : "voieAv: +1" affiché "+1 bague" était
+  // appliqué en ABSOLU — un pilote à 3 bagues se retrouvait à 1, soit
+  // l'inverse exact du conseil donné.
+  // Un levier déjà en butée est refusé, pas silencieusement écrasé.
+  const numericFields = [
+    { key: 'voieAr',    el: 'voie-ar',   decimals: 1, refresh: () => updateSliderVal('voie-ar','val-voie-ar',' cm') },
+    { key: 'voieAv',    el: 'voie-av',   decimals: 0, refresh: () => updateSliderVal('voie-av','val-voie-av',' bagues') },
+    { key: 'pincement', el: 'pincement', decimals: 0, refresh: updatePincement },
+    { key: 'chasse',    el: 'chasse',    decimals: 0, refresh: updateChasse },
+  ];
 
-  // Voie AR (delta en cm)
-  if(applyObj.voieAr !== undefined && typeof applyObj.voieAr === 'number') {
-    const el = document.getElementById('voie-ar');
-    const newVal = Math.max(135, Math.min(141, parseFloat(el.value) + applyObj.voieAr));
-    el.value = newVal.toFixed(1);
-    updateSliderVal('voie-ar','val-voie-ar',' cm');
-    applied.push(`Voie AR → ${newVal.toFixed(1)} cm`);
-  }
+  numericFields.forEach(f => {
+    const delta = applyObj[f.key];
+    if (delta === undefined || typeof delta !== 'number' || delta === 0) return;
+    const el = document.getElementById(f.el);
+    if (!el) return;
+    const lim = SETUP_LIMITS[f.key];
+    const current = parseFloat(el.value);
 
-  // Voie AV (valeur absolue 0-6 bagues)
-  if(applyObj.voieAv !== undefined && typeof applyObj.voieAv === 'number') {
-    const el = document.getElementById('voie-av');
-    const newVal = Math.max(0, Math.min(6, Math.round(applyObj.voieAv)));
-    el.value = newVal;
-    updateSliderVal('voie-av','val-voie-av',' bagues');
-    applied.push(`Voie AV → ${newVal} bagues`);
-  }
+    // Déjà en butée dans le sens demandé → on refuse et on le dit clairement
+    if (isAtLimit(f.key, current, Math.sign(delta))) {
+      blocked.push(`${lim.label} déjà à ${delta > 0 ? 'son maximum' : 'son minimum'} (${current}${lim.unit ? ' ' + lim.unit : ''})${lim.maxNote && delta > 0 ? ' — ' + lim.maxNote : ''}`);
+      return;
+    }
 
-  // Pincement (valeur absolue -3 à +3)
-  if(applyObj.pincement !== undefined && typeof applyObj.pincement === 'number') {
-    const el = document.getElementById('pincement');
-    const newVal = Math.max(-3, Math.min(3, Math.round(applyObj.pincement)));
-    el.value = newVal;
-    updatePincement();
-    applied.push(`Pincement → ${newVal}`);
-  }
+    const raw = current + delta;
+    const newVal = clampSetting(f.key, raw);
+    el.value = f.decimals ? newVal.toFixed(f.decimals) : String(Math.round(newVal));
+    f.refresh();
+    const shown = f.decimals ? newVal.toFixed(f.decimals) : Math.round(newVal);
+    applied.push(`${lim.label} → ${shown}${lim.unit ? ' ' + lim.unit : ''}`);
+    // Le conseil a été tronqué par la butée : le pilote doit le savoir
+    if (Math.abs(raw - newVal) > 0.001) {
+      blocked.push(`${lim.label} : conseil limité à ${shown}${lim.unit ? ' ' + lim.unit : ''} (butée)`);
+    }
+  });
 
   // Résultat
   if(applied.length > 0) {
@@ -3301,11 +3520,21 @@ function applyRecommendedSetup(applyObj) {
       renderPendingTest();
     } catch(e) {}
     setTimeout(() => {
-      const confirmMsg = `<strong style="color:var(--green)">✅ Réglages appliqués dans l'interface :</strong><br><br>`
-        + applied.map(a => `→ ${a}`).join('<br>')
-        + `<br><br>Va dans l'onglet <strong>🔧 Châssis</strong> pour vérifier, puis clique sur <strong>Analyser la session</strong>.`;
+      let confirmMsg = `<strong style="color:var(--green)">✅ Réglages appliqués dans l'interface :</strong><br><br>`
+        + applied.map(a => `→ ${escapeHtml(a)}`).join('<br>');
+      if (blocked.length > 0) {
+        confirmMsg += `<br><br><strong style="color:var(--orange)">⚠️ Butées de réglage :</strong><br>`
+          + blocked.map(b => `→ ${escapeHtml(b)}`).join('<br>');
+      }
+      confirmMsg += `<br><br>Va dans l'onglet <strong>🔧 Châssis</strong> pour vérifier, puis clique sur <strong>Analyser la session</strong>.`;
       addMsg(confirmMsg, 'bot');
     }, 200);
+  } else if (blocked.length > 0) {
+    // Rien appliqué UNIQUEMENT parce que tout était en butée : on l'explique
+    // au lieu de laisser croire que le conseil était inapplicable.
+    addMsg(`<strong style="color:var(--orange)">⚠️ Rien à appliquer — tu es déjà en butée :</strong><br><br>`
+      + blocked.map(b => `→ ${escapeHtml(b)}`).join('<br>')
+      + `<br><br>Il faut passer par un autre levier. Redemande-moi une piste en précisant que ce réglage est au bout.`, 'bot');
   } else {
     addMsg(`Aucun réglage automatique applicable. Consulte les recommandations ci-dessus et ajuste manuellement.`, 'bot');
   }
@@ -3355,12 +3584,19 @@ async function sendChat() {
   // Coach IA = compte requis (quota freemium géré côté serveur).
   // Si Supabase n'est pas configuré (dev local), on laisse passer :
   // le serveur tranche selon ALLOW_ANON_CHAT.
-  if (sb && !authState.session) {
-    track('auth_wall');
-    addMsg('🔐 Le coach IA nécessite un compte (gratuit) — tes analyses seront aussi sauvegardées dans le cloud. <button class="apply-setup-btn" onclick="openAuthModal()" style="margin-top:6px;">Se connecter</button>', 'bot');
-    return;
+  // On demande un jeton FRAIS ici (et pas l'instantané authState) : sinon un
+  // jeton expiré depuis 1h fait retomber le pilote sur le mur de connexion
+  // alors qu'il est bel et bien connecté.
+  let chatToken = null;
+  if (sb) {
+    chatToken = await getAccessToken();
+    if (!chatToken) {
+      track('auth_wall');
+      addMsg('🔐 Le coach IA nécessite un compte (gratuit) — tes analyses seront aussi sauvegardées dans le cloud. <button class="apply-setup-btn" onclick="openAuthModal()" style="margin-top:6px;">Se connecter</button>', 'bot');
+      return;
+    }
   }
-  track('chat_sent', { logged: !!authState.session });
+  track('chat_sent', { logged: !!chatToken });
 
   // Message de chargement progressif (latence perçue ÷2 — la latence réelle ne change pas)
   const LOADING_STEPS = [
@@ -3389,14 +3625,32 @@ async function sendChat() {
     const context = collectData();
     const history = chatLog.slice(-12);
 
-    const reqHeaders = { 'Content-Type': 'application/json' };
-    if (authState.session) reqHeaders['Authorization'] = `Bearer ${authState.session.access_token}`;
-
-    const res = await fetch('/.netlify/functions/chat', {
+    const body = JSON.stringify({ message: msg, context, history });
+    const callChat = (token) => fetch('/.netlify/functions/chat', {
       method: 'POST',
-      headers: reqHeaders,
-      body: JSON.stringify({ message: msg, context, history })
+      headers: token
+        ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        : { 'Content-Type': 'application/json' },
+      body,
     });
+
+    let res = await callChat(chatToken);
+
+    // Filet de sécurité : un 401 malgré un jeton frais = jeton invalidé côté
+    // serveur. On force un refresh et on retente UNE fois avant d'afficher
+    // le mur de connexion — c'est ce qui cassait la boucle "reconnecte-toi".
+    if (res.status === 401 && sb) {
+      try {
+        const { data } = await sb.auth.refreshSession();
+        if (data && data.session) {
+          authState.session = data.session;
+          authState.user = data.session.user;
+          res = await callChat(data.session.access_token);
+        }
+      } catch (e) {
+        console.warn('refreshSession failed:', e);
+      }
+    }
 
     // Supprime le message de chargement
     clearInterval(loadingTimer);

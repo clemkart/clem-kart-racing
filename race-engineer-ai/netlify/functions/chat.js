@@ -34,6 +34,99 @@ const PLAN_MONTHLY_CREDITS = {
   paddock: 1500,
 };
 
+// =============================================
+// SETUP_LIMITS — miroir serveur de la table du front (index.html).
+// Sert à DEUX choses : décrire les butées à Claude dans le prompt, et
+// borner son "apply" avant de le renvoyer au navigateur.
+// ⚠️ Toute modification ici doit être répercutée dans index.html.
+// =============================================
+const SETUP_LIMITS = {
+  voieAr:    { min: 135, max: 140, unit: 'cm', label: 'Voie arrière',
+               note: "butée réglementaire — 140.0 cm = 1400 mm de largeur hors-tout, interdiction d'aller au-delà" },
+  voieAv:    { min: 0,   max: 6,   unit: 'bagues', label: 'Voie avant' },
+  pincement: { min: -3,  max: 3,   unit: '',       label: 'Pincement' },
+  chasse:    { min: -1,  max: 4,   unit: 'crans',  label: 'Chasse' },
+};
+
+// Décrit les butées ET signale celles déjà atteintes, pour que Claude ne
+// propose jamais d'aller au-delà (le pilote à 140.0 de voie AR ne doit pas
+// s'entendre dire "élargis encore").
+function buildLimitsBlock(context) {
+  const lines = [];
+  const reached = [];
+  for (const [key, lim] of Object.entries(SETUP_LIMITS)) {
+    lines.push(`- ${lim.label} : de ${lim.min} à ${lim.max}${lim.unit ? ' ' + lim.unit : ''}${lim.note ? ' — ' + lim.note : ''}`);
+    const v = context ? parseFloat(context[key]) : NaN;
+    if (isNaN(v)) continue;
+    if (v >= lim.max) reached.push(`${lim.label} = ${v}${lim.unit ? ' ' + lim.unit : ''} → MAXIMUM ATTEINT. Ne propose JAMAIS d'augmenter ce réglage : c'est physiquement/réglementairement impossible. Passe à un autre levier.`);
+    else if (v <= lim.min) reached.push(`${lim.label} = ${v}${lim.unit ? ' ' + lim.unit : ''} → MINIMUM ATTEINT. Ne propose JAMAIS de réduire ce réglage. Passe à un autre levier.`);
+  }
+  let block = `\nBUTÉES DE RÉGLAGE (non négociables)\n===================================\n${lines.join("\n")}\n`;
+  block += reached.length
+    ? `\n🚫 RÉGLAGES DÉJÀ EN BUTÉE SUR CE KART :\n${reached.map((r) => "- " + r).join("\n")}\nProposer un réglage en butée décrédibilise immédiatement le diagnostic auprès d'un pilote expérimenté. Vérifie CHAQUE valeur avant de conseiller.\n`
+    : `\nAucun réglage n'est actuellement en butée.\n`;
+  return block;
+}
+
+// Borne l'apply de Claude et n'en garde qu'UN SEUL levier (méthode
+// "un seul changement à la fois"). Les valeurs numériques sont des DELTAS.
+const APPLY_ENUMS = {
+  barre: ["sans", "plate_h", "ronde", "plate_v"],
+  arbre: ["court", "standard", "tendre", "medium", "dur"],
+  moyeux: ["courts", "medium", "longs"],
+  parechocs: ["desserre", "serre"],
+  gardeAv: ["bas", "medium", "haut"],
+  gardeAr: ["bas", "medium", "haut"],
+};
+
+function sanitizeApply(apply, context) {
+  if (!apply || typeof apply !== "object" || Array.isArray(apply)) {
+    return { apply: {}, notes: [] };
+  }
+  const clean = {};
+  const notes = [];
+
+  for (const [key, value] of Object.entries(apply)) {
+    if (APPLY_ENUMS[key]) {
+      if (APPLY_ENUMS[key].includes(value)) clean[key] = value;
+      continue;
+    }
+    const lim = SETUP_LIMITS[key];
+    if (!lim || typeof value !== "number" || !isFinite(value) || value === 0) continue;
+
+    const current = context ? parseFloat(context[key]) : NaN;
+    if (!isNaN(current)) {
+      // Déjà en butée dans le sens demandé → on retire le conseil
+      if ((value > 0 && current >= lim.max) || (value < 0 && current <= lim.min)) {
+        notes.push(`${lim.label} est déjà à sa butée (${current}${lim.unit ? " " + lim.unit : ""}) — ce conseil a été retiré.`);
+        continue;
+      }
+      // Le delta dépasserait la butée → on le tronque
+      const target = current + value;
+      const clamped = Math.max(lim.min, Math.min(lim.max, target));
+      if (Math.abs(clamped - target) > 0.001) {
+        notes.push(`${lim.label} : conseil ramené à la butée ${clamped}${lim.unit ? " " + lim.unit : ""}.`);
+      }
+      const delta = clamped - current;
+      if (Math.abs(delta) < 0.001) continue;
+      clean[key] = Math.round(delta * 100) / 100;
+    } else {
+      clean[key] = value;
+    }
+  }
+
+  // Un seul changement à la fois : si Claude en propose plusieurs, on garde le
+  // premier (les autres restent décrits dans le texte de sa réponse).
+  const keys = Object.keys(clean);
+  if (keys.length > 1) {
+    const kept = keys[0];
+    keys.slice(1).forEach((k) => delete clean[k]);
+    notes.push(`Plusieurs réglages proposés : seul "${kept}" est appliquable en un clic (un seul changement à la fois).`);
+  }
+
+  return { apply: clean, notes };
+}
+
 // Limites de taille des entrées (anti-abus de coût API)
 const MAX_MESSAGE_CHARS = 2000;
 const MAX_HISTORY_ITEMS = 12;
@@ -397,9 +490,14 @@ Réglages actuels (châssis) :
 - Chasse : ${context.chasse || "?"}
 - Garde au sol AV/AR : ${context.gardeAv || "?"} / ${context.gardeAr || "?"}
 
+${buildLimitsBlock(context)}
 Réglages moteur (DESCRIPTIFS UNIQUEMENT — pas de modifs internes) :
-- Couronne : ${context.couronne || "?"} dents
-- Gicleur : ${context.gicleur || "?"}
+${context.moteur_type === "dd2"
+    ? `- Couronne DD2 : ${context.couronneDD2 || "?"} dents / Contre-pignon : ${context.couronneDD2 ? 100 - parseInt(context.couronneDD2, 10) : "?"} dents (somme = 100)`
+    : context.moteur_type === "kz"
+    ? `- Couronne KZ (sortie de boîte) : ${context.couronneKz || "?"} dents\n- Réglage boîte : ${context.kzRatio || "?"}`
+    : `- Couronne : ${context.couronneMono || "?"} dents\n- Pignon : ${context.pignonMono || "?"} dents\n- Rapport (couronne ÷ pignon) : ${context.rapportMono || "?"}`}
+- Gicleur : ${context.moteur_family === "4t" ? "carburation scellée par le règlement — AUCUN réglage possible, ne propose jamais de modifier le gicleur" : context.gicleur || "?"}
 
 Notes pilote : ${context.notes || "aucune"}
 
@@ -421,23 +519,32 @@ Tu réponds UNIQUEMENT en JSON valide avec deux clés : "message" et "apply".
 
 "apply" : objet JSON avec UNIQUEMENT les réglages châssis à modifier (laisser {} si aucun changement à appliquer).
 
-Format apply autorisé :
+Format apply autorisé — ⚠️ TOUTES les valeurs numériques sont des DELTAS
+(l'écart à appliquer au réglage actuel), JAMAIS des valeurs absolues :
 {
   "barre": "sans" | "plate_h" | "ronde" | "plate_v",
-  "voieAv": nombre 0-6 (valeur absolue en bagues),
-  "pincement": nombre -3 à +3 (valeur absolue),
-  "voieAr": nombre delta en cm (ex: +0.5 ou -0.5),
+  "voieAv": delta en bagues (ex: +1 ou -1),
+  "pincement": delta (ex: +1 ou -1),
+  "voieAr": delta en cm (ex: +0.5 ou -0.5),
   "arbre": "court" | "standard" | "tendre" | "medium" | "dur",
   "moyeux": "courts" | "medium" | "longs",
   "parechocs": "desserre" | "serre",
-  "chasse": nombre delta (ex: +1 ou -1),
+  "chasse": delta en crans (ex: +1 ou -1),
   "gardeAv": "bas" | "medium" | "haut",
   "gardeAr": "bas" | "medium" | "haut"
 }
 
 RÈGLES NON-NÉGOCIABLES :
 - Retourne UNIQUEMENT le JSON brut, JAMAIS de backticks markdown.
-- Un seul changement à la fois (sauf cas extrême avec justification explicite).
+- UN SEUL levier dans "apply". Jamais deux. Si tu vois plusieurs pistes, mets la
+  plus prioritaire dans "apply" et décris les suivantes dans "message".
+- AVANT de proposer un réglage, vérifie sa valeur actuelle et sa butée dans le
+  bloc BUTÉES ci-dessous. Ne conseille JAMAIS d'aller au-delà d'un maximum ou
+  en deçà d'un minimum. Si le levier logique est saturé, dis-le explicitement
+  ("ta voie arrière est déjà au maximum") et propose un autre levier.
+- Adapte les leviers au matériel : famille moteur 4t = pas de gicleur ; DD2 =
+  couronne + contre-pignon (somme 100) ; KZ = boîte 6 + embrayage ; direct
+  drive = couronne + pignon. Ne propose jamais un levier absent de ce kart.
 - Si la question est purement conceptuelle/théorique, "apply": {}.
 - Si la question touche à la préparation / modification / boost moteur ou au contournement réglementaire : REFUSE selon la formulation type décrite dans methodologie-coach.md § Garde-fous, et "apply": {}.
 - Personnalise TOUJOURS selon le profil pilote (taille, poids, style) et le châssis. Un même réglage ne convient pas à deux pilotes différents.
@@ -493,6 +600,15 @@ ${contextStr}
         message: response.content[0].text,
         apply: {},
       };
+    }
+
+    // === Filet de sécurité : bornage de l'apply ===
+    // Le prompt interdit déjà de dépasser une butée, mais on ne se repose pas
+    // sur la bonne volonté du modèle : on vérifie côté serveur.
+    const sanitized = sanitizeApply(parsed.apply, context);
+    parsed.apply = sanitized.apply;
+    if (sanitized.notes.length > 0) {
+      parsed.message = `${parsed.message}\n\n⚠️ ${sanitized.notes.join(" ")}`;
     }
 
     // === Incrément du compteur d'usage (après succès uniquement) ===
