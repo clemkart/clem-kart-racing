@@ -50,6 +50,25 @@ const SETUP_LIMITS = {
   pincement: { min: -3, max: 3,  unit: '',      label: 'Pincement' },
   chasse:    { min: -1, max: 4,  unit: 'crans', label: 'Chasse' },
   carrossage: { min: -3, max: 3, unit: '',      label: 'Carrossage' },
+  // Gicleur : les bornes n'existaient que côté navigateur, donc rien
+  // n'empêchait le modèle de conseiller une valeur hors plage.
+  gicleur:   { min: 105, max: 160, unit: '',    label: 'Gicleur' },
+};
+
+// Pressions : gérées à part car ce sont des deltas en bar appliqués à un
+// ESSIEU entier (c'est ainsi qu'un ingénieur raisonne), pas à une roue.
+// Transmission : la plage dépend de la famille moteur, donc le champ visé
+// change aussi. Bornes alignées sur les curseurs du formulaire.
+const TRANSMISSION_LIMITS = {
+  mono: { couronne: { min: 60, max: 90 }, pignon: { min: 9, max: 14 } },
+  dd2:  { couronne: { min: 32, max: 38 } }, // le contre-pignon suit (somme = 100)
+  kz:   { couronne: { min: 16, max: 26 } },
+};
+
+// Bornes alignées sur les champs du formulaire (0.5 à 2.0 bar).
+const PRESSURE_LIMITS = {
+  pressionAv: { min: 0.5, max: 2.0, maxDelta: 0.15, label: 'Pression avant (à froid)', roues: ['avg', 'avd'] },
+  pressionAr: { min: 0.5, max: 2.0, maxDelta: 0.15, label: 'Pression arrière (à froid)', roues: ['arg', 'ard'] },
 };
 
 // Décrit les butées ET signale celles déjà atteintes, pour que Claude ne
@@ -128,6 +147,59 @@ function sanitizeApply(apply, context) {
       if (APPLY_ENUMS[key].includes(value)) clean[key] = value;
       continue;
     }
+
+    // Transmission : delta en dents, borné selon la famille moteur
+    if (key === "couronne" || key === "pignon") {
+      if (typeof value !== "number" || !isFinite(value) || value === 0) continue;
+      const type = (context && context.moteur_type) || "mono";
+      const lim = (TRANSMISSION_LIMITS[type] || {})[key];
+      if (!lim) {
+        notes.push(`Ce moteur n'a pas de réglage "${key}" ajustable : conseil retiré.`);
+        continue;
+      }
+      const cur = context
+        ? parseFloat(key === "pignon" ? context.pignonMono
+            : type === "dd2" ? context.couronneDD2
+            : type === "kz" ? context.couronneKz
+            : context.couronneMono)
+        : NaN;
+      if (!isNaN(cur)) {
+        if ((value > 0 && cur >= lim.max) || (value < 0 && cur <= lim.min)) {
+          notes.push(`${key === "pignon" ? "Pignon" : "Couronne"} déjà en butée (${cur} dents) : conseil retiré.`);
+          continue;
+        }
+        const cible = Math.max(lim.min, Math.min(lim.max, cur + value));
+        clean[key] = Math.round(cible - cur);
+        if (clean[key] === 0) continue;
+      } else {
+        clean[key] = Math.round(value);
+      }
+      continue;
+    }
+
+    // Pressions : delta en bar sur un essieu, plafonné pour éviter qu'un
+    // conseil ne rende le kart dangereux ou inexploitable en une fois.
+    const pl = PRESSURE_LIMITS[key];
+    if (pl) {
+      if (typeof value !== "number" || !isFinite(value) || value === 0) continue;
+      let d = Math.max(-pl.maxDelta, Math.min(pl.maxDelta, value));
+      if (Math.abs(d - value) > 0.001) {
+        notes.push(`${pl.label} : correction ramenée à ${d > 0 ? "+" : ""}${d.toFixed(2)} bar (un pas plus grand n'est pas exploitable en une session).`);
+      }
+      // Vérification contre la pression réelle si elle est connue
+      const p = context && context.pressures;
+      const courante = p && p[pl.roues[0]] ? parseFloat(p[pl.roues[0]].froid) : NaN;
+      if (!isNaN(courante)) {
+        const cible = Math.max(pl.min, Math.min(pl.max, courante + d));
+        d = Math.round((cible - courante) * 100) / 100;
+        if (Math.abs(d) < 0.005) {
+          notes.push(`${pl.label} est déjà en limite de plage : ce conseil a été retiré.`);
+          continue;
+        }
+      }
+      clean[key] = Math.round(d * 100) / 100;
+      continue;
+    }
     const lim = SETUP_LIMITS[key];
     if (!lim || typeof value !== "number" || !isFinite(value) || value === 0) continue;
 
@@ -179,6 +251,49 @@ const SYMPTOM_LABELS = {
   instability_straight: "instabilité en ligne droite",
   balanced: "kart équilibré, pas de défaut marqué",
 };
+
+// Met en forme les pressions pour le prompt.
+// ⚠️ Elles étaient totalement absentes du contexte envoyé au modèle, alors
+// que le format de réponse lui demandait de les commenter : il ne pouvait
+// que les inventer ou les éluder. C'est pourtant le premier levier du kart.
+const TIRE_LABELS = { avg: "AV gauche", avd: "AV droit", arg: "AR gauche", ard: "AR droit" };
+
+function buildPressureBlock(context) {
+  const p = context && context.pressures;
+  if (!p || typeof p !== "object") {
+    return "\nPressions pneus : NON RENSEIGNÉES. Ne commente pas les pressions et ne fais aucune hypothèse dessus. Si le symptôme décrit peut venir des pneus, demande au pilote de les relever froid ET chaud.\n";
+  }
+  const lignes = [];
+  let mesures = 0;
+  for (const [k, label] of Object.entries(TIRE_LABELS)) {
+    const t = p[k];
+    if (!t || t.froid == null || isNaN(parseFloat(t.froid))) continue;
+    mesures++;
+    const froid = parseFloat(t.froid).toFixed(2);
+    const chaud = t.chaud != null && !isNaN(parseFloat(t.chaud)) ? parseFloat(t.chaud).toFixed(2) : null;
+    const delta = t.delta != null && !isNaN(parseFloat(t.delta)) ? parseFloat(t.delta) : null;
+    let l = `- ${label} : froid ${froid} bar`;
+    if (chaud) l += `, chaud ${chaud} bar`;
+    if (delta != null) {
+      const verdict = delta >= 0.13 && delta <= 0.17 ? "dans la cible"
+        : delta < 0.10 ? "TROP FAIBLE, le pneu ne travaille pas assez"
+        : delta > 0.20 ? "TROP ÉLEVÉ, le pneu travaille trop"
+        : "limite, à surveiller";
+      l += ` → delta ${delta >= 0 ? "+" : ""}${delta.toFixed(2)} (${verdict})`;
+    }
+    lignes.push(l);
+  }
+  if (mesures === 0) {
+    return "\nPressions pneus : NON RENSEIGNÉES. Ne commente pas les pressions et ne fais aucune hypothèse dessus.\n";
+  }
+  let bloc = `\nPRESSIONS PNEUS (${mesures}/4 roues renseignées)\n${lignes.join("\n")}\n`;
+  bloc += "→ Cible générique de delta froid vers chaud : +0.13 à +0.17 bar. Un delta trop faible signifie que le pneu ne monte pas en température (monter la pression à froid), un delta trop élevé qu'il travaille trop (la baisser).\n";
+  bloc += "→ Compare aussi les CÔTÉS entre eux : un écart marqué gauche/droite sur un même essieu trahit un déséquilibre de châssis, une fuite, ou un circuit très asymétrique.\n";
+  if (mesures < 4) {
+    bloc += "→ Toutes les roues ne sont pas renseignées : ne conclus pas sur celles qui manquent.\n";
+  }
+  return bloc;
+}
 
 // Construit la demande de diagnostic à partir de la session.
 // Le contexte détaillé arrive déjà par le system prompt ; ce message ne fait
@@ -588,6 +703,7 @@ ${context.moteur_type === "dd2"
     : `- Couronne : ${context.couronneMono || "?"} dents\n- Pignon : ${context.pignonMono || "?"} dents\n- Rapport (couronne ÷ pignon) : ${context.rapportMono || "?"}`}
 - Gicleur : ${context.moteur_family === "4t" ? "carburation scellée par le règlement, AUCUN réglage possible, ne propose jamais de modifier le gicleur" : context.gicleur || "?"}
 
+${buildPressureBlock(context)}
 Gomme montée : ${[context.pneuMarque, context.pneuModele].filter(Boolean).join(" ") || "NON RENSEIGNÉE"}
 ${context.pneuMarque
     ? "→ Utilise la fenêtre de pression propre à cette gomme (cf. pneus-gommes.md). N'invente jamais un chiffre précis pour un modèle que tu ne connais pas : dis-le et renvoie à la fiche du manufacturier."
@@ -655,6 +771,11 @@ Format apply autorisé : ⚠️ TOUTES les valeurs numériques sont des DELTAS
   "parechocs": "desserre" | "serre",
   "chasse": delta en crans (ex: +1 ou -1),
   "carrossage": delta (ex: +1 ou -1),
+  "pressionAv": delta en bar sur la pression AVANT à froid (ex: +0.05 ou -0.05),
+  "pressionAr": delta en bar sur la pression ARRIÈRE à froid (ex: +0.05 ou -0.05),
+  "gicleur": delta en points de gicleur (ex: +2 ou -2),
+  "couronne": delta en dents (ex: +1 ou -1),
+  "pignon": delta en dents, direct drive uniquement (ex: +1 ou -1),
   "siege": "avance" | "standard" | "recule",
   "siegeHauteur": "bas" | "standard" | "haut",
   "gardeAv": "bas" | "medium" | "haut",

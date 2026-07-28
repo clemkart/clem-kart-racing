@@ -3500,7 +3500,61 @@ function applyRecommendedSetup(applyObj) {
     { key: 'pincement', el: 'pincement', decimals: 0, refresh: updatePincement },
     { key: 'chasse',   el: 'chasse',   decimals: 0, refresh: updateChasse },
     { key: 'carrossage', el: 'carrossage', decimals: 0, refresh: updateCarrossage },
+    { key: 'gicleur',  el: 'gicleur',  decimals: 0, refresh: () => { updateSliderVal('gicleur','val-gicleur',''); updateGicleurReco(); } },
   ];
+
+  // Transmission : delta en dents, sur le curseur correspondant a la famille
+  // moteur active (mono / dd2 / kz). Le contre-pignon DD2 se recalcule seul.
+  (function() {
+    const type = document.querySelector('input[name="moteur"]:checked')?.value || 'mono';
+    const cibles = {
+      couronne: type === 'dd2' ? { el: 'couronne-dd2', min: 32, max: 38, refresh: updateDD2, label: 'Couronne DD2' }
+        : type === 'kz' ? { el: 'couronne-kz', min: 16, max: 26, refresh: () => updateSliderVal('couronne-kz','val-couronne-kz',' dents'), label: 'Couronne KZ' }
+        : { el: 'couronne-mono', min: 60, max: 90, refresh: updateMonoRatio, label: 'Couronne' },
+      pignon: type === 'mono' ? { el: 'pignon-mono', min: 9, max: 14, refresh: updateMonoRatio, label: 'Pignon' } : null,
+    };
+    ['couronne','pignon'].forEach(k => {
+      const delta = applyObj[k];
+      if (delta === undefined || typeof delta !== 'number' || delta === 0) return;
+      const c = cibles[k];
+      if (!c) { blocked.push(`Pas de pignon reglable sur ce type de transmission.`); return; }
+      const el = document.getElementById(c.el);
+      if (!el) return;
+      const cur = parseInt(el.value, 10);
+      if ((delta > 0 && cur >= c.max) || (delta < 0 && cur <= c.min)) {
+        blocked.push(`${c.label} deja en butee (${cur} dents).`);
+        return;
+      }
+      const nv = Math.max(c.min, Math.min(c.max, cur + Math.round(delta)));
+      el.value = nv;
+      c.refresh();
+      applied.push(`${c.label} → ${nv} dents`);
+    });
+  })();
+
+  // Pressions : delta en bar applique aux DEUX roues d'un essieu, sur la
+  // valeur a FROID (la seule que le pilote regle reellement).
+  [['pressionAv', ['avg','avd'], 'Pression avant'], ['pressionAr', ['arg','ard'], 'Pression arriere']].forEach(([key, roues, label]) => {
+    const delta = applyObj[key];
+    if (delta === undefined || typeof delta !== 'number' || delta === 0) return;
+    const faits = [];
+    roues.forEach(r => {
+      const el = document.getElementById('p-' + r + '-froid');
+      if (!el) return;
+      const cur = parseFloat(el.value);
+      if (isNaN(cur)) return; // pas de pression relevee : on ne devine pas
+      // Bornes alignees sur celles des champs du formulaire (0.5 a 2.0 bar)
+      const nv = Math.max(0.5, Math.min(2.0, cur + delta));
+      el.value = nv.toFixed(2);
+      calcDelta(r); // recalcule l'affichage du delta froid/chaud
+      faits.push(nv.toFixed(2));
+    });
+    if (faits.length) {
+      applied.push(`${label} (froid) → ${faits.join(' / ')} bar`);
+    } else {
+      blocked.push(`${label} : aucune pression relevee, impossible d'appliquer la correction.`);
+    }
+  });
 
   numericFields.forEach(f => {
     const delta = applyObj[f.key];
