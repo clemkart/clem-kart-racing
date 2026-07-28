@@ -1,4 +1,4 @@
-# Transmission (couronne / pignon) — module conditionnel
+# Transmission (couronne / pignon) : module conditionnel
 
 > Chargé quand le pilote parle de couronne, pignon, dents, rapport, vitesse de pointe, régime, limiteur, chaîne.
 > Rôle du coach : donner LA méthode (régime cible en bout de ligne droite) et le sens des corrections. La paire exacte dépend du circuit : partir de la base club/importateur du circuit, puis affiner au compte-tours.

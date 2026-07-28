@@ -1,15 +1,15 @@
 # Racecraft & stratégie de course
 
-Source : Jimmy Grills, "Precision Racing" Ch.13-17 — adapté au karting.
+Source : Jimmy Grills, "Precision Racing" Ch.13-17 : adapté au karting.
 
 ⚠️ Ce fichier est à invoquer **uniquement quand le pilote pose des questions de course** (défense, dépassement, qualifs/manche/finale, premier virage, départs).
 Pour les questions d'analyse de session ou de setup, utiliser `vision-pilote.md` + `principes-universels.md` + `matrice-symptomes.md`.
 
 ---
 
-## 1. Qualifs vs Course — mindset différent (Ch.15)
+## 1. Qualifs vs Course : mindset différent (Ch.15)
 
-### Qualifs / chrono — push lap
+### Qualifs / chrono : push lap
 **Objectif** : extraire le meilleur tour possible. Tout pour la performance pure.
 
 - **Pneus** : montée en température critique. 1-2 tours de warm-up smooth, puis push immédiat dans la fenêtre optimale (très étroite en karting, 2-3 tours max)
@@ -19,7 +19,7 @@ Pour les questions d'analyse de session ou de setup, utiliser `vision-pilote.md`
 - **Risk/reward** : peu de marge, accepter le risque d'un tour raté pour viser le tour parfait
 - **Mental** : focus extrême, visualisation pré-tour, confiance totale dans le kart
 
-### Course (manche, finale) — race pace
+### Course (manche, finale) : race pace
 **Objectif** : performance MOYENNE sur la durée + racecraft.
 
 - **Pneus** : gestion, éviter overheat. Smooth = pneus qui tiennent
@@ -36,7 +36,7 @@ Pour les questions d'analyse de session ou de setup, utiliser `vision-pilote.md`
 
 ---
 
-## 2. Premier virage — le moment critique (Ch.16)
+## 2. Premier virage : le moment critique (Ch.16)
 
 ### Pourquoi c'est crucial en karting
 - Tout le peloton est groupé, écart possible immédiat
@@ -95,7 +95,7 @@ Pour les questions d'analyse de session ou de setup, utiliser `vision-pilote.md`
 
 ---
 
-## 3. Départs — Standing & Rolling (Ch.17)
+## 3. Départs : Standing & Rolling (Ch.17)
 
 ### Spécificité karting
 - **Rolling start** = la norme en karting (Mini, Cadet, Junior, Senior X30/Rotax/OK, KZ Junior)
@@ -112,14 +112,14 @@ Pour les questions d'analyse de session ou de setup, utiliser `vision-pilote.md`
 - Reaction time : focus sur le drapeau / lights
 - Composure : pas se laisser distraire
 
-### Rolling start — technique karting
+### Rolling start : technique karting
 1. **Maintenir distance avec le pilote devant** sur le tour de formation : ni trop loin (perd momentum), ni trop près (risque contact)
 2. **Anticiper le drapeau** : 50m avant la ligne, le leader commence souvent à accélérer. Préparer le coup de pied droit.
 3. **Slipstream** : si tu n'es pas en 1ère ligne, te coller au pilote devant pour pomper l'aspiration sur la ligne droite avant T1
 4. **Throttle smooth** : plein gaz mais SANS écraser violemment (wheelspin = perte de vitesse). Modulation fine.
 5. **Sortir de l'aspi au bon moment** : trop tôt = laisser temps de défense, trop tard = bouchon
 
-### Standing start — technique KZ
+### Standing start : technique KZ
 1. **RPM optimal** : maintenir avant le départ (varie selon le kart, généralement zone de puissance)
 2. **Embrayage** : relâcher PROGRESSIVEMENT (slip the clutch) pour transférer le couple sans wheelspin
 3. **Throttle progressive** : combiner avec le relâchement clutch
@@ -139,7 +139,7 @@ Pour les questions d'analyse de session ou de setup, utiliser `vision-pilote.md`
 
 ---
 
-## 4. Défense — Racecraft Defending (Ch.13)
+## 4. Défense : Racecraft Defending (Ch.13)
 
 ### Règles universelles
 **One-move rule** : tu as droit à UN seul mouvement défensif. Une fois choisi, tu dois tenir cette ligne. Pas de "zigzag" (= dangereux + pénalisable).
@@ -183,7 +183,7 @@ Souvent ignoré par les pilotes amateurs, mais essentiel :
 
 ---
 
-## 5. Dépassement — Racecraft Overtaking (Ch.14)
+## 5. Dépassement : Racecraft Overtaking (Ch.14)
 
 ### Règles
 - **Overlap** : si tes roues avant sont à hauteur des roues arrière de l'autre, il doit te laisser la place
@@ -202,7 +202,7 @@ Souvent ignoré par les pilotes amateurs, mais essentiel :
 - **Sortie de virage lent** : si tu sors plus vite, dépassement sur la ligne droite suivante
 - **Erreur de l'autre** : missed apex, lock-up, sortie large → pounce immédiatement
 
-**3. Late braking — la technique classique**
+**3. Late braking : la technique classique**
 - **COMMIT** : tu te décides, tu freines aussi tard que l'autre + 5m, tu vas au bout
 - **Watch the line** : pas overshoot le virage
 - **Brake modulation** : pas brusque (sinon lock-up + écart)

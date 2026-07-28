@@ -1,7 +1,7 @@
 # Matrice symptômes → causes → réglages (karting)
 
 ⚠️ Ces correspondances sont **indicatives**. Toujours croiser avec :
-- Le profil pilote (taille, poids, style — un même réglage ne convient pas à deux pilotes différents)
+- Le profil pilote (taille, poids, style : un même réglage ne convient pas à deux pilotes différents)
 - Les conditions piste (froide/chaude/sale/humide)
 - La catégorie (Mini, Cadet, Junior, Senior, KZ) et le châssis (OTK, Sodikart, CRG, etc.)
 
@@ -198,7 +198,7 @@
 ### 🟣 Comportement irrégulier d'un tour à l'autre
 
 **Cause pilote (90% des cas)** :
-- Manque de constance (cf. ebook Ch.9 — rouler vite longtemps)
+- Manque de constance (cf. ebook Ch.9 : rouler vite longtemps)
 - Pilote tendu, fatigué, ou qui force en "qualification mode" constant
 - Pas de rythme stable
 

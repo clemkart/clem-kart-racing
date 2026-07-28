@@ -1,4 +1,4 @@
-# Circuits karting — base de connaissance
+# Circuits karting : base de connaissance
 
 ⚠️ Marqueurs de fiabilité : ✅ sourcé web · ⚠️ à confirmer · 👤 connaissance directe Clément (ressenti terrain, le plus fiable pour le pilotage).
 
@@ -6,7 +6,7 @@
 
 ---
 
-## CIRCUITS FRANCE — décrits par Clément (👤)
+## CIRCUITS FRANCE : décrits par Clément (👤)
 
 ### Lohéac (Bretagne, Ille-et-Vilaine)
 - 👤 Refait récemment → rapide avec du grip. Profil mixte : une partie technique lente + une partie virages plus rapides (mais plutôt "une vitesse", pas extrême).
@@ -20,7 +20,7 @@
 - 👤 Très similaire à **Plessé** dans l'esprit, sauf que Plessé est beaucoup plus plat.
 - → Réglage : profil rapide → vers la chasse + stabilité haute vitesse. Le dénivelé ajoute des transferts de charge à gérer.
 
-### Le Mans (Pays de la Loire, Sarthe — circuit Alain Prost)
+### Le Mans (Pays de la Loire, Sarthe : circuit Alain Prost)
 - 👤 Style proche de Lohéac. **Bitume très propre**, le grip se met avec le passage (gomme qui se dépose).
 - 👤 Virages rapides + beaucoup de virages mi-vitesse. **Partie technique au milieu** assez lente avec **chicanes** et un peu de **vibreur à prendre**.
 - → Réglage : compromis rapide/technique. Attention aux vibreurs (cf. risque casse châssis sur vibreurs durs en karting).
@@ -52,7 +52,7 @@
 
 ---
 
-## TYPOLOGIE — synthèse pour le réglage (👤 logique Clément)
+## TYPOLOGIE : synthèse pour le réglage (👤 logique Clément)
 
 | Circuit | Profil | Tendance réglage |
 |---------|--------|------------------|
@@ -78,9 +78,9 @@
 
 ---
 
-## CIRCUITS INTERNATIONAUX MAJEURS (✅ sourcé web — frontaliers / référence)
+## CIRCUITS INTERNATIONAUX MAJEURS (✅ sourcé web : frontaliers / référence)
 
-### Genk (Belgique) — Home of Champions
+### Genk (Belgique) : Home of Champions
 - ✅ **1360 m**, largeur mini 6 m, **12 virages** (5 droite, 5 gauche, 2 combinaisons). Circuit "premium" complet : virages techniques, épingles, courbes rapides, zones de dépassement. Hôte du Rotax Max Challenge Euro Trophy.
 - → Profil : mixte complet. Excellent pour apprendre car tout type de virage présent.
 
@@ -88,7 +88,7 @@
 - ✅ **1200 m**, près de Lonato del Garda. Circuit-référence mondial depuis 30+ ans (Hamilton, Fore y ont gagné). Hôte de la Winter Cup. Ouvert aux amateurs.
 - → Profil : référence technique italienne, très haut niveau.
 
-### Wackersdorf — Prokart Raceland (Allemagne)
+### Wackersdorf : Prokart Raceland (Allemagne)
 - ✅ **1190 m**, largeur 9-12 m (très large → beaucoup de dépassements). **7 virages à droite, 4 à gauche**. Récompense la conduite propre et régulière. Hôte du RMC Euro Trophy.
 - → Profil : large, propice à la course/dépassement, prime la régularité.
 
@@ -97,11 +97,11 @@
 - → Profil : rapide.
 
 ### Autres à connaître (⚠️ à enrichir)
-- **Kerpen** (Allemagne) — circuit historique de Schumacher.
-- **Adria** (Italie), **La Conca** (Italie) — circuits de championnats internationaux.
-- **Mariembourg** (Belgique) — circuit couvert/extérieur.
+- **Kerpen** (Allemagne) : circuit historique de Schumacher.
+- **Adria** (Italie), **La Conca** (Italie) : circuits de championnats internationaux.
+- **Mariembourg** (Belgique) : circuit couvert/extérieur.
 - **Campillos, Recardo Tormo** (Espagne).
-- **Salbris, Aunay-les-Bois, Essay** (France) — circuits nationaux notables.
+- **Salbris, Aunay-les-Bois, Essay** (France) : circuits nationaux notables.
 
 ---
 
@@ -112,4 +112,4 @@ Si le pilote saisit un circuit non documenté ici, l'IA doit :
 2. **Raisonner par typologie générale** (cf. logique chasse + grip dans reglages-detailles.md).
 3. Ne JAMAIS inventer de specs précises (longueur, virages) pour un circuit qu'elle ne connaît pas → demander ou rester général.
 
-Référence officielle exhaustive : **liste FIA Karting des circuits homologués** (fiakarting.com) — pour enrichissement futur de la base.
+Référence officielle exhaustive : **liste FIA Karting des circuits homologués** (fiakarting.com) : pour enrichissement futur de la base.

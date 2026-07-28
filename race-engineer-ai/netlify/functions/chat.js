@@ -1,5 +1,5 @@
 // =============================================
-// Race Engineer AI — Function chat
+// Race Engineer AI : Function chat
 // Intègre le skill pilotage-karting comme system prompt avec prompt caching
 // Garde-fous moteur stricts (refus avant API)
 // Auth Supabase obligatoire + quota mensuel freemium
@@ -11,7 +11,7 @@ const Anthropic = require("@anthropic-ai/sdk");
 const { createClient } = require("@supabase/supabase-js");
 const fs = require("fs");
 const path = require("path");
-// Registre des spécificités châssis × moteur — c'est lui qui garantit qu'un
+// Registre des spécificités châssis × moteur : c'est lui qui garantit qu'un
 // Sodikart en Rotax ne reçoit pas le même diagnostic qu'un Tony Kart en X30.
 const { buildKartSpecBlock } = require("./kart-specs");
 
@@ -33,22 +33,22 @@ const PLAN_MONTHLY_CREDITS = {
   free: parseInt(process.env.FREE_MONTHLY_CREDITS, 10) || 100,
   pro: 500,
   founder: 500, // fondateurs = Saison Pro à vie
-  club: 500,    // legacy
+  club: 500,   // legacy
   paddock: 1500,
 };
 
 // =============================================
-// SETUP_LIMITS — miroir serveur de la table du front (index.html).
+// SETUP_LIMITS : miroir serveur de la table du front (index.html).
 // Sert à DEUX choses : décrire les butées à Claude dans le prompt, et
 // borner son "apply" avant de le renvoyer au navigateur.
 // ⚠️ Toute modification ici doit être répercutée dans index.html.
 // =============================================
 const SETUP_LIMITS = {
   voieAr:    { min: 135, max: 140, unit: 'cm', label: 'Voie arrière',
-               note: "butée réglementaire — 140.0 cm = 1400 mm de largeur hors-tout, interdiction d'aller au-delà" },
-  voieAv:    { min: 0,   max: 6,   unit: 'bagues', label: 'Voie avant' },
-  pincement: { min: -3,  max: 3,   unit: '',       label: 'Pincement' },
-  chasse:    { min: -1,  max: 4,   unit: 'crans',  label: 'Chasse' },
+               note: "butée réglementaire : 140.0 cm = 1400 mm de largeur hors-tout, interdiction d'aller au-delà" },
+  voieAv:    { min: 0,  max: 6,  unit: 'bagues', label: 'Voie avant' },
+  pincement: { min: -3, max: 3,  unit: '',      label: 'Pincement' },
+  chasse:    { min: -1, max: 4,  unit: 'crans', label: 'Chasse' },
 };
 
 // Décrit les butées ET signale celles déjà atteintes, pour que Claude ne
@@ -58,7 +58,7 @@ function buildLimitsBlock(context) {
   const lines = [];
   const reached = [];
   for (const [key, lim] of Object.entries(SETUP_LIMITS)) {
-    lines.push(`- ${lim.label} : de ${lim.min} à ${lim.max}${lim.unit ? ' ' + lim.unit : ''}${lim.note ? ' — ' + lim.note : ''}`);
+    lines.push(`- ${lim.label} : de ${lim.min} à ${lim.max}${lim.unit ? ' ' + lim.unit : ''}${lim.note ? ', ' + lim.note : ''}`);
     const v = context ? parseFloat(context[key]) : NaN;
     if (isNaN(v)) continue;
     if (v >= lim.max) reached.push(`${lim.label} = ${v}${lim.unit ? ' ' + lim.unit : ''} → MAXIMUM ATTEINT. Ne propose JAMAIS d'augmenter ce réglage : c'est physiquement/réglementairement impossible. Passe à un autre levier.`);
@@ -75,12 +75,41 @@ function buildLimitsBlock(context) {
 // "un seul changement à la fois"). Les valeurs numériques sont des DELTAS.
 const APPLY_ENUMS = {
   barre: ["sans", "plate_h", "ronde", "plate_v"],
-  arbre: ["court", "standard", "tendre", "medium", "dur"],
+  arbre: ["tendre", "medium", "dur"],            // rigidité
+  arbreLongueur: ["court", "standard", "long"],  // longueur, indépendante
   moyeux: ["courts", "medium", "longs"],
   parechocs: ["desserre", "serre"],
   gardeAv: ["bas", "medium", "haut"],
   gardeAr: ["bas", "medium", "haut"],
 };
+
+// Le prompt interdit déjà le tiret cadratin, mais un modèle finit toujours par
+// en glisser un. Filet de sécurité : on nettoie tout texte sortant.
+// U+2014 (cadratin) et U+2013 (demi-cadratin) deviennent une ponctuation
+// française naturelle. Le trait d'union U+002D des mots composés est préservé.
+const DASH_RE = /\s*[—–]\s*/g;
+
+function stripLongDashes(value) {
+  if (typeof value === "string") {
+    return value.replace(DASH_RE, (m, offset, str) => {
+      // Entre deux chiffres il s'agit d'un intervalle (124-136) : trait d'union
+      const before = str[offset - 1];
+      const after = str[offset + m.length];
+      if (/\d/.test(before || "") && /\d/.test(after || "")) return "-";
+      // Si la suite de la phrase porte déjà un deux-points, la virgule évite
+      // une ponctuation doublée qui se verrait autant que le tiret.
+      const rest = str.slice(offset + m.length).split(/[.\n]/)[0];
+      return rest.includes(":") ? ", " : " : ";
+    });
+  }
+  if (Array.isArray(value)) return value.map(stripLongDashes);
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(value)) out[k] = stripLongDashes(v);
+    return out;
+  }
+  return value;
+}
 
 function sanitizeApply(apply, context) {
   if (!apply || typeof apply !== "object" || Array.isArray(apply)) {
@@ -101,7 +130,7 @@ function sanitizeApply(apply, context) {
     if (!isNaN(current)) {
       // Déjà en butée dans le sens demandé → on retire le conseil
       if ((value > 0 && current >= lim.max) || (value < 0 && current <= lim.min)) {
-        notes.push(`${lim.label} est déjà à sa butée (${current}${lim.unit ? " " + lim.unit : ""}) — ce conseil a été retiré.`);
+        notes.push(`${lim.label} est déjà à sa butée (${current}${lim.unit ? " " + lim.unit : ""}) : ce conseil a été retiré.`);
         continue;
       }
       // Le delta dépasserait la butée → on le tronque
@@ -130,7 +159,7 @@ function sanitizeApply(apply, context) {
   return { apply: clean, notes };
 }
 
-// Libellés des symptômes — le code interne ne doit jamais atteindre le modèle
+// Libellés des symptômes : le code interne ne doit jamais atteindre le modèle
 // tel quel ("understeer_entry" est plus pauvre que "sous-virage à l'entrée").
 // ⚠️ Doit rester aligné avec KB.diagnostics dans index.html.
 const SYMPTOM_LABELS = {
@@ -199,7 +228,7 @@ try {
   SKILL_CORE = SKILL_CORE_FILES.map((f) => SKILL_PARTS[f]).join("");
 } catch (e) {
   console.error("Failed to load skill files:", e.message);
-  SKILL_CORE = ""; // fallback — la function marchera mais sans expertise karting
+  SKILL_CORE = ""; // fallback : la function marchera mais sans expertise karting
 }
 
 // Racecraft : stratégie de course, départs, dépassements, défense, qualifs
@@ -243,7 +272,7 @@ function selectSkillModules(message, context, isDiagnostic) {
 }
 
 // =============================================
-// CORS — restreint au site (env URL fournie par Netlify) + dev local
+// CORS : restreint au site (env URL fournie par Netlify) + dev local
 // =============================================
 const ALLOWED_ORIGINS = [
   process.env.URL,
@@ -280,7 +309,7 @@ const ENGINE_BLOCKED_PATTERNS = [
   /(percer|al[ée]ser|usiner|toucher\s+aux?)\s+(le\s+|les\s+)?(piston|cylindre|culasse|admission|[ée]chappement)/i,
 ];
 
-const ENGINE_REFUSAL_MESSAGE = "Je ne peux pas te répondre sur ce point, pour deux raisons :\n\n**1. Risque de casse moteur** — sans connaître l'état exact de ton moteur, te donner des indications pourrait t'amener à le détruire (et un moteur karting coûte cher).\n\n**2. Cadre réglementaire** — ce que tu décris peut sortir des règlements de ta catégorie. Tu risquerais la disqualification voire une suspension.\n\nPour ce sujet, va voir :\n- Ton préparateur moteur attitré\n- Le constructeur du moteur (IAME, Rotax, Vortex, TM, Modena, etc.)\n- Le règlement officiel de ta catégorie (CIK-FIA, FFSA, etc.)\n\nSur ce que je peux t'aider en revanche : pilotage, réglages châssis (voie, pincement, hauteur, barres, position siège, pression pneus), choix stratégie en session.";
+const ENGINE_REFUSAL_MESSAGE = "Je ne peux pas te répondre sur ce point, pour deux raisons :\n\n**1. Risque de casse moteur** : sans connaître l'état exact de ton moteur, te donner des indications pourrait t'amener à le détruire (et un moteur karting coûte cher).\n\n**2. Cadre réglementaire** : ce que tu décris peut sortir des règlements de ta catégorie. Tu risquerais la disqualification voire une suspension.\n\nPour ce sujet, va voir :\n- Ton préparateur moteur attitré\n- Le constructeur du moteur (IAME, Rotax, Vortex, TM, Modena, etc.)\n- Le règlement officiel de ta catégorie (CIK-FIA, FFSA, etc.)\n\nSur ce que je peux t'aider en revanche : pilotage, réglages châssis (voie, pincement, hauteur, barres, position siège, pression pneus), choix stratégie en session.";
 
 function detectEngineMod(message) {
   return ENGINE_BLOCKED_PATTERNS.some((p) => p.test(message));
@@ -288,7 +317,7 @@ function detectEngineMod(message) {
 
 // =============================================
 // RATE LIMITING (en mémoire, reset à chaque cold start)
-// Couche d'appoint anti-rafale — la vraie protection est auth + quota
+// Couche d'appoint anti-rafale : la vraie protection est auth + quota
 // =============================================
 const rateLimitMap = new Map();
 const RATE_LIMIT = 30;
@@ -356,7 +385,7 @@ function currentMonth() {
   return new Date().toISOString().slice(0, 7); // 'YYYY-MM'
 }
 
-// Retourne { allowed, used, limit, unlimited, plan } en CRÉDITS — fail-open si la DB est KO
+// Retourne { allowed, used, limit, unlimited, plan } en CRÉDITS : fail-open si la DB est KO
 // (mieux vaut une réponse IA en trop qu'un produit cassé)
 async function checkQuota(admin, userId) {
   const noQuota = { allowed: true, used: 0, limit: PLAN_MONTHLY_CREDITS.free, unlimited: true, plan: "free" };
@@ -508,11 +537,11 @@ Profil pilote :
 - Style pilotage : ${context.style || "non renseigné"}
 - Niveau : ${context.niveau || "non renseigné"}
 - Interlocuteur : ${context.pilote === "enfant" ? "le PARENT d'un jeune pilote (pas le pilote lui-même)" : "le pilote lui-même"}
-- Kart : ${context.mode === "location" ? "LOCATION / LOISIR — aucun réglage châssis ou moteur possible" : "kart personnel réglable"}
+- Kart : ${context.mode === "location" ? "LOCATION / LOISIR, aucun réglage châssis ou moteur possible" : "kart personnel réglable"}
 ${context.pilote === "enfant" ? `
-RÈGLE PARENT (prioritaire) : tu parles à un parent qui gère le kart de son enfant, souvent sans bagage mécanique. Ton rassurant et pédagogique, chaque terme technique expliqué en une phrase, la SÉCURITÉ passe avant la performance, parle du pilote à la troisième personne ("ton enfant", "le pilote"). Jamais culpabilisant — un week-end raté n'est pas une faute.` : ""}
+RÈGLE PARENT (prioritaire) : tu parles à un parent qui gère le kart de son enfant, souvent sans bagage mécanique. Ton rassurant et pédagogique, chaque terme technique expliqué en une phrase, la SÉCURITÉ passe avant la performance, parle du pilote à la troisième personne ("ton enfant", "le pilote"). Jamais culpabilisant, un week-end raté n'est pas une faute.` : ""}
 ${context.mode === "location" ? `
-RÈGLE LOCATION (prioritaire) : le pilote roule en location, il ne peut RIEN régler — "apply" doit TOUJOURS être {}. Focalise 100 % du diagnostic sur le pilotage : freinage dégressif, light hands, rotation par délestage, point d'accélération, trajectoire dictée par le grip, régularité, mental. Si le comportement décrit semble venir du matériel (kart fatigué), conseille de le signaler à l'accueil et d'en changer.` : ""}
+RÈGLE LOCATION (prioritaire) : le pilote roule en location, il ne peut RIEN régler : "apply" doit TOUJOURS être {}. Focalise 100 % du diagnostic sur le pilotage : freinage dégressif, light hands, rotation par délestage, point d'accélération, trajectoire dictée par le grip, régularité, mental. Si le comportement décrit semble venir du matériel (kart fatigué), conseille de le signaler à l'accueil et d'en changer.` : ""}
 
 ${buildKartSpecBlock(context)}
 
@@ -535,20 +564,20 @@ Réglages actuels (châssis) :
 - Voie avant : ${context.voieAv || "?"} bagues
 - Pincement : ${context.pincement || "?"}
 - Voie arrière : ${context.voieAr || "?"} cm
-- Arbre transmission : ${context.arbre || "?"}
+- Arbre : rigidité ${context.arbre || "?"}, longueur ${context.arbreLongueur || "?"} (deux réglages indépendants : un arbre peut être court ET dur)
 - Moyeux : ${context.moyeux || "?"}
 - Pare-chocs : ${context.parechocs || "?"}
 - Chasse : ${context.chasse || "?"}
 - Garde au sol AV/AR : ${context.gardeAv || "?"} / ${context.gardeAr || "?"}
 
 ${buildLimitsBlock(context)}
-Réglages moteur (DESCRIPTIFS UNIQUEMENT — pas de modifs internes) :
+Réglages moteur (DESCRIPTIFS UNIQUEMENT, pas de modifs internes) :
 ${context.moteur_type === "dd2"
     ? `- Couronne DD2 : ${context.couronneDD2 || "?"} dents / Contre-pignon : ${context.couronneDD2 ? 100 - parseInt(context.couronneDD2, 10) : "?"} dents (somme = 100)`
     : context.moteur_type === "kz"
     ? `- Couronne KZ (sortie de boîte) : ${context.couronneKz || "?"} dents\n- Réglage boîte : ${context.kzRatio || "?"}`
     : `- Couronne : ${context.couronneMono || "?"} dents\n- Pignon : ${context.pignonMono || "?"} dents\n- Rapport (couronne ÷ pignon) : ${context.rapportMono || "?"}`}
-- Gicleur : ${context.moteur_family === "4t" ? "carburation scellée par le règlement — AUCUN réglage possible, ne propose jamais de modifier le gicleur" : context.gicleur || "?"}
+- Gicleur : ${context.moteur_family === "4t" ? "carburation scellée par le règlement, AUCUN réglage possible, ne propose jamais de modifier le gicleur" : context.gicleur || "?"}
 
 Notes pilote : ${context.notes || "aucune"}
 
@@ -557,7 +586,7 @@ Suivi de test (méthode "un seul changement à la fois") :
 - Dernier test CONCLU : ${context.lastTest && Array.isArray(context.lastTest.changes) ? `${context.lastTest.changes.join(" · ")} → verdict pilote : ${context.lastTest.verdict || "?"}` : "aucun"}
 → Si un test est en cours, demande d'abord le verdict avant de proposer un nouveau changement. Si le dernier verdict est "pire", envisage le retour au réglage précédent avant toute nouvelle piste. Ne propose JAMAIS deux changements simultanés.
 `
-      : "Aucun contexte de session fourni — répondre de façon générale en demandant les infos manquantes si nécessaire.";
+      : "Aucun contexte de session fourni : répondre de façon générale en demandant les infos manquantes si nécessaire.";
 
     // === Instructions de format (forcé JSON pour UI) ===
     // Deux modes partagent le MÊME préfixe de system prompt (skill + modules),
@@ -570,7 +599,7 @@ Tu réponds UNIQUEMENT en JSON valide avec ces clés :
 {
   "titre":     "une phrase qui nomme le problème dominant, calibrée sur CE kart (max 90 caractères)",
   "lecture":   "ce que disent les données de la session (chronos, régularité, pressions, conditions). 2 phrases max. Si une donnée manque, dis-le au lieu d'inventer.",
-  "pilotage":  "le réflexe PILOTAGE à vérifier avant tout réglage. Toujours en premier — c'est la règle de la maison. 2 phrases max.",
+  "pilotage":  "le réflexe PILOTAGE à vérifier avant tout réglage. Toujours en premier : c'est la règle de la maison. 2 phrases max.",
   "cause":     "la cause mécanique la plus probable, ANCRÉE sur ce châssis et ce moteur précis. Nomme la marque. 2-3 phrases.",
   "action":    "LE seul changement à faire maintenant, avec sa valeur chiffrée de départ et d'arrivée. Un seul.",
   "pourquoi":  "pourquoi ce levier-là sur CE châssis plutôt qu'un autre. 2 phrases max.",
@@ -599,14 +628,15 @@ ${responseShape}
 
 "apply" : objet JSON avec UNIQUEMENT les réglages châssis à modifier (laisser {} si aucun changement à appliquer).
 
-Format apply autorisé — ⚠️ TOUTES les valeurs numériques sont des DELTAS
+Format apply autorisé : ⚠️ TOUTES les valeurs numériques sont des DELTAS
 (l'écart à appliquer au réglage actuel), JAMAIS des valeurs absolues :
 {
   "barre": "sans" | "plate_h" | "ronde" | "plate_v",
   "voieAv": delta en bagues (ex: +1 ou -1),
   "pincement": delta (ex: +1 ou -1),
   "voieAr": delta en cm (ex: +0.5 ou -0.5),
-  "arbre": "court" | "standard" | "tendre" | "medium" | "dur",
+  "arbre": "tendre" | "medium" | "dur"          (rigidité de l'arbre),
+  "arbreLongueur": "court" | "standard" | "long" (longueur de l'arbre),
   "moyeux": "courts" | "medium" | "longs",
   "parechocs": "desserre" | "serre",
   "chasse": delta en crans (ex: +1 ou -1),
@@ -616,6 +646,15 @@ Format apply autorisé — ⚠️ TOUTES les valeurs numériques sont des DELTAS
 
 RÈGLES NON-NÉGOCIABLES :
 - Retourne UNIQUEMENT le JSON brut, JAMAIS de backticks markdown.
+- ⛔ N'utilise JAMAIS le tiret cadratin (caractère Unicode U+2014, le tiret
+  long) ni le tiret demi-cadratin (U+2013). Interdits dans tous tes textes,
+  sans exception. Ils trahissent une écriture automatique et nuisent à la
+  crédibilité de l'outil. Emploie à la place les deux-points, la virgule, le
+  point-virgule, les parenthèses, ou coupe la phrase en deux.
+  Le trait d'union normal (U+002D) des mots composés comme pare-chocs ou
+  sous-virage reste évidemment autorisé.
+- Écris comme un ingénieur de course qui parle à son pilote : phrases courtes,
+  vocabulaire concret du karting. Pas de tournures administratives.
 - UN SEUL levier dans "apply". Jamais deux. Si tu vois plusieurs pistes, mets la
   plus prioritaire dans "apply" et décris les suivantes dans "message".
 - AVANT de proposer un réglage, vérifie sa valeur actuelle et sa butée dans le
@@ -642,14 +681,14 @@ ${contextStr}
     const system = [
       {
         type: "text",
-        text: SKILL_CORE, // ~30k tokens — gros, stable, cachable (TTL 5 min)
+        text: SKILL_CORE, // ~30k tokens : gros, stable, cachable (TTL 5 min)
         cache_control: { type: "ephemeral" },
       },
     ];
     if (skillModules) {
       system.push({
         type: "text",
-        text: skillModules, // racecraft/circuits — caché séparément par combinaison
+        text: skillModules, // racecraft/circuits : caché séparément par combinaison
         cache_control: { type: "ephemeral" },
       });
     }
@@ -711,10 +750,11 @@ ${contextStr}
       }
     }
 
+    // Dernier filtre avant envoi au navigateur : aucun tiret cadratin ne sort.
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(parsed),
+      body: JSON.stringify(stripLongDashes(parsed)),
     };
   } catch (err) {
     console.error("Erreur chat function:", err);

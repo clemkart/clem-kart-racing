@@ -1,5 +1,5 @@
 // =============================================
-// Race Engineer AI — Analytics first-party
+// Race Engineer AI : Analytics first-party
 // POST {event, meta} → table Supabase events (service_role)
 // Anonyme, sans cookies. No-op silencieux si non configuré.
 // =============================================

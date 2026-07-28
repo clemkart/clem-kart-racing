@@ -1,4 +1,4 @@
-# Mécanique kart spécifique — différences vs voiture
+# Mécanique kart spécifique : différences vs voiture
 
 ⚠️ **Filtre obligatoire** avant d'appliquer tout principe issu de `principes-universels.md` (Jimmy Grills / sport auto).
 
@@ -10,10 +10,10 @@ Le karting n'est PAS une voiture. Les principes universels s'appliquent **avec a
 
 | Aspect | Voiture | Kart |
 |--------|---------|------|
-| **Train arrière** | Différentiel (roues tournent indépendamment) | RIGIDE — les 2 roues tournent à la même vitesse |
-| **Suspension** | Ressorts + amortisseurs (absorption progressive) | AUCUNE — c'est la flexion du châssis qui absorbe |
+| **Train arrière** | Différentiel (roues tournent indépendamment) | RIGIDE : les 2 roues tournent à la même vitesse |
+| **Suspension** | Ressorts + amortisseurs (absorption progressive) | AUCUNE : c'est la flexion du châssis qui absorbe |
 | **Transfert de masse** | Progressif (filtré par suspension) | INSTANTANÉ et brutal |
-| **Direction** | Assistée (filtre les sensations) | DIRECTE — chaque vibration passe au volant |
+| **Direction** | Assistée (filtre les sensations) | DIRECTE : chaque vibration passe au volant |
 | **Masse pilote / véhicule** | Pilote = petite fraction (ex: 80kg sur 1500kg = 5%) | Pilote = grosse fraction (80kg sur 80kg = 50%) |
 
 ## Conséquences pratiques (à appliquer dans chaque réponse)
@@ -66,7 +66,7 @@ Sans différentiel, le kart ne peut tourner que si une roue arrière "se libère
 ### Freinage
 - **1 seule pédale** dans la plupart des catégories (Senior X30, Junior, Mini, Cadet) : frein arrière hydraulique uniquement, pas de balance frein avant/arrière réglable.
 - **Catégories shifter (KZ)** : frein avant + arrière séparés ou liés selon réglementations.
-- **Conséquence majeure** : pas d'ABS, pas de répartiteur — c'est 100% à la sensibilité du pied.
+- **Conséquence majeure** : pas d'ABS, pas de répartiteur : c'est 100% à la sensibilité du pied.
 - Le freinage dégressif est donc plus exigeant en kart qu'en voiture (moins de "filets de sécurité").
 
 ### Moteur
@@ -143,7 +143,7 @@ Réglages typiquement disponibles :
 - **Exercice 4 (Engine revving)** : applicable surtout sur moteurs avec son distinctif (Rotax, X30)
 - **Exercice 5 (Track usage)** : 100% applicable
 - **Exercice 6 (Telemetry trace)** : applicable si Mychron/Alfano équipé
-- **Exercice 7 (Off roading)** : applicable mais ATTENTION — sortir de piste en karting peut casser le matériel rapidement. À pratiquer avec parcimonie.
+- **Exercice 7 (Off roading)** : applicable mais ATTENTION : sortir de piste en karting peut casser le matériel rapidement. À pratiquer avec parcimonie.
 
 ---
 

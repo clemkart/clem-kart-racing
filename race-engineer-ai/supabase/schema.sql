@@ -63,16 +63,21 @@ CREATE TABLE IF NOT EXISTS public.sessions (
   voie_av INTEGER,
   pincement INTEGER,
   voie_ar DECIMAL(4,1),
-  arbre TEXT,
+  arbre TEXT,           -- rigidite : tendre / medium / dur
+  arbre_longueur TEXT,  -- longueur : court / standard / long (independant)
   moyeux TEXT,
   parechocs TEXT,
   chasse INTEGER,
   garde_av TEXT,
   garde_ar TEXT,
 
-  -- Moteur
+  -- Materiel
+  chassis TEXT,
   moteur TEXT,
+  moteur_type TEXT,     -- mono / dd2 / kz (toggle transmission)
+  moteur_family TEXT,   -- direct_drive / dd2 / kz_shifter / 4t
   couronne INTEGER,
+  pignon INTEGER,       -- direct drive uniquement
   gicleur INTEGER,
 
   -- Pressions pneus (JSON)

@@ -17,15 +17,15 @@ Invoque ce skill dans tous les contextes liés au karting :
 
 ## Hiérarchie des sources (ordre de priorité)
 
-1. **Vision Clément** (`vision-pilote.md`) — RÉFÉRENCE PRIMAIRE. C'est la philosophie de l'auteur, ancrée karting. Tout doit s'aligner dessus.
-2. **Principes universels** (`principes-universels.md`) — Jimmy Grills Ch.1-12 (fondamentaux + techniques avancées). Universels au sport auto, adapter au karting via le fichier suivant.
-3. **Mécanique kart spécifique** (`mecanique-kart-specifique.md`) — Ce qui change entre voiture et kart. Filtre obligatoire avant d'appliquer un principe universel.
-4. **Matériel spécifique** (`materiel-specifique.md`) — Comportements par marque de châssis et type de moteur. ⚠️ Data partiellement sourcée : RESPECTER les marqueurs de fiabilité (✅ sourcé / ⚠️ à confirmer / 👤 validé Clément). Si la data matériel n'est pas fiable pour un combo donné, privilégier la physique générale et le dire honnêtement au pilote.
-5. **Réglages détaillés, pneus & télémétrie** (`reglages-detailles.md`) — Effets précis de chaque réglage (caster, camber, voies, axe, hauteur, siège, lest), marques de pneus + pression, roues mg/alu, réglages pluie, interprétation télémétrie Mychron/Alfano. Inclut une table de décision réglage → effet. Majoritairement sourcé ✅.
-6. **Matrice symptômes** (`matrice-symptomes.md`) — Tableau opérationnel diagnostic → causes → réglages.
-7. **Méthodologie coach** (`methodologie-coach.md`) — Psychologie, format de réponse, garde-fous sécurité.
-8. **Racecraft & course** (`racecraft-course.md`) — Jimmy Grills Ch.13-17. À invoquer UNIQUEMENT pour questions stratégie de course : qualifs vs course, premier virage, départs, défense, dépassement.
-9. **Circuits** (`circuits.md`) — Base de données circuits (profil, typologie, réglage type). France (👤 Clément : Lohéac, Laval, Le Mans, Plessé, Ancenis, Angerville, Varennes, Val d'Argenton) + internationaux (Genk, Lonato, Wackersdorf, Zuera). Si circuit inconnu : demander au pilote de décrire, ne jamais inventer de specs.
+1. **Vision Clément** (`vision-pilote.md`) : RÉFÉRENCE PRIMAIRE. C'est la philosophie de l'auteur, ancrée karting. Tout doit s'aligner dessus.
+2. **Principes universels** (`principes-universels.md`) : Jimmy Grills Ch.1-12 (fondamentaux + techniques avancées). Universels au sport auto, adapter au karting via le fichier suivant.
+3. **Mécanique kart spécifique** (`mecanique-kart-specifique.md`) : Ce qui change entre voiture et kart. Filtre obligatoire avant d'appliquer un principe universel.
+4. **Matériel spécifique** (`materiel-specifique.md`) : Comportements par marque de châssis et type de moteur. ⚠️ Data partiellement sourcée : RESPECTER les marqueurs de fiabilité (✅ sourcé / ⚠️ à confirmer / 👤 validé Clément). Si la data matériel n'est pas fiable pour un combo donné, privilégier la physique générale et le dire honnêtement au pilote.
+5. **Réglages détaillés, pneus & télémétrie** (`reglages-detailles.md`) : Effets précis de chaque réglage (caster, camber, voies, axe, hauteur, siège, lest), marques de pneus + pression, roues mg/alu, réglages pluie, interprétation télémétrie Mychron/Alfano. Inclut une table de décision réglage → effet. Majoritairement sourcé ✅.
+6. **Matrice symptômes** (`matrice-symptomes.md`) : Tableau opérationnel diagnostic → causes → réglages.
+7. **Méthodologie coach** (`methodologie-coach.md`) : Psychologie, format de réponse, garde-fous sécurité.
+8. **Racecraft & course** (`racecraft-course.md`) : Jimmy Grills Ch.13-17. À invoquer UNIQUEMENT pour questions stratégie de course : qualifs vs course, premier virage, départs, défense, dépassement.
+9. **Circuits** (`circuits.md`) : Base de données circuits (profil, typologie, réglage type). France (👤 Clément : Lohéac, Laval, Le Mans, Plessé, Ancenis, Angerville, Varennes, Val d'Argenton) + internationaux (Genk, Lonato, Wackersdorf, Zuera). Si circuit inconnu : demander au pilote de décrire, ne jamais inventer de specs.
 
 ## Règles de réponse (NON-NÉGOCIABLES)
 

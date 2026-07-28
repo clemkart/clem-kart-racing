@@ -1,6 +1,6 @@
-# Matériel spécifique — châssis & moteurs
+# Matériel spécifique : châssis & moteurs
 
-⚠️ **NIVEAU DE FIABILITÉ — À LIRE ABSOLUMENT**
+⚠️ **NIVEAU DE FIABILITÉ : À LIRE ABSOLUMENT**
 
 Chaque info est marquée :
 - ✅ **Sourcé** : confirmé par source web identifiée (forums KartPulse, kartclass, TKART, manuels OTK/CRG, etc.)
@@ -11,7 +11,7 @@ Chaque info est marquée :
 
 ---
 
-## PARTIE 1 — CHÂSSIS
+## PARTIE 1 : CHÂSSIS
 
 ### OTK Group (Tony Kart, Kosmic, Exprit, FA Kart, EOS)
 - ✅ Un des 3 grands fabricants mondiaux (avec CRG et Birel ART), le plus populaire, référence de performance.
@@ -21,7 +21,7 @@ Chaque info est marquée :
 - ✅ **Caster** : effet majeur sur l'entrée de virage. Plus de caster = direction lourde, peut affecter la régularité.
 - ✅ **Camber** : positif = +grip avant mid-corner (1-2 crans typiques). Négatif = -grip avant, crée du slide avant (utile si avant trop réactif fait glisser l'arrière mid/sortie, ou sur circuits rapides).
 - ✅ **Barre torsion avant** : affecte le grip avant là où la charge sur la roue avant intérieure est haute (moment où on braque le plus). Sans barre = châssis flex plus, aide moins à lever la roue arrière intérieure. Barre plus rigide = +grip avant, kart plus réactif mid-corner, MAIS peut créer du slide arrière.
-- 👤 **Ressenti Clément (OTK récent)** : freinage beaucoup plus efficace et "violent" que le Sodikart. Châssis plus rigide ET plus incisif, MAIS paradoxalement plus flexible aussi (deux feelings différents qui coexistent). **Énormément d'avant, très polyvalent : "tu peux le poser et rouler vite directement"** (peu de mise au point nécessaire). Ressenti plus physique à piloter. (NB : son 2e exemplaire OTK était mauvais — la qualité d'un châssis individuel compte.)
+- 👤 **Ressenti Clément (OTK récent)** : freinage beaucoup plus efficace et "violent" que le Sodikart. Châssis plus rigide ET plus incisif, MAIS paradoxalement plus flexible aussi (deux feelings différents qui coexistent). **Énormément d'avant, très polyvalent : "tu peux le poser et rouler vite directement"** (peu de mise au point nécessaire). Ressenti plus physique à piloter. (NB : son 2e exemplaire OTK était mauvais : la qualité d'un châssis individuel compte.)
 - 👤 **Tous les OTK ont une barre avant. Réglage standard = barre plate HORIZONTALE.**
 - 👤 **Réglages que Clément touche le plus sur OTK** (par ordre) : (1) **voies arrière** = le levier n°1, (2) **barre** (facile et rapide), (3) **chasse** (selon technicité circuit), (4) **pare-chocs arrière** (serré quand sec / selon grip), (5) **voie avant** (généralement 1 petite bague vers l'écartement max sur sec). Et **la pression pneus = hyper importante**.
 
@@ -64,17 +64,17 @@ Chaque info est marquée :
 ### Sodikart
 - ✅ **Sigma = top model**, le plus titré de Sodikart. Philosophie : setup de base adapté à presque tous circuits/conditions + petits ajustements à fort impact.
 - ✅ Sigma KZ analysé comme référence pour les catégories shifter.
-- 👤 **Ressenti Clément (Sodikart 2019)** : châssis plus "flou" / flottant dans le ressenti. Le tube/châssis lui-même semblait peu flexible — ce sont plutôt les pièces autour qui travaillaient, d'où l'effet de flottement. Plus capricieux en réglages : un simple changement de conditions et le même réglage ne marchait plus (ressenti complètement différent d'une course à l'autre). Acceptait mieux la glisse / perdait moins de temps avec la glisse. Perdait en performance dès qu'il faisait chaud. ⚠️ Caveat : châssis récupéré d'une grande finale Euro (Rotax Max Challenge), qualité incertaine + millésime 2019.
-- ✅ **Sodikart Sigma MODERNE (2023-2025)** — a beaucoup évolué depuis le ressenti 2019 de Clément : performant dans TOUTES conditions, développé sur circuits internationaux (très compétitif en KZ shifter). Géométrie avant via **bague excentrique 4+ positions** (haut = caster, bas = camber). **Tubes Ø30mm partout** (choix assumé). Frein réglable 2 à 4 positions. Philosophie : setup de base polyvalent + petits ajustements à fort impact. → Si un pilote a un Sodikart récent, NE PAS lui transmettre le ressenti "flou" de 2019 (obsolète) : le Sigma moderne est une référence.
+- 👤 **Ressenti Clément (Sodikart 2019)** : châssis plus "flou" / flottant dans le ressenti. Le tube/châssis lui-même semblait peu flexible : ce sont plutôt les pièces autour qui travaillaient, d'où l'effet de flottement. Plus capricieux en réglages : un simple changement de conditions et le même réglage ne marchait plus (ressenti complètement différent d'une course à l'autre). Acceptait mieux la glisse / perdait moins de temps avec la glisse. Perdait en performance dès qu'il faisait chaud. ⚠️ Caveat : châssis récupéré d'une grande finale Euro (Rotax Max Challenge), qualité incertaine + millésime 2019.
+- ✅ **Sodikart Sigma MODERNE (2023-2025)**, a beaucoup évolué depuis le ressenti 2019 de Clément : performant dans TOUTES conditions, développé sur circuits internationaux (très compétitif en KZ shifter). Géométrie avant via **bague excentrique 4+ positions** (haut = caster, bas = camber). **Tubes Ø30mm partout** (choix assumé). Frein réglable 2 à 4 positions. Philosophie : setup de base polyvalent + petits ajustements à fort impact. → Si un pilote a un Sodikart récent, NE PAS lui transmettre le ressenti "flou" de 2019 (obsolète) : le Sigma moderne est une référence.
 
 ### Praga, Energy Corse, Maranello, IPK (Formula K/Intrepid), Top Kart, Zanardi
 - ⚠️ Marques établies, data fine non sourcée. Appliquer la physique générale + inviter le pilote à préciser sa terminologie dans "Notes libres".
 
 ---
 
-## PARTIE 2 — MOTEURS
+## PARTIE 2 : MOTEURS
 
-### IAME X30 (Senior / Junior / Mini) — Direct Drive avec embrayage
+### IAME X30 (Senior / Junior / Mini) : Direct Drive avec embrayage
 - ✅ **~28 chevaux** (Senior).
 - ✅ **Carbu AJUSTABLE** (Tillotson ou Tryton à membrane). Le pilote affine en piste pendant la session.
 - ✅ Réglages : **vis high speed + vis low speed + pop-off pressure**. Standard : low end 1 à 1¼ tours, high end 1¼ à 1½ tours, pop-off ~10 psi.
@@ -84,29 +84,29 @@ Chaque info est marquée :
 - ✅ Maintenance plus technique (carburation), rebuilds un peu plus fréquents que Rotax.
 - ✅ Apps de jetting dédiées (selon température/altitude/humidité/pression).
 - → **Implication réglage** : le gicleur/carbu est un vrai levier ajustable. Enrichir/appauvrir selon T° air.
-- 👤 **Ressenti Clément (X30 vs Rotax)** : le X30 a **plus de couple** que le Rotax ET **va plus vite** (vitesse de pointe + régime max supérieurs). Le Rotax n'est meilleur que **dans le mid-régime**, et **plafonne plus bas** en tr/min et en vitesse de pointe. ⚠️ NB : les specs web donnent Rotax ~30cv > X30 ~28cv — le ressenti de Clément (couple/vmax X30 supérieurs) peut diverger des chiffres bruts selon la livrée de puissance, le gearing et le millésime. À présenter comme un ressenti, pas une vérité chiffrée.
+- 👤 **Ressenti Clément (X30 vs Rotax)** : le X30 a **plus de couple** que le Rotax ET **va plus vite** (vitesse de pointe + régime max supérieurs). Le Rotax n'est meilleur que **dans le mid-régime**, et **plafonne plus bas** en tr/min et en vitesse de pointe. ⚠️ NB : les specs web donnent Rotax ~30cv > X30 ~28cv : le ressenti de Clément (couple/vmax X30 supérieurs) peut diverger des chiffres bruts selon la livrée de puissance, le gearing et le millésime. À présenter comme un ressenti, pas une vérité chiffrée.
 - 👤 **Réponse à l'accélérateur** : sur X30, tu peux **mettre le pied à fond directement** sans gêner le moteur (il accélère comme il peut). Comportement plus permissif que le Rotax (cf. Rotax ci-dessous).
 
-### Rotax Max EVO (Senior / Junior) — Direct Drive avec embrayage
+### Rotax Max EVO (Senior / Junior) : Direct Drive avec embrayage
 - ✅ **125cc 2T, ~30 chevaux.**
 - ✅ **Carbu à gicleur FIXE** (non ajustable en roulant). Moteur scellé usine → philosophie de PARITÉ.
 - ✅ **2024+ EVO** : culasse révisée, **gicleur principal stock #130**. Garder un jeu de gicleurs **124-136** pour toutes conditions.
 - ✅ **Water temp optimal ~140-150°F** (surveiller via sonde Mychron). Plug chops après runs plein gaz.
-- ✅ **Principe de sécurité : toujours jetter pour le pire cas — mieux légèrement riche que trop pauvre** (risque casse si trop pauvre).
+- ✅ **Principe de sécurité : toujours jetter pour le pire cas : mieux légèrement riche que trop pauvre** (risque casse si trop pauvre).
 - ✅ Délivrance mid-range à haute vitesse → compétitif sur **circuits rapides à courbes fluides**.
 - → **Implication réglage** : pas de jeu carbu en roulant. Le réglage gicleur se fait selon densité air/altitude. Travail surtout sur châssis + transmission.
-- 👤 **Réponse à l'accélérateur (Clément)** : sur Rotax, tu dois **DOSER l'accélération** — pas de pied au plancher brutal, sinon tu **engorges le moteur** (trop d'essence amenée d'un coup). Insight de PILOTAGE important : le Rotax demande une remise de gaz plus progressive que le X30. À intégrer dans le coaching point d'accélération pour un pilote Rotax.
+- 👤 **Réponse à l'accélérateur (Clément)** : sur Rotax, tu dois **DOSER l'accélération** : pas de pied au plancher brutal, sinon tu **engorges le moteur** (trop d'essence amenée d'un coup). Insight de PILOTAGE important : le Rotax demande une remise de gaz plus progressive que le X30. À intégrer dans le coaching point d'accélération pour un pilote Rotax.
 
-### Rotax DD2 — Boîte 2 vitesses automatique
+### Rotax DD2 : Boîte 2 vitesses automatique
 - ✅ Variante Rotax avec boîte 2 vitesses à changement automatique.
 - 👤 **Couronne + contre-pignon = 100** (validé Clément).
 - 👤 **Ressenti Clément (Rotax Max vs DD2)** :
-  - DD2 : **inertie marquée en entrée de virage sur la 2e vitesse** — "point dur" et sensation de lourdeur quand tu tournes sur la 2 (contrairement au KZ). Plus rapide en ligne droite. En réaccélération, pas forcément plus efficace qu'un Rotax Max en 1ère, mais sans doute plus coupleux.
+  - DD2 : **inertie marquée en entrée de virage sur la 2e vitesse** : "point dur" et sensation de lourdeur quand tu tournes sur la 2 (contrairement au KZ). Plus rapide en ligne droite. En réaccélération, pas forcément plus efficace qu'un Rotax Max en 1ère, mais sans doute plus coupleux.
   - **Freins** : les KZ freinent mieux que les DD2. Le DD2 donne une impression de frein moins efficace que le KZ (malgré freins avant).
   - **Rotax Max** : plus léger et plus linéaire que le DD2.
 - 👤 **Réglage voie arrière diffère Rotax vs DD2** : diamètres d'arbre différents. L'arbre DD2 = plus petit diamètre MAIS plus lourd que l'arbre Rotax. Valeurs de référence Clément : **Rotax ≈ 140mm d'écartement, DD2 ≈ 139mm** (le DD2 plus resserré pour donner plus de grip).
 
-### KZ (Vortex VTZ, TM KZ-R2, IAME Screamer III, Modena KK3) — Shifter boîte 6
+### KZ (Vortex VTZ, TM KZ-R2, IAME Screamer III, Modena KK3) : Shifter boîte 6
 - ✅ **125cc reed valve, water cooled, boîte 6 vitesses séquentielle manuelle + embrayage.**
 - ✅ **~50 hp (37 kW) à ~16 000 rpm.** Homologation FIA-CIK stricte.
 - ✅ **Carbu Dell'Orto VHSH 30mm** (homologué KZ/KZ2), réglages slide height + needle position.
@@ -115,14 +115,14 @@ Chaque info est marquée :
 - ✅ Vortex suit bien l'écosystème OTK et les pilotes ROK.
 - ⚠️ Frein avant + arrière. Engine braking exploitable (downshift agressif, cf. principes-universels.md § 8).
 
-### OK / OK-Junior — Direct Drive SANS embrayage
+### OK / OK-Junior : Direct Drive SANS embrayage
 - ✅ **125cc reed valve water cooled, ~35 hp, limite ~15 000 rpm.**
 - ✅ Carbu : 30mm floating chamber OU 24mm butterfly (selon ASN/pays, membrane ou flotteur).
 - ✅ **Direct drive SANS embrayage** (ni démarreur, ni batterie, ni faisceau) → kart plus nimble que TAG. Valve de décompression pour push-start.
 - ✅ **DIFFÉRENCE CLÉ avec X30** : le X30 a un embrayage (aide freinage tardif), l'OK n'en a PAS → le pilote doit adapter son style avec des **trajectoires plus larges** (pas de point mort à bas régime, il faut garder la vitesse).
 - ⚠️ OK-N / OK-N Junior : évolution récente (homologation FIA 2023), motoristes TM, etc.
 
-### IAME KA100 — Direct Drive (TAG)
+### IAME KA100 : Direct Drive (TAG)
 - ⚠️ Moteur TAG populaire single-speed, bon compromis accessibilité/performance.
 - ⚠️ Carburation plus simple que X30 selon catégorie (vérifier si fixe ou ajustable selon règlement local). Souvent traité comme "carburation fixe" en compétition mono-marque.
 
@@ -135,7 +135,7 @@ Chaque info est marquée :
 
 ---
 
-## PARTIE 3 — LOGIQUE DE CROISEMENT (matériel × conditions × style)
+## PARTIE 3 : LOGIQUE DE CROISEMENT (matériel × conditions × style)
 
 ### Châssis × Conditions
 - ⚠️ Châssis "front-biased" (OTK) sur piste froide : avant trop vif, arrière nerveux → patience + éviter de sur-rigidifier l'avant.
@@ -148,7 +148,7 @@ Chaque info est marquée :
 - ✅ **KZ → tous circuits**, gestion boîte selon tracé (couronne + de dents en technique, - en rapide).
 - ✅ **OK sans embrayage → trajectoires plus larges**, garder la vitesse (pas de point mort bas régime).
 
-### 👤 FORME DE TRAJECTOIRE PAR MOTEUR (insight Clément — clé pour le coaching)
+### 👤 FORME DE TRAJECTOIRE PAR MOTEUR (insight Clément : clé pour le coaching)
 La puissance et le poids du moteur dictent la forme de trajectoire optimale :
 - **Rotax Max (peu puissant, léger, linéaire) → trajectoire en "U"** : freiner bien droit, optimiser le freinage en ligne droite, **enrouler le virage**, garder un **maximum de vitesse mini** tout au long, rouler sur l'inertie et la vitesse moyenne. (Tu as moins de puissance → tu dois préserver la vitesse.)
 - **DD2 → trajectoire plus en "V"** : grâce aux freins avant qui arrêtent mieux le kart + la 1ère vitesse plus coupleuse, tu peux accepter une **vitesse mini plus basse** et rentrer plus tôt, te servir de la charge avant pour faire pivoter.
@@ -159,7 +159,7 @@ La puissance et le poids du moteur dictent la forme de trajectoire optimale :
 - **Rotax ≈ monoplace (F3/F4)** : freiner tard, optimiser le freinage droit, point de corde tardif, privilégier la vitesse de passage et la sortie.
 - **DD2 / KZ ≈ GT** : freiner droit mais rentrer plus tôt, trajectoire en V, se servir de la charge avant pour tourner (plus d'inertie, plus lourd, boîte de vitesses).
 
-### 👤 INSIGHT CAPITAL — le châssis peut "manger" la puissance moteur
+### 👤 INSIGHT CAPITAL : le châssis peut "manger" la puissance moteur
 Un châssis qui a **trop de grip** peut brider la puissance du moteur : même avec un bon moteur, tu n'arrives pas à passer la puissance au sol → **perte de rendement**. Le réglage parfait = le meilleur compromis entre : le style du pilote (avec quoi il est à l'aise) × ce que la piste demande × ce que les conditions demandent. La plupart du temps, **le temps se trouve dans le châssis et son réglage**, pas dans le moteur.
 
 ### Matériel × Style pilote

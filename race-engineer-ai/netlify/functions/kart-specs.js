@@ -1,5 +1,5 @@
 // =============================================
-// KART_SPECS — Registre des spécificités châssis × moteur
+// KART_SPECS : Registre des spécificités châssis × moteur
 // =============================================
 // SOURCE DE VÉRITÉ de l'adaptation matériel. C'est ce fichier qui garantit
 // qu'un Sodikart en Rotax Senior ne reçoit PAS le même diagnostic qu'un
@@ -14,7 +14,7 @@
 //
 // Niveaux de fiabilité (repris de skill/materiel-specifique.md) :
 //   [OK]  sourcé (manuels constructeur, forums techniques, presse spécialisée)
-//   [?]   déduction ou connaissance générale — à présenter comme indicatif
+//   [?]   déduction ou connaissance générale : à présenter comme indicatif
 //   [CD]  validé par l'expérience directe de Clément Daniel
 //
 // ⚠️ La liste des marques doit rester alignée avec le <select id="profil-chassis">
@@ -25,12 +25,12 @@
 
 const OTK_SPEC = {
   group: "OTK",
-  // Ordre d'essai des leviers [CD] — c'est l'ordre réel de travail de Clément
+  // Ordre d'essai des leviers [CD] : c'est l'ordre réel de travail de Clément
   leverPriority: ["voieAr", "pressions", "barre", "chasse", "parechocs", "voieAv"],
   barreAv: "présente sur TOUS les OTK. Réglage standard = barre plate HORIZONTALE [CD]",
   geometrie: "caster/camber par rondelle excentrique multi-position (king pin washers). Neutre = flèches haut+bas vers l'avant [OK]",
   comportement:
-    "front-biased : beaucoup d'avant, très réactif, freinage incisif. Très polyvalent — 'tu peux le poser et rouler vite directement', peu de mise au point nécessaire [CD]",
+    "front-biased : beaucoup d'avant, très réactif, freinage incisif. Très polyvalent : 'tu peux le poser et rouler vite directement', peu de mise au point nécessaire [CD]",
   pieges: [
     "Sur piste froide, l'avant est déjà très vif : éviter de sur-rigidifier l'avant, ça rend l'arrière nerveux [?]",
     "Barre plus rigide = +grip avant et kart plus réactif en milieu de virage, MAIS peut créer du slide arrière [OK]",
@@ -65,7 +65,7 @@ const CHASSIS_SPECS = {
       "châssis très réactif aux petits changements. Barre installée = plus de grip arrière (le châssis lève moins la roue intérieure, redescend et accélère plus tôt) [OK]",
     pieges: [
       "Voie arrière : règle CRG = aussi large que le règlement le permet, grip max vers 54\". Passer aux moyeux COURTS avant de descendre sous 54.5\", par incréments de 1/8\" [OK]",
-      "Correction sous-virage CRG : écarter d'1 spacer sur les 2 fusées ; si l'avant devient trop large, revenir et passer caster/camber de II/II vers II/III ou III/III — puis re-vérifier le pincement [OK]",
+      "Correction sous-virage CRG : écarter d'1 spacer sur les 2 fusées ; si l'avant devient trop large, revenir et passer caster/camber de II/II vers II/III ou III/III, puis re-vérifier le pincement [OK]",
       "Châssis trop soft = moins de grip, mais trop ferme ne performe plus : il existe un point de rendement décroissant [OK]",
     ],
     terminologie: "voie AV parfois exprimée en mm ou en pouces, spacers par 1/8\". Convertir avant de conseiller.",
@@ -81,7 +81,7 @@ const CHASSIS_SPECS = {
       "fenêtre de réglage tolérante et prévisible, facile à travailler sur une large plage de grip. Très bon grip latéral de l'axe arrière, bonne stabilité au freinage, kart qui reste libre. Fort sur grip medium [OK][CD]",
     pieges: [
       "Récompense les inputs SMOOTH : un pilote brutal n'en tire rien [OK]",
-      "Très sensible aux pressions pneus — commencer par là avant de toucher au châssis [?]",
+      "Très sensible aux pressions pneus : commencer par là avant de toucher au châssis [?]",
       "Point fort sous forte chaleur : tient mieux quand d'autres décrochent. À exploiter plutôt qu'à corriger [CD]",
     ],
     terminologie: "setup haut grip Birel = axe avant court (~1000 mm) + arrière large (~1400 mm) [OK]",
@@ -118,7 +118,7 @@ const CHASSIS_SPECS = {
       "adaptabilité supérieure à toutes conditions de grip (forme du cadre + type de tubes). Souvent souple, privilégie la rotation [OK]",
     pieges: [
       "Le Mans (tubes CrMo Ø30 mm) est calibré pour grip MEDIUM ; l'Opportunity (Ø28 mm) est le polyvalent toutes conditions. Ne pas confondre les deux modèles [OK]",
-      "L'angle d'Ackermann est un levier réel sur Parolin — inexistant chez la plupart des concurrents [OK]",
+      "L'angle d'Ackermann est un levier réel sur Parolin : inexistant chez la plupart des concurrents [OK]",
     ],
     terminologie: "parler de 'Easy Caster', de 'cassette de palier', d'angle Ackermann.",
   },
@@ -130,7 +130,7 @@ const CHASSIS_SPECS = {
     barreAv: "terminologie 'TUBE' avant et non 'barre'. Garder la logique souplesse/rigidité [?]",
     geometrie: "KR2 : mix de tubes 30 mm et 32 mm, couvre toutes les catégories monorapport (KA100 → Rotax/X30 → OK) [OK]",
     comportement:
-      "facile à régler, s'adapte bien à tous circuits et tous pneus. Se conduit avec une GLISSE CONTRÔLÉE — style de pilotage légèrement différent [OK][CD]",
+      "facile à régler, s'adapte bien à tous circuits et tous pneus. Se conduit avec une GLISSE CONTRÔLÉE : style de pilotage légèrement différent [OK][CD]",
     pieges: [
       "La glisse maîtrisée fait partie du fonctionnement du châssis : ne pas la diagnostiquer systématiquement comme un survirage à corriger [CD]",
     ],
@@ -138,11 +138,11 @@ const CHASSIS_SPECS = {
   },
 };
 
-// Marques sans data fine sourcée — physique générale + demander la terminologie
+// Marques sans data fine sourcée : physique générale + demander la terminologie
 const CHASSIS_GENERIC = {
   group: "générique",
   leverPriority: ["pressions", "voieAr", "chasse", "voieAv", "arbre"],
-  barreAv: "à confirmer avec le pilote — la terminologie varie selon la marque [?]",
+  barreAv: "à confirmer avec le pilote : la terminologie varie selon la marque [?]",
   geometrie: "non documentée précisément pour cette marque",
   comportement: "marque établie, données fines non sourcées. Appliquer la physique générale du kart [?]",
   pieges: [
@@ -165,7 +165,7 @@ const ENGINE_SPECS = {
     // le X30 s'affine EN PISTE (vis high/low), le Rotax a un gicleur FIXE qu'on
     // ne change qu'à l'arrêt. Confondre les deux est un contresens repérable.
     carburation:
-      "dépend du MODÈLE — voir les précisions moteur ci-dessous. Ne jamais supposer qu'un carbu est ajustable en roulant sans l'avoir vérifié dans ces précisions.",
+      "dépend du MODÈLE : voir les précisions moteur ci-dessous. Ne jamais supposer qu'un carbu est ajustable en roulant sans l'avoir vérifié dans ces précisions.",
     voieArBaseline: 140,
     leviersDispo: ["couronne", "pignon", "gicleur", "châssis complet"],
     leviersAbsents: ["rapports de boîte", "contre-pignon"],
@@ -179,7 +179,7 @@ const ENGINE_SPECS = {
     leviersDispo: ["couronne", "contre-pignon", "gicleur", "châssis complet"],
     leviersAbsents: ["pignon libre", "rapports de boîte"],
     pilotage:
-      "inertie marquée en entrée de virage sur la 2e vitesse — 'point dur' et sensation de lourdeur en tournant sur la 2, contrairement au KZ. Plus rapide en ligne droite, sans doute plus coupleux en réaccélération. Freins ressentis moins efficaces que sur un KZ malgré les freins avant [CD]",
+      "inertie marquée en entrée de virage sur la 2e vitesse : 'point dur' et sensation de lourdeur en tournant sur la 2, contrairement au KZ. Plus rapide en ligne droite, sans doute plus coupleux en réaccélération. Freins ressentis moins efficaces que sur un KZ malgré les freins avant [CD]",
     note: "l'arbre DD2 a un diamètre plus petit mais est plus lourd que l'arbre Rotax Max → la voie arrière se règle différemment, référence ≈ 139 contre ≈ 140 sur Rotax [CD]",
   },
   kz_shifter: {
@@ -190,7 +190,7 @@ const ENGINE_SPECS = {
     leviersDispo: ["couronne", "pignon", "rapports de boîte", "carburation Dell'Orto", "châssis complet"],
     leviersAbsents: [],
     pilotage:
-      "frein avant + arrière. Le frein moteur (engine braking) est exploitable au rétrogradage — levier de pilotage absent des monorapports [OK]",
+      "frein avant + arrière. Le frein moteur (engine braking) est exploitable au rétrogradage : levier de pilotage absent des monorapports [OK]",
     note: "la cascade complète des 6 rapports se travaille avec le préparateur : donner le principe, pas les valeurs.",
   },
   "4t": {
@@ -211,7 +211,7 @@ const ENGINE_MODEL_NOTES = {
     puissance: "125cc 2T, ~30 ch [OK]",
     carbu: "gicleur FIXE non ajustable en roulant, moteur scellé usine (philosophie de parité). 2024+ EVO : gicleur stock #130, garder un jeu 124-136 [OK]",
     temperature: "température d'eau optimale ~140-150°F (sonde Mychron) [OK]",
-    securite: "toujours jetter pour le pire cas — mieux légèrement riche que trop pauvre (risque de casse) [OK]",
+    securite: "toujours jetter pour le pire cas : mieux légèrement riche que trop pauvre (risque de casse) [OK]",
     circuits: "délivrance mid-range à haute vitesse → compétitif sur circuits rapides à courbes fluides [OK]",
     pilotage:
       "⚠️ INSIGHT PILOTAGE MAJEUR : sur Rotax il faut DOSER la remise de gaz. Pied au plancher brutal = moteur engorgé (trop d'essence d'un coup). La remise de gaz doit être plus progressive que sur un X30. À intégrer systématiquement au coaching du point d'accélération d'un pilote Rotax [CD]",
@@ -222,7 +222,7 @@ const ENGINE_MODEL_NOTES = {
     puissance: "version Junior du Rotax Max EVO",
     carbu: "gicleur fixe, même logique que le Senior",
     pilotage: "même exigence de dosage de la remise de gaz que le Senior [CD]",
-    trajectoire: "trajectoire en 'U' comme le Senior — préserver la vitesse [CD]",
+    trajectoire: "trajectoire en 'U' comme le Senior : préserver la vitesse [CD]",
   },
   "X30 Senior": {
     puissance: "~28 ch [OK]",
@@ -231,20 +231,20 @@ const ENGINE_MODEL_NOTES = {
     temperature: "EGT recommandé 1050-1100°F [OK]",
     circuits: "fort couple bas et mi-régime → efficace sur circuits techniques et serrés [OK]",
     pilotage:
-      "a un embrayage (aide au freinage tardif). Réponse permissive : on peut mettre le pied à fond directement sans gêner le moteur — contrairement au Rotax [CD]",
+      "a un embrayage (aide au freinage tardif). Réponse permissive : on peut mettre le pied à fond directement sans gêner le moteur : contrairement au Rotax [CD]",
   },
   "X30 Junior": { carbu: "carbu ajustable, même logique que le Senior", circuits: "couple bas régime, circuits techniques [OK]" },
   "X30 Mini": { carbu: "carbu ajustable", circuits: "puissance réduite, réglages limités [?]" },
   OK: {
     puissance: "125cc reed valve, ~35 ch, limite ~15 000 tr/min [OK]",
     pilotage:
-      "⚠️ DIRECT DRIVE SANS EMBRAYAGE : contrairement au X30, pas de point mort à bas régime. Le pilote doit adapter son style avec des TRAJECTOIRES PLUS LARGES et garder la vitesse — il ne peut pas se permettre de trop ralentir [OK]",
+      "⚠️ DIRECT DRIVE SANS EMBRAYAGE : contrairement au X30, pas de point mort à bas régime. Le pilote doit adapter son style avec des TRAJECTOIRES PLUS LARGES et garder la vitesse : il ne peut pas se permettre de trop ralentir [OK]",
   },
   "OK-J": { pilotage: "sans embrayage, trajectoires plus larges, garder la vitesse [OK]" },
   KA100: {
     carbu: "⚠️ souvent traité comme carburation FIXE en compétition mono-marque. Vérifier le règlement local avant tout conseil carbu [?]",
   },
-  "Rok GP Senior": { puissance: "~36 ch selon une source — potentiellement plus puissant que X30 et Rotax [OK]" },
+  "Rok GP Senior": { puissance: "~36 ch selon une source : potentiellement plus puissant que X30 et Rotax [OK]" },
   "Rok GP Junior": { puissance: "famille Vortex Rok, variante Junior [?]" },
   "Mini Swift": { puissance: "petit moteur catégorie jeune, puissance réduite, réglages limités [?]" },
   "Micro Swift": { puissance: "petit moteur catégorie jeune, puissance réduite, réglages limités [?]" },
@@ -278,7 +278,7 @@ function buildKartSpecBlock(context) {
   const modelNotes = ENGINE_MODEL_NOTES[context.moteur] || null;
 
   const lines = [];
-  lines.push("\nFICHE MATÉRIEL DE CE PILOTE — À APPLIQUER IMPÉRATIVEMENT");
+  lines.push("\nFICHE MATÉRIEL DE CE PILOTE : À APPLIQUER IMPÉRATIVEMENT");
   lines.push("========================================================");
   lines.push(
     "Ce bloc décrit LE kart exact de ce pilote. Deux karts différents ne peuvent pas recevoir le même diagnostic : si ton analyse resterait valable en changeant de châssis, c'est qu'elle est trop générique. Recommence."
@@ -308,7 +308,7 @@ function buildKartSpecBlock(context) {
   }
 
   // --- Moteur ---
-  lines.push(`\n### MOTEUR : ${context.moteur || "non renseigné"} — famille ${engine.label}`);
+  lines.push(`\n### MOTEUR : ${context.moteur || "non renseigné"} : famille ${engine.label}`);
   lines.push(`- Transmission : ${engine.transmission}`);
   lines.push(`- Carburation : ${engine.carburation}`);
   lines.push(`- Leviers DISPONIBLES sur ce moteur : ${engine.leviersDispo.join(", ")}`);

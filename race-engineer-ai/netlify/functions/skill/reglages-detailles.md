@@ -1,19 +1,19 @@
 # Réglages détaillés, pneus & télémétrie
 
-Effets précis de chaque réglage châssis, des pneus et de la télémétrie. Sources web fiables (forums KartPulse, TKART, kartclass, manuels OTK/CRG, ANGRI Racing). La plupart des infos ici sont ✅ **sourcées** (valables tous châssis sauf terminologie propre à la marque — cf. materiel-specifique.md).
+Effets précis de chaque réglage châssis, des pneus et de la télémétrie. Sources web fiables (forums KartPulse, TKART, kartclass, manuels OTK/CRG, ANGRI Racing). La plupart des infos ici sont ✅ **sourcées** (valables tous châssis sauf terminologie propre à la marque : cf. materiel-specifique.md).
 
 ⚠️ Toujours rappeler : effets indicatifs, un seul changement à la fois, tester, mesurer.
 
 ---
 
-## 0. PHILOSOPHIE DE RÉGLAGE (👤 Clément) — grille de décision à appliquer AVANT tout
+## 0. PHILOSOPHIE DE RÉGLAGE (👤 Clément) : grille de décision à appliquer AVANT tout
 
 Avant de toucher un réglage précis, situer la session sur DEUX axes :
 
-**Axe 1 — Le grip disponible** : la piste a-t-elle du grip ou non ?
+**Axe 1, Le grip disponible** : la piste a-t-elle du grip ou non ?
 → Selon le kart, on **assouplit** (haut grip, pour libérer le châssis) ou on **rigidifie** (bas grip, pour forcer le délestage mécanique).
 
-**Axe 2 — Le type de circuit** :
+**Axe 2, Le type de circuit** :
 - **Court & technique** (faible vitesse moyenne en virage) → besoin d'**agilité, d'incisivité, et même d'une certaine instabilité** pour inscrire le kart. On **déchasse** (moins de chasse), voies arrière plutôt **courtes**, avant plutôt **souple** (rentrer l'avant ou ne pas écarter les bagues) pour qu'il s'inscrive mieux.
 - **Long & rapide** (grande vitesse moyenne) → besoin de **stabilité à haute vitesse et de précision** dans les grands virages. On **met plus de chasse** et on **rigidifie** un peu pour supporter les charges élevées.
 
@@ -23,7 +23,7 @@ Avant de toucher un réglage précis, situer la session sur DEUX axes :
 
 ---
 
-## 1. CASTER (chasse) — affecte l'ENTRÉE de virage
+## 1. CASTER (chasse) : affecte l'ENTRÉE de virage
 
 - ✅ Détermine le transfert de poids vers la roue arrière OPPOSÉE via l'effet de "jacking" → permet à la roue arrière intérieure de se lever en entrée de virage.
 - ✅ **Plus de caster** → plus de grip avant, MOINS de grip arrière, réduit le sous-virage, MAIS direction plus lourde et peut nuire à la régularité.
@@ -32,7 +32,7 @@ Avant de toucher un réglage précis, situer la session sur DEUX axes :
 - 👤 **Logique circuit (Clément)** : la chasse = "comme la sensibilité sur un jeu vidéo". **Déchasser** = plus sensible/incisif → **circuits courts, techniques, sinueux** (besoin d'agilité et d'une certaine instabilité pour inscrire le kart à basse vitesse moyenne). **Ajouter de la chasse** = plus de stabilité à haute vitesse → **circuits rapides, grands virages, grosse vitesse moyenne**. ⚠️ Déchasser sur un grand circuit rapide = sous-virage. Un kart avec beaucoup de chasse est aussi plus PHYSIQUE à piloter. → C'est pour ça que connaître la TYPOLOGIE du circuit est indispensable avant de régler la chasse.
 - → **Usage** : sous-virage entrée → ajouter caster. Direction trop lourde / arrière trop nerveux → réduire caster.
 
-## 2. CARROSSAGE (camber) — affecte le MILIEU/SORTIE de virage
+## 2. CARROSSAGE (camber) : affecte le MILIEU/SORTIE de virage
 
 - ✅ Angle des pneus vu de face. Affecte le grip avant en milieu et sortie de virage (≠ caster qui agit à l'entrée).
 - ✅ **Camber positif** → +grip avant mid-corner (1-2 crans typiques sur OTK).
@@ -53,7 +53,7 @@ Avant de toucher un réglage précis, situer la session sur DEUX axes :
 - ✅ **Resserrer la voie avant** → ralentit l'avant à l'inscription (moins de pneu utilisé) → réduit le survirage / un avant trop vif.
 - → **Usage** : sous-virage entrée → élargir. Survirage / avant trop pointu → resserrer.
 
-## 5. VOIE ARRIÈRE (rear track width) — réglage le plus efficace & rapide
+## 5. VOIE ARRIÈRE (rear track width) : réglage le plus efficace & rapide
 
 - ✅ Règle générale : **rouler la voie arrière aussi large que le règlement le permet** (CRG : max ~55", grip max vers 54").
 - ✅ **Voie arrière LARGE** → plus de rotation/libère l'arrière (la roue intérieure se lève plus facilement). En HAUT grip, garde le kart "libre" (évite trop de grip arrière qui fait bouchonner).
@@ -67,14 +67,14 @@ Avant de toucher un réglage précis, situer la session sur DEUX axes :
 - ✅ L'axe agit comme un RESSORT : plus souple = la roue arrière intérieure reste levée plus longtemps.
 - ✅ **Axe RIGIDE (dur)** : ne fléchit pas → force l'énergie dans les pneus → les fait travailler plus → **+grip à l'ENTRÉE de virage + smooth au MILIEU**. Pour gros moteurs (KZ, DD2), haut grip, ou pistes sèches/abrasives (limite le flex excessif, maintient la stabilité).
 - ✅ **Axe SOUPLE (tendre)** : "libère" le châssis. Moins de grip en PREMIÈRE partie de virage, mais au MILIEU il augmente le grip via la gomme, et RÉDUIT la traction en SORTIE. Aussi : agit comme **amortisseur sur les bosses et les gros vibreurs** → sur circuit bumpy ou avec vibreurs hauts, un axe souple pose le kart, permet de mordre les vibreurs plus agressivement et de freiner plus tard. Pour pluie/conditions glissantes, petits moteurs.
-- ✅ **Médium par défaut** (souvent lettre "N" ou repère vert) — point de départ quasi systématique en test.
+- ✅ **Médium par défaut** (souvent lettre "N" ou repère vert) : point de départ quasi systématique en test.
 - ✅ **MOYEUX (hubs)** : moyeux **longs = +grip** · moyeux **courts = -grip**. Un axe souple ET/OU des moyeux courts → libèrent le kart.
 - ✅ Tuning de la "fréquence" du ressort via combinaison axe + moyeux + voie arrière → contrôle quand/comment la roue intérieure se lève (entrée), tient (milieu), redescend (sortie).
-- ✅ **Règle d'ÉQUILIBRAGE châssis ↔ axe (conseil Albino Parolin)** : pas de règle universelle pour la dureté d'axe — ça dépend de la STRUCTURE du châssis. Un châssis **souple qui fléchit facilement** se marie souvent avec un **axe plus DUR** ; un châssis **rigide (peu de flex)** avec un **axe plus SOUPLE** pour équilibrer la structure. → L'IA doit raisonner châssis ET axe ensemble, pas l'axe isolément.
+- ✅ **Règle d'ÉQUILIBRAGE châssis ↔ axe (conseil Albino Parolin)** : pas de règle universelle pour la dureté d'axe : ça dépend de la STRUCTURE du châssis. Un châssis **souple qui fléchit facilement** se marie souvent avec un **axe plus DUR** ; un châssis **rigide (peu de flex)** avec un **axe plus SOUPLE** pour équilibrer la structure. → L'IA doit raisonner châssis ET axe ensemble, pas l'axe isolément.
 - 👤 Clément : "tellement de réglages possibles sur l'arbre que je ne saurais pas tout expliquer" → l'IA s'appuie sur cette logique sourcée (conseil d'Albino Parolin via TKART) et reste prudente sur les cas très spécifiques.
 - → **Usage** : manque de traction sortie → axe plus dur. Piste très gommée/kart bloqué → axe plus souple. Circuit bumpy / gros vibreurs → axe souple pour absorber.
 
-## 6bis. PARE-CHOCS ARRIÈRE (👤 Clément — logique précise)
+## 6bis. PARE-CHOCS ARRIÈRE (👤 Clément : logique précise)
 
 ⚠️ Réglage SUBTIL et contre-intuitif. Mécanique exacte (validée par la physique) :
 - **Serrer le pare-chocs arrière → rigidifie l'arrière → beaucoup de grip mécanique.** MAIS si trop de grip (sur piste sèche/gommée), le châssis se met à **pomper / sauter** (hopping) → ça **bride la puissance du moteur** (le grip "mange" la puissance, cf. materiel-specifique.md).
@@ -93,7 +93,7 @@ Avant de toucher un réglage précis, situer la session sur DEUX axes :
 - ✅ Principe : hauteur haute = + de levier = + de transfert = + de grip. Arrière bas = plus stable et facile.
 - → **Usage** : voir aussi réglages pluie (§ 11).
 
-## 8. POSITION DU SIÈGE — le réglage de poids le plus important
+## 8. POSITION DU SIÈGE : le réglage de poids le plus important
 
 - ✅ **Le placement du siège est LE réglage de poids le plus important du kart** (fait avant la pesée/répartition).
 - ✅ **Siège AVANCÉ** → +poids avant, +grip/réactivité avant, beaucoup de turn-in → peut créer du SUR-virage à l'entrée.
@@ -133,14 +133,14 @@ Avant de toucher un réglage précis, situer la session sur DEUX axes :
 - ✅ Sous-virage → baisser pression AVANT OU monter pression ARRIÈRE (pour augmenter le grip avant relatif).
 - ✅ Survirage → baisser pression ARRIÈRE OU monter pression AVANT.
 
-### 👤 STRATÉGIE DE PRESSION (Clément) — le pneu comme arme stratégique sur la durée
+### 👤 STRATÉGIE DE PRESSION (Clément) : le pneu comme arme stratégique sur la durée
 **La pression n'est pas qu'un réglage de grip, c'est une STRATÉGIE de course.** Sur une manche de ~15 tours, tu choisis À QUEL MOMENT le kart atteint son pic de performance :
 - **Pression basse** (ex: 400-450 g à froid, surtout par forte chaleur) : le kart met **4-5 tours à se mettre en route**, mais il est **plus performant en fin de course**.
 - **Pression moyenne** : pic de performance en **milieu de course**, léger déclin en fin.
 - **Pression haute** : chauffe vite → tu peux **gagner des positions au départ**, mais tu perds le rythme ensuite et tu **surchauffes les pneus**.
 → L'IA doit relier la pression au TYPE de session : qualif (pic immédiat) vs manche/finale (gérer la durée).
 
-### 👤 TECHNIQUE "PRESSION AU CARRÉ" (Clément) — réglage avancé
+### 👤 TECHNIQUE "PRESSION AU CARRÉ" (Clément) : réglage avancé
 Objectif : qu'**à chaud, les 4 pneus soient à la même pression** (ils ne le sont pas naturellement car ils travaillent différemment).
 Méthode :
 1. Partir d'une pression à froid (ex: 550 g), faire 4-5-6 tours, rentrer, **mesurer la pression à CHAUD** (peut grimper à 800-820 g).
@@ -180,7 +180,7 @@ Méthode :
 
 ---
 
-## RÉCAP — table de décision rapide (réglage → effet dominant)
+## RÉCAP : table de décision rapide (réglage → effet dominant)
 
 | Réglage | Vers + de grip AVANT | Vers + de grip ARRIÈRE |
 |---------|----------------------|------------------------|

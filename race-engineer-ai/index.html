@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Race Engineer AI — Ton ingénieur de course karting personnel</title>
-<meta name="description" content="Diagnostic kart en 2 minutes : décris ta session, obtiens la cause probable et UN réglage à tester. Châssis, pressions, pilotage — par un pilote, pour les pilotes.">
+<title>Race Engineer AI : Ton ingénieur de course karting personnel</title>
+<meta name="description" content="Diagnostic kart en 2 minutes : décris ta session, obtiens la cause probable et UN réglage à tester. Châssis, pressions, pilotage : par un pilote, pour les pilotes.">
 <meta name="theme-color" content="#0D0D0D">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🏁</text></svg>">
 <link rel="manifest" href="manifest.json">
 <!-- Open Graph : aperçu riche quand le lien est partagé (WhatsApp, etc.). -->
-<meta property="og:title" content="Race Engineer AI — Ton ingénieur de course karting">
+<meta property="og:title" content="Race Engineer AI : Ton ingénieur de course karting">
 <meta property="og:description" content="Décris ta session, obtiens un diagnostic et UN réglage à tester. Gratuit.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://race-engineer-ai-ckr.netlify.app/">
@@ -327,10 +327,10 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 <nav>
   <div class="nav-brand">CLEM.<span>KART</span></div>
   <div class="nav-right">
-    <span class="nav-badge">Race Engineer AI — Beta</span>
+    <span class="nav-badge">Race Engineer AI : Beta</span>
     <span id="nav-quota" class="nav-quota" style="display:none;" title="Crédits coach IA utilisés ce mois-ci"></span>
     <button id="btn-auth-signin" class="btn-clear-history" onclick="openAuthModal()">🔐 Connexion</button>
-    <button id="btn-auth-account" class="nav-account" onclick="signOut()" style="display:none;">👤 <span id="auth-user-email">—</span> · Déconnexion</button>
+    <button id="btn-auth-account" class="nav-account" onclick="signOut()" style="display:none;">👤 <span id="auth-user-email"> : </span> · Déconnexion</button>
     <button class="btn-clear-history" onclick="clearHistory()">Effacer l'historique</button>
   </div>
 </nav>
@@ -351,7 +351,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
   </div>
 </div>
 
-<!-- APERÇU EARLY ACCESS — mur diagnostics + déblocage par témoignage -->
+<!-- APERÇU EARLY ACCESS : mur diagnostics + déblocage par témoignage -->
 <div id="diag-limit-modal" class="auth-modal" style="display:none;">
   <div class="auth-modal-content">
     <button class="auth-close" onclick="closeDiagLimitModal()">×</button>
@@ -421,7 +421,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
             <label class="radio-chip selected" onclick="selectChip(this,'profil-mode','proprio');onProfileChange()"><input type="radio" name="profil-mode" value="proprio" checked>🔧 Le nôtre (réglable)</label>
             <label class="radio-chip" onclick="selectChip(this,'profil-mode','location');onProfileChange()"><input type="radio" name="profil-mode" value="location">🏁 Location / loisir</label>
           </div>
-          <div class="grip-desc" id="location-hint" style="display:none;">Mode pilotage : sur un kart de location on ne règle rien — on se concentre sur ce qui fait vraiment gagner du temps : freinage, trajectoire, régularité.</div>
+          <div class="grip-desc" id="location-hint" style="display:none;">Mode pilotage : sur un kart de location on ne règle rien, on se concentre sur ce qui fait vraiment gagner du temps : freinage, trajectoire, régularité.</div>
         </div>
 
         <div class="divider"></div>
@@ -443,7 +443,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         <div class="field">
           <div class="field-label">Catégorie principale</div>
           <select id="profil-categorie" onchange="onProfileChange()">
-            <option value="">— Choisis ta catégorie —</option>
+            <option value=""> : Choisis ta catégorie : </option>
             <option value="Mini">Mini (Mini Swift, Mini ROK, Mini60)</option>
             <option value="Cadet">Cadet</option>
             <option value="Junior X30">Junior X30</option>
@@ -463,7 +463,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         <div class="field">
           <div class="field-label">Châssis</div>
           <select id="profil-chassis" onchange="onProfileChange()">
-            <option value="">— Choisis ton châssis —</option>
+            <option value=""> : Choisis ton châssis : </option>
             <option value="Tony Kart">Tony Kart (OTK)</option>
             <option value="Kosmic">Kosmic (OTK)</option>
             <option value="Exprit">Exprit (OTK)</option>
@@ -487,7 +487,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         <div class="field">
           <div class="field-label">Moteur</div>
           <select id="profil-moteur" onchange="onProfileChange()">
-            <option value="">— Choisis ton moteur —</option>
+            <option value=""> : Choisis ton moteur : </option>
             <option value="X30 Senior">IAME X30 Senior</option>
             <option value="X30 Junior">IAME X30 Junior</option>
             <option value="X30 Mini">IAME X30 Mini</option>
@@ -553,7 +553,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
             <label class="radio-chip" onclick="selectChip(this,'grip','grippee')"><input type="radio" name="grip" value="grippee">🟡 Grippée</label>
             <label class="radio-chip" onclick="selectChip(this,'grip','ultra')"><input type="radio" name="grip" value="ultra">🔴 Ultra grippée</label>
           </div>
-          <div class="grip-desc" id="grip-desc">Piste avec un grip normal — comportement standard du kart.</div>
+          <div class="grip-desc" id="grip-desc">Piste avec un grip normal : comportement standard du kart.</div>
         </div>
 
         <div class="field">
@@ -640,7 +640,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         <div class="field">
           <div class="field-label">Comportement dominant</div>
           <select id="comportement">
-            <option value="">— Sélectionne le problème principal —</option>
+            <option value=""> : Sélectionne le problème principal : </option>
             <option value="understeer_entry">Sous-virage à l'entrée de virage</option>
             <option value="understeer_mid">Sous-virage en milieu de virage</option>
             <option value="oversteer_entry">Survirage à l'entrée</option>
@@ -669,7 +669,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
       <div class="cat-section" id="cat-pneus">
         <div class="strategy-tip" id="strategy-tip">
           <strong>💡 Stratégie Essais libres</strong>
-          Monte progressivement en pression — commence bas, ajuste après chaque sortie. Priorité à la compréhension du kart.
+          Monte progressivement en pression : commence bas, ajuste après chaque sortie. Priorité à la compréhension du kart.
         </div>
 
         <div class="section-title">Pressions (bar)</div>
@@ -688,7 +688,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
                 <input type="number" id="p-avg-chaud" value="" min="0.5" max="2.0" step="0.01" placeholder="0.95" oninput="calcDelta('avg')">
               </div>
             </div>
-            <div class="tire-delta delta-empty" id="delta-avg">Δ — bar</div>
+            <div class="tire-delta delta-empty" id="delta-avg">Δ : bar</div>
           </div>
           <!-- AV D -->
           <div class="tire-cell">
@@ -703,7 +703,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
                 <input type="number" id="p-avd-chaud" value="" min="0.5" max="2.0" step="0.01" placeholder="0.95" oninput="calcDelta('avd')">
               </div>
             </div>
-            <div class="tire-delta delta-empty" id="delta-avd">Δ — bar</div>
+            <div class="tire-delta delta-empty" id="delta-avd">Δ : bar</div>
           </div>
           <!-- AR G -->
           <div class="tire-cell">
@@ -718,7 +718,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
                 <input type="number" id="p-arg-chaud" value="" min="0.5" max="2.0" step="0.01" placeholder="0.95" oninput="calcDelta('arg')">
               </div>
             </div>
-            <div class="tire-delta delta-empty" id="delta-arg">Δ — bar</div>
+            <div class="tire-delta delta-empty" id="delta-arg">Δ : bar</div>
           </div>
           <!-- AR D -->
           <div class="tire-cell">
@@ -733,7 +733,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
                 <input type="number" id="p-ard-chaud" value="" min="0.5" max="2.0" step="0.01" placeholder="0.95" oninput="calcDelta('ard')">
               </div>
             </div>
-            <div class="tire-delta delta-empty" id="delta-ard">Δ — bar</div>
+            <div class="tire-delta delta-empty" id="delta-ard">Δ : bar</div>
           </div>
         </div>
 
@@ -748,19 +748,19 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
           <div class="sub-label" style="margin:8px 0 4px;">Rarement utilisées en karting : il faut un pyromètre et c'est dur à contrôler. La pression reste le vrai levier. Renseigne-les seulement si tu les mesures.</div>
 
         <div class="field">
-          <div class="field-label">AV Gauche <span id="val-temp-avg">—</span></div>
+          <div class="field-label">AV Gauche <span id="val-temp-avg"> : </span></div>
           <input type="range" id="temp-avg" min="40" max="120" value="80" step="1" oninput="updateSliderVal('temp-avg','val-temp-avg','°C')">
         </div>
         <div class="field">
-          <div class="field-label">AV Droit <span id="val-temp-avd">—</span></div>
+          <div class="field-label">AV Droit <span id="val-temp-avd"> : </span></div>
           <input type="range" id="temp-avd" min="40" max="120" value="80" step="1" oninput="updateSliderVal('temp-avd','val-temp-avd','°C')">
         </div>
         <div class="field">
-          <div class="field-label">AR Gauche <span id="val-temp-arg">—</span></div>
+          <div class="field-label">AR Gauche <span id="val-temp-arg"> : </span></div>
           <input type="range" id="temp-arg" min="40" max="120" value="80" step="1" oninput="updateSliderVal('temp-arg','val-temp-arg','°C')">
         </div>
         <div class="field">
-          <div class="field-label">AR Droit <span id="val-temp-ard">—</span></div>
+          <div class="field-label">AR Droit <span id="val-temp-ard"> : </span></div>
           <input type="range" id="temp-ard" min="40" max="120" value="80" step="1" oninput="updateSliderVal('temp-ard','val-temp-ard','°C')">
         </div>
         </details>
@@ -804,23 +804,35 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 
         <div class="field">
           <div class="field-label">Largeur <span id="val-voie-ar">138.0 cm</span></div>
-          <input type="range" id="voie-ar" min="135" max="140" value="138" step="0.5" oninput="updateSliderVal('voie-ar','val-voie-ar',' cm')">
+          <input type="range" id="voie-ar" min="135" max="140" value="139" step="0.5" oninput="_voieArTouchedByUser = true; updateSliderVal('voie-ar','val-voie-ar',' cm')">
           <div class="sub-label">135 = étroite (blocage AR, tourne moins) · 140 = butée max réglementaire (libre, tourne plus)</div>
+          <div class="sub-label" id="voie-ar-hint" style="display:none;color:var(--green);"></div>
         </div>
 
         <div class="divider"></div>
         <div class="section-title">Arbre de transmission arrière</div>
 
+        <!-- Un arbre a DEUX caractéristiques indépendantes : sa rigidité et sa
+             longueur. Les mélanger dans un seul champ empêchait de décrire un
+             arbre court ET dur, combinaison pourtant courante. -->
         <div class="field">
-          <div class="field-label">Arbre</div>
+          <div class="field-label">Rigidité de l'arbre</div>
           <div class="radio-group">
-            <label class="radio-chip" onclick="selectChip(this,'arbre','court')"><input type="radio" name="arbre" value="court">📏 Court</label>
-            <label class="radio-chip selected" onclick="selectChip(this,'arbre','standard')"><input type="radio" name="arbre" value="standard" checked>📐 Standard</label>
-            <label class="radio-chip" onclick="selectChip(this,'arbre','tendre')"><input type="radio" name="arbre" value="tendre">🟢 Tendre</label>
-            <label class="radio-chip" onclick="selectChip(this,'arbre','medium')"><input type="radio" name="arbre" value="medium">🟡 Medium</label>
-            <label class="radio-chip" onclick="selectChip(this,'arbre','dur')"><input type="radio" name="arbre" value="dur">🔴 Dur</label>
+            <label class="radio-chip" onclick="selectChip(this,'arbre','tendre')"><input type="radio" name="arbre" value="tendre">🟢 Tendre (souple)</label>
+            <label class="radio-chip selected" onclick="selectChip(this,'arbre','medium')"><input type="radio" name="arbre" value="medium" checked>🟡 Medium</label>
+            <label class="radio-chip" onclick="selectChip(this,'arbre','dur')"><input type="radio" name="arbre" value="dur">🔴 Dur (rigide)</label>
           </div>
           <div class="sub-label">Tendre = plus souple = tourne mieux · Dur = rigide = plus stable en sortie</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Longueur de l'arbre</div>
+          <div class="radio-group">
+            <label class="radio-chip" onclick="selectChip(this,'arbreLongueur','court')"><input type="radio" name="arbreLongueur" value="court">📏 Court</label>
+            <label class="radio-chip selected" onclick="selectChip(this,'arbreLongueur','standard')"><input type="radio" name="arbreLongueur" value="standard" checked>📐 Standard</label>
+            <label class="radio-chip" onclick="selectChip(this,'arbreLongueur','long')"><input type="radio" name="arbreLongueur" value="long">📊 Long</label>
+          </div>
+          <div class="sub-label">Indépendant de la rigidité : un arbre peut être court et dur, ou long et tendre.</div>
         </div>
 
         <div class="field">
@@ -852,7 +864,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         </div>
 
         <div class="field">
-          <div class="field-label">Garde au sol — Avant</div>
+          <div class="field-label">Garde au sol : Avant</div>
           <div class="radio-group">
             <label class="radio-chip" onclick="selectChip(this,'garde-av','bas')"><input type="radio" name="garde-av" value="bas">⬇️ Basse</label>
             <label class="radio-chip selected" onclick="selectChip(this,'garde-av','medium')"><input type="radio" name="garde-av" value="medium" checked>↕️ Medium</label>
@@ -862,7 +874,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         </div>
 
         <div class="field">
-          <div class="field-label">Garde au sol — Arrière</div>
+          <div class="field-label">Garde au sol : Arrière</div>
           <div class="radio-group">
             <label class="radio-chip" onclick="selectChip(this,'garde-ar','bas')"><input type="radio" name="garde-ar" value="bas">⬇️ Basse</label>
             <label class="radio-chip selected" onclick="selectChip(this,'garde-ar','medium')"><input type="radio" name="garde-ar" value="medium" checked>↕️ Medium</label>
@@ -892,7 +904,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 
         <!-- DIRECT DRIVE / MONO -->
         <div id="mono-section">
-          <div class="section-title">Transmission — Direct Drive</div>
+          <div class="section-title">Transmission : Direct Drive</div>
           <div class="field">
             <div class="field-label">Couronne <span id="val-couronne-mono">78 dents</span></div>
             <input type="range" id="couronne-mono" min="60" max="90" value="78" step="1" oninput="updateMonoRatio()">
@@ -914,7 +926,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 
         <!-- DD2 -->
         <div id="dd2-section" style="display:none;">
-          <div class="section-title">Transmission — Rotax DD2</div>
+          <div class="section-title">Transmission : Rotax DD2</div>
           <div class="field">
             <div class="field-label">Couronne <span id="val-couronne-dd2">34 dents</span></div>
             <input type="range" id="couronne-dd2" min="32" max="38" value="34" step="1" oninput="updateDD2()">
@@ -930,7 +942,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 
         <!-- KZ SHIFTER -->
         <div id="kz-section" style="display:none;">
-          <div class="section-title">Transmission — KZ Shifter (boîte 6)</div>
+          <div class="section-title">Transmission : KZ Shifter (boîte 6)</div>
           <div class="field">
             <div class="field-label">Couronne (sortie de boîte) <span id="val-couronne-kz">20 dents</span></div>
             <input type="range" id="couronne-kz" min="16" max="26" value="20" step="1" oninput="updateSliderVal('couronne-kz','val-couronne-kz',' dents')">
@@ -1008,7 +1020,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
           <div class="chat-messages" id="chat-messages">
             <div class="msg msg-bot">
               Salut ! Je suis ton <strong>Race Engineer IA</strong>.<br><br>
-              Tu peux me demander un diagnostic interactif — je vais te poser des questions pour comprendre ton problème, puis je te proposerai des réglages précis et je pourrai les <strong style="color:var(--green)">appliquer directement dans l'interface</strong>.<br><br>
+              Tu peux me demander un diagnostic interactif : je vais te poser des questions pour comprendre ton problème, puis je te proposerai des réglages précis et je pourrai les <strong style="color:var(--green)">appliquer directement dans l'interface</strong>.<br><br>
               Ou pose-moi simplement une question technique.
             </div>
           </div>
@@ -1037,7 +1049,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 // KNOWLEDGE BASE
 // =============================================
 // =============================================
-// SETUP_LIMITS — SOURCE DE VÉRITÉ UNIQUE des butées de réglage.
+// SETUP_LIMITS : SOURCE DE VÉRITÉ UNIQUE des butées de réglage.
 // Consommée par : le formulaire (bornes des sliders), le diagnostic
 // (on ne conseille jamais un levier déjà en butée) et le prompt IA
 // (bloc "butées atteintes" injecté à chaque appel).
@@ -1046,14 +1058,14 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 const SETUP_LIMITS = {
   voieAr:    { min: 135, max: 140, step: 0.5, unit: 'cm', label: 'Voie arrière',
                maxNote: "butée réglementaire (largeur hors-tout 1400 mm)" },
-  voieAv:    { min: 0,   max: 6,   step: 1,   unit: 'bagues', label: 'Voie avant' },
-  pincement: { min: -3,  max: 3,   step: 1,   unit: '',       label: 'Pincement' },
-  chasse:    { min: -1,  max: 4,   step: 1,   unit: 'crans',  label: 'Chasse' },
-  gicleur:   { min: 105, max: 160, step: 1,   unit: '',       label: 'Gicleur' },
+  voieAv:    { min: 0,  max: 6,  step: 1,  unit: 'bagues', label: 'Voie avant' },
+  pincement: { min: -3, max: 3,  step: 1,  unit: '',      label: 'Pincement' },
+  chasse:    { min: -1, max: 4,  step: 1,  unit: 'crans', label: 'Chasse' },
+  gicleur:   { min: 105, max: 160, step: 1,  unit: '',      label: 'Gicleur' },
 };
 
 // Baselines par famille moteur (👤 valeurs de référence Clément) :
-// Rotax ≈ 140, DD2 ≈ 139 — l'arbre DD2 a un diamètre différent.
+// Rotax ≈ 140, DD2 ≈ 139 : l'arbre DD2 a un diamètre différent.
 const VOIE_AR_BASELINE = { direct_drive: 140, dd2: 139, kz_shifter: 139, '4t': 139.5 };
 
 // Un levier est-il déjà en butée dans le sens demandé ?
@@ -1105,7 +1117,7 @@ const KB = {
       setup: ["Setup neutre à légèrement rigide", "Pressions normales à légèrement basses"]
     },
     medium: {
-      desc: "Grip normal — comportement standard du kart. Base de référence pour les réglages.",
+      desc: "Grip normal : comportement standard du kart. Base de référence pour les réglages.",
       philosophy: "C'est ta base de référence. Setup neutre, ajuste selon le comportement observé.",
       setup: ["Setup de référence"]
     },
@@ -1145,7 +1157,7 @@ const KB = {
   chatbot: {
     'sous-virage': {
       keywords: ['sous-virage', 'pousse', 'sous vire', 'understeer', 'refuse de tourner', 'kart tout droit', 'plonge tout droit'],
-      response: `<strong>Sous-virage — les causes principales :</strong><br><br>
+      response: `<strong>Sous-virage, les causes principales :</strong><br><br>
 1. <strong>Châssis trop rigide</strong> → le chassis ne peut pas se déformer pour délester la roue AR intérieure. Solution : enlever ou alléger la barre avant.<br><br>
 2. <strong>Chasse insuffisante</strong> → la chasse crée le pivot à l'entrée. Augmente de 1 cran.<br><br>
 3. <strong>Pression AV trop basse</strong> → moins de précision directionnelle. Augmente de 0.05 bar.<br><br>
@@ -1154,7 +1166,7 @@ const KB = {
     },
     'survirage': {
       keywords: ['survirage', 'part', 'sur vire', 'oversteer', 'glisse arrière', 'queue', 'chasse'],
-      response: `<strong>Survirage — les causes principales :</strong><br><br>
+      response: `<strong>Survirage, les causes principales :</strong><br><br>
 <strong>À l'entrée :</strong> Trop de délestage AR → réduire la chasse (-1), arbre plus dur, voie AR légèrement plus large.<br><br>
 <strong>À la sortie :</strong> Souvent le point d'accélération. Accélérer avant la fin de la rotation = pneus dans le mauvais axe = départ AR. Attends que le kart soit aligné.<br><br>
 <strong>Pression AR trop basse</strong> → augmente de 0.05 à 0.10 bar et vérifie le delta.<br><br>
@@ -1162,7 +1174,7 @@ const KB = {
     },
     'rotation': {
       keywords: ['rotation', 'tourne', 'pivot', 'initiation'],
-      response: `<strong>La rotation en karting — principes fondamentaux :</strong><br><br>
+      response: `<strong>La rotation en karting, principes fondamentaux :</strong><br><br>
 Le kart tourne grâce au <strong>délestage de la roue arrière intérieure</strong>, pas grâce au volant.<br><br>
 Le mécanisme : freinage dégressif → transfert de charge vers l'AV → roue AR intérieure se déleste → pivot → remise des gaz quand roues dans l'axe.<br><br>
 <strong>Pour améliorer la rotation :</strong><br>
@@ -1175,7 +1187,7 @@ Le mécanisme : freinage dégressif → transfert de charge vers l'AV → roue A
     },
     'pression': {
       keywords: ['pression', 'bar', 'gonflage', 'pneu', 'delta', 'chaud', 'froid', 'température pneu'],
-      response: `<strong>Pressions de pneus — guide complet :</strong><br><br>
+      response: `<strong>Pressions de pneus, guide complet :</strong><br><br>
 <strong>Delta froid → chaud :</strong> La règle d'or est +0.13 à +0.17 bar.<br>
 • Delta trop élevé (>0.17) : baisse la pression froid → le pneu travaille moins fort<br>
 • Delta trop faible (<0.13) : augmente la pression froid → le pneu chauffe moins<br><br>
@@ -1185,7 +1197,7 @@ Le mécanisme : freinage dégressif → transfert de charge vers l'AV → roue A
     },
     'chasse': {
       keywords: ['chasse', 'caster', 'géométrie avant', 'angle'],
-      response: `<strong>La chasse — effet sur le comportement :</strong><br><br>
+      response: `<strong>La chasse, effet sur le comportement :</strong><br><br>
 La chasse est l'angle de la fusée AV par rapport à la verticale. Elle crée un "lever" du kart à l'entrée de virage.<br><br>
 <strong>Plus de chasse</strong> → plus de pivot, plus de délestage AR → meilleure rotation → mais: kart moins stable en ligne droite<br>
 <strong>Moins de chasse</strong> → plus de stabilité, moins de rotation → utile sur piste rapide ou en pluie<br><br>
@@ -1194,7 +1206,7 @@ Ton échelle : -1 (Déchassé) | 0 (Moins) | 1 (Neutre) | 2 (Plus) | 3 (Maximum)
     },
     'barre avant': {
       keywords: ['barre', 'barre avant', 'rigidité', 'chassis', 'châssis', 'flex'],
-      response: `<strong>La barre avant — du plus souple au plus rigide :</strong><br><br>
+      response: `<strong>La barre avant, du plus souple au plus rigide :</strong><br><br>
 <strong>Sans barre</strong> → maximum de souplesse → idéal grip ultra élevé<br>
 <strong>Barre plate horizontale (à plat)</strong> → souple → la lame fléchit facilement<br>
 <strong>Barre ronde</strong> → rigidité médiane → usage courant<br>
@@ -1205,7 +1217,7 @@ Ton échelle : -1 (Déchassé) | 0 (Moins) | 1 (Neutre) | 2 (Plus) | 3 (Maximum)
     },
     'arbre': {
       keywords: ['arbre', 'axe', 'moyeux', 'hub', 'rigide', 'souple'],
-      response: `<strong>Arbre et moyeux — la voie AR :</strong><br><br>
+      response: `<strong>Arbre et moyeux, la voie AR :</strong><br><br>
 <strong>Arbre :</strong><br>
 • Tendre = flex → le kart tourne mieux, mais moins stable<br>
 • Dur = rigide → stabilité en sortie, moins de rotation<br>
@@ -1217,7 +1229,7 @@ Ton échelle : -1 (Déchassé) | 0 (Moins) | 1 (Neutre) | 2 (Plus) | 3 (Maximum)
     },
     'gicleur': {
       keywords: ['gicleur', 'carburation', 'carburateur', 'riche', 'pauvre', 'mixture', 'carbure'],
-      response: `<strong>Gicleur — calibration selon la température :</strong><br><br>
+      response: `<strong>Gicleur, calibration selon la température :</strong><br><br>
 <strong>Règle générale :</strong> plus il fait froid, plus l'air est dense (plus d'oxygène), plus tu dois enrichir : gicleur plus GROS. Chaleur = air moins dense = gicleur plus petit.<br><br>
 Points de départ (autour du stock #130 EVO) :<br>
 • < 10°C : gicleur 132-138<br>
@@ -1231,7 +1243,7 @@ Points de départ (autour du stock #130 EVO) :<br>
     },
     'pluie': {
       keywords: ['pluie', 'mouillé', 'wet', 'rain', 'humide'],
-      response: `<strong>Setup pluie — priorités :</strong><br><br>
+      response: `<strong>Setup pluie, priorités :</strong><br><br>
 1. <strong>Baisser la chasse</strong> → moins de pivot brutal → meilleure stabilité sur grip faible<br>
 2. <strong>Voie AR plus large</strong> → le kart "flotte" sur l'eau, voie large = meilleure stabilité<br>
 3. <strong>Pressions basses</strong> → maximise la surface de contact pour évacuer l'eau<br>
@@ -1241,7 +1253,7 @@ Points de départ (autour du stock #130 EVO) :<br>
     },
     'no-grip': {
       keywords: ['no grip', 'no-grip', 'sans grip', 'verte', 'philosophie', 'otk', 'glisse'],
-      response: `<strong>Philosophie OTK — la vérité contre-intuitive :</strong><br><br>
+      response: `<strong>Philosophie OTK, la vérité contre-intuitive :</strong><br><br>
 Sur piste à bas grip (verte, sale), l'erreur classique est d'assouplir le kart pour "chercher" de l'adhérence. C'est l'inverse.<br><br>
 <strong>En no-grip → RIGIDIFIE :</strong><br>
 • Barre plate en position verticale (max rigidité)<br>
@@ -1253,7 +1265,7 @@ Sur piste à bas grip (verte, sale), l'erreur classique est d'assouplir le kart 
     },
     'dd2': {
       keywords: ['dd2', 'rotax', 'couronne', 'contre-pignon', 'boîte', 'vitesse'],
-      response: `<strong>Rotax DD2 — transmission :</strong><br><br>
+      response: `<strong>Rotax DD2, transmission :</strong><br><br>
 La règle fondamentale DD2 : <strong>Couronne + Contre-pignon = 100</strong><br><br>
 La couronne va de 32 à 38 dents (couronnes DD2 spécifiques).<br><br>
 <strong>Exemples :</strong><br>
@@ -1267,7 +1279,7 @@ La couronne va de 32 à 38 dents (couronnes DD2 spécifiques).<br><br>
     },
     'voie': {
       keywords: ['voie', 'écartement', 'largeur'],
-      response: `<strong>Voie avant et arrière — effets :</strong><br><br>
+      response: `<strong>Voie avant et arrière, effets :</strong><br><br>
 <strong>Voie avant (en bagues) :</strong><br>
 • Large (6 bagues) → plus de grip AV, meilleure stabilité en appui<br>
 • Étroite (0 bague) → moins de grip AV, meilleure rotation initiale<br><br>
@@ -1285,10 +1297,10 @@ La couronne va de 32 à 38 dents (couronnes DD2 spécifiques).<br><br>
 const GRIP_DESCS = {
   verte: "Piste verte = personne n'a encore roulé dessus. Grip très faible, caoutchouc absent. Comportement imprévisible en début de session.",
   sale: "Piste sale : poussière, débris. Grip instable et variable. Mise en chauffe longue nécessaire.",
-  medium: "Grip normal — comportement standard du kart. Ta base de référence.",
+  medium: "Grip normal : comportement standard du kart. Ta base de référence.",
   propre: "Piste propre, bonne adhérence. Le kart répond de façon prévisible.",
-  grippee: "Piste grippée : caoutchouc bien déposé. Fort grip — le kart peut devenir nerveux.",
-  ultra: "Grip extrême. Fin de journée ou piste mouillée qui sèche. Kart très réactif — setup maximum de souplesse."
+  grippee: "Piste grippée : caoutchouc bien déposé. Fort grip : le kart peut devenir nerveux.",
+  ultra: "Grip extrême. Fin de journée ou piste mouillée qui sèche. Kart très réactif : setup maximum de souplesse."
 };
 
 // =============================================
@@ -1305,7 +1317,7 @@ function switchCat(cat) {
 }
 
 // =============================================
-// PROFIL PILOTE — persistance localStorage
+// PROFIL PILOTE : persistance localStorage
 // =============================================
 const PROFILE_KEY = 're_profile_v1';
 
@@ -1373,23 +1385,23 @@ function restoreProfile(profile) {
 
 // ===== Adaptation UI selon le matériel (châssis + moteur) =====
 const CHASSIS_HINTS = {
-  'Tony Kart': "Tony Kart (groupe OTK) — terminologie native de ce formulaire : barre ronde ou plate (orientée horizontale=souple / verticale=rigide), voie AV en bagues, voie AR en cm, arbres dur/medium/tendre.",
-  'Kosmic': "Kosmic (groupe OTK) — même terminologie qu'OTK. Direction parfois plus vive selon les modèles.",
-  'Exprit': "Exprit (groupe OTK) — terminologie OTK. Réputé stable en courbes rapides.",
-  'FA Kart': "FA Kart (groupe OTK) — terminologie OTK standard.",
-  'EOS': "EOS (groupe OTK) — terminologie OTK, châssis orienté rotation.",
-  'CRG': "CRG — système de barres en torsion. La barre plate change de rigidité selon son orientation (horizontale=souple, verticale=rigide). Voie AV parfois en mm (convertis approximativement).",
-  'Birel ART': "Birel ART — pré-charge AV : 'sans barre' ≈ pré-charge libre, 'plate verticale' ≈ pré-charge max. Comportement neutre, sensible aux pressions.",
-  'Sodikart': "Sodikart — platine arrière gérée via la voie AR. Certains modèles sans barre AV classique (rigidité par le cadre). Orienté motricité.",
-  'Praga': "Praga — adapte les valeurs aux équivalents Praga. Note ta terminologie dans 'Notes libres' si différente.",
-  'Energy Corse': "Energy Corse — châssis réactif, sensible aux changements de barre. Adapte les valeurs.",
-  'Parolin': "Parolin — souvent souple, privilégie la rotation. Adapte les valeurs.",
-  'Kart Republic': "Kart Republic (KR) — terminologie 'tube' AV au lieu de barre. Garde la logique souplesse/rigidité.",
-  'Maranello': "Maranello — adapte les valeurs aux équivalents Maranello.",
-  'IPK': "IPK / Formula K / Intrepid — adapte les valeurs. Note ta terminologie dans 'Notes libres'.",
-  'Top Kart': "Top Kart — adapte les valeurs aux équivalents Top Kart.",
-  'Zanardi': "Zanardi — adapte les valeurs aux équivalents Zanardi.",
-  'Autre': "Châssis non listé — adapte les valeurs aux équivalents de ta marque et décris ta terminologie dans 'Notes libres'."
+  'Tony Kart': "Tony Kart (groupe OTK), terminologie native de ce formulaire : barre ronde ou plate (orientée horizontale=souple / verticale=rigide), voie AV en bagues, voie AR en cm, arbres dur/medium/tendre.",
+  'Kosmic': "Kosmic (groupe OTK) : même terminologie qu'OTK. Direction parfois plus vive selon les modèles.",
+  'Exprit': "Exprit (groupe OTK) : terminologie OTK. Réputé stable en courbes rapides.",
+  'FA Kart': "FA Kart (groupe OTK) : terminologie OTK standard.",
+  'EOS': "EOS (groupe OTK) : terminologie OTK, châssis orienté rotation.",
+  'CRG': "CRG : système de barres en torsion. La barre plate change de rigidité selon son orientation (horizontale=souple, verticale=rigide). Voie AV parfois en mm (convertis approximativement).",
+  'Birel ART': "Birel ART, pré-charge AV : 'sans barre' ≈ pré-charge libre, 'plate verticale' ≈ pré-charge max. Comportement neutre, sensible aux pressions.",
+  'Sodikart': "Sodikart : platine arrière gérée via la voie AR. Certains modèles sans barre AV classique (rigidité par le cadre). Orienté motricité.",
+  'Praga': "Praga : adapte les valeurs aux équivalents Praga. Note ta terminologie dans 'Notes libres' si différente.",
+  'Energy Corse': "Energy Corse : châssis réactif, sensible aux changements de barre. Adapte les valeurs.",
+  'Parolin': "Parolin : souvent souple, privilégie la rotation. Adapte les valeurs.",
+  'Kart Republic': "Kart Republic (KR) : terminologie 'tube' AV au lieu de barre. Garde la logique souplesse/rigidité.",
+  'Maranello': "Maranello : adapte les valeurs aux équivalents Maranello.",
+  'IPK': "IPK / Formula K / Intrepid : adapte les valeurs. Note ta terminologie dans 'Notes libres'.",
+  'Top Kart': "Top Kart : adapte les valeurs aux équivalents Top Kart.",
+  'Zanardi': "Zanardi : adapte les valeurs aux équivalents Zanardi.",
+  'Autre': "Châssis non listé : adapte les valeurs aux équivalents de ta marque et décris ta terminologie dans 'Notes libres'."
 };
 
 function updateChassisBanner(chassis) {
@@ -1415,10 +1427,10 @@ function detectMoteurFamily(moteurProfil) {
 }
 
 const ENGINE_FAMILY_HINTS = {
-  direct_drive: "Direct Drive (monorapport) — réglage transmission via la couronne. Carburation ajustable via gicleur.",
-  dd2: "Rotax DD2 — boîte 2 vitesses à changement automatique. Couronne + contre-pignon (somme = 100).",
-  kz_shifter: "KZ Shifter — boîte 6 vitesses manuelle + embrayage. Frein avant + arrière. Engine braking exploitable.",
-  '4t': "Moteur 4 temps (KA100…) — carburation scellée par règlement, non ajustable. Transmission via couronne uniquement."
+  direct_drive: "Direct Drive (monorapport) : réglage transmission via la couronne. Carburation ajustable via gicleur.",
+  dd2: "Rotax DD2 : boîte 2 vitesses à changement automatique. Couronne + contre-pignon (somme = 100).",
+  kz_shifter: "KZ Shifter : boîte 6 vitesses manuelle + embrayage. Frein avant + arrière. Engine braking exploitable.",
+  '4t': "Moteur 4 temps (KA100…) : carburation scellée par règlement, non ajustable. Transmission via couronne uniquement."
 };
 
 function updateEngineBanner(family) {
@@ -1433,9 +1445,30 @@ function updateEngineBanner(family) {
   }
 }
 
+// Applique la voie arrière de référence de la famille moteur.
+// 👤 Valeurs Clément : Rotax ≈ 140, DD2 ≈ 139 (diamètres d'arbre différents,
+// le DD2 se roule plus resserré pour donner plus de grip).
+// On ne touche PAS au réglage si le pilote l'a déjà modifié lui-même.
+let _voieArTouchedByUser = false;
+function applyVoieArBaseline(family) {
+  if (_voieArTouchedByUser) return;
+  const el = document.getElementById('voie-ar');
+  if (!el) return;
+  const baseline = VOIE_AR_BASELINE[family];
+  if (baseline == null) return;
+  el.value = clampSetting('voieAr', baseline).toFixed(1);
+  updateSliderVal('voie-ar', 'val-voie-ar', ' cm');
+  const hint = document.getElementById('voie-ar-hint');
+  if (hint) {
+    hint.textContent = `Point de départ ${baseline} cm pour cette famille moteur. Ajuste selon ton ressenti.`;
+    hint.style.display = 'block';
+  }
+}
+
 function syncMoteurUIFromProfile(moteurProfil) {
   const family = detectMoteurFamily(moteurProfil);
   updateEngineBanner(family);
+  applyVoieArBaseline(family);
 
   // Map famille → valeur du toggle transmission
   let targetValue = 'mono';
@@ -1481,7 +1514,7 @@ function onProfileChange() {
 
 function isProfileComplete(p) {
   if (!p) return false;
-  // En location : pas de châssis/moteur à connaître — profil pilotage suffit
+  // En location : pas de châssis/moteur à connaître : profil pilotage suffit
   if (p.mode === 'location') return !!(p.taille && p.poids && p.style && p.niveau);
   return !!(p.taille && p.poids && p.categorie && p.chassis && p.moteur && p.style && p.niveau);
 }
@@ -1546,9 +1579,9 @@ function onCircuitNameChange() {
     const radio = document.querySelector(`input[name="circuit"][value="${type}"]`);
     if (radio) selectChip(radio.closest('.radio-chip'), 'circuit', type);
     const labels = {technique:'🌀 Technique', mixte:'⚡ Mixte', rapide:'🚀 Rapide'};
-    hint.innerHTML = `✅ Circuit connu — type pré-rempli : <strong>${labels[type]}</strong>. L'IA dispose de données sur ce circuit.`;
+    hint.innerHTML = `✅ Circuit connu, type pré-rempli : <strong>${labels[type]}</strong>. L'IA dispose de données sur ce circuit.`;
   } else if (raw.length > 0) {
-    hint.textContent = 'Circuit non répertorié — choisis le type ci-dessous. L\'IA te demandera de décrire le tracé si besoin.';
+    hint.textContent = 'Circuit non répertorié : choisis le type ci-dessous. L\'IA te demandera de décrire le tracé si besoin.';
   } else {
     hint.textContent = 'Circuit connu = type pré-rempli automatiquement. Sinon, choisis le type ci-dessous.';
   }
@@ -1597,7 +1630,7 @@ function updateMonoRatio() {
   document.getElementById('val-couronne-mono').textContent = cour + ' dents';
   document.getElementById('val-pignon-mono').textContent = pign + ' dents';
   const el = document.getElementById('mono-ratio-val');
-  if (el) el.textContent = (pign > 0) ? (cour / pign).toFixed(2) : '—';
+  if (el) el.textContent = (pign > 0) ? (cour / pign).toFixed(2) : ' : ';
 }
 
 function updateGicleurReco() {
@@ -1615,9 +1648,9 @@ function updateGicleurReco() {
 function updateStrategyTip() {
   const session = document.querySelector('input[name="session"]:checked')?.value || 'libre';
   const tips = {
-    libre: {title:'💡 Stratégie Essais libres', text:'Monte progressivement en pression — commence bas, ajuste après chaque sortie. Priorité à la compréhension du kart.'},
+    libre: {title:'💡 Stratégie Essais libres', text:'Monte progressivement en pression : commence bas, ajuste après chaque sortie. Priorité à la compréhension du kart.'},
     qualifs: {title:'⏱️ Stratégie Qualifs', text:'Pression légèrement plus basse pour un grip maximal dès le premier tour. Le pneu doit être à température en <3 tours.'},
-    course: {title:'🏆 Stratégie Course', text:'Légèrement plus haut en pression — le pneu doit durer. Équilibre entre performance initiale et tenue sur la durée.'}
+    course: {title:'🏆 Stratégie Course', text:'Légèrement plus haut en pression : le pneu doit durer. Équilibre entre performance initiale et tenue sur la durée.'}
   };
   const tip = tips[session];
   document.getElementById('strategy-tip').innerHTML = `<strong>${tip.title}</strong>${tip.text}`;
@@ -1633,7 +1666,7 @@ function calcDelta(tire) {
 
   if(isNaN(froid) || isNaN(chaud)) {
     deltaEl.className = 'tire-delta delta-empty';
-    deltaEl.textContent = 'Δ — bar';
+    deltaEl.textContent = 'Δ : bar';
     return null;
   }
 
@@ -1680,9 +1713,11 @@ function collectData() {
   const voieAv = document.getElementById('voie-av').value;
   const pincement = document.getElementById('pincement').value;
   const voieAr = document.getElementById('voie-ar').value;
-  const arbre = document.querySelector('input[name="arbre"]:checked')?.value || 'standard';
+  // Rigidité et longueur sont deux grandeurs physiques distinctes de l'arbre
+  const arbre = document.querySelector('input[name="arbre"]:checked')?.value || 'medium';
+  const arbreLongueur = document.querySelector('input[name="arbreLongueur"]:checked')?.value || 'standard';
   const moyeux = document.querySelector('input[name="moyeux"]:checked')?.value || 'medium';
-  // Fallback aligné sur l'option cochée par défaut ('serre') — 'normal' n'existe
+  // Fallback aligné sur l'option cochée par défaut ('serre') : 'normal' n'existe
   // pas dans le radio et remontait une valeur fantôme jusqu'à l'IA.
   const parechocs = document.querySelector('input[name="parechocs"]:checked')?.value || 'serre';
   const chasse = document.getElementById('chasse').value;
@@ -1727,17 +1762,17 @@ function collectData() {
     // Pneus
     pressures,
     // Réglages châssis
-    barre, voieAv, pincement, voieAr, arbre, moyeux, parechocs, chasse, gardeAv, gardeAr,
+    barre, voieAv, pincement, voieAr, arbre, arbreLongueur, moyeux, parechocs, chasse, gardeAv, gardeAr,
     // Moteur : famille déduite + détail transmission selon type
     moteur_family, moteur_type, couronneMono, pignonMono, couronneDD2, couronneKz, kzRatio, gicleur,
-    // Rapport direct drive (null si pignon non renseigné) — évite à l'IA de le recalculer
+    // Rapport direct drive (null si pignon non renseigné) : évite à l'IA de le recalculer
     rapportMono: (couronneMono && pignonMono && parseInt(pignonMono, 10) > 0)
       ? (parseInt(couronneMono, 10) / parseInt(pignonMono, 10)).toFixed(2) : null,
   };
 }
 
 // =============================================
-// KB PILOTAGE — la part conduite de chaque symptôme.
+// KB PILOTAGE : la part conduite de chaque symptôme.
 // "Le pilotage avant les réglages" : affichée AVANT les causes setup
 // (mode proprio) ou À LA PLACE (mode location, rien à régler).
 // Ancré sur les concepts du guide : light hands, freinage dégressif,
@@ -1746,11 +1781,11 @@ function collectData() {
 const KB_PILOTAGE = {
   understeer_entry: {
     first: "Avant de toucher au châssis : vérifie ton relâché de frein (dégressif) et tes mains. 8 fois sur 10, le sous-virage d'entrée vient de là.",
-    actions: ["Termine ton freinage en relâché progressif AVANT d'inscrire le kart — maintenir la pression fige l'avant", "Mains légères : serrer le volant fige le châssis et fait pousser l'avant. Le volant est un capteur, pas une commande", "Inscris un poil plus tard, vise un point de corde retardé"],
+    actions: ["Termine ton freinage en relâché progressif AVANT d'inscrire le kart, maintenir la pression fige l'avant", "Mains légères : serrer le volant fige le châssis et fait pousser l'avant. Le volant est un capteur, pas une commande", "Inscris un poil plus tard, vise un point de corde retardé"],
     why: "Un kart qui pousse à l'entrée, c'est très souvent un transfert de masse raté (freinage pas dégressif) ou un volant crispé."
   },
   understeer_mid: {
-    first: "Réflexe : MOINS d'angle de volant, pas plus. Un avant qui glisse en appui est saturé — en rajouter aggrave.",
+    first: "Réflexe : MOINS d'angle de volant, pas plus. Un avant qui glisse en appui est saturé : en rajouter aggrave.",
     actions: ["Réduis l'angle de volant en appui : au-delà de la saturation, l'avant glisse au lieu de tourner", "Patience : laisse le kart finir sa rotation avant de remettre les gaz"],
     why: "En milieu de virage, plus d'angle = plus de glisse. La micro-glisse se gère en enlevant du volant."
   },
@@ -1762,11 +1797,11 @@ const KB_PILOTAGE = {
   oversteer_exit: {
     first: "Vérifie ton point d'accélération avant de toucher à la voie arrière.",
     actions: ["Retarde ton point d'accélération : les gaz seulement quand la rotation est terminée", "Déroule le volant en accélérant : gaz + angle = glisse arrière"],
-    why: "Remettre les gaz pendant la rotation décroche l'arrière — la sortie se construit dans la patience."
+    why: "Remettre les gaz pendant la rotation décroche l'arrière : la sortie se construit dans la patience."
   },
   no_rotation: {
     first: "Le réflexe n°1 : c'est le frein qui fait tourner le kart, pas le volant.",
-    actions: ["Travaille le freinage dégressif : pic de pression puis relâché progressif — un frein maintenu constant empêche le kart de pivoter", "La rotation vient du délestage de la roue arrière intérieure via la pédale de frein, pas de l'angle au volant"],
+    actions: ["Travaille le freinage dégressif : pic de pression puis relâché progressif : un frein maintenu constant empêche le kart de pivoter", "La rotation vient du délestage de la roue arrière intérieure via la pédale de frein, pas de l'angle au volant"],
     why: "~2-3 dixièmes par virage se jouent dans la qualité de ce relâché."
   },
   too_much_rotation: {
@@ -1776,28 +1811,28 @@ const KB_PILOTAGE = {
   },
   good_entry_bad_exit: {
     first: "La sortie se gagne dans la patience du point d'accélération.",
-    actions: ["Point d'accélération trop tôt = kart tout droit en sortie (~3 dixièmes perdus par virage)", "Finis la rotation, PUIS accélère franchement — pas l'inverse"],
+    actions: ["Point d'accélération trop tôt = kart tout droit en sortie (~3 dixièmes perdus par virage)", "Finis la rotation, PUIS accélère franchement : pas l'inverse"],
     why: "Une bonne entrée gâchée en sortie, c'est presque toujours les gaz remis pendant la rotation."
   },
   general_lack_of_grip: {
     first: "Piste verte ou froide : le grip dicte la trajectoire, pas le schéma idéal.",
-    actions: ["Patience : le grip vient avec les tours, n'essaie pas de forcer un chrono au tour 2", "Lisse tous tes inputs : frein, volant, gaz — la brutalité consomme le peu de grip dispo", "Cherche la ligne propre, parfois hors trajectoire habituelle"],
+    actions: ["Patience : le grip vient avec les tours, n'essaie pas de forcer un chrono au tour 2", "Lisse tous tes inputs : frein, volant, gaz : la brutalité consomme le peu de grip dispo", "Cherche la ligne propre, parfois hors trajectoire habituelle"],
     why: "Sur bas grip, le pilote souple gagne sur le pilote agressif. Toujours."
   },
   instability_straight: {
     first: "Vérifie d'abord tes mains : la crispation amplifie les oscillations en ligne droite.",
-    actions: ["Mains légères en ligne droite : un volant tenu trop fort entretient le flottement", "Si ça persiste sur un kart de location : signale-le et change de kart — c'est souvent le matériel (châssis fatigué, pneus)"],
+    actions: ["Mains légères en ligne droite : un volant tenu trop fort entretient le flottement", "Si ça persiste sur un kart de location : signale-le et change de kart : c'est souvent le matériel (châssis fatigué, pneus)"],
     why: "Un kart sain ne flotte pas en ligne droite avec des mains détendues."
   },
   balanced: {
     first: "Kart sain : le chantier, c'est la régularité.",
     actions: ["Vise des écarts de moins de 2-3 dixièmes entre tes tours avant de chercher le tour parfait", "Travaille UN point par session (freinage d'un virage précis, par exemple)"],
-    why: "La régularité vaut plus que l'exploit isolé — c'est elle qui construit les résultats en course."
+    why: "La régularité vaut plus que l'exploit isolé : c'est elle qui construit les résultats en course."
   }
 };
 
 // =============================================
-// INSIGHTS CROSS-SESSIONS — le pattern que le pilote ne voit pas.
+// INSIGHTS CROSS-SESSIONS : le pattern que le pilote ne voit pas.
 // C'est la mémoire longue : ce qu'aucun concurrent data/setups n'offre.
 // =============================================
 function computeInsights() {
@@ -1824,7 +1859,7 @@ function computeInsights() {
 
 // Affichage transmission adapté à la famille moteur.
 // ⚠️ Bug corrigé : le test portait sur data.moteur (libellé profil, ex.
-// "Rotax DD2") comparé au code interne 'dd2' — donc toujours faux. Un pilote
+// "Rotax DD2") comparé au code interne 'dd2', donc toujours faux. Un pilote
 // DD2 voyait la couronne du slider mono au lieu de son couple couronne /
 // contre-pignon. On teste désormais moteur_type (le toggle réellement actif).
 function transmissionMetaTag(data) {
@@ -1908,7 +1943,7 @@ function runDiagnostic() {
       const cls = delta < -0.005 ? 'info' : 'alert';
       const icon = delta < -0.005 ? '🟢' : delta > 0.005 ? '🔴' : '⚪';
       const testNote = data.pendingTest && Array.isArray(data.pendingTest.changes)
-        ? ` Changement testé depuis : ${data.pendingTest.changes.map(escapeHtml).join(' · ')} — donne ton verdict dans le bandeau 🧪 en haut.`
+        ? ` Changement testé depuis : ${data.pendingTest.changes.map(escapeHtml).join(' · ')} : donne ton verdict dans le bandeau 🧪 en haut.`
         : '';
       chronoHtml += `<div class="${cls}-block"><div class="${cls}-title">${icon} ${sign}${delta.toFixed(2)}s vs session précédente (${prev.ts})</div><p>Meilleur tour ${formatChrono(prevBest)} → ${formatChrono(bestS)} sur ${escapeHtml(data.circuitName)}.${testNote}</p></div>`;
     }
@@ -1940,10 +1975,10 @@ function runDiagnostic() {
       if(d < 0.10 || d > 0.20) {
         pressureAlerts.push({tire: tireNames[t], delta: d, action: d < 0.10 ? 'Augmente la pression froid' : 'Baisse la pression froid'});
       } else if(d < 0.13 || d > 0.17) {
-        pressureAlerts.push({tire: tireNames[t], delta: d, warn: true, action: d < 0.13 ? 'Delta un peu faible — légèrement baisser pression froid' : 'Delta un peu élevé — légèrement augmenter pression froid'});
+        pressureAlerts.push({tire: tireNames[t], delta: d, warn: true, action: d < 0.13 ? 'Delta un peu faible, légèrement baisser pression froid' : 'Delta un peu élevé : légèrement augmenter pression froid'});
       }
     } else {
-      pressureGrid += `<div class="pressure-cell" style="opacity:0.4"><div class="pressure-cell-label">${tireNames[t]}</div><div class="pressure-cell-delta" style="color:var(--text-dim)">—</div></div>`;
+      pressureGrid += `<div class="pressure-cell" style="opacity:0.4"><div class="pressure-cell-label">${tireNames[t]}</div><div class="pressure-cell-delta" style="color:var(--text-dim)"> : </div></div>`;
     }
   });
   pressureGrid += `</div>`;
@@ -1956,9 +1991,9 @@ function runDiagnostic() {
 
     pressureAlerts.forEach(a => {
       if(a.warn) {
-        html += `<div class="info-block" style="margin-top:8px;"><div class="info-title">⚠️ ${a.tire} — Delta ${a.delta>=0?'+':''}${a.delta.toFixed(2)} bar</div><p>${a.action}</p></div>`;
+        html += `<div class="info-block" style="margin-top:8px;"><div class="info-title">⚠️ ${a.tire}, Delta ${a.delta>=0?'+':''}${a.delta.toFixed(2)} bar</div><p>${a.action}</p></div>`;
       } else {
-        html += `<div class="alert-block" style="margin-top:8px;"><div class="alert-title">🔴 ${a.tire} — Delta hors plage : ${a.delta>=0?'+':''}${a.delta.toFixed(2)} bar</div><p>${a.action} — impact sur grip et comportement.</p></div>`;
+        html += `<div class="alert-block" style="margin-top:8px;"><div class="alert-title">🔴 ${a.tire}, Delta hors plage : ${a.delta>=0?'+':''}${a.delta.toFixed(2)} bar</div><p>${a.action} : impact sur grip et comportement.</p></div>`;
       }
     });
 
@@ -2016,7 +2051,7 @@ function runDiagnostic() {
     }
   }
 
-  // BUTÉES ATTEINTES — le pilote doit savoir quels leviers sont épuisés,
+  // BUTÉES ATTEINTES : le pilote doit savoir quels leviers sont épuisés,
   // sinon il attend un conseil qui ne peut pas venir.
   if (!isLocation) {
     const limitsReached = collectLimitsReached(data);
@@ -2042,7 +2077,7 @@ function runDiagnostic() {
     html += `</div>`;
   }
 
-  // === DIAGNOSTIC — raisonné par l'IA, calibré châssis × moteur ===
+  // === DIAGNOSTIC : raisonné par l'IA, calibré châssis × moteur ===
   // La table statique KB.diagnostics produisait la MÊME sortie pour un Sodikart
   // et un Tony Kart : c'est ce qu'un pilote de haut niveau a immédiatement
   // repéré. Le jugement technique appartient désormais à l'IA, qui reçoit la
@@ -2073,7 +2108,7 @@ function runDiagnostic() {
     </div>`;
   }
 
-  // 📈 TENDANCES CROSS-SESSIONS — la mémoire longue du race engineer
+  // 📈 TENDANCES CROSS-SESSIONS : la mémoire longue du race engineer
   const insights = computeInsights();
   if (insights) {
     const sameAsToday = data.comportement === insights.topComp;
@@ -2081,7 +2116,7 @@ function runDiagnostic() {
     html += `<div class="diag-block">
       <div class="diag-block-title"><span class="diag-icon">📈</span> Tendance sur tes dernières sessions</div>
       <div class="info-block"><div class="info-title">🔁 ${insights.summary}</div>
-      <p>${sameAsToday ? 'Et encore aujourd\'hui. ' : ''}Quand un symptôme revient malgré des conditions ou des réglages différents, le pattern est souvent côté pilotage — bonne nouvelle : ça se travaille.${pilTop ? ' ' + pilTop.first : ''}</p></div>
+      <p>${sameAsToday ? 'Et encore aujourd\'hui. ' : ''}Quand un symptôme revient malgré des conditions ou des réglages différents, le pattern est souvent côté pilotage, bonne nouvelle : ça se travaille.${pilTop ? ' ' + pilTop.first : ''}</p></div>
     </div>`;
   }
 
@@ -2098,7 +2133,7 @@ function runDiagnostic() {
     <button class="apply-setup-btn" onclick="exportSetupCard()">📤 Partager ma fiche réglages</button>
   </div>`;
 
-  // SAVE SESSION (sauf session de démonstration — ne pollue pas l'historique)
+  // SAVE SESSION (sauf session de démonstration : ne pollue pas l'historique)
   if (_demoMode) {
     _demoMode = false;
   } else {
@@ -2107,7 +2142,7 @@ function runDiagnostic() {
     incDiagCount();
   }
 
-  // DISPLAY — la couche factuelle s'affiche immédiatement
+  // DISPLAY : la couche factuelle s'affiche immédiatement
   welcome.style.display = 'none';
   result.style.display = 'flex';
   result.innerHTML = html;
@@ -2124,7 +2159,7 @@ function runDiagnostic() {
 }
 
 // =============================================
-// DIAGNOSTIC IA — le raisonnement, calibré châssis × moteur
+// DIAGNOSTIC IA : le raisonnement, calibré châssis × moteur
 // =============================================
 // La couche factuelle (pressions, chronos, butées) est déjà rendue : ce sont
 // des CALCULS, une IA les ferait moins bien et plus lentement. Ici on demande
@@ -2180,7 +2215,7 @@ async function fetchAiDiagnostic(data) {
       const msg = res.status === 403 && err?.code === 'quota_exceeded'
         ? escapeHtml(err.message || 'Quota atteint.')
         : res.status === 401
-        ? 'Session expirée — reconnecte-toi pour le diagnostic complet.'
+        ? 'Session expirée : reconnecte-toi pour le diagnostic complet.'
         : 'Le diagnostic détaillé est momentanément indisponible.';
       finish(`<div class="info-block"><div class="info-title">⚠️ ${msg}</div>
         <p style="font-size:12px;color:var(--text-dim);">Les mesures ci-dessus restent valables : pressions, chronos et butées sont calculées en local.</p></div>`);
@@ -2210,7 +2245,7 @@ function renderAiDiagnostic(d, data) {
   let h = '';
   if (d.titre) h += `<div class="diag-cause" style="margin-bottom:10px;">${escapeHtml(d.titre)}</div>`;
 
-  // Le pilotage AVANT les réglages — règle n°1 du guide
+  // Le pilotage AVANT les réglages : règle n°1 du guide
   if (d.pilotage) {
     h += `<div class="info-block"><div class="info-title">🧠 Réflexe pilotage d'abord</div><p>${escapeHtml(d.pilotage)}</p></div>`;
   }
@@ -2223,7 +2258,7 @@ function renderAiDiagnostic(d, data) {
       <div class="diag-explanation">${escapeHtml(d.cause)}</div></div>`;
   }
   if (d.action) {
-    h += `<div class="diag-item"><div class="diag-cause">🔧 Le changement à faire — un seul</div>
+    h += `<div class="diag-item"><div class="diag-cause">🔧 Le changement à faire : un seul</div>
       <ul class="diag-actions"><li>${escapeHtml(d.action)}</li></ul>
       ${d.pourquoi ? `<div class="diag-explanation">${escapeHtml(d.pourquoi)}</div>` : ''}</div>`;
   }
@@ -2244,7 +2279,7 @@ function renderAiDiagnostic(d, data) {
 
   h += `<div style="margin-top:10px;font-size:11px;color:var(--text-dim);">${c[0]} ${c[1]}`;
   if (d.confiance === 'faible') {
-    h += ` — recoupe ce diagnostic avec ton ressenti avant de l'appliquer.`;
+    h += ` : recoupe ce diagnostic avec ton ressenti avant de l'appliquer.`;
   }
   h += `</div>`;
 
@@ -2263,7 +2298,7 @@ function sessionLabel(v) {
 }
 
 // =============================================
-// CHRONOS — parsing flexible + régularité
+// CHRONOS : parsing flexible + régularité
 // =============================================
 
 // "52.34", "52,34" ou "1:02.45" → secondes (float), sinon null
@@ -2278,7 +2313,7 @@ function parseChrono(str) {
 }
 
 function formatChrono(s) {
-  if (s == null) return '—';
+  if (s == null) return ' : ';
   const min = Math.floor(s / 60);
   const rest = s - min * 60;
   return min > 0 ? `${min}:${rest.toFixed(2).padStart(5, '0')}` : rest.toFixed(2);
@@ -2287,9 +2322,9 @@ function formatChrono(s) {
 // Régularité = écart tour moyen vs meilleur tour. C'est LA métrique
 // du pilote irrégulier (cf. cible produit).
 function regularityVerdict(gap) {
-  if (gap <= 0.15) return { icon: '🟢', label: 'Très régulier — le rythme est là, cherche le rythme pur' };
-  if (gap <= 0.4) return { icon: '🟠', label: 'Régularité moyenne — du temps se perd dans l\'inconstance' };
-  return { icon: '🔴', label: 'Irrégulier — ton plus gros gain est dans la constance, pas dans le tour parfait' };
+  if (gap <= 0.15) return { icon: '🟢', label: 'Très régulier : le rythme est là, cherche le rythme pur' };
+  if (gap <= 0.4) return { icon: '🟠', label: 'Régularité moyenne : du temps se perd dans l\'inconstance' };
+  return { icon: '🔴', label: 'Irrégulier : ton plus gros gain est dans la constance, pas dans le tour parfait' };
 }
 
 function updateChronoStats() {
@@ -2300,14 +2335,14 @@ function updateChronoStats() {
     const gap = avg - best;
     const v = regularityVerdict(gap);
     el.style.display = 'block';
-    el.textContent = `${v.icon} Écart moyen vs meilleur tour : +${gap.toFixed(2)}s — ${v.label}.`;
+    el.textContent = `${v.icon} Écart moyen vs meilleur tour : +${gap.toFixed(2)}s : ${v.label}.`;
   } else {
     el.style.display = 'none';
   }
 }
 
 // =============================================
-// ÉCOSYSTÈME — guide PDF + quota
+// ÉCOSYSTÈME : guide PDF + quota
 // =============================================
 const GUIDE_URL = 'https://comprendre-comment-rouler-plus-vite.netlify.app/';
 
@@ -2332,7 +2367,7 @@ function duplicateLastSession() {
 }
 
 // =============================================
-// BOUCLE DE SUIVI DE TEST — un seul changement à la fois.
+// BOUCLE DE SUIVI DE TEST : un seul changement à la fois.
 // Au clic "Appliquer", le changement devient un test en cours ;
 // à la session suivante, le pilote donne son verdict, et l'IA en tient compte.
 // =============================================
@@ -2367,7 +2402,7 @@ function resolveTest(verdict) {
 }
 
 // =============================================
-// FICHE RÉGLAGES PARTAGEABLE (PNG via canvas — paddock + WhatsApp)
+// FICHE RÉGLAGES PARTAGEABLE (PNG via canvas : paddock + WhatsApp)
 // =============================================
 function exportSetupCard() {
   const d = collectData();
@@ -2382,10 +2417,10 @@ function exportSetupCard() {
   x.fillStyle = '#fff'; x.font = '900 64px "Barlow Condensed", sans-serif';
   x.fillText('FICHE RÉGLAGES', 60, 110);
   x.fillStyle = '#E63946'; x.font = '700 30px Barlow, sans-serif';
-  x.fillText('RACE ENGINEER AI — CLEM KART RACING', 60, 158);
+  x.fillText('RACE ENGINEER AI : CLEM KART RACING', 60, 158);
   const dateStr = new Date().toLocaleDateString('fr-FR');
   x.fillStyle = '#999'; x.font = '28px Barlow, sans-serif';
-  x.fillText(`${d.circuitName || 'Circuit non précisé'} — ${dateStr} — ${sessionLabel(d.session)}`, 60, 208);
+  x.fillText(`${d.circuitName || 'Circuit non précisé'} : ${dateStr} : ${sessionLabel(d.session)}`, 60, 208);
 
   let y = 290;
   function section(title) {
@@ -2413,7 +2448,7 @@ function exportSetupCard() {
     section('PILOTAGE (KART DE LOCATION)');
     row('Focus', 'Freinage dégressif · trajectoire · régularité');
     const bs = parseChrono(d.chronoBest), as = parseChrono(d.chronoAvg);
-    if (bs && as && as >= bs) row('Régularité', `+${(as - bs).toFixed(2)}s d'écart moyen — objectif < 0.30s`);
+    if (bs && as && as >= bs) row('Régularité', `+${(as - bs).toFixed(2)}s d'écart moyen : objectif < 0.30s`);
     if (d.comportement) row('Chantier du jour', String(d.comportement).replace(/_/g, ' '));
   } else {
     section('CHÂSSIS');
@@ -2426,15 +2461,15 @@ function exportSetupCard() {
 
     section('MOTEUR & PNEUS');
     const transmission = d.moteur_type === 'dd2'
-      ? `DD2 — couronne ${d.couronneDD2}`
+      ? `DD2 : couronne ${d.couronneDD2}`
       : d.moteur_type === 'kz'
-        ? `KZ — couronne ${d.couronneKz || '?'} (rapport ${d.kzRatio || '?'})`
+        ? `KZ : couronne ${d.couronneKz || '?'} (rapport ${d.kzRatio || '?'})`
         : `Couronne ${d.couronneMono} dents`;
     row('Transmission', transmission);
     row('Gicleur', d.gicleur);
     const fmt = (t) => {
       const p = d.pressures && d.pressures[t];
-      return p && typeof p.froid === 'number' && !isNaN(p.froid) ? p.froid.toFixed(2) : '—';
+      return p && typeof p.froid === 'number' && !isNaN(p.froid) ? p.froid.toFixed(2) : ' : ';
     };
     row('Pressions froid', `AVG ${fmt('avg')} · AVD ${fmt('avd')} · ARG ${fmt('arg')} · ARD ${fmt('ard')}`);
   }
@@ -2462,7 +2497,7 @@ function exportSetupCard() {
 }
 
 // =============================================
-// DICTÉE VOCALE DES NOTES (Web Speech API — gants, casque, paddock)
+// DICTÉE VOCALE DES NOTES (Web Speech API : gants, casque, paddock)
 // =============================================
 let _recog = null, _dictating = false;
 
@@ -2501,7 +2536,7 @@ function updateDictateBtn() {
 }
 
 // =============================================
-// ANALYTICS FIRST-PARTY — anonyme, sans cookies.
+// ANALYTICS FIRST-PARTY : anonyme, sans cookies.
 // Évènements stockés via la function track → table Supabase events.
 // Ne bloque jamais l'UI, échoue en silence.
 // =============================================
@@ -2522,7 +2557,7 @@ function track(event, meta) {
 }
 
 // =============================================
-// APERÇU EARLY ACCESS — limite de diagnostics + déblocage par témoignage.
+// APERÇU EARLY ACCESS : limite de diagnostics + déblocage par témoignage.
 // 3 diagnostics gratuits, +5 après un témoignage (enregistré via track → table events).
 // Les démos ("Voir un exemple") ne comptent pas.
 // =============================================
@@ -2556,7 +2591,7 @@ function submitTestimonial(){
 }
 
 // =============================================
-// SESSION DE DÉMO — la preuve avant l'effort.
+// SESSION DE DÉMO : la preuve avant l'effort.
 // Pré-remplit une session réaliste et lance le diagnostic,
 // sans polluer l'historique.
 // =============================================
@@ -2573,7 +2608,7 @@ function loadDemoSession() {
       avg: { froid: 0.62, chaud: 0.78 }, avd: { froid: 0.62, chaud: 0.80 },
       arg: { froid: 0.65, chaud: 0.74 }, ard: { froid: 0.65, chaud: 0.83 },
     },
-    barre: 'ronde', voieAv: 3, pincement: 0, voieAr: 139, arbre: 'standard',
+    barre: 'ronde', voieAv: 3, pincement: 0, voieAr: 139, arbre: 'medium', arbreLongueur: 'standard',
     moyeux: 'medium', parechocs: 'serre', chasse: 1, gardeAv: 'medium', gardeAr: 'medium',
     moteur_type: 'mono', couronneMono: 78, gicleur: 122,
   };
@@ -2584,7 +2619,7 @@ function loadDemoSession() {
 }
 
 // =============================================
-// WAITLIST PRO — capté au moment le plus chaud (quota épuisé)
+// WAITLIST PRO : capté au moment le plus chaud (quota épuisé)
 // =============================================
 function joinProWaitlist(btn) {
   track('pro_waitlist', { email: authState.user?.email || null });
@@ -2595,7 +2630,7 @@ function joinProWaitlist(btn) {
 }
 
 // =============================================
-// FEEDBACK 👍/👎 — chaque mauvaise reco détectée = le skill s'améliore
+// FEEDBACK 👍/👎 : chaque mauvaise reco détectée = le skill s'améliore
 // =============================================
 window._fbData = {};
 
@@ -2604,7 +2639,7 @@ function sendFeedback(id, vote) {
   if (!d) return;
   track('feedback', { vote: vote > 0 ? 'up' : 'down', q: d.q, a: d.a });
   const el = document.getElementById(id);
-  if (el) el.innerHTML = vote > 0 ? 'Merci ! 👍' : 'Merci, je le note — ça aide à améliorer le coach.';
+  if (el) el.innerHTML = vote > 0 ? 'Merci ! 👍' : 'Merci, je le note : ça aide à améliorer le coach.';
   delete window._fbData[id];
 }
 
@@ -2729,7 +2764,7 @@ async function authHeaders(extra) {
 
 async function initAuth() {
   if (!sb) {
-    console.warn('Supabase non initialisé — mode local only');
+    console.warn('Supabase non initialisé : mode local only');
     return;
   }
   const { data: { session } } = await sb.auth.getSession();
@@ -2896,7 +2931,7 @@ async function renderHistory() {
       if (res.ok) {
         const { sessions } = await res.json();
         if (!sessions || sessions.length === 0) {
-          bar.innerHTML = '<span class="history-empty">Aucune session cloud — sauve ta première analyse</span>';
+          bar.innerHTML = '<span class="history-empty">Aucune session cloud : sauve ta première analyse</span>';
           return;
         }
         bar.innerHTML = `<div class="history-chip chip-action" onclick="loadSessionFromCloud('${sessions[0].id}')">↻ Reprendre la dernière session</div>` + sessions.map(s => {
@@ -2961,7 +2996,7 @@ function restoreSessionToForm(data) {
     });
   }
   // Châssis (radios)
-  ['barre','arbre','moyeux','parechocs','garde-av','garde-ar'].forEach(name => {
+  ['barre','arbre','arbreLongueur','moyeux','parechocs','garde-av','garde-ar'].forEach(name => {
     const key = name === 'garde-av' ? 'gardeAv' : name === 'garde-ar' ? 'gardeAr' : name;
     if (!data[key]) return;
     const r = document.querySelector(`input[name="${name}"][value="${data[key]}"]`);
@@ -2970,7 +3005,9 @@ function restoreSessionToForm(data) {
   // Châssis (sliders)
   if (data.voieAv != null) { document.getElementById('voie-av').value = data.voieAv; updateSliderVal('voie-av','val-voie-av',' bagues'); }
   if (data.pincement != null) { document.getElementById('pincement').value = data.pincement; updatePincement(); }
-  if (data.voieAr != null) { document.getElementById('voie-ar').value = data.voieAr; updateSliderVal('voie-ar','val-voie-ar',' cm'); }
+  // Une session restaurée porte le réglage réel du pilote : la baseline moteur
+  // ne doit plus l'écraser.
+  if (data.voieAr != null) { document.getElementById('voie-ar').value = clampSetting('voieAr', data.voieAr); updateSliderVal('voie-ar','val-voie-ar',' cm'); _voieArTouchedByUser = true; }
   if (data.chasse != null) { document.getElementById('chasse').value = data.chasse; updateChasse(); }
   // Moteur
   if (data.moteur_type) {
@@ -3017,7 +3054,7 @@ async function loadSessionFromCloud(id) {
       chronoBest: s.best_lap, chronoAvg: s.avg_lap, chronoLaps: s.laps,
       pressures: s.pressures,
       barre: s.barre, voieAv: s.voie_av, pincement: s.pincement, voieAr: s.voie_ar,
-      arbre: s.arbre, moyeux: s.moyeux, parechocs: s.parechocs, chasse: s.chasse,
+      arbre: s.arbre, arbreLongueur: s.arbre_longueur, moyeux: s.moyeux, parechocs: s.parechocs, chasse: s.chasse,
       gardeAv: s.garde_av, gardeAr: s.garde_ar,
       moteur_type: /dd2/i.test(s.moteur || '') ? 'dd2' : /kz/i.test(s.moteur || '') ? 'kz' : 'mono',
       couronneMono: s.couronne, couronneDD2: s.couronne, couronneKz: s.couronne, gicleur: s.gicleur,
@@ -3030,7 +3067,7 @@ async function loadSessionFromCloud(id) {
 }
 
 function deleteSession(id) {
-  // localStorage only — suppression cloud à ajouter en V2 (DELETE dans session.js)
+  // localStorage only : suppression cloud à ajouter en V2 (DELETE dans session.js)
   let sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   sessions = sessions.filter(s => s.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
@@ -3047,7 +3084,7 @@ function clearHistory() {
 }
 
 // =============================================
-// CHATBOT — MODE LIBRE + DIAGNOSTIC GUIDÉ
+// CHATBOT : MODE LIBRE + DIAGNOSTIC GUIDÉ
 // =============================================
 
 // État du diagnostic guidé
@@ -3055,7 +3092,7 @@ let diagState = null;
 
 const DIAG_FLOW = {
   start: {
-    ask: `Super. Pour t'aider au mieux, je vais te poser quelques questions rapides.<br><br><strong>Question 1/4 — Quand apparaît le problème ?</strong>`,
+    ask: `Super. Pour t'aider au mieux, je vais te poser quelques questions rapides.<br><br><strong>Question 1/4 : Quand apparaît le problème ?</strong>`,
     options: [
       {label:'À l\'entrée du virage', next:'q2', val:'entry'},
       {label:'En milieu de virage (appui)', next:'q2', val:'mid'},
@@ -3066,7 +3103,7 @@ const DIAG_FLOW = {
     key: 'phase'
   },
   q2: {
-    ask: `<strong>Question 2/4 — Quel est le comportement exact ?</strong>`,
+    ask: `<strong>Question 2/4 : Quel est le comportement exact ?</strong>`,
     options: [
       {label:'Le kart refuse de tourner / pousse', next:'q3', val:'understeer'},
       {label:'L\'arrière part / glisse', next:'q3', val:'oversteer'},
@@ -3077,7 +3114,7 @@ const DIAG_FLOW = {
     key: 'behavior'
   },
   q3: {
-    ask: `<strong>Question 3/4 — Niveau de grip de la piste ?</strong>`,
+    ask: `<strong>Question 3/4 : Niveau de grip de la piste ?</strong>`,
     options: [
       {label:'🟢 Verte (personne n\'a roulé)', next:'q4', val:'verte'},
       {label:'🟤 Sale / poussière', next:'q4', val:'sale'},
@@ -3089,7 +3126,7 @@ const DIAG_FLOW = {
     key: 'grip'
   },
   q4: {
-    ask: `<strong>Question 4/4 — Intensité du problème ?</strong>`,
+    ask: `<strong>Question 4/4 : Intensité du problème ?</strong>`,
     options: [
       {label:'Léger (kart pilotable, juste lent)', next:'result', val:'light'},
       {label:'Modéré (clairement limitant)', next:'result', val:'medium'},
@@ -3156,7 +3193,7 @@ function selectDiagOption(idx, step) {
 }
 
 // Traduit les 4 réponses du diagnostic guidé vers un code symptôme du
-// formulaire, pour que le guidé et l'express parlent le même langage —
+// formulaire, pour que le guidé et l'express parlent le même langage : 
 // et passent tous les deux par l'IA avec la fiche matériel du kart.
 function diagStateToComportement(phase, behavior) {
   if (behavior === 'understeer') {
@@ -3215,7 +3252,7 @@ async function generateDiagResult() {
     }
 
     const d = await res.json();
-    addMsg(`<strong style="color:var(--green)">✅ Diagnostic — ${escapeHtml([context.chassis, context.moteur].filter(Boolean).join(' × ') || 'ton kart')}</strong><br><br>`
+    addMsg(`<strong style="color:var(--green)">✅ Diagnostic : ${escapeHtml([context.chassis, context.moteur].filter(Boolean).join(' × ') || 'ton kart')}</strong><br><br>`
       + renderAiDiagnostic(d, context), 'bot');
     if (d.quota && d.quota.limit) updateQuotaBadge(d.quota);
     track('ai_diagnostic', { source: 'guide', chassis: context.chassis || null, confiance: d.confiance || null });
@@ -3239,14 +3276,14 @@ async function generateDiagResult() {
 
 
 function applyRecommendedSetup(applyObj) {
-  // Validation de base — si applyObj est invalide on sort proprement
+  // Validation de base : si applyObj est invalide on sort proprement
   if(!applyObj || typeof applyObj !== 'object') {
     addMsg('Impossible d\'appliquer les réglages : format invalide.', 'bot');
     return;
   }
 
   let applied = [];
-  let blocked = []; // conseils refusés/tronqués par une butée — affichés au pilote
+  let blocked = []; // conseils refusés/tronqués par une butée : affichés au pilote
 
   // Fonction utilitaire pour sélectionner un chip radio
   function selectRadioChip(name, value, label) {
@@ -3271,13 +3308,18 @@ function applyRecommendedSetup(applyObj) {
   }
 
   // Arbre de transmission
-  if(applyObj.arbre && ['court','standard','tendre','medium','dur'].includes(applyObj.arbre)) {
-    selectRadioChip('arbre', applyObj.arbre, 'Arbre');
+  if(applyObj.arbre && ['tendre','medium','dur'].includes(applyObj.arbre)) {
+    selectRadioChip('arbre', applyObj.arbre, 'Rigidité arbre');
+  }
+
+  // Longueur d'arbre : grandeur distincte de la rigidité
+  if(applyObj.arbreLongueur && ['court','standard','long'].includes(applyObj.arbreLongueur)) {
+    selectRadioChip('arbreLongueur', applyObj.arbreLongueur, 'Longueur arbre');
   }
 
   // Moyeux
   if(applyObj.moyeux && ['courts','medium','longs'].includes(applyObj.moyeux)) {
-    // Le HTML utilise 'court'/'medium'/'long' sans 's' pour certaines valeurs — on normalise
+    // Le HTML utilise 'court'/'medium'/'long' sans 's' pour certaines valeurs : on normalise
     const moyeuxMap = {'courts':'court','medium':'medium','longs':'long'};
     selectRadioChip('moyeux', moyeuxMap[applyObj.moyeux] || applyObj.moyeux, 'Moyeux');
   }
@@ -3301,14 +3343,14 @@ function applyRecommendedSetup(applyObj) {
   // Convention STRICTE (identique côté IA et côté diagnostic guidé) :
   // toutes les valeurs numériques sont des DELTAS relatifs au réglage courant.
   // C'était la source d'un bug grave : "voieAv: +1" affiché "+1 bague" était
-  // appliqué en ABSOLU — un pilote à 3 bagues se retrouvait à 1, soit
+  // appliqué en ABSOLU : un pilote à 3 bagues se retrouvait à 1, soit
   // l'inverse exact du conseil donné.
   // Un levier déjà en butée est refusé, pas silencieusement écrasé.
   const numericFields = [
-    { key: 'voieAr',    el: 'voie-ar',   decimals: 1, refresh: () => updateSliderVal('voie-ar','val-voie-ar',' cm') },
-    { key: 'voieAv',    el: 'voie-av',   decimals: 0, refresh: () => updateSliderVal('voie-av','val-voie-av',' bagues') },
+    { key: 'voieAr',   el: 'voie-ar',  decimals: 1, refresh: () => updateSliderVal('voie-ar','val-voie-ar',' cm') },
+    { key: 'voieAv',   el: 'voie-av',  decimals: 0, refresh: () => updateSliderVal('voie-av','val-voie-av',' bagues') },
     { key: 'pincement', el: 'pincement', decimals: 0, refresh: updatePincement },
-    { key: 'chasse',    el: 'chasse',    decimals: 0, refresh: updateChasse },
+    { key: 'chasse',   el: 'chasse',   decimals: 0, refresh: updateChasse },
   ];
 
   numericFields.forEach(f => {
@@ -3321,7 +3363,7 @@ function applyRecommendedSetup(applyObj) {
 
     // Déjà en butée dans le sens demandé → on refuse et on le dit clairement
     if (isAtLimit(f.key, current, Math.sign(delta))) {
-      blocked.push(`${lim.label} déjà à ${delta > 0 ? 'son maximum' : 'son minimum'} (${current}${lim.unit ? ' ' + lim.unit : ''})${lim.maxNote && delta > 0 ? ' — ' + lim.maxNote : ''}`);
+      blocked.push(`${lim.label} déjà à ${delta > 0 ? 'son maximum' : 'son minimum'} (${current}${lim.unit ? ' ' + lim.unit : ''})${lim.maxNote && delta > 0 ? ', ' + lim.maxNote : ''}`);
       return;
     }
 
@@ -3363,7 +3405,7 @@ function applyRecommendedSetup(applyObj) {
   } else if (blocked.length > 0) {
     // Rien appliqué UNIQUEMENT parce que tout était en butée : on l'explique
     // au lieu de laisser croire que le conseil était inapplicable.
-    addMsg(`<strong style="color:var(--orange)">⚠️ Rien à appliquer — tu es déjà en butée :</strong><br><br>`
+    addMsg(`<strong style="color:var(--orange)">⚠️ Rien à appliquer, tu es déjà en butée :</strong><br><br>`
       + blocked.map(b => `→ ${escapeHtml(b)}`).join('<br>')
       + `<br><br>Il faut passer par un autre levier. Redemande-moi une piste en précisant que ce réglage est au bout.`, 'bot');
   } else {
@@ -3372,7 +3414,7 @@ function applyRecommendedSetup(applyObj) {
 }
 
 // =============================================
-// CHATBOT — MODE LIBRE
+// CHATBOT : MODE LIBRE
 // =============================================
 
 // Mémoire de conversation : envoyée à l'IA (contexte) + sauvegardée en cloud.
@@ -3423,13 +3465,13 @@ async function sendChat() {
     chatToken = await getAccessToken();
     if (!chatToken) {
       track('auth_wall');
-      addMsg('🔐 Le coach IA nécessite un compte (gratuit) — tes analyses seront aussi sauvegardées dans le cloud. <button class="apply-setup-btn" onclick="openAuthModal()" style="margin-top:6px;">Se connecter</button>', 'bot');
+      addMsg('🔐 Le coach IA nécessite un compte (gratuit) : tes analyses seront aussi sauvegardées dans le cloud. <button class="apply-setup-btn" onclick="openAuthModal()" style="margin-top:6px;">Se connecter</button>', 'bot');
       return;
     }
   }
   track('chat_sent', { logged: !!chatToken });
 
-  // Message de chargement progressif (latence perçue ÷2 — la latence réelle ne change pas)
+  // Message de chargement progressif (latence perçue ÷2 : la latence réelle ne change pas)
   const LOADING_STEPS = [
     'Analyse de ta session…',
     'Croisement châssis × conditions piste…',
@@ -3469,7 +3511,7 @@ async function sendChat() {
 
     // Filet de sécurité : un 401 malgré un jeton frais = jeton invalidé côté
     // serveur. On force un refresh et on retente UNE fois avant d'afficher
-    // le mur de connexion — c'est ce qui cassait la boucle "reconnecte-toi".
+    // le mur de connexion : c'est ce qui cassait la boucle "reconnecte-toi".
     if (res.status === 401 && sb) {
       try {
         const { data } = await sb.auth.refreshSession();
@@ -3534,7 +3576,7 @@ async function sendChat() {
         botMsg += `<br><a class="apply-setup-btn" style="display:inline-block;text-decoration:none;margin-top:6px;" href="${GUIDE_URL}" target="_blank" rel="noopener">📘 Le guide « Quand comprendre change tout »</a>`;
       }
 
-      // Feedback 👍/👎 — chaque vote part en analytics avec question + réponse
+      // Feedback 👍/👎 : chaque vote part en analytics avec question + réponse
       const fbId = 'fb-' + Date.now();
       window._fbData[fbId] = { q: msg.slice(0, 200), a: data.message.slice(0, 300) };
       botMsg += `<br><span id="${fbId}" class="fb-row">Utile ? <button class="fb-btn" onclick="sendFeedback('${fbId}',1)">👍</button><button class="fb-btn" onclick="sendFeedback('${fbId}',-1)">👎</button></span>`;
@@ -3556,7 +3598,7 @@ async function sendChat() {
     console.error('Erreur API:', err);
     // Fallback sur le système keywords si l'API est indisponible
     const fallback = getChatResponse(msg);
-    addMsg('⚠️ <em>Connexion impossible au serveur.</em> Mode hors-ligne — ' + fallback, 'bot');
+    addMsg('⚠️ <em>Connexion impossible au serveur.</em> Mode hors-ligne : ' + fallback, 'bot');
   }
 }
 
@@ -3649,7 +3691,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 <!-- FOOTER -->
 <footer class="site-footer">
   <div>
-    © 2026 Clément DANIEL — <strong style="color:var(--text);">Clem Kart Racing</strong> ·
+    © 2026 Clément DANIEL : <strong style="color:var(--text);">Clem Kart Racing</strong> ·
     <a href="https://comprendre-comment-rouler-plus-vite.netlify.app/" target="_blank" rel="noopener">📘 Le guide « Quand comprendre change tout »</a> ·
     <a href="cgu.html" target="_blank" rel="noopener">CGU</a> ·
     <a href="cgu.html" target="_blank" rel="noopener">Mentions légales</a>

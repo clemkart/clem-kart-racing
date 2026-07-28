@@ -1,5 +1,5 @@
 // =============================================
-// Race Engineer AI — Gestion sessions Supabase
+// Race Engineer AI : Gestion sessions Supabase
 // POST /save  → sauvegarde une session
 // GET  /list  → liste les 10 dernières sessions
 // Client anon + JWT user : RLS s'applique toujours,
@@ -123,13 +123,25 @@ exports.handler = async (event) => {
       pincement: parseInt(context.pincement) || null,
       voie_ar: parseFloat(context.voieAr) || null,
       arbre: context.arbre,
+      arbre_longueur: context.arbreLongueur,
       moyeux: context.moyeux,
       parechocs: context.parechocs,
       chasse: parseInt(context.chasse) || null,
       garde_av: context.gardeAv,
       garde_ar: context.gardeAr,
       moteur: context.moteur,
-      couronne: parseInt(context.couronne) || null,
+      // collectData() ne produit jamais "couronne" : selon la famille moteur
+      // c'est couronneMono, couronneDD2 ou couronneKz. L'ancienne ligne
+      // enregistrait donc systematiquement null en base.
+      couronne: parseInt(
+        context.moteur_type === 'dd2' ? context.couronneDD2
+        : context.moteur_type === 'kz' ? context.couronneKz
+        : context.couronneMono
+      ) || null,
+      pignon: parseInt(context.pignonMono) || null,
+      moteur_type: context.moteur_type || null,
+      moteur_family: context.moteur_family || null,
+      chassis: context.chassis || null,
       gicleur: parseInt(context.gicleur) || null,
       pressures: context.pressures || null,
       diagnostic_html: typeof diagnostic_html === 'string' ? diagnostic_html.slice(0, MAX_DIAGNOSTIC_CHARS) : null,

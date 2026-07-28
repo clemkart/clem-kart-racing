@@ -40,11 +40,11 @@ Question à se poser en permanence : *"Est-ce que je vais plus vite avec le vola
 
 | Stage | Action | Brake | Throttle | Steering |
 |-------|--------|-------|----------|----------|
-| 1 — Braking | Décélération pure | 0→100% | 0% | Droit |
-| 2 — Corner Entry | Trail braking + braquage | 100→10% | 0% | Augmente |
-| 3 — Mid Corner | Transition brake→throttle | 10→0% | 0→10-20% | Max |
-| 4 — Early Corner Exit | Ouverture volant + acc. progressive | 0% | 10-20→80% | Diminue |
-| 5 — Exit | Plein gaz volant droit | 0% | 100% | Droit |
+| 1 : Braking | Décélération pure | 0→100% | 0% | Droit |
+| 2 : Corner Entry | Trail braking + braquage | 100→10% | 0% | Augmente |
+| 3 : Mid Corner | Transition brake→throttle | 10→0% | 0→10-20% | Max |
+| 4 : Early Corner Exit | Ouverture volant + acc. progressive | 0% | 10-20→80% | Diminue |
+| 5 : Exit | Plein gaz volant droit | 0% | 100% | Droit |
 
 ### Règles critiques par stage
 
@@ -184,7 +184,7 @@ Imagine une corde entre le bas du volant et le dessus du **pied gauche** (celui 
 - Le contre-braquage devient nécessaire
 
 **Causes** :
-1. Throttle excessif (surtout RWD haute puissance — moins en kart)
+1. Throttle excessif (surtout RWD haute puissance : moins en kart)
 2. Freinage pendant le cornering (lift weight vers avant → arrière allégé)
 3. Sharp steering inputs (transfert brusque)
 4. Lift-off oversteer (relâcher le throttle brusquement mid-corner)
@@ -210,7 +210,7 @@ Imagine une corde entre le bas du volant et le dessus du **pied gauche** (celui 
 ### 7 exercices clés (Bootcamp)
 1. **Endurance** : 20 min de roulage, 90% des tours dans 0.5 sec du meilleur. Augmenter par tranches de 15 min jusqu'à 2h.
 2. **Qualification** : tour de chauffe + 2 tours rapides, retour stand, analyse 5 min, recommencer.
-3. **Brake pressure** : exercice à l'arrêt — passer du 100% à 0% en 1% par seconde. 20 répétitions. Développe la finesse du pied.
+3. **Brake pressure** : exercice à l'arrêt : passer du 100% à 0% en 1% par seconde. 20 répétitions. Développe la finesse du pied.
 4. **Engine revving** : écouter le moteur dans chaque virage. Aigu = bon. Grave = coasting. Corriger.
 5. **Track usage** : utiliser TOUTE la piste à chaque virage. Vérifier en replay vue d'oiseau. Repères visuels intérieurs.
 6. **Telemetry trace** : regarder la trace de frein après chaque virage. Pic 100% puis dégressif. Identifier les corners où on sous-freine.
@@ -224,7 +224,7 @@ Imagine une corde entre le bas du volant et le dessus du **pied gauche** (celui 
 
 ---
 
-## 8. Engine Braking & rotation avancée (Ch.7) — KZ uniquement
+## 8. Engine Braking & rotation avancée (Ch.7) : KZ uniquement
 
 ⚠️ Section applicable **uniquement aux catégories shifter** (KZ1, KZ2, KZ Junior). Pour les catégories single-speed (X30, Rotax Max, OK, Mini, Junior), ignorer.
 
@@ -247,7 +247,7 @@ Le downshifting agressif crée du **engine braking** (résistance moteur via vid
 
 ---
 
-## 9. Heel-Toe Downshifting (Ch.8) — non applicable karting moderne
+## 9. Heel-Toe Downshifting (Ch.8) : non applicable karting moderne
 
 **À évacuer rapidement si un pilote pose la question.**
 
@@ -263,13 +263,13 @@ Le heel-toe est une technique pour boîte H-pattern manuelle. En karting :
 
 Méthodologie en 4 phases pour découvrir et maîtriser un nouveau circuit le plus vite possible.
 
-### Phase 1 — Préparation pré-piste (avant même de monter dans le kart)
+### Phase 1 : Préparation pré-piste (avant même de monter dans le kart)
 - **Étudier la carte du circuit** : forme des virages, longueurs lignes droites, zones de freinage, dénivelés. Identifier sections techniques vs rapides.
 - **Tracer la racing line à la main** sur la carte. Marquer brake points, apex, exits.
 - **Visualiser mentalement** : "conduire" un tour mental complet. Active les mêmes circuits neuronaux que la conduite réelle.
 - **Regarder des onboards vidéo** : multi-pilotes pour différentes approches, slow-motion sur virages tricky, identifier les visual markers.
 
-### Phase 2 — 3 sens en piste
+### Phase 2 : 3 sens en piste
 Le pilote doit utiliser ses 3 sens en parallèle :
 
 **Vision** :
@@ -287,7 +287,7 @@ Le pilote doit utiliser ses 3 sens en parallèle :
 - Tyre screech : léger = grip max / fort = sur la limite, dérive
 - Vent : en karting, vent fait du bruit dans le casque, peut alerter sur vitesse réelle
 
-### Phase 3 — Brake points : du conservateur au limite
+### Phase 3, Brake points : du conservateur au limite
 - **Démarrer conservateur** : freiner tôt et fort. Mieux vaut freiner trop tôt que finir hors piste.
 - Utiliser **reference points fiables** : brake boards, vibreurs, panneaux
 - **Reculer le brake point de 5-10m par tour** progressivement
@@ -295,7 +295,7 @@ Le pilote doit utiliser ses 3 sens en parallèle :
   - Sous-virage à l'inscription (trop de vitesse)
   - Obligé de continuer à freiner en braquant de manière déstabilisante (pas du trail braking, du panic-stopping)
 
-### Phase 4 — Data analysis (Mychron, Alfano)
+### Phase 4 : Data analysis (Mychron, Alfano)
 Si équipé :
 - **Comparer tours** : baseline vs tours rapides → où on gagne/perd
 - **Trace de freinage** : pic puis dégressif. Identifier les virages où on sous-freine
@@ -309,7 +309,7 @@ Si équipé :
 
 ---
 
-## 11. Dynamiques changeantes de la piste (Ch.10) — complément
+## 11. Dynamiques changeantes de la piste (Ch.10) : complément
 
 Cette section complète `vision-pilote.md` § Lire la piste (Clément Ch.8).
 
@@ -341,7 +341,7 @@ Cas tricky en karting :
 
 5 types de virages, chacun avec son approche optimale. À utiliser pour personnaliser les conseils selon le type de virage problématique.
 
-### 12.1 — Hairpins / virages serrés (180°)
+### 12.1 : Hairpins / virages serrés (180°)
 **Caractéristiques** : freinage lourd depuis haute vitesse, vitesse mini sur le tour, late apex critique pour la sortie
 
 **Technique karting** :
@@ -351,7 +351,7 @@ Cas tricky en karting :
 - **Throttle progressif** : trop tôt = wheelspin/élargissement
 - **Vibreur intérieur** : peut aider à pivoter MAIS attention aux casses de châssis sur vibreurs durs karting
 
-### 12.2 — Sweepers / virages rapides longs
+### 12.2 : Sweepers / virages rapides longs
 **Caractéristiques** : maintenir le maximum de vitesse, freinage minimal ou simple lift-off
 
 **Technique karting** :
@@ -361,7 +361,7 @@ Cas tricky en karting :
 - **Throttle modulation** : rouler à 70-80% throttle constant plutôt que pleine charge intermittente
 - **Châssis très sollicité latéralement** → ressentir si le kart sature
 
-### 12.3 — Chicanes
+### 12.3 : Chicanes
 **Caractéristiques** : 2 virages opposés successifs, transitions rapides
 
 **Technique karting** :
@@ -371,7 +371,7 @@ Cas tricky en karting :
 - **Exit** : prioritaire si la chicane précède une ligne droite
 - **Increasing vs Decreasing radius** : si la 2e partie est plus serrée que la 1ère → freiner plus dans la transition
 
-### 12.4 — Double apex (carrousels longs)
+### 12.4 : Double apex (carrousels longs)
 **Caractéristiques** : 2 apex distincts dans la même direction
 
 **Technique karting** :
@@ -380,7 +380,7 @@ Cas tricky en karting :
 - **Throttle constant** ou évolution monotone (jamais accelerate/decelerate entre les 2)
 - Si **decreasing radius** (2e apex plus serré) : compromise sur 1er apex pour optimiser le 2e
 
-### 12.5 — Uphill / Downhill (dénivelé)
+### 12.5 : Uphill / Downhill (dénivelé)
 **Uphill** :
 - Gravité aide à ralentir → freiner plus tard
 - Tendance au sous-virage (avant allégé en montant) → trail brake utile
@@ -391,7 +391,7 @@ Cas tricky en karting :
 - Tendance au survirage (arrière allégé en descente) → smooth steering
 - En karting : descentes rares mais existent (ex: certaines pistes japonaises, italiennes)
 
-### 12.6 — Cambered corners (relevé / contre-relevé)
+### 12.6 : Cambered corners (relevé / contre-relevé)
 - **Positive camber** (banked, relevé) : grip augmenté, freiner plus tard, throttle plus tôt
 - **Negative camber** (off-camber, contre-relevé) : grip réduit, freiner plus tôt, smooth tout du long
 - En karting amateur : rare d'avoir du vrai banked, mais quelques virages contre-relevés sur certaines pistes
@@ -405,7 +405,7 @@ Cette section rejoint et complète la philosophie Clément ("forcer = mal"). Con
 ### Qu'est-ce que rouler sur la limite ?
 Utiliser **chaque once de grip** disponible sur les 4 pneus, sans jamais dépasser le seuil de glissade incontrôlée. Maintenir cet équilibre à CHAQUE phase du tour (freinage, mid-corner, accélération).
 
-> **"Smooth = Fast"** — Jimmy Grills (et c'est exactement la philosophie Clément)
+> **"Smooth = Fast"** : Jimmy Grills (et c'est exactement la philosophie Clément)
 
 La limite n'est PAS un point fixe : un pilote smooth a une limite **plus haute** qu'un pilote brusque (parce que les transferts de masse brutaux REDUISENT le grip total). C'est exactement le concept des "grip units" (cf. section 4 ci-dessus).
 
@@ -420,7 +420,7 @@ La limite n'est PAS un point fixe : un pilote smooth a une limite **plus haute**
 - **Controlled slides** : entrer en virage en dépassant LÉGÈREMENT le grip → ressentir comment le kart réagit
 - **Locking test** (en freinage straight) : bloquer un pneu volontairement pour gauger le braking threshold
 
-### ⚠️ OVERDRIVING — le piège n°1
+### ⚠️ OVERDRIVING : le piège n°1
 
 **Symptômes** (très important à diagnostiquer) :
 - Excessive sliding (pneus dérivent en permanence)
@@ -443,7 +443,7 @@ La limite n'est PAS un point fixe : un pilote smooth a une limite **plus haute**
 **Solutions** :
 - **Smoothness > aggression** : c'est exactement le message Clément ("rouler propre")
 - **Master à basse vitesse** : exercices de finesse avant de pousser
-- **Break down chaque virage** en segments (freinage / entry / mid / early exit / exit) — bosser un segment à la fois
+- **Break down chaque virage** en segments (freinage / entry / mid / early exit / exit) : bosser un segment à la fois
 - **Écouter le kart** : feedback du volant et du châssis
 
 ### Réaction d'expert en cas de sous-virage / survirage sur la limite
@@ -464,4 +464,4 @@ La limite n'est PAS un point fixe : un pilote smooth a une limite **plus haute**
 
 ---
 
-> **Note importante** : les chapitres Racecraft (défense, dépassement, qualifs vs course, premier virage, départs) sont dans le fichier dédié `racecraft-course.md` — à invoquer quand le pilote pose des questions sur la stratégie de course plutôt que sur la session/setup.
+> **Note importante** : les chapitres Racecraft (défense, dépassement, qualifs vs course, premier virage, départs) sont dans le fichier dédié `racecraft-course.md` : à invoquer quand le pilote pose des questions sur la stratégie de course plutôt que sur la session/setup.
