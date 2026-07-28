@@ -344,6 +344,57 @@ Object.values(CHASSIS_SPECS).forEach((s) => {
   if (!s.leviersAbsents) s.leviersAbsents = {};
 });
 
+// =============================================
+// HIÉRARCHIE DES LEVIERS
+// =============================================
+// Tous les réglages ne se valent pas. Un ingénieur de course commence par ce
+// qui est rapide à faire, réversible et à fort effet, et ne descend vers le
+// peaufinage que si le problème persiste. Sans cette hiérarchie, l'IA propose
+// un réglage de géométrie fine là où un demi-tour de valve suffisait.
+const LEVER_TIERS = [
+  {
+    tier: 1,
+    nom: "RAPIDE ET À FORT EFFET, à essayer en premier",
+    delai: "quelques minutes au stand, réversible immédiatement",
+    leviers: ["pressions pneus", "voie arrière", "barre avant (si le châssis en a une)"],
+    note: "Ces trois leviers couvrent la majorité des problèmes de comportement. Un pilote peut les changer entre deux relais.",
+  },
+  {
+    tier: 2,
+    nom: "STRUCTURANT, à essayer si le tier 1 ne suffit pas",
+    delai: "10 à 20 minutes, nécessite de l'outillage",
+    leviers: ["chasse", "carrossage", "voie avant", "pare-chocs arrière", "rigidité d'arbre"],
+    note: "Effet réel mais plus lent à tester. Un seul à la fois, sinon le verdict est illisible.",
+  },
+  {
+    tier: 3,
+    nom: "LOURD OU DE PEAUFINAGE, en dernier",
+    delai: "long à changer, ou effet fin",
+    leviers: ["position et hauteur de siège", "longueur d'arbre", "moyeux", "garde au sol", "lestage", "pincement"],
+    note: "Le siège et le lestage sont des leviers puissants mais longs à changer : on ne les touche pas en cours de journée sans raison forte. Le pincement et la garde au sol relèvent du peaufinage.",
+  },
+];
+
+function buildLeverHierarchyBlock(chassis) {
+  const lines = ["\nHIÉRARCHIE DES LEVIERS (ordre de travail d'un ingénieur de course)"];
+  lines.push("=================================================================");
+  LEVER_TIERS.forEach((t) => {
+    lines.push(`\nTIER ${t.tier} : ${t.nom}`);
+    lines.push(`  Leviers : ${t.leviers.join(", ")}`);
+    lines.push(`  Délai : ${t.delai}`);
+    lines.push(`  ${t.note}`);
+  });
+  lines.push(
+    "\n→ Propose TOUJOURS le levier le plus haut dans cette hiérarchie qui traite réellement le problème. Ne descends au tier suivant que si les leviers du tier au-dessus sont indisponibles (en butée, absents de ce châssis) ou déjà exploités."
+  );
+  if (chassis && chassis.leverPriority) {
+    lines.push(
+      `→ À tier égal, l'ordre propre à cette marque prime : ${chassis.leverPriority.join(" puis ")}.`
+    );
+  }
+  return lines.join("\n");
+}
+
 // --- CONSTRUCTION DU BLOC INJECTÉ DANS LE PROMPT ---------------------------
 
 function getChassisSpec(chassis) {
@@ -478,6 +529,8 @@ function buildKartSpecBlock(context) {
     "Cite explicitement le châssis et le moteur dans ton diagnostic, pour que le pilote voie que l'analyse est calibrée sur SON matériel."
   );
 
+  lines.push(buildLeverHierarchyBlock(chassis));
+
   return lines.join("\n");
 }
 
@@ -490,6 +543,7 @@ function getLeviersAbsents(context) {
 
 module.exports = {
   CHASSIS_SPECS,
+  LEVER_TIERS,
   getLeviersAbsents,
   ENGINE_SPECS,
   ENGINE_MODEL_NOTES,

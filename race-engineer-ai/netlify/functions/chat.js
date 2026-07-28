@@ -4,7 +4,7 @@
 // Garde-fous moteur stricts (refus avant API)
 // Auth Supabase obligatoire + quota mensuel freemium
 // Mémoire de conversation (12 derniers messages)
-// Modèle : Claude Sonnet 4.6
+// Modèle : Claude Opus 5 (surchargeable par la variable CLAUDE_MODEL)
 // =============================================
 
 const Anthropic = require("@anthropic-ai/sdk");
@@ -23,6 +23,24 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 // Dev local uniquement : ALLOW_ANON_CHAT=true dans .env pour tester sans compte
 const ALLOW_ANON_CHAT = process.env.ALLOW_ANON_CHAT === "true";
+
+// =============================================
+// MODÈLE
+// =============================================
+// Le diagnostic et le chat partagent le MÊME modèle, volontairement : le cache
+// de prompt est lié au modèle, et les deux partagent ~30k tokens de skill.
+// Deux modèles différents = deux caches à payer au lieu d'un.
+//
+// Réglable sans redéploiement via les variables d'environnement Netlify, pour
+// arbitrer qualité / latence / coût une fois mesuré en conditions réelles.
+const MODEL = process.env.CLAUDE_MODEL || "claude-opus-5";
+// Le diagnostic porte la valeur du produit : il réfléchit plus que le chat.
+const EFFORT_DIAGNOSTIC = process.env.CLAUDE_EFFORT_DIAGNOSTIC || "medium";
+const EFFORT_CHAT = process.env.CLAUDE_EFFORT_CHAT || "low";
+// ⚠️ Sur Opus 5 la réflexion est active par défaut et compte DANS max_tokens.
+// Un budget calé sur la seule réponse tronquerait le JSON en plein milieu.
+const MAX_TOKENS_DIAGNOSTIC = parseInt(process.env.CLAUDE_MAX_TOKENS_DIAGNOSTIC, 10) || 4000;
+const MAX_TOKENS_CHAT = parseInt(process.env.CLAUDE_MAX_TOKENS_CHAT, 10) || 3000;
 // =============================================
 // CRÉDITS (aligné sur les offres : Découverte 100 / Saison Pro 500 / Paddock 1500)
 // 1 message coach IA = 10 crédits. Le diagnostic express local reste gratuit.
@@ -44,8 +62,9 @@ const PLAN_MONTHLY_CREDITS = {
 // ⚠️ Toute modification ici doit être répercutée dans index.html.
 // =============================================
 const SETUP_LIMITS = {
-  voieAr:    { min: 135, max: 140, unit: 'cm', label: 'Voie arrière',
-               note: "butée réglementaire : 140.0 cm = 1400 mm de largeur hors-tout, interdiction d'aller au-delà" },
+  // Plage réelle d'utilisation, pas la plage théorique : sous 136 on ne roule
+  // pas, même sous la pluie. Doit rester alignée avec index.html.
+  voieAr:    { min: 136, max: 140, unit: 'cm', label: 'Voie arrière' },
   voieAv:    { min: 0,  max: 6,  unit: 'bagues', label: 'Voie avant' },
   pincement: { min: -3, max: 3,  unit: '',      label: 'Pincement' },
   chasse:    { min: -1, max: 4,  unit: 'crans', label: 'Chasse' },
@@ -81,13 +100,14 @@ function buildLimitsBlock(context) {
     lines.push(`- ${lim.label} : de ${lim.min} à ${lim.max}${lim.unit ? ' ' + lim.unit : ''}${lim.note ? ', ' + lim.note : ''}`);
     const v = context ? parseFloat(context[key]) : NaN;
     if (isNaN(v)) continue;
-    if (v >= lim.max) reached.push(`${lim.label} = ${v}${lim.unit ? ' ' + lim.unit : ''} → MAXIMUM ATTEINT. Ne propose JAMAIS d'augmenter ce réglage : c'est physiquement/réglementairement impossible. Passe à un autre levier.`);
-    else if (v <= lim.min) reached.push(`${lim.label} = ${v}${lim.unit ? ' ' + lim.unit : ''} → MINIMUM ATTEINT. Ne propose JAMAIS de réduire ce réglage. Passe à un autre levier.`);
+    if (v >= lim.max) reached.push(`${lim.label} : ${v}${lim.unit ? ' ' + lim.unit : ''}, on ne peut plus l'augmenter`);
+    else if (v <= lim.min) reached.push(`${lim.label} : ${v}${lim.unit ? ' ' + lim.unit : ''}, on ne peut plus le réduire`);
   }
-  let block = `\nBUTÉES DE RÉGLAGE (non négociables)\n===================================\n${lines.join("\n")}\n`;
-  block += reached.length
-    ? `\n🚫 RÉGLAGES DÉJÀ EN BUTÉE SUR CE KART :\n${reached.map((r) => "- " + r).join("\n")}\nProposer un réglage en butée décrédibilise immédiatement le diagnostic auprès d'un pilote expérimenté. Vérifie CHAQUE valeur avant de conseiller.\n`
-    : `\nAucun réglage n'est actuellement en butée.\n`;
+  let block = `\nPLAGES DE RÉGLAGE DISPONIBLES\n=============================\n${lines.join("\n")}\n`;
+  if (reached.length) {
+    block += `\nLEVIERS INDISPONIBLES SUR CE KART (déjà au bout de leur plage) :\n${reached.map((r) => "- " + r).join("\n")}\n`;
+    block += `→ Raisonne comme si ces leviers n'existaient pas. Ne les propose pas, et n'explique pas au pilote qu'ils sont en butée : il le sait, il a réglé son kart lui-même. Trouve simplement autre chose.\n`;
+  }
   return block;
 }
 
@@ -918,28 +938,43 @@ ${contextStr}
       { role: "user", content: message },
     ];
 
-    // Budget de sortie serré : le timeout Netlify synchrone est de 10 s et il
-    // n'y a pas de streaming en MVP. Le diagnostic est structuré en champs
-    // courts, 900 tokens suffisent largement.
+    // La réflexion adaptative est active par défaut sur ce modèle et se
+    // décompte de max_tokens : le budget couvre réflexion + réponse.
+    // L'effort est le levier principal entre qualité, latence et coût.
     const response = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: isDiagnostic ? 900 : 1000,
+      model: MODEL,
+      max_tokens: isDiagnostic ? MAX_TOKENS_DIAGNOSTIC : MAX_TOKENS_CHAT,
+      output_config: { effort: isDiagnostic ? EFFORT_DIAGNOSTIC : EFFORT_CHAT },
       system,
       messages,
     });
 
     // === Parse JSON de la réponse Claude ===
+    // ⚠️ La réflexion étant active, content[0] peut être un bloc "thinking".
+    // On cherche le premier bloc de texte au lieu de supposer l'index 0.
+    const textBlock = (response.content || []).find((b) => b.type === "text");
+    const rawText = textBlock ? textBlock.text : "";
+
     let parsed;
     try {
-      let raw = response.content[0].text.trim();
+      let raw = rawText.trim();
       // Nettoyer d'éventuels backticks markdown malgré l'instruction
       raw = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
       parsed = JSON.parse(raw);
     } catch (e) {
       // Si Claude n'a pas respecté le format JSON, on encapsule le texte brut
       parsed = isDiagnostic
-        ? { titre: "Diagnostic", cause: response.content[0].text, confiance: "faible", apply: {} }
-        : { message: response.content[0].text, apply: {} };
+        ? { titre: "Diagnostic", cause: rawText, confiance: "faible", apply: {} }
+        : { message: rawText, apply: {} };
+    }
+
+    // Réponse tronquée : le budget de sortie a été consommé avant la fin.
+    // Mieux vaut le dire que de livrer un diagnostic amputé.
+    if (response.stop_reason === "max_tokens" && !parsed.action && !parsed.message) {
+      console.warn("Réponse tronquée (max_tokens atteint) :", response.usage);
+      parsed = isDiagnostic
+        ? { titre: "Analyse interrompue", cause: "L'analyse a été coupée avant la fin. Relance le diagnostic.", confiance: "faible", apply: {} }
+        : { message: "Ma réponse a été coupée avant la fin. Repose ta question, si possible en la resserrant.", apply: {} };
     }
 
     // === Filet de sécurité : bornage de l'apply ===

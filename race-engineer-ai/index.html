@@ -858,8 +858,8 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 
         <div class="field">
           <div class="field-label">Largeur <span id="val-voie-ar">138.0 cm</span></div>
-          <input type="range" id="voie-ar" min="135" max="140" value="139" step="0.5" oninput="_voieArTouchedByUser = true; updateSliderVal('voie-ar','val-voie-ar',' cm')">
-          <div class="sub-label">135 = étroite (blocage AR, tourne moins) · 140 = butée max réglementaire (libre, tourne plus)</div>
+          <input type="range" id="voie-ar" min="136" max="140" value="139" step="0.5" oninput="_voieArTouchedByUser = true; updateSliderVal('voie-ar','val-voie-ar',' cm')">
+          <div class="sub-label">136 = étroite (blocage AR, tourne moins) · 140 = large (libre, tourne plus). Le bas de la plage sert surtout sous la pluie.</div>
           <div class="sub-label" id="voie-ar-hint" style="display:none;color:var(--green);"></div>
         </div>
 
@@ -1155,8 +1155,9 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 const SETUP_LIMITS_CARROSSAGE_NOTE = "Sur OTK, CRG, Sodikart et Parolin, chasse et carrossage se règlent par la même bague excentrique.";
 const SETUP_LIMITS = {
   carrossage: { min: -3, max: 3, step: 1, unit: '', label: 'Carrossage' },
-  voieAr:    { min: 135, max: 140, step: 0.5, unit: 'cm', label: 'Voie arrière',
-               maxNote: "butée réglementaire (largeur hors-tout 1400 mm)" },
+  // Plage réelle d'utilisation, pas la plage théorique : en dessous de 136 on
+  // ne roule pas, même sous la pluie (136 à 136.5 est déjà le cas extrême).
+  voieAr:    { min: 136, max: 140, step: 0.5, unit: 'cm', label: 'Voie arrière' },
   voieAv:    { min: 0,  max: 6,  step: 1,  unit: 'bagues', label: 'Voie avant' },
   pincement: { min: -3, max: 3,  step: 1,  unit: '',      label: 'Pincement' },
   chasse:    { min: -1, max: 4,  step: 1,  unit: 'crans', label: 'Chasse' },
@@ -2246,27 +2247,17 @@ function runDiagnostic() {
       coherenceAlerts.push({type:'info', msg:'Grip bas et chasse faible. Sur ce châssis, l\'initiation de rotation se travaille par la bague excentrique : monter la chasse d\'un cran est la première piste.'});
     }
     if(voieArVal >= 140 && arbreVal === 'dur') {
-      coherenceAlerts.push({type:'warn', msg:'Voie AR très large ('+voieArVal+'cm) + arbre dur : peut créer de l\'instabilité en ligne droite.'});
+      coherenceAlerts.push({type:'warn', msg:'Voie AR au maximum ('+voieArVal+' cm) avec un arbre dur : peut créer de l\'instabilité en ligne droite.'});
     }
-    if(voieArVal <= 135.5 && arbreVal === 'tendre') {
-      coherenceAlerts.push({type:'info', msg:'Voie AR étroite + arbre tendre : combinaison inhabituelle. L\'arbre souple peut compenser mais vérifier le comportement global.'});
+    if(voieArVal <= 136.5 && arbreVal === 'tendre') {
+      coherenceAlerts.push({type:'info', msg:'Voie AR très resserrée avec un arbre tendre : combinaison inhabituelle hors pluie. L\'arbre souple peut compenser, mais vérifie le comportement global.'});
     }
   }
 
-  // BUTÉES ATTEINTES : le pilote doit savoir quels leviers sont épuisés,
-  // sinon il attend un conseil qui ne peut pas venir.
-  if (!isLocation) {
-    const limitsReached = collectLimitsReached(data);
-    if (limitsReached.length > 0) {
-      html += `<div class="diag-block">
-        <div class="diag-block-title"><span class="diag-icon">🚫</span> Leviers en butée</div>`;
-      limitsReached.forEach(l => {
-        html += `<div class="info-block"><div class="info-title">⛔ ${escapeHtml(l)}</div></div>`;
-      });
-      html += `<div style="margin-top:8px;font-size:11px;color:var(--text-dim);">Ces réglages sont au bout de leur plage : le gain devra venir d'un autre levier (ou du pilotage).</div>
-      </div>`;
-    }
-  }
+  // Les butées ne sont PAS affichées au pilote : un réglage déjà au bout de sa
+  // plage est une évidence pour lui, l'écrire prend de la place et fait perdre
+  // en crédibilité. Elles servent uniquement à ce que le diagnostic ne propose
+  // jamais ce levier (collectLimitsReached / sanitizeApply).
 
   if(coherenceAlerts.length > 0) {
     html += `<div class="diag-block">
@@ -2467,9 +2458,9 @@ function renderAiDiagnostic(d, data) {
   if (d.aObserver) {
     h += `<div class="info-block"><div class="info-title">👀 À observer au prochain relais</div><p>${escapeHtml(d.aObserver)}</p></div>`;
   }
-  if (d.limitNote) {
-    h += `<div class="alert-block"><div class="alert-title">⚠️ Butée de réglage</div><p>${escapeHtml(d.limitNote)}</p></div>`;
-  }
+  // d.limitNote existe toujours côté serveur pour tracer ce qui a été filtré,
+  // mais on ne l'affiche pas : le pilote n'a pas à lire pourquoi un conseil
+  // n'a pas été donné.
 
   if (d.apply && Object.keys(d.apply).length > 0) {
     const id = 'diagapply-' + Date.now();
