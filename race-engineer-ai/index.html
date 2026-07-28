@@ -818,9 +818,17 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
           <div class="info-title">💡 Spécificité de ton châssis</div>
           <p id="chassis-banner-text"></p>
         </div>
-        <div class="section-title">Barre avant</div>
+        <div class="section-title" id="barre-section-title">Barre avant</div>
 
-        <div class="field">
+        <!-- Masque pour les chassis sans barre de torsion (Sodikart Sigma) :
+             laisser le pilote renseigner un reglage inexistant sur son kart
+             pollue le diagnostic. -->
+        <div class="info-block" id="barre-absente" style="display:none;">
+          <div class="info-title">ℹ️ Pas de barre de torsion sur ce châssis</div>
+          <p id="barre-absente-text"></p>
+        </div>
+
+        <div class="field" id="barre-field">
           <div class="field-label">Type de barre</div>
           <div class="radio-group">
             <label class="radio-chip" onclick="selectChip(this,'barre','sans')"><input type="radio" name="barre" value="sans">❌ Sans barre</label>
@@ -1502,7 +1510,48 @@ const CHASSIS_HINTS = {
   'Autre': "Châssis non listé : adapte les valeurs aux équivalents de ta marque et décris ta terminologie dans 'Notes libres'."
 };
 
+// Châssis dépourvus de barre de torsion avant classique.
+// ⚠️ Doit rester aligné avec leviersAbsents dans netlify/functions/kart-specs.js
+const CHASSIS_SANS_BARRE = {
+  'Sodikart': "Sur le Sigma, le réglage du train avant passe par la bague excentrique : la chasse en position haute, le carrossage en position basse. Ces deux réglages sont dans la section Géométrie ci-dessous.",
+};
+
+// Réécrit les textes génériques qui parlent de barre de torsion quand le
+// châssis n'en a pas. Sans ça, un pilote Sodikart lit "passe la barre plate
+// en position verticale" alors que son kart n'a pas de barre du tout.
+function adaptTextToChassis(text, chassis) {
+  if (!text || !CHASSIS_SANS_BARRE[chassis]) return text;
+  return text
+    .replace(/barre plate en position verticale/gi, 'chasse au maximum via la bague excentrique')
+    .replace(/barre plate verticale/gi, 'chasse maximale (bague excentrique)')
+    .replace(/[Bb]arre ronde ou sans barre/g, 'chasse réduite d\'un cran')
+    .replace(/[Ss]ans barre avant/g, 'chasse minimale')
+    .replace(/[Ss]ans barre/g, 'chasse réduite')
+    .replace(/la barre avant/gi, 'la géométrie avant');
+}
+
+// Adapte le formulaire à la réalité mécanique du châssis choisi
+function updateBarreUI(chassis) {
+  const absente = CHASSIS_SANS_BARRE[chassis];
+  const field = document.getElementById('barre-field');
+  const bloc = document.getElementById('barre-absente');
+  const texte = document.getElementById('barre-absente-text');
+  const titre = document.getElementById('barre-section-title');
+  if (!field || !bloc) return;
+  if (absente) {
+    field.style.display = 'none';
+    bloc.style.display = 'block';
+    if (texte) texte.textContent = absente;
+    if (titre) titre.textContent = 'Train avant';
+  } else {
+    field.style.display = '';
+    bloc.style.display = 'none';
+    if (titre) titre.textContent = 'Barre avant';
+  }
+}
+
 function updateChassisBanner(chassis) {
+  updateBarreUI(chassis);
   const banner = document.getElementById('chassis-banner');
   const text = document.getElementById('chassis-banner-text');
   if (!banner || !text) return;
@@ -1873,6 +1922,20 @@ function collectData() {
   // Tendances cross-sessions (mémoire longue, injectée à l'IA)
   const _insights = computeInsights();
 
+  // Écart avec la session précédente sur le MÊME circuit. Le diagnostic
+  // l'affiche déjà au pilote : l'IA doit l'avoir aussi, sinon elle raisonne
+  // sans savoir si le dernier changement a fait gagner ou perdre du temps.
+  let deltaSessionPrecedente = null, circuitNamePrecedent = null;
+  try {
+    const _prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')[0];
+    const _b = parseChrono(chronoBest);
+    const _pb = _prev && _prev.data && _prev.data.chronoBest ? parseChrono(_prev.data.chronoBest) : null;
+    if (_b && _pb && circuitName && _prev.data.circuitName === circuitName) {
+      deltaSessionPrecedente = +(_b - _pb).toFixed(2);
+      circuitNamePrecedent = circuitName;
+    }
+  } catch (e) {}
+
   // Profil pilote (depuis localStorage / formulaire Profil)
   const profile = collectProfile(); // inclut pilote (moi/enfant) et mode (proprio/location)
   // Famille moteur déduite du profil (direct_drive / dd2 / kz_shifter / 4t)
@@ -1886,6 +1949,7 @@ function collectData() {
     // Chronos + suivi de test + tendances
     chronoBest, chronoAvg, chronoLaps, pendingTest, lastTest,
     insightsSummary: _insights ? _insights.summary : null,
+    deltaSessionPrecedente, circuitNamePrecedent,
     // Pneus
     pressures,
     // Réglages châssis
@@ -2168,11 +2232,18 @@ function runDiagnostic() {
     if(meteoVal === 'pluie' && chasseVal >= 2) {
       coherenceAlerts.push({type:'alert', msg:'Chasse élevée ('+chasseVal+') en conditions de pluie. Risque de survirage. Recommandé : chasse ≤ 1.'});
     }
-    if((gripVal === 'grippee' || gripVal === 'ultra') && barreVal === 'plate_v') {
-      coherenceAlerts.push({type:'warn', msg:'Barre '+barreVal+' sur piste '+gripVal+'. Le kart risque de bloquer l\'AR. Passe à ronde ou sans barre.'});
+    // Les alertes sur la barre n'ont de sens que si le châssis en possède une.
+    // Sur un Sodikart Sigma, le réglage avant passe par la bague excentrique :
+    // parler de "barre plate verticale" décrédibilise l'analyse.
+    const aUneBarre = !CHASSIS_SANS_BARRE[data.chassis];
+    if(aUneBarre && (gripVal === 'grippee' || gripVal === 'ultra') && barreVal === 'plate_v') {
+      coherenceAlerts.push({type:'warn', msg:'Barre plate verticale sur piste '+gripLabel(gripVal).toLowerCase()+'. Le kart risque de bloquer l\'AR. Passe à ronde ou sans barre.'});
     }
-    if((gripVal === 'verte' || gripVal === 'sale') && barreVal === 'sans') {
-      coherenceAlerts.push({type:'warn', msg:'Sans barre sur piste '+gripVal+'. En grip très bas, rigidifier aide à créer le délestage mécanique. Teste la barre plate en position verticale.'});
+    if(aUneBarre && (gripVal === 'verte' || gripVal === 'sale') && barreVal === 'sans') {
+      coherenceAlerts.push({type:'warn', msg:'Sans barre sur piste '+gripLabel(gripVal).toLowerCase()+'. En grip très bas, rigidifier aide à créer le délestage mécanique. Teste la barre plate en position verticale.'});
+    }
+    if(!aUneBarre && (gripVal === 'verte' || gripVal === 'sale') && chasseVal <= 0) {
+      coherenceAlerts.push({type:'info', msg:'Grip bas et chasse faible. Sur ce châssis, l\'initiation de rotation se travaille par la bague excentrique : monter la chasse d\'un cran est la première piste.'});
     }
     if(voieArVal >= 140 && arbreVal === 'dur') {
       coherenceAlerts.push({type:'warn', msg:'Voie AR très large ('+voieArVal+'cm) + arbre dur : peut créer de l\'instabilité en ligne droite.'});
@@ -2228,7 +2299,7 @@ function runDiagnostic() {
       <div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Analyse calibrée pour ${escapeHtml(materiel)}</div>`;
 
     if (gripInfo) {
-      html += `<div class="info-block"><div class="info-title">🏁 Contexte grip : ${gripLabel(gripVal)}</div><p>${gripInfo.philosophy}</p></div>`;
+      html += `<div class="info-block"><div class="info-title">🏁 Contexte grip : ${gripLabel(gripVal)}</div><p>${adaptTextToChassis(gripInfo.philosophy, data.chassis)}</p></div>`;
     }
 
     // Conteneur rempli par le diagnostic IA (appel lancé après le rendu)
@@ -2583,11 +2654,15 @@ function exportSetupCard() {
     if (d.comportement) row('Chantier du jour', String(d.comportement).replace(/_/g, ' '));
   } else {
     section('CHÂSSIS');
-    row('Barre avant', d.barre);
+    // Pas de ligne "barre" sur un châssis qui n'en a pas : la fiche se
+    // partage au paddock, une incohérence s'y verrait tout de suite.
+    if (!CHASSIS_SANS_BARRE[d.chassis]) row('Barre avant', d.barre);
     row('Voie AV / Pincement', `${d.voieAv} bagues / ${d.pincement}`);
     row('Voie AR', `${d.voieAr} cm`);
-    row('Arbre / Moyeux', `${d.arbre} / ${d.moyeux}`);
-    row('Chasse / Pare-chocs', `${d.chasse} / ${d.parechocs}`);
+    row('Arbre', `${d.arbre} / ${d.arbreLongueur || 'standard'} / moyeux ${d.moyeux}`);
+    row('Chasse / Carrossage', `${d.chasse} / ${d.carrossage}`);
+    row('Pare-chocs', d.parechocs);
+    row('Siège', `${d.siege}${d.lestage && d.lestage !== '0' ? ` · lest ${d.lestage} kg` : ''}`);
     row('Garde AV / AR', `${d.gardeAv} / ${d.gardeAr}`);
 
     section('MOTEUR & PNEUS');

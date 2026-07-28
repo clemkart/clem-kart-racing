@@ -13,7 +13,7 @@ const fs = require("fs");
 const path = require("path");
 // Registre des spécificités châssis × moteur : c'est lui qui garantit qu'un
 // Sodikart en Rotax ne reçoit pas le même diagnostic qu'un Tony Kart en X30.
-const { buildKartSpecBlock } = require("./kart-specs");
+const { buildKartSpecBlock, getLeviersAbsents } = require("./kart-specs");
 
 // =============================================
 // CONFIG (env vars)
@@ -141,8 +141,38 @@ function sanitizeApply(apply, context) {
   }
   const clean = {};
   const notes = [];
+  const ctx = context || {};
+
+  // KART DE LOCATION : le pilote ne peut RIEN regler. Le prompt le dit deja,
+  // mais rien ne l'empechait : un bouton "appliquer" apparaissait sur un kart
+  // auquel il n'a pas acces.
+  if (ctx.mode === "location") {
+    return {
+      apply: {},
+      notes: Object.keys(apply).length
+        ? ["Kart de location : aucun réglage n'est modifiable, le gain est à chercher dans le pilotage."]
+        : [],
+    };
+  }
+
+  // Un levier absent de ce chassis ne doit jamais etre applique, meme si le
+  // modele le propose : sur un Sodikart, "changer la barre avant" n'a pas de
+  // sens physique, le reglage passe par la bague excentrique.
+  const absents = getLeviersAbsents(context);
+
+  // Carburation scellee par le reglement sur les 4 temps : proposer un
+  // changement de gicleur est un contresens technique.
+  const carbuScellee = ctx.moteur_family === "4t";
 
   for (const [key, value] of Object.entries(apply)) {
+    if (absents.includes(key)) {
+      notes.push(`Ce châssis n'a pas de réglage "${key}" : conseil retiré.`);
+      continue;
+    }
+    if (carbuScellee && key === "gicleur") {
+      notes.push("Carburation scellée par le règlement sur ce moteur : le conseil sur le gicleur a été retiré.");
+      continue;
+    }
     if (APPLY_ENUMS[key]) {
       if (APPLY_ENUMS[key].includes(value)) clean[key] = value;
       continue;
@@ -251,6 +281,55 @@ const SYMPTOM_LABELS = {
   instability_straight: "instabilité en ligne droite",
   balanced: "kart équilibré, pas de défaut marqué",
 };
+
+// Chronos et régularité.
+// ⚠️ La couche locale du navigateur calcule déjà l'écart et affiche un verdict
+// avec des seuils précis. Si le modèle raisonne sur des chronos bruts, il peut
+// écrire l'inverse de ce que le pilote lit juste au-dessus, sur le même écran.
+// On lui transmet donc le MÊME calcul et les MÊMES seuils.
+// ⚠️ Doit rester aligné avec regularityVerdict() dans index.html.
+function parseChronoServer(v) {
+  if (typeof v !== "string" || !v.trim()) return null;
+  const s = v.trim().replace(",", ".");
+  const m = s.match(/^(?:(\d+):)?(\d+(?:\.\d+)?)$/);
+  if (!m) return null;
+  const sec = (m[1] ? parseInt(m[1], 10) * 60 : 0) + parseFloat(m[2]);
+  return isFinite(sec) && sec > 0 ? sec : null;
+}
+
+function buildChronoBlock(context) {
+  const c = context || {};
+  const best = parseChronoServer(c.chronoBest);
+  const avg = parseChronoServer(c.chronoAvg);
+  let bloc = `\nCHRONOS\n- Meilleur tour : ${c.chronoBest || "non renseigné"}\n- Tour moyen : ${c.chronoAvg || "non renseigné"}\n- Nombre de tours : ${c.chronoLaps || "non renseigné"}\n`;
+
+  if (best && avg && avg >= best) {
+    const gap = avg - best;
+    const verdict = gap <= 0.15
+      ? "TRÈS RÉGULIER : le rythme est là, le gain restant est dans le tour pur"
+      : gap <= 0.4
+      ? "RÉGULARITÉ MOYENNE : du temps se perd dans l'inconstance"
+      : "IRRÉGULIER : le plus gros gain est dans la constance, pas dans le tour parfait";
+    bloc += `- Écart meilleur / moyen : +${gap.toFixed(2)} s → ${verdict}\n`;
+    bloc += "→ Ce verdict est DÉJÀ AFFICHÉ au pilote juste au-dessus de ton diagnostic. Appuie-toi dessus, ne le contredis pas et ne recalcule pas différemment.\n";
+    if (gap > 0.4) {
+      bloc += "→ Avec un tel écart, un réglage châssis ne réglera pas le problème principal. Dis-le franchement et oriente vers la régularité.\n";
+    }
+  } else if (best && !avg) {
+    bloc += "→ Le tour moyen manque : tu ne peux rien conclure sur la régularité. Demande-le pour la prochaine session.\n";
+  } else if (!best) {
+    bloc += "→ Aucun chrono renseigné : ne fais aucune hypothèse de performance chiffrée.\n";
+  }
+
+  if (c.deltaSessionPrecedente != null && c.circuitNamePrecedent) {
+    const d = parseFloat(c.deltaSessionPrecedente);
+    if (isFinite(d)) {
+      bloc += `- Comparaison avec la session précédente sur ${c.circuitNamePrecedent} : ${d >= 0 ? "+" : ""}${d.toFixed(2)} s sur le meilleur tour (${d < 0 ? "PROGRÈS" : d > 0 ? "RECUL" : "stable"}).\n`;
+      bloc += "→ Croise cette évolution avec le dernier changement testé avant de conclure.\n";
+    }
+  }
+  return bloc;
+}
 
 // Met en forme les pressions pour le prompt.
 // ⚠️ Elles étaient totalement absentes du contexte envoyé au modèle, alors
@@ -674,8 +753,7 @@ Conditions session :
 - Type session : ${context.session || "non renseigné"}
 - Problème dominant : ${SYMPTOM_LABELS[context.comportement] || context.comportement || "non renseigné"}
 - Intensité : ${context.intensite || "?"}/10
-- Chronos : meilleur tour ${context.chronoBest || "non renseigné"}, tour moyen ${context.chronoAvg || "?"}, ${context.chronoLaps || "?"} tours
-  → Si meilleur et moyen sont renseignés, l'écart entre les deux mesure la RÉGULARITÉ. Un pilote irrégulier gagne plus en travaillant la constance qu'en cherchant le tour parfait.
+${buildChronoBlock(context)}
 - Tendance multi-sessions : ${context.insightsSummary || "pas encore assez de sessions pour dégager une tendance"}
   → Un symptôme qui revient session après session malgré des réglages ou conditions différents pointe vers le pilotage, pas le matériel. Exploite cette tendance dans ton diagnostic.
 

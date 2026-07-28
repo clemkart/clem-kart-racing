@@ -23,8 +23,14 @@
 
 // --- CHÂSSIS ---------------------------------------------------------------
 
+// Leviers du formulaire qui n'existent pas sur certaines marques. Sans cette
+// declaration, le prompt envoyait "Barre avant : plate_h" a un pilote
+// Sodikart tout en lui disant que son chassis n'a pas de barre : instruction
+// contradictoire, donc diagnostic peu fiable.
+// Cle = nom du champ dans le formulaire, valeur = ce qui le remplace.
 const OTK_SPEC = {
   group: "OTK",
+  leviersAbsents: {}, // tous les leviers du formulaire existent sur OTK
   modeles: {
     "Racer 401 RR": "tubes de cadre Ø32 mm. Décliné en monorapport (OK, OKJ), shifter (KZ) et DD2. Carénage M10. Sorti en 2022 [OK 2026-07]",
     "Racer 401 S": "évolution de la gamme, diamètre de cadre différent du 401 RR (le RR se distingue justement par ses Ø32 mm). Supports de plancher de section plus large que sur le RR [OK 2026-07]",
@@ -110,6 +116,12 @@ const CHASSIS_SPECS = {
     group: "Sodikart",
     label: "Sodikart (Sigma)",
     leverPriority: ["voieAr", "pressions", "chasse", "arbre", "parechocs"],
+    // Le Sigma n'a pas de barre de torsion avant classique : le reglage avant
+    // passe par la bague excentrique, donc par chasse et carrossage.
+    leviersAbsents: {
+      barre:
+        "le Sigma n'a PAS de barre de torsion avant. Le reglage du train avant passe par la BAGUE EXCENTRIQUE (chasse en haut, carrossage en bas). Ignore la valeur du champ 'barre' et ne propose jamais de la modifier : agis sur la chasse ou le carrossage a la place",
+    },
     modeles: {
       "Sigma RS3":
         "⚠️ C'EST LE MODÈLE DES CATÉGORIES ROTAX / X30 / OK. Développé spécifiquement pour les gommes de dureté MEDIUM. Avant de châssis redessiné pour augmenter la performance et faciliter l'ENTRÉE en courbe. Système de freinage plus sensible et progressif, réglable sur 2 à 4 positions [OK 2026-07]",
@@ -325,6 +337,13 @@ const ENGINE_MODEL_NOTES = {
   "KZ Modena": { note: "Modena KK3 [OK]" },
 };
 
+// Normalisation : toute marque sans declaration explicite est reputee
+// disposer de TOUS les leviers du formulaire. Evite un "undefined" silencieux
+// au moment de construire le prompt.
+Object.values(CHASSIS_SPECS).forEach((s) => {
+  if (!s.leviersAbsents) s.leviersAbsents = {};
+});
+
 // --- CONSTRUCTION DU BLOC INJECTÉ DANS LE PROMPT ---------------------------
 
 function getChassisSpec(chassis) {
@@ -406,6 +425,16 @@ function buildKartSpecBlock(context) {
     lines.push(
       `- ORDRE DE PRIORITÉ DES LEVIERS sur cette marque : ${chassis.leverPriority.join(" → ")}. Commence par le premier levier disponible de cette liste, pas par un autre.`
     );
+    // Leviers du formulaire qui n'existent pas sur ce chassis
+    const absents = Object.entries(chassis.leviersAbsents || {});
+    if (absents.length) {
+      lines.push("- ⛔ LEVIERS DU FORMULAIRE QUI N'EXISTENT PAS SUR CE CHÂSSIS :");
+      absents.forEach(([k, why]) => lines.push(`  · ${k} : ${why}`));
+      lines.push(
+        "  La valeur affichée plus bas pour ces réglages est un artefact du formulaire, pas une réalité de ce kart. Ne la commente pas, ne t'appuie pas dessus, et ne propose jamais de la modifier."
+      );
+    }
+
     if (chassis.pieges && chassis.pieges.length) {
       lines.push("- Pièges spécifiques à cette marque :");
       chassis.pieges.forEach((p) => lines.push(`  · ${p}`));
@@ -452,8 +481,16 @@ function buildKartSpecBlock(context) {
   return lines.join("\n");
 }
 
+// Leviers indisponibles pour ce contexte : consomme par sanitizeApply pour
+// refuser un reglage que le kart ne possede pas.
+function getLeviersAbsents(context) {
+  const c = getChassisSpec(context && context.chassis);
+  return c && c.leviersAbsents ? Object.keys(c.leviersAbsents) : [];
+}
+
 module.exports = {
   CHASSIS_SPECS,
+  getLeviersAbsents,
   ENGINE_SPECS,
   ENGINE_MODEL_NOTES,
   getChassisSpec,
