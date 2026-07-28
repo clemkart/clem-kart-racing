@@ -1,0 +1,216 @@
+{
+  "_lisez_moi": [
+    "Cas de reference du diagnostic. Chaque cas decrit une situation reelle et ce",
+    "qu'un ingenieur de course considererait comme une reponse acceptable.",
+    "",
+    "A REMPLIR PAR UN PILOTE EXPERIMENTE. C'est le seul endroit du projet ou la",
+    "verite metier est definie par un humain plutot que deduite par le modele.",
+    "",
+    "Chaque cas :",
+    "  nom            : description courte",
+    "  contexte       : ce que le pilote a saisi dans le formulaire",
+    "  attendu.levierParmi     : le reglage propose doit etre l'un de ceux-la",
+    "  attendu.levierInterdit  : reglages qui seraient une erreur ici",
+    "  attendu.sens            : 'augmenter' | 'reduire' | null si indifferent",
+    "  attendu.motsInterdits   : termes qui ne doivent PAS apparaitre (vocabulaire",
+    "                            d'une autre marque, levier inexistant...)",
+    "  attendu.confianceMin    : 'faible' | 'moyenne' | 'haute'",
+    "  attendu.doitRenvoyerCoach : true si le probleme releve du pilotage",
+    "",
+    "Lancer : node tests/run-diagnostics.js   (necessite ANTHROPIC_API_KEY)"
+  ],
+
+  "cas": [
+    {
+      "nom": "Sodikart RS3 Rotax, sous-virage entree, voie AR deja au maximum",
+      "contexte": {
+        "chassis": "Sodikart", "chassisModele": "Sigma RS3", "chassisAnnee": "2025",
+        "moteur": "Rotax Max", "moteur_family": "direct_drive", "moteur_type": "mono",
+        "categorie": "Senior Rotax", "taille": "176", "poids": "74",
+        "style": "agressif_freinage", "niveau": "national", "mode": "proprio",
+        "comportement": "understeer_entry", "intensite": "7",
+        "grip": "grippee", "meteo": "sec", "circuit": "technique", "session": "libre",
+        "tempAir": "24", "tempPiste": "38",
+        "voieAr": "140", "voieAv": "3", "pincement": "0", "chasse": "1", "carrossage": "0",
+        "arbre": "medium", "arbreLongueur": "standard", "moyeux": "medium", "parechocs": "serre",
+        "gardeAv": "medium", "gardeAr": "medium", "siege": "standard", "siegeHauteur": "standard",
+        "lestage": "0", "gicleur": "128", "couronneMono": "78", "pignonMono": "10",
+        "pneuMarque": "Mojo", "pneuModele": "D5",
+        "chronoBest": "48.10", "chronoAvg": "48.28", "chronoLaps": "18",
+        "pressures": {
+          "avg": {"froid": 0.62, "chaud": 0.76, "delta": 0.14},
+          "avd": {"froid": 0.62, "chaud": 0.76, "delta": 0.14},
+          "arg": {"froid": 0.58, "chaud": 0.72, "delta": 0.14},
+          "ard": {"froid": 0.58, "chaud": 0.72, "delta": 0.14}
+        }
+      },
+      "attendu": {
+        "levierParmi": ["chasse", "carrossage", "pressionAv", "pressionAr", "parechocs", "arbre"],
+        "levierInterdit": ["voieAr", "barre", "siege", "siegeHauteur"],
+        "sens": null,
+        "motsInterdits": ["barre plate", "barre ronde", "sans barre"],
+        "confianceMin": "moyenne",
+        "doitRenvoyerCoach": false,
+        "_pourquoi": "Voie AR au maximum donc indisponible. Le Sigma n'a pas de barre de torsion. Le siege ne se touche pas en session."
+      }
+    },
+
+    {
+      "nom": "Tony Kart X30, survirage sortie, tout en position neutre",
+      "contexte": {
+        "chassis": "Tony Kart", "chassisModele": "Racer 401 RR", "chassisAnnee": "2025",
+        "moteur": "X30 Senior", "moteur_family": "direct_drive", "moteur_type": "mono",
+        "categorie": "Senior X30", "taille": "180", "poids": "78",
+        "style": "finesse_glisses", "niveau": "regional", "mode": "proprio",
+        "comportement": "oversteer_exit", "intensite": "6",
+        "grip": "medium", "meteo": "sec", "circuit": "mixte", "session": "libre",
+        "tempAir": "22", "tempPiste": "32",
+        "voieAr": "139", "voieAv": "3", "pincement": "0", "chasse": "1", "carrossage": "0",
+        "arbre": "medium", "arbreLongueur": "standard", "moyeux": "medium", "parechocs": "serre",
+        "gardeAv": "medium", "gardeAr": "medium", "siege": "standard", "siegeHauteur": "standard",
+        "lestage": "0", "gicleur": "126", "couronneMono": "80", "pignonMono": "10",
+        "pneuMarque": "Vega", "pneuModele": "XM",
+        "chronoBest": "52.40", "chronoAvg": "52.61", "chronoLaps": "20",
+        "pressures": {
+          "avg": {"froid": 0.60, "chaud": 0.75, "delta": 0.15},
+          "avd": {"froid": 0.60, "chaud": 0.75, "delta": 0.15},
+          "arg": {"froid": 0.58, "chaud": 0.73, "delta": 0.15},
+          "ard": {"froid": 0.58, "chaud": 0.73, "delta": 0.15}
+        }
+      },
+      "attendu": {
+        "levierParmi": ["voieAr", "pressionAr", "barre", "arbre"],
+        "levierInterdit": ["siege", "siegeHauteur", "gicleur"],
+        "sens": null,
+        "motsInterdits": ["bague excentrique"],
+        "confianceMin": "moyenne",
+        "doitRenvoyerCoach": false,
+        "_pourquoi": "Tout est neutre, les leviers rapides sont disponibles. Le survirage en sortie est souvent lie au point d'acceleration : le reflexe pilotage doit etre mentionne."
+      }
+    },
+
+    {
+      "nom": "KA100 4 temps, manque de grip, carburation scellee",
+      "contexte": {
+        "chassis": "Kart Republic", "chassisModele": "KR2", "chassisAnnee": "2024",
+        "moteur": "KA100", "moteur_family": "4t", "moteur_type": "mono",
+        "categorie": "Senior KA100", "taille": "172", "poids": "70",
+        "style": "conservateur", "niveau": "regional", "mode": "proprio",
+        "comportement": "general_lack_of_grip", "intensite": "6",
+        "grip": "verte", "meteo": "sec", "circuit": "rapide", "session": "libre",
+        "tempAir": "12", "tempPiste": "15",
+        "voieAr": "139", "voieAv": "3", "pincement": "0", "chasse": "1", "carrossage": "0",
+        "arbre": "medium", "arbreLongueur": "standard", "moyeux": "medium", "parechocs": "serre",
+        "gardeAv": "medium", "gardeAr": "medium", "siege": "standard", "siegeHauteur": "standard",
+        "lestage": "0", "couronneMono": "82", "pignonMono": "10",
+        "pneuMarque": "LeCont", "pneuModele": "",
+        "chronoBest": "55.90", "chronoAvg": "56.30", "chronoLaps": "12",
+        "pressures": {
+          "avg": {"froid": 0.55, "chaud": 0.62, "delta": 0.07},
+          "avd": {"froid": 0.55, "chaud": 0.62, "delta": 0.07},
+          "arg": {"froid": 0.55, "chaud": 0.63, "delta": 0.08},
+          "ard": {"froid": 0.55, "chaud": 0.63, "delta": 0.08}
+        }
+      },
+      "attendu": {
+        "levierParmi": ["pressionAv", "pressionAr", "voieAr", "barre"],
+        "levierInterdit": ["gicleur", "siege"],
+        "sens": null,
+        "motsInterdits": ["gicleur", "carburation ajustable", "enrichir"],
+        "confianceMin": "moyenne",
+        "doitRenvoyerCoach": false,
+        "_pourquoi": "Carburation scellee sur 4 temps. Les deltas de pression sont trop faibles : les pneus ne montent pas en temperature, c'est la premiere piste."
+      }
+    },
+
+    {
+      "nom": "Desequilibre gauche/droite marque sur l'essieu arriere",
+      "contexte": {
+        "chassis": "Birel ART", "chassisModele": "RY30", "chassisAnnee": "2025",
+        "moteur": "Rotax Max", "moteur_family": "direct_drive", "moteur_type": "mono",
+        "categorie": "Senior Rotax", "taille": "175", "poids": "73",
+        "style": "mixte", "niveau": "national", "mode": "proprio",
+        "comportement": "instability_straight", "intensite": "5",
+        "grip": "medium", "meteo": "sec", "circuit": "rapide", "session": "libre",
+        "tempAir": "25", "tempPiste": "36",
+        "voieAr": "139", "voieAv": "3", "pincement": "0", "chasse": "1", "carrossage": "0",
+        "arbre": "medium", "arbreLongueur": "standard", "moyeux": "medium", "parechocs": "serre",
+        "gardeAv": "medium", "gardeAr": "medium", "siege": "standard", "siegeHauteur": "standard",
+        "lestage": "0", "gicleur": "128", "couronneMono": "79", "pignonMono": "10",
+        "pneuMarque": "Mojo", "pneuModele": "D5",
+        "chronoBest": "49.80", "chronoAvg": "50.05", "chronoLaps": "16",
+        "pressures": {
+          "avg": {"froid": 0.62, "chaud": 0.76, "delta": 0.14},
+          "avd": {"froid": 0.62, "chaud": 0.77, "delta": 0.15},
+          "arg": {"froid": 0.58, "chaud": 0.66, "delta": 0.08},
+          "ard": {"froid": 0.58, "chaud": 0.81, "delta": 0.23}
+        }
+      },
+      "attendu": {
+        "levierParmi": ["pressionAr"],
+        "levierInterdit": ["siege", "voieAv"],
+        "sens": null,
+        "motsInterdits": [],
+        "confianceMin": "moyenne",
+        "doitRenvoyerCoach": false,
+        "_pourquoi": "Ecart de delta enorme entre AR gauche (0.08) et AR droit (0.23). Le diagnostic DOIT voir le desequilibre et evoquer une fuite ou un probleme mecanique avant de conseiller un reglage de chassis."
+      }
+    },
+
+    {
+      "nom": "Irregularite majeure : probleme de pilotage, pas de reglage",
+      "contexte": {
+        "chassis": "Tony Kart", "chassisModele": "Racer 401 RR", "chassisAnnee": "2025",
+        "moteur": "Rotax Max", "moteur_family": "direct_drive", "moteur_type": "mono",
+        "categorie": "Senior Rotax", "taille": "178", "poids": "76",
+        "style": "agressif_freinage", "niveau": "loisir", "mode": "proprio",
+        "comportement": "understeer_entry", "intensite": "5",
+        "grip": "medium", "meteo": "sec", "circuit": "mixte", "session": "libre",
+        "tempAir": "23", "tempPiste": "33",
+        "voieAr": "139", "voieAv": "3", "pincement": "0", "chasse": "1", "carrossage": "0",
+        "arbre": "medium", "arbreLongueur": "standard", "moyeux": "medium", "parechocs": "serre",
+        "gardeAv": "medium", "gardeAr": "medium", "siege": "standard", "siegeHauteur": "standard",
+        "lestage": "0", "gicleur": "128", "couronneMono": "79", "pignonMono": "10",
+        "pneuMarque": "Mojo", "pneuModele": "D5",
+        "chronoBest": "51.20", "chronoAvg": "52.45", "chronoLaps": "22",
+        "insightsSummary": "\"Sous-virage a l'entree\" signale 4 fois sur les 5 dernieres sessions",
+        "pressures": {
+          "avg": {"froid": 0.62, "chaud": 0.76, "delta": 0.14},
+          "avd": {"froid": 0.62, "chaud": 0.76, "delta": 0.14},
+          "arg": {"froid": 0.58, "chaud": 0.72, "delta": 0.14},
+          "ard": {"froid": 0.58, "chaud": 0.72, "delta": 0.14}
+        }
+      },
+      "attendu": {
+        "levierParmi": [],
+        "levierInterdit": ["siege", "siegeHauteur"],
+        "sens": null,
+        "motsInterdits": [],
+        "confianceMin": "moyenne",
+        "doitRenvoyerCoach": true,
+        "_pourquoi": "1.25 s d'ecart entre meilleur tour et tour moyen, symptome recurrent sur 5 sessions, pilote loisir, kart neutre. Le kart n'est pas le probleme : le diagnostic doit le dire et orienter vers du coaching plutot que proposer un reglage."
+      }
+    },
+
+    {
+      "nom": "Kart de location : aucun reglage possible",
+      "contexte": {
+        "chassis": "", "moteur": "", "moteur_family": "direct_drive", "moteur_type": "mono",
+        "taille": "170", "poids": "72", "style": "mixte", "niveau": "loisir", "mode": "location",
+        "comportement": "oversteer_entry", "intensite": "6",
+        "grip": "medium", "meteo": "sec", "circuit": "technique", "session": "libre",
+        "tempAir": "20", "tempPiste": "28",
+        "voieAr": "139", "chasse": "1"
+      },
+      "attendu": {
+        "levierParmi": [],
+        "levierInterdit": ["voieAr", "barre", "chasse", "pressionAv", "pressionAr", "gicleur"],
+        "sens": null,
+        "motsInterdits": [],
+        "confianceMin": "moyenne",
+        "doitRenvoyerCoach": false,
+        "_pourquoi": "En location le pilote ne regle rien. Le diagnostic doit etre 100% pilotage, et apply doit rester vide."
+      }
+    }
+  ]
+}

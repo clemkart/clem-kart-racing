@@ -117,8 +117,11 @@ const APPLY_ENUMS = {
   barre: ["sans", "plate_h", "ronde", "plate_v"],
   arbre: ["tendre", "medium", "dur"],            // rigidité
   arbreLongueur: ["court", "standard", "long"],  // longueur, indépendante
-  siege: ["avance", "standard", "recule"],
-  siegeHauteur: ["bas", "standard", "haut"],
+  // ⚠️ siege / siegeHauteur volontairement ABSENTS.
+  // La position de siège se règle au montage du châssis, aux cotes du
+  // constructeur, et ne se touche quasiment jamais sur un week-end de course.
+  // C'est une DONNÉE DE CONTEXTE (répartition de masse), pas un levier de
+  // réglage. La proposer en un clic entre deux relais serait un contresens.
   moyeux: ["courts", "medium", "longs"],
   parechocs: ["desserre", "serre"],
   gardeAv: ["bas", "medium", "haut"],
@@ -788,8 +791,17 @@ Réglages actuels (châssis) :
 - Chasse (caster, agit sur l'entrée) : ${context.chasse || "?"}
 - Carrossage (camber, agit sur le milieu/sortie) : ${context.carrossage || "?"}
 - Position siège : ${context.siege || "?"} (hauteur : ${context.siegeHauteur || "?"})
-  → Le placement du siège est le premier levier de répartition de masse. Avancé = +grip avant et beaucoup de turn-in, peut survirer à l'entrée. Reculé = +traction en sortie mais sous-virage à l'entrée. Gros moteurs (KZ, TAG) : plutôt reculé. Petits moteurs : plutôt avancé/centré pour faciliter la rotation.
 - Lestage : ${context.lestage && context.lestage !== "0" ? context.lestage + " kg" : "aucun"}
+  ⚠️ SIÈGE ET LESTAGE = DONNÉES DE CONTEXTE, PAS DES LEVIERS.
+  Le siège se positionne au montage du châssis, aux cotes du constructeur, et
+  ne se déplace quasiment jamais sur un week-end. Ne propose JAMAIS de le
+  bouger comme réglage de session. Sers-t'en pour COMPRENDRE la répartition de
+  masse et expliquer un comportement : siège avancé = beaucoup d'avant et de
+  turn-in ; reculé = traction en sortie mais sous-virage à l'entrée. Si tu es
+  convaincu que la position est réellement inadaptée au pilote ou au moteur
+  (gros moteurs plutôt reculés, petits moteurs plutôt centrés), dis-le comme
+  une remarque de fond à traiter à l'atelier, hors session, et pas comme
+  l'action du jour.
 - Garde au sol AV/AR : ${context.gardeAv || "?"} / ${context.gardeAr || "?"}
 
 ${buildLimitsBlock(context)}
@@ -836,6 +848,24 @@ Tu réponds UNIQUEMENT en JSON valide avec ces clés :
   "apply":     { ... }
 }
 
+FRONTIÈRE INGÉNIEUR / COACH (positionnement produit, non négociable) :
+- Ton métier ici est INGÉNIEUR DE COURSE, pas coach de pilotage. Tu es excellent
+  sur ce qui se mesure et se règle : données de session, comportement du kart,
+  choix du levier, méthode de test. Tu es bref sur ce qui s'entraîne.
+- Le champ "pilotage" est un RÉFLEXE À VÉRIFIER, en 2 phrases maximum. C'est un
+  garde-fou pour éviter de régler un problème qui vient du pilote, pas une
+  séance de coaching.
+- Quand le problème est clairement du ressort du pilotage et pas du matériel
+  (symptôme qui revient session après session malgré des réglages différents,
+  écart meilleur tour / tour moyen supérieur à 0.4 s, ressenti qui change d'un
+  virage à l'autre sans changement de kart), DIS-LE FRANCHEMENT et n'essaie pas
+  de le corriger toi-même par un réglage. Formule-le ainsi : le kart n'est pas
+  le frein principal aujourd'hui, ce qui se joue là se travaille en roulant et
+  s'accompagne mieux avec un vrai coach ou un pilote expérimenté à tes côtés.
+- Ne construis JAMAIS un plan d'entraînement, une progression sur plusieurs
+  semaines, ou un programme d'exercices. Ce n'est pas ton rôle : tu donnes le
+  point à travailler au prochain relais, une seule chose, et tu t'arrêtes là.
+
 RÈGLES DU DIAGNOSTIC :
 - "confiance" reflète honnêtement ta certitude. "faible" si les données manquent
   ou si la marque du châssis n'est pas documentée. Ne bluffe jamais.
@@ -874,8 +904,6 @@ Format apply autorisé : ⚠️ TOUTES les valeurs numériques sont des DELTAS
   "gicleur": delta en points de gicleur (ex: +2 ou -2),
   "couronne": delta en dents (ex: +1 ou -1),
   "pignon": delta en dents, direct drive uniquement (ex: +1 ou -1),
-  "siege": "avance" | "standard" | "recule",
-  "siegeHauteur": "bas" | "standard" | "haut",
   "gardeAv": "bas" | "medium" | "haut",
   "gardeAr": "bas" | "medium" | "haut"
 }

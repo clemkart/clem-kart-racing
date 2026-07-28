@@ -368,12 +368,21 @@ const LEVER_TIERS = [
   },
   {
     tier: 3,
-    nom: "LOURD OU DE PEAUFINAGE, en dernier",
-    delai: "long à changer, ou effet fin",
-    leviers: ["position et hauteur de siège", "longueur d'arbre", "moyeux", "garde au sol", "lestage", "pincement"],
-    note: "Le siège et le lestage sont des leviers puissants mais longs à changer : on ne les touche pas en cours de journée sans raison forte. Le pincement et la garde au sol relèvent du peaufinage.",
+    nom: "PEAUFINAGE, en dernier",
+    delai: "effet fin ou changement long",
+    leviers: ["longueur d'arbre", "moyeux", "garde au sol", "pincement"],
+    note: "On y descend quand le comportement est déjà proche et qu'il reste à affiner.",
   },
 ];
+
+// Réglages qui existent, que l'IA doit CONNAÎTRE pour comprendre le kart,
+// mais qu'elle ne doit jamais proposer de changer en session.
+const REGLAGES_HORS_SESSION = {
+  "position et hauteur de siège":
+    "positionnée au montage du châssis, aux cotes du constructeur. Levier de répartition de masse très puissant, mais on ne déplace pas un siège entre deux relais. Sert à EXPLIQUER un comportement, pas à le corriger aujourd'hui.",
+  lestage:
+    "calé sur le poids du pilote pour atteindre le minimum de la catégorie. Se vérifie à la pesée, pas en cours de session.",
+};
 
 function buildLeverHierarchyBlock(chassis) {
   const lines = ["\nHIÉRARCHIE DES LEVIERS (ordre de travail d'un ingénieur de course)"];
@@ -384,6 +393,9 @@ function buildLeverHierarchyBlock(chassis) {
     lines.push(`  Délai : ${t.delai}`);
     lines.push(`  ${t.note}`);
   });
+  lines.push("\nHORS SESSION (à connaître, à ne JAMAIS proposer comme action du jour) :");
+  Object.entries(REGLAGES_HORS_SESSION).forEach(([k, v]) => lines.push(`  · ${k} : ${v}`));
+
   lines.push(
     "\n→ Propose TOUJOURS le levier le plus haut dans cette hiérarchie qui traite réellement le problème. Ne descends au tier suivant que si les leviers du tier au-dessus sont indisponibles (en butée, absents de ce châssis) ou déjà exploités."
   );

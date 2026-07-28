@@ -939,6 +939,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
             <label class="radio-chip" onclick="selectChip(this,'siege','recule')"><input type="radio" name="siege" value="recule">➡️ Reculé</label>
           </div>
           <div class="sub-label">Avancé = +grip avant, beaucoup de turn-in (peut survirer à l'entrée) · Reculé = +traction en sortie, mais sous-virage à l'entrée</div>
+          <div class="sub-label" style="color:var(--text-dim);">Réglé au montage du châssis, aux cotes constructeur. Renseigne-le pour que l'analyse comprenne ta répartition de masse : il ne te sera pas proposé comme réglage de session.</div>
         </div>
 
         <div class="field">
@@ -3535,13 +3536,9 @@ function applyRecommendedSetup(applyObj) {
     selectRadioChip('parechocs', applyObj.parechocs, 'Pare-chocs');
   }
 
-  // Position du siège : premier levier de répartition de masse
-  if(applyObj.siege && ['avance','standard','recule'].includes(applyObj.siege)) {
-    selectRadioChip('siege', applyObj.siege, 'Position siège');
-  }
-  if(applyObj.siegeHauteur && ['bas','standard','haut'].includes(applyObj.siegeHauteur)) {
-    selectRadioChip('siegeHauteur', applyObj.siegeHauteur, 'Hauteur siège');
-  }
+  // Le siège n'est volontairement PAS applicable : il se positionne au montage
+  // du châssis et ne se déplace pas entre deux relais. C'est une donnée de
+  // contexte pour l'analyse, pas un réglage de session.
 
   // Garde au sol AV
   if(applyObj.gardeAv && ['bas','medium','haut'].includes(applyObj.gardeAv)) {
