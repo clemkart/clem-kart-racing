@@ -216,5 +216,9 @@ async function lancerCas(cas, index) {
   console.log("justesse technique du diagnostic. Relis les sorties avec --verbeux");
   console.log("et fais-les valider par un pilote experimente.\n");
 
-  process.exit(echecsGlobaux.length ? 1 : 0);
+  // ⚠️ process.exit() coupe le processus avant que Windows ait vide son tampon
+  // de sortie, ce qui affichait un "Assertion failed ... UV_HANDLE_CLOSING"
+  // APRES le resultat : on croyait a un plantage alors que tout allait bien.
+  // exitCode laisse Node sortir proprement en conservant le meme code retour.
+  process.exitCode = echecsGlobaux.length ? 1 : 0;
 })();
