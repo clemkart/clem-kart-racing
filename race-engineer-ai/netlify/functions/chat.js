@@ -18,84 +18,10 @@ const { buildKartSpecBlock, getLeviersAbsents, CARBU_HORS_LEVIERS, REGLAGES_A_RI
 // =============================================
 // CONFIG (env vars)
 // =============================================
-// ⚠️ Repli obligatoire : sans lui, si la variable d'env Netlify n'est pas
-// réglée, SUPABASE_ANON_KEY vaut "" et authenticateUser() refuse alors TOUT
-// LE MONDE, jeton valide ou non. La clé anon Supabase est publique par
-// conception (protégée par RLS, jamais un secret), donc ce repli est aussi sûr
-// que le SUPABASE_URL codé en dur. Valeurs vérifiées le 2026-07-29 : un appel
-// REST direct avec ce couple renvoie bien 200 sur profiles et sur sessions.
-const REPLI_URL = "https://hkpknrrymgbnjmbewlyc.supabase.co";
-const REPLI_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhrcGtucnJ5bWdibmptYmV3bHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODgyNzksImV4cCI6MjA5NzI2NDI3OX0.kNbCMJK2FNxoiPOFxgWNoh7sqb89gAAxumZGqTWW014";
-
-// ⚠️ LE REPLI "||" NE SUFFISAIT PAS, et c'est la cause du "reconnecte-toi" en
-// boucle qui a survécu au commit 8475f49. Le "||" ne se déclenche que si la
-// variable est ABSENTE. Une variable PRÉSENTE mais fausse (faute de frappe,
-// slash final, clé d'un autre projet Supabase) passe donc telle quelle, et
-// sb.auth.getUser() rejette alors tous les jetons : le pilote est connecté
-// côté navigateur et reçoit un 401 à chaque appel, sans le moindre message
-// dans les logs pour lui dire pourquoi.
-//
-// On valide donc la COHÉRENCE du couple URL + clé avant de s'en servir. Le
-// JWT anon porte le "ref" du projet dans sa charge utile : il doit
-// correspondre à l'hôte de l'URL. Si ce n'est pas le cas, on le dit très fort
-// dans les logs et on retombe sur le couple vérifié plutôt que de refuser
-// tout le monde en silence.
-function refDuJeton(jwt) {
-  try {
-    const charge = JSON.parse(Buffer.from(String(jwt).split(".")[1], "base64").toString("utf8"));
-    return { ref: charge.ref || null, role: charge.role || null };
-  } catch (e) {
-    return { ref: null, role: null };
-  }
-}
-
-function couplesSupabaseCoherents() {
-  const url = process.env.SUPABASE_URL || REPLI_URL;
-  const cle = process.env.SUPABASE_ANON_KEY || REPLI_ANON_KEY;
-  const { ref, role } = refDuJeton(cle);
-
-  if (role && role !== "anon") {
-    console.error(
-      `[CONFIG] SUPABASE_ANON_KEY porte le rôle "${role}" et non "anon". Si c'est la clé service_role, retire-la immédiatement de cette variable.`
-    );
-  }
-
-  let hote = "";
-  try {
-    hote = new URL(url).host;
-  } catch (e) {
-    console.error(`[CONFIG] SUPABASE_URL n'est pas une URL valide : "${url}". Repli sur la valeur vérifiée.`);
-    return { url: REPLI_URL, cle: REPLI_ANON_KEY };
-  }
-
-  // Supabase a introduit un nouveau format de clé (sb_publishable_...) qui
-  // n'est pas un JWT et ne porte donc pas de "ref" décodable. Ces clés sont
-  // valides, on ne les refuse pas, mais on ne peut pas vérifier leur
-  // cohérence avec l'URL : on le dit une fois au démarrage pour que le jour
-  // où l'authentification échoue, les logs rappellent cette piste.
-  if (!ref && process.env.SUPABASE_ANON_KEY) {
-    console.warn(
-      "[CONFIG] La SUPABASE_ANON_KEY fournie n'est pas un JWT lisible (nouveau format de clé ?). " +
-        "Sa cohérence avec SUPABASE_URL n'a pas pu être vérifiée. En cas de 401 en boucle, supprime cette variable : le repli codé en dur est vérifié."
-    );
-  }
-
-  if (ref && hote !== `${ref}.supabase.co`) {
-    console.error(
-      `[CONFIG] INCOHÉRENCE : SUPABASE_URL pointe sur "${hote}" alors que la clé anon appartient au projet "${ref}". ` +
-        `Toutes les authentifications échoueraient. Repli sur le couple vérifié. ` +
-        `Corrige les variables Netlify : SUPABASE_URL doit valoir exactement ${REPLI_URL}`
-    );
-    return { url: REPLI_URL, cle: REPLI_ANON_KEY };
-  }
-
-  return { url, cle };
-}
-
-const _supa = couplesSupabaseCoherents();
-const SUPABASE_URL = _supa.url;
-const SUPABASE_ANON_KEY = _supa.cle;
+// La résolution du couple URL + clé anon, avec sa vérification de cohérence,
+// vit dans supabase-config.js : session.js souffrait EXACTEMENT du même défaut
+// et la logique dupliquée avait fait qu'on n'avait corrigé qu'un seul des deux.
+const { SUPABASE_URL, SUPABASE_ANON_KEY, lireJetonSupabase } = require("./supabase-config");
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 // Dev local uniquement : ALLOW_ANON_CHAT=true dans .env pour tester sans compte
 const ALLOW_ANON_CHAT = process.env.ALLOW_ANON_CHAT === "true";
@@ -723,8 +649,8 @@ async function authenticateUser(event) {
     return null;
   }
 
-  const { ref: refJeton } = refDuJeton(token);
-  const { ref: refCle } = refDuJeton(SUPABASE_ANON_KEY);
+  const { ref: refJeton } = lireJetonSupabase(token);
+  const { ref: refCle } = lireJetonSupabase(SUPABASE_ANON_KEY);
   if (refJeton && refCle && refJeton !== refCle) {
     console.error(
       `[AUTH] Le jeton du pilote vient du projet "${refJeton}" alors que le serveur interroge "${refCle}". ` +
