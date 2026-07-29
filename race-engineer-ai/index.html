@@ -2591,6 +2591,29 @@ function resolveTest(verdict) {
     localStorage.removeItem('re_pending_test');
   } catch (e) {}
   renderPendingTest();
+
+  // BOUCLE DE RETOUR : c'est la seule mesure objective de la qualité des
+  // conseils. Sans elle, personne ne sait si un réglage recommandé rend
+  // réellement les pilotes plus rapides. Le verdict part en analytics avec le
+  // matériel et le symptôme, pour pouvoir répondre plus tard à la question
+  // "quel pourcentage de nos conseils fonctionne, et sur quels combos".
+  try {
+    const p = loadProfile() || {};
+    track('test_verdict', {
+      verdict,                                  // mieux | pareil | pire
+      leviers: (t.changes || []).slice(0, 4),   // ce qui avait été appliqué
+      comportement: t.comportement || null,     // le symptôme visé
+      chassis: p.chassis || null,
+      chassisModele: p.chassisModele || null,
+      moteur: p.moteur || null,
+      circuit: t.circuitName || null,
+      // Combien de temps le pilote a mis à revenir donner son verdict :
+      // un verdict donné des semaines plus tard vaut moins qu'un verdict
+      // donné le lendemain, il faut pouvoir le pondérer.
+      delaiJours: t.date ? Math.round((Date.now() - new Date(t.date).getTime()) / 86400000) : null,
+    });
+  } catch (e) { /* analytics jamais bloquant */ }
+
   const labels = { mieux: '✅ Mieux', pareil: '➖ Pareil', pire: '❌ Pire' };
   addMsg(`🧪 Verdict enregistré : <strong>${labels[verdict]}</strong> pour « ${(t.changes || []).map(escapeHtml).join(' · ')} ». J'en tiens compte dans mes prochaines analyses.${verdict === 'pire' ? '<br>Pense à revenir au réglage précédent avant de tester autre chose.' : ''}`, 'bot');
 }

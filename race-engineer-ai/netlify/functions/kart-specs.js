@@ -53,19 +53,16 @@ const OTK_SPEC = {
 
 const CHASSIS_SPECS = {
   "Tony Kart": Object.assign({}, OTK_SPEC, { label: "Tony Kart (OTK)" }),
-  Kosmic: Object.assign({}, OTK_SPEC, {
-    label: "Kosmic (OTK)",
-    comportement: OTK_SPEC.comportement + ". Direction parfois ressentie plus vive selon les modèles [?]",
-  }),
-  Exprit: Object.assign({}, OTK_SPEC, {
-    label: "Exprit (OTK)",
-    comportement: OTK_SPEC.comportement + ". Réputé stable en courbes rapides [?]",
-  }),
+  // ⚠️ Kosmic, Exprit, FA Kart et EOS partagent la MÊME ingénierie que Tony
+  // Kart. Les différenciations de comportement qui circulent entre ces marques
+  // ("Kosmic plus vif", "Exprit stable en courbes rapides", "EOS orienté
+  // rotation") relèvent du folklore de paddock : aucune source technique ne les
+  // étaye. Elles ont été retirées le 2026-07-28 après vérification. Ne pas les
+  // réintroduire sans une source constructeur.
+  Kosmic: Object.assign({}, OTK_SPEC, { label: "Kosmic (OTK)" }),
+  Exprit: Object.assign({}, OTK_SPEC, { label: "Exprit (OTK)" }),
   "FA Kart": Object.assign({}, OTK_SPEC, { label: "FA Kart (OTK)" }),
-  EOS: Object.assign({}, OTK_SPEC, {
-    label: "EOS (OTK)",
-    comportement: OTK_SPEC.comportement + ". Orienté rotation [?]",
-  }),
+  EOS: Object.assign({}, OTK_SPEC, { label: "EOS (OTK)" }),
 
   CRG: {
     group: "CRG",
@@ -100,7 +97,8 @@ const CHASSIS_SPECS = {
       "RY32": "gamme tout Ø32 mm, épaisseur 2 mm (RY32-S16, S18...). Structure plus rigide, spécifique shifter à l'origine, déclinée aussi en DD / OK / OKJ. Le S18 2025 apporte de nouvelles fusées, une nouvelle géométrie de direction et un répartiteur de freinage revu [OK 2026-07]",
       "AM29": "châssis dédié aux moteurs 4 TEMPS. Recherche d'équilibre dynamique et de polyvalence [OK 2026-07]",
     },
-    barreAv: "système de pré-charge avant selon modèles : 'sans barre' ≈ pré-charge libre, 'plate verticale' ≈ pré-charge max [?]",
+    barreAv:
+      "⚠️ Birel ART propose une BARRE DE TORSION AVANT RÉGLABLE EN CONTINU : la rigidité se dose sur une plage continue, au lieu de choisir entre acier, nylon ou barre plate comme chez les concurrents [OK 2026-07]. Le champ 'barre' du formulaire ne propose que 4 positions : c'est une APPROXIMATION de ce réglage continu. Raisonne en termes de plus rigide / plus souple, jamais en 'passe en plate verticale', et invite le pilote à traduire vers sa propre graduation.",
     geometrie: "solution tube 32 mm = structure plus rigide, meilleures traction et grip [OK]",
     comportement:
       "fenêtre de réglage tolérante et prévisible, facile à travailler sur une large plage de grip. Très bon grip latéral de l'axe arrière, bonne stabilité au freinage, kart qui reste libre. Fort sur grip medium [OK][CD]",
@@ -435,6 +433,13 @@ function buildKartSpecBlock(context) {
   lines.push("========================================================");
   lines.push(
     "Ce bloc décrit LE kart exact de ce pilote. Deux karts différents ne peuvent pas recevoir le même diagnostic : si ton analyse resterait valable en changeant de châssis, c'est qu'elle est trop générique. Recommence."
+  );
+  lines.push(
+    "\nNIVEAU DE FIABILITÉ DES INFORMATIONS CI-DESSOUS :\n" +
+      "- [OK] : sourcé (constructeur, presse technique). Tu peux t'appuyer dessus.\n" +
+      "- [CD] : validé par l'expérience directe du fondateur. Fiable, mais c'est un ressenti, pas une mesure.\n" +
+      "- [?]  : déduction non vérifiée. Ne construis JAMAIS une recommandation sur cette seule base. Si c'est ton unique argument, baisse ta confiance à \"faible\" et dis au pilote de recouper.\n" +
+      "En l'absence de donnée fiable pour ce matériel, applique la physique générale du kart et dis-le honnêtement, plutôt que d'inventer une spécificité de marque."
   );
 
   // --- Châssis ---
