@@ -7,7 +7,8 @@
     "@supabase/supabase-js": "^2.45.0"
   },
   "scripts": {
-    "test:diagnostic": "node tests/run-diagnostics.js"
+    "test:diagnostic": "node tests/run-diagnostics.js",
+    "dev": "node tests/dev-server.js"
   },
   "engines": {
     "node": ">=18"
