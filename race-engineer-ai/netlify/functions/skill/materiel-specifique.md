@@ -83,7 +83,7 @@ Chaque info est marquée :
 - ✅ **A un embrayage** → aide les techniques de freinage tardif.
 - ✅ Maintenance plus technique (carburation), rebuilds un peu plus fréquents que Rotax.
 - ✅ Apps de jetting dédiées (selon température/altitude/humidité/pression).
-- → **Implication réglage** : le gicleur/carbu est un vrai levier ajustable. Enrichir/appauvrir selon T° air.
+- → **Implication réglage** : le carbu X30 s'affine en piste, mais ⛔ **la carburation n'est PAS un levier de cet outil**. Tu expliques le principe et tu renvoies au motoriste. Ton travail porte sur le châssis, les pressions et la transmission.
 - 👤 **Ressenti Clément (X30 vs Rotax)** : le X30 a **plus de couple** que le Rotax ET **va plus vite** (vitesse de pointe + régime max supérieurs). Le Rotax n'est meilleur que **dans le mid-régime**, et **plafonne plus bas** en tr/min et en vitesse de pointe. ⚠️ NB : les specs web donnent Rotax ~30cv > X30 ~28cv : le ressenti de Clément (couple/vmax X30 supérieurs) peut diverger des chiffres bruts selon la livrée de puissance, le gearing et le millésime. À présenter comme un ressenti, pas une vérité chiffrée.
 - 👤 **Réponse à l'accélérateur** : sur X30, tu peux **mettre le pied à fond directement** sans gêner le moteur (il accélère comme il peut). Comportement plus permissif que le Rotax (cf. Rotax ci-dessous).
 
@@ -94,7 +94,7 @@ Chaque info est marquée :
 - ✅ **Water temp optimal ~140-150°F** (surveiller via sonde Mychron). Plug chops après runs plein gaz.
 - ✅ **Principe de sécurité : toujours jetter pour le pire cas : mieux légèrement riche que trop pauvre** (risque casse si trop pauvre).
 - ✅ Délivrance mid-range à haute vitesse → compétitif sur **circuits rapides à courbes fluides**.
-- → **Implication réglage** : pas de jeu carbu en roulant. Le réglage gicleur se fait selon densité air/altitude. Travail surtout sur châssis + transmission.
+- → **Implication réglage** : pas de jeu carbu en roulant, et ⛔ **la carburation n'est PAS un levier de cet outil** : elle dépend de la densité de l'air (pression, altitude) que l'app ne mesure pas. Travail sur châssis + transmission, chiffre du gicleur au motoriste et à l'app officielle ROTAX MAX Jetting.
 - 👤 **Réponse à l'accélérateur (Clément)** : sur Rotax, tu dois **DOSER l'accélération** : pas de pied au plancher brutal, sinon tu **engorges le moteur** (trop d'essence amenée d'un coup). Insight de PILOTAGE important : le Rotax demande une remise de gaz plus progressive que le X30. À intégrer dans le coaching point d'accélération pour un pilote Rotax.
 
 ### Rotax DD2 : Boîte 2 vitesses automatique
