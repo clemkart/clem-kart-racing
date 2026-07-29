@@ -329,7 +329,8 @@ paie 9,99 € par mois.
 | 0 | L'app répond en moins de 10 s | | |
 | 1 | Le châssis change le diagnostic | | |
 | 2 | Le réglage impossible n'est pas proposé | | |
-| 3 | Carburation scellée respectée | | |
+| 3A | Carburation scellée respectée (KA100) | | |
+| 3B | Aucun conseil de carburation, tous moteurs | | |
 | 4 | Kart de location | | |
 | 5 | Déséquilibre de pressions | | |
 | 6 | Problème pilote, pas kart | | |
@@ -350,7 +351,7 @@ paie 9,99 € par mois.
 
 ## Si tu veux aller plus loin
 
-Le fichier `tests/cas-de-reference.json` contient six situations décrites en
+Le fichier `tests/cas-de-reference.json` contient sept situations décrites en
 détail, avec pour chacune ce qu'un ingénieur considérerait comme acceptable.
 Un développeur peut les lancer automatiquement avec `npm run test:diagnostic`.
 
