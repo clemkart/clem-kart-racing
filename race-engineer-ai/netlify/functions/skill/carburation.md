@@ -1,7 +1,16 @@
 # Carburation & gicleurs : module conditionnel
 
 > Chargé quand le pilote parle de gicleur, carburation, mélange, bougie, serrage, 4-temps moteur.
-> Rôle du coach : donner le SENS de la correction et l'ordre de grandeur, jamais un chiffre exact sans les conditions complètes. Pour le chiffre exact sur Rotax : renvoyer vers l'app officielle ROTAX MAX Jetting.
+>
+> ⛔ **LA CARBURATION N'EST PAS UN LEVIER DE CET OUTIL** (décision du 2026-07-29).
+> Un gicleur juste dépend de la densité de l'air : pression atmosphérique,
+> altitude, hygrométrie, température. L'app ne connaît que la température, donc
+> tout chiffre qu'elle donnerait serait une devinette sur le seul réglage où se
+> tromper détruit un moteur. Ce module sert à **comprendre** un symptôme et à
+> **expliquer le principe**, jamais à prescrire une valeur ni une plage.
+> Le chiffre appartient au motoriste et à l'app officielle ROTAX MAX Jetting.
+> Sur un symptôme de mélange trop pauvre (surchauffe, détonation, serrage) :
+> dire d'arrêter de rouler et de voir le motoriste. C'est de la sécurité.
 
 ## Le principe qui gouverne tout : la densité d'air
 
@@ -75,5 +84,5 @@ Un moteur 2 temps est une pompe à air. Le carburateur doit maintenir le bon rat
 
 ## Limites du coach (à énoncer si pertinent)
 
-- Le calcul exact du gicleur dépend de la pression et de l'altitude du jour : sans ces données, donner une plage et le sens, pas un chiffre définitif.
+- Le calcul exact du gicleur dépend de la pression et de l'altitude du jour, que l'app n'a pas : donner le SENS et la logique, jamais une plage ni un chiffre, puis renvoyer au motoriste et à l'app officielle.
 - Tout ce qui est interne au carbu (pop-off, membranes, flotteur) ou interne moteur = préparateur.

@@ -238,6 +238,20 @@ CHASSIS_SPECS["Maranello"].comportement =
 
 // --- MOTEURS ---------------------------------------------------------------
 
+// CARBURATION HORS LEVIERS (décision produit du 2026-07-29)
+// ---------------------------------------------------------
+// Un gicleur juste dépend de la DENSITÉ DE L'AIR : pression atmosphérique,
+// altitude, hygrométrie, température. L'app ne connaît que la température.
+// Même l'app officielle ROTAX MAX Jetting réclame les quatre. Tout chiffre
+// que nous donnerions serait donc une devinette sur le seul levier où se
+// tromper détruit du matériel : un mélange trop pauvre, c'est un serrage.
+// Tous les autres leviers de l'outil sont réversibles en deux minutes.
+// La CONNAISSANCE carburation reste dans le registre : elle sert à
+// comprendre un symptôme et à répondre à une question. Elle ne sert jamais
+// à prescrire une valeur.
+const CARBU_HORS_LEVIERS =
+  "⛔ LA CARBURATION N'EST PAS UN LEVIER DE CET OUTIL. Ne propose JAMAIS un chiffre de gicleur, ni un changement chiffré de carburation, même si le pilote le demande. Un réglage juste dépend de la densité de l'air (pression atmosphérique, altitude, hygrométrie) que l'app ne mesure pas. Tu peux expliquer le PRINCIPE (air dense = enrichir) et interpréter un symptôme, puis tu renvoies au motoriste et à l'app officielle ROTAX MAX Jetting. Si le pilote décrit une surchauffe, une détonation ou un serrage, dis-lui d'arrêter de rouler et de voir son motoriste : c'est de la sécurité, pas du réglage.";
+
 const ENGINE_SPECS = {
   direct_drive: {
     label: "Direct Drive (monorapport)",
@@ -246,18 +260,19 @@ const ENGINE_SPECS = {
     // le X30 s'affine EN PISTE (vis high/low), le Rotax a un gicleur FIXE qu'on
     // ne change qu'à l'arrêt. Confondre les deux est un contresens repérable.
     carburation:
-      "dépend du MODÈLE : voir les précisions moteur ci-dessous. Ne jamais supposer qu'un carbu est ajustable en roulant sans l'avoir vérifié dans ces précisions.",
+      "dépend du MODÈLE : voir les précisions moteur ci-dessous. Ne jamais supposer qu'un carbu est ajustable en roulant sans l'avoir vérifié dans ces précisions. Donnée de CONTEXTE, pas un levier.",
     voieArBaseline: 140,
-    leviersDispo: ["couronne", "pignon", "gicleur", "châssis complet"],
+    leviersDispo: ["couronne", "pignon", "châssis complet"],
     leviersAbsents: ["rapports de boîte", "contre-pignon"],
     pilotage: null,
   },
   dd2: {
     label: "Rotax DD2 (boîte 2 vitesses automatique)",
     transmission: "couronne + contre-pignon, dont la somme fait TOUJOURS 100 [CD]",
-    carburation: "gicleur fixe Rotax, ajusté selon la densité de l'air",
+    carburation:
+      "gicleur fixe Rotax, ajusté selon la densité de l'air. Donnée de CONTEXTE, pas un levier : le calcul appartient au motoriste et à l'app officielle ROTAX MAX Jetting, qui a un mode DD2 dédié",
     voieArBaseline: 139,
-    leviersDispo: ["couronne", "contre-pignon", "gicleur", "châssis complet"],
+    leviersDispo: ["couronne", "contre-pignon", "châssis complet"],
     leviersAbsents: ["pignon libre", "rapports de boîte"],
     pilotage:
       "inertie marquée en entrée de virage sur la 2e vitesse : 'point dur' et sensation de lourdeur en tournant sur la 2, contrairement au KZ. Plus rapide en ligne droite, sans doute plus coupleux en réaccélération. Freins ressentis moins efficaces que sur un KZ malgré les freins avant [CD]",
@@ -266,9 +281,10 @@ const ENGINE_SPECS = {
   kz_shifter: {
     label: "KZ Shifter (boîte 6 manuelle)",
     transmission: "boîte 6 séquentielle + embrayage. Couronne typiquement 70-80 dents, pignon 10-11 dents [OK]",
-    carburation: "Dell'Orto VHSH 30 mm homologué : réglages slide height + position d'aiguille [OK]",
+    carburation:
+      "Dell'Orto VHSH 30 mm homologué : slide height et position d'aiguille [OK]. Donnée de CONTEXTE, pas un levier : ces réglages se travaillent avec le préparateur",
     voieArBaseline: 139,
-    leviersDispo: ["couronne", "pignon", "rapports de boîte", "carburation Dell'Orto", "châssis complet"],
+    leviersDispo: ["couronne", "pignon", "rapports de boîte", "châssis complet"],
     leviersAbsents: [],
     pilotage:
       "frein avant + arrière. Le frein moteur (engine braking) est exploitable au rétrogradage : levier de pilotage absent des monorapports [OK]",
@@ -520,6 +536,7 @@ function buildKartSpecBlock(context) {
   lines.push(`\n### MOTEUR : ${context.moteur || "non renseigné"} : famille ${engine.label}`);
   lines.push(`- Transmission : ${engine.transmission}`);
   lines.push(`- Carburation : ${engine.carburation}`);
+  lines.push(`  ${CARBU_HORS_LEVIERS}`);
   lines.push(`- Leviers DISPONIBLES sur ce moteur : ${engine.leviersDispo.join(", ")}`);
   if (engine.leviersAbsents.length) {
     lines.push(
@@ -535,6 +552,14 @@ function buildKartSpecBlock(context) {
   if (modelNotes) {
     lines.push(`\n### PRÉCISIONS SUR LE ${(context.moteur || "").toUpperCase()}`);
     Object.entries(modelNotes).forEach(([k, v]) => lines.push(`- ${k} : ${v}`));
+    // Les chiffres de carbu restent dans le registre pour COMPRENDRE. Comme ils
+    // arrivent en fin de bloc, donc en position de forte saillance, on répète
+    // ici l'interdiction de les transformer en conseil.
+    if (modelNotes.carbu) {
+      lines.push(
+        "  ⚠️ Les valeurs de carburation ci-dessus servent à SITUER le réglage du pilote et à interpréter un symptôme. Ce ne sont JAMAIS des prescriptions : tu ne conseilles aucun gicleur."
+      );
+    }
   }
 
   // --- Croisement ---
@@ -559,6 +584,7 @@ function getLeviersAbsents(context) {
 }
 
 module.exports = {
+  CARBU_HORS_LEVIERS,
   CHASSIS_SPECS,
   LEVER_TIERS,
   getLeviersAbsents,

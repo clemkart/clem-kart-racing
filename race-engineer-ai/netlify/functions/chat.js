@@ -13,7 +13,7 @@ const fs = require("fs");
 const path = require("path");
 // Registre des spécificités châssis × moteur : c'est lui qui garantit qu'un
 // Sodikart en Rotax ne reçoit pas le même diagnostic qu'un Tony Kart en X30.
-const { buildKartSpecBlock, getLeviersAbsents } = require("./kart-specs");
+const { buildKartSpecBlock, getLeviersAbsents, CARBU_HORS_LEVIERS } = require("./kart-specs");
 
 // =============================================
 // CONFIG (env vars)
@@ -78,9 +78,10 @@ const SETUP_LIMITS = {
   pincement: { min: -3, max: 3,  unit: '',      label: 'Pincement' },
   chasse:    { min: -1, max: 4,  unit: 'crans', label: 'Chasse' },
   carrossage: { min: -3, max: 3, unit: '',      label: 'Carrossage' },
-  // Gicleur : les bornes n'existaient que côté navigateur, donc rien
-  // n'empêchait le modèle de conseiller une valeur hors plage.
-  gicleur:   { min: 105, max: 160, unit: '',    label: 'Gicleur' },
+  // ⛔ Pas de gicleur ici : depuis le 2026-07-29 la carburation n'est plus un
+  // levier de l'outil (cf. CARBU_HORS_LEVIERS dans kart-specs.js). Une plage
+  // affichée dans "PLAGES DE RÉGLAGE DISPONIBLES" reviendrait à inviter le
+  // modèle à s'en servir. Le gicleur reste une donnée de contexte, plus bas.
 };
 
 // Pressions : gérées à part car ce sont des deltas en bar appliqués à un
@@ -192,8 +193,11 @@ function sanitizeApply(apply, context) {
   // sens physique, le reglage passe par la bague excentrique.
   const absents = getLeviersAbsents(context);
 
-  // Carburation scellee par le reglement sur les 4 temps : proposer un
-  // changement de gicleur est un contresens technique.
+  // Carburation hors leviers pour TOUS les moteurs (cf. CARBU_HORS_LEVIERS
+  // dans kart-specs.js) : un gicleur juste depend de la densite de l'air, que
+  // l'app ne mesure pas, et se tromper coute un moteur. Le prompt l'interdit
+  // deja ; ce filet retire le conseil si le modele passe outre. Le 4 temps
+  // garde sa formulation propre : chez lui c'est le reglement qui scelle.
   const carbuScellee = ctx.moteur_family === "4t";
 
   for (const [key, value] of Object.entries(apply)) {
@@ -201,8 +205,12 @@ function sanitizeApply(apply, context) {
       notes.push(`Ce châssis n'a pas de réglage "${key}" : conseil retiré.`);
       continue;
     }
-    if (carbuScellee && key === "gicleur") {
-      notes.push("Carburation scellée par le règlement sur ce moteur : le conseil sur le gicleur a été retiré.");
+    if (key === "gicleur" || key === "carburation") {
+      notes.push(
+        carbuScellee
+          ? "Carburation scellée par le règlement sur ce moteur : le conseil sur le gicleur a été retiré."
+          : "La carburation ne fait pas partie des leviers de cet outil : un gicleur juste dépend de la pression atmosphérique et de l'altitude, que l'app ne mesure pas. Conseil retiré : c'est le domaine de ton motoriste et de l'app officielle ROTAX MAX Jetting."
+      );
       continue;
     }
     if (APPLY_ENUMS[key]) {
@@ -820,7 +828,11 @@ ${context.moteur_type === "dd2"
     : context.moteur_type === "kz"
     ? `- Couronne KZ (sortie de boîte) : ${context.couronneKz || "?"} dents\n- Réglage boîte : ${context.kzRatio || "?"}`
     : `- Couronne : ${context.couronneMono || "?"} dents\n- Pignon : ${context.pignonMono || "?"} dents\n- Rapport (couronne ÷ pignon) : ${context.rapportMono || "?"}`}
-- Gicleur : ${context.moteur_family === "4t" ? "carburation scellée par le règlement, AUCUN réglage possible, ne propose jamais de modifier le gicleur" : context.gicleur || "?"}
+- Gicleur monté : ${context.moteur_family === "4t" ? "carburation scellée par le règlement, AUCUN réglage possible" : context.gicleur || "?"}
+  ⚠️ DONNÉE DE CONTEXTE, PAS UN LEVIER. Elle est là pour t'aider à interpréter
+  un symptôme moteur (étouffement en bout de ligne droite, moteur qui monte
+  mal en régime). Tu ne proposes JAMAIS de la changer et tu ne donnes JAMAIS
+  de valeur cible : voir la règle carburation plus bas.
 
 ${buildPressureBlock(context)}
 Gomme montée : ${[context.pneuMarque, context.pneuModele].filter(Boolean).join(" ") || "NON RENSEIGNÉE"}
@@ -910,7 +922,6 @@ Format apply autorisé : ⚠️ TOUTES les valeurs numériques sont des DELTAS
   "carrossage": delta (ex: +1 ou -1),
   "pressionAv": delta en bar sur la pression AVANT à froid (ex: +0.05 ou -0.05),
   "pressionAr": delta en bar sur la pression ARRIÈRE à froid (ex: +0.05 ou -0.05),
-  "gicleur": delta en points de gicleur (ex: +2 ou -2),
   "couronne": delta en dents (ex: +1 ou -1),
   "pignon": delta en dents, direct drive uniquement (ex: +1 ou -1),
   "gardeAv": "bas" | "medium" | "haut",
@@ -934,9 +945,10 @@ RÈGLES NON-NÉGOCIABLES :
   bloc BUTÉES ci-dessous. Ne conseille JAMAIS d'aller au-delà d'un maximum ou
   en deçà d'un minimum. Si le levier logique est saturé, dis-le explicitement
   ("ta voie arrière est déjà au maximum") et propose un autre levier.
-- Adapte les leviers au matériel : famille moteur 4t = pas de gicleur ; DD2 =
-  couronne + contre-pignon (somme 100) ; KZ = boîte 6 + embrayage ; direct
-  drive = couronne + pignon. Ne propose jamais un levier absent de ce kart.
+- ${CARBU_HORS_LEVIERS}
+- Adapte les leviers au matériel : DD2 = couronne + contre-pignon (somme 100) ;
+  KZ = boîte 6 + embrayage ; direct drive = couronne + pignon ; 4t = couronne
+  seule. Ne propose jamais un levier absent de ce kart.
 - Le vocabulaire employé doit être celui de la marque du châssis (voir la fiche
   matériel) : parler de "barre plate verticale" à un pilote Sodikart, ou de
   "bague excentrique" à un pilote OTK, décrédibilise instantanément le conseil.

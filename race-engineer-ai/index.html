@@ -587,7 +587,7 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
 
         <div class="field">
           <div class="field-label">Température air <span id="val-temp-air">20°C</span></div>
-          <input type="range" id="temp-air" min="-5" max="45" value="20" step="1" oninput="updateSliderVal('temp-air','val-temp-air','°C');updateGicleurReco()">
+          <input type="range" id="temp-air" min="-5" max="45" value="20" step="1" oninput="updateSliderVal('temp-air','val-temp-air','°C')">
         </div>
 
         <div class="field">
@@ -1066,9 +1066,9 @@ footer.site-footer a:hover{color:var(--red);text-decoration:underline;}
         </div>
 
         <div class="field" id="gicleur-field">
-          <div class="field-label">Gicleur <span id="val-gicleur">125</span></div>
-          <input type="range" id="gicleur" min="105" max="160" value="125" step="1" oninput="updateSliderVal('gicleur','val-gicleur','');updateGicleurReco()">
-          <div class="sub-label" id="gicleur-reco">Point de départ selon la température air. Confirme avec l'app officielle ROTAX MAX Jetting.</div>
+          <div class="field-label">Gicleur monté <span id="val-gicleur">125</span></div>
+          <input type="range" id="gicleur" min="105" max="160" value="125" step="1" oninput="updateSliderVal('gicleur','val-gicleur','')">
+          <div class="sub-label" id="gicleur-reco">Information de contexte : elle aide à interpréter un symptôme moteur. L'outil ne conseille pas de carburation, elle dépend de la pression atmosphérique et de l'altitude. Pour le chiffre du jour : ton motoriste, ou l'app officielle ROTAX MAX Jetting.</div>
         </div>
       </div>
 
@@ -1162,7 +1162,12 @@ const SETUP_LIMITS = {
   voieAv:    { min: 0,  max: 6,  step: 1,  unit: 'bagues', label: 'Voie avant' },
   pincement: { min: -3, max: 3,  step: 1,  unit: '',      label: 'Pincement' },
   chasse:    { min: -1, max: 4,  step: 1,  unit: 'crans', label: 'Chasse' },
-  gicleur:   { min: 105, max: 160, step: 1,  unit: '',      label: 'Gicleur' },
+  // ⛔ Pas de gicleur ici : depuis le 2026-07-29 la carburation n'est plus un
+  // levier de l'outil. Un gicleur juste dépend de la densité de l'air
+  // (pression atmosphérique, altitude, hygrométrie) que l'app ne mesure pas,
+  // et se tromper coûte un moteur là où tous les autres leviers sont
+  // réversibles. Le champ reste dans le formulaire comme CONTEXTE.
+  // Miroir de SETUP_LIMITS dans netlify/functions/chat.js.
 };
 
 // Baselines par famille moteur (👤 valeurs de référence Clément) :
@@ -1331,17 +1336,14 @@ Ton échelle : -1 (Déchassé) | 0 (Moins) | 1 (Neutre) | 2 (Plus) | 3 (Maximum)
     },
     'gicleur': {
       keywords: ['gicleur', 'carburation', 'carburateur', 'riche', 'pauvre', 'mixture', 'carbure'],
-      response: `<strong>Gicleur, calibration selon la température :</strong><br><br>
-<strong>Règle générale :</strong> plus il fait froid, plus l'air est dense (plus d'oxygène), plus tu dois enrichir : gicleur plus GROS. Chaleur = air moins dense = gicleur plus petit.<br><br>
-Points de départ (autour du stock #130 EVO) :<br>
-• < 10°C : gicleur 132-138<br>
-• 10-20°C : gicleur 128-134<br>
-• 20-30°C : gicleur 125-130<br>
-• > 30°C : gicleur 122-126<br><br>
-<strong>Symptômes :</strong><br>
-• Trop pauvre (gicleur trop petit, surtout par air froid) → surchauffe, détonation, <strong>risque de serrage</strong><br>
-• Trop riche (trop gros par temps chaud) → moteur "quatre-temps", fumée, bougie noire, juste plus lent<br><br>
-<em>La pression atmosphérique et l'altitude comptent aussi : en altitude, l'air est moins dense, appauvris (gicleur plus petit). Pour le chiffre exact du jour : l'app officielle ROTAX MAX Jetting. Dans le doute, prends le plus gros des deux.</em>`
+      response: `<strong>Carburation : je ne te donnerai pas de chiffre, et c'est volontaire.</strong><br><br>
+Un gicleur juste dépend de la <strong>densité de l'air</strong> : température, mais aussi pression atmosphérique, altitude et hygrométrie. Je n'ai que la température. Te sortir un nombre à partir de ça serait une devinette sur le seul réglage du kart où se tromper détruit du matériel.<br><br>
+<strong>Le principe, lui, est simple :</strong> air froid ou dense = plus d'oxygène = il faut enrichir, gicleur plus gros. Air chaud, ou altitude = air raréfié = appauvrir.<br><br>
+<strong>Lire ton moteur :</strong><br>
+• Trop pauvre → surchauffe, cliquetis, détonation, bougie blanche, <strong>risque de serrage</strong>. Tu arrêtes de rouler et tu vois ton motoriste.<br>
+• Trop riche → moteur qui "quatre-temps" en bout de ligne droite, reprise molle, bougie noire. Tu perds du temps, tu ne casses rien.<br>
+• Le bon compromis → isolant de bougie couleur noisette, le moteur prend ses tours franchement jusqu'au bout.<br><br>
+<em>Pour le chiffre du jour : ton motoriste, ou l'app officielle ROTAX MAX Jetting, qui prend la pression et l'altitude et gère aussi le mode DD2. Dans le doute, le plus gros des deux. Moi je te sers sur le châssis, où tu as bien plus à gagner.</em>`
     },
     'pluie': {
       keywords: ['pluie', 'mouillé', 'wet', 'rain', 'humide'],
@@ -1576,7 +1578,7 @@ function detectMoteurFamily(moteurProfil) {
 }
 
 const ENGINE_FAMILY_HINTS = {
-  direct_drive: "Direct Drive (monorapport) : réglage transmission via la couronne. Carburation ajustable via gicleur.",
+  direct_drive: "Direct Drive (monorapport) : réglage transmission via la couronne et le pignon.",
   dd2: "Rotax DD2 : boîte 2 vitesses à changement automatique. Couronne + contre-pignon (somme = 100).",
   kz_shifter: "KZ Shifter : boîte 6 vitesses manuelle + embrayage. Frein avant + arrière. Engine braking exploitable.",
   '4t': "Moteur 4 temps (KA100…) : carburation scellée par règlement, non ajustable. Transmission via couronne uniquement."
@@ -1805,17 +1807,13 @@ function updateMonoRatio() {
   if (el) el.textContent = (pign > 0) ? (cour / pign).toFixed(2) : ' : ';
 }
 
-function updateGicleurReco() {
-  const temp = parseInt(document.getElementById('temp-air').value);
-  let reco = '';
-  // Air froid = dense = enrichir (plus gros gicleur). Air chaud = appauvrir. Plages calées autour du stock #130 (EVO).
-  if(temp < 10) reco = `🌡️ < 10°C (air dense) → point de départ : <strong>132–138</strong>`;
-  else if(temp < 20) reco = `🌡️ 10–20°C → point de départ : <strong>128–134</strong>`;
-  else if(temp < 30) reco = `🌡️ 20–30°C → point de départ : <strong>125–130</strong>`;
-  else reco = `🌡️ > 30°C (air chaud) → point de départ : <strong>122–126</strong>`;
-  reco += `<br><em>T° air seule : confirme avec l'app officielle ROTAX MAX Jetting (pression + altitude comptent). Dans le doute, le plus gros.</em>`;
-  document.getElementById('gicleur-reco').innerHTML = reco;
-}
+// ⛔ updateGicleurReco() a été supprimée le 2026-07-29 avec le reste des
+// conseils de carburation. Elle recommandait un gicleur à partir de la SEULE
+// température air, alors qu'un gicleur juste dépend de la densité de l'air
+// (pression atmosphérique, altitude, hygrométrie). Elle envoyait par exemple
+// un pilote DD2 à sa base réelle de 135 vers "125-130", c'est à dire vers un
+// mélange que son motoriste juge dangereusement pauvre. Le texte statique
+// sous le curseur la remplace.
 
 function updateStrategyTip() {
   const session = document.querySelector('input[name="session"]:checked')?.value || 'libre';
@@ -2197,29 +2195,19 @@ function runDiagnostic() {
     html += `</div>`;
   }
 
-  // GICLEUR CHECK
-  const tempAirVal = parseInt(data.tempAir);
-  const gicleurVal = parseInt(data.gicleur);
-  let gicleurAlert = null;
-  // Un KA100 / 4T réglementé a une carburation scellée : lui parler de gicleur
-  // est un contresens technique immédiatement repéré par un pilote.
-  if (!isLocation && data.moteur_family !== '4t') {
-    // Air froid = dense : un gicleur trop PETIT est pauvre → danger serrage. Air chaud : trop GROS = riche → juste lent.
-    if(tempAirVal < 10 && gicleurVal < 130) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} probablement trop pauvre pour ${tempAirVal}°C (air froid = dense = il faut enrichir). Risque de serrage. Point de départ : 132–138, à confirmer avec l'app ROTAX MAX Jetting.`};
-    else if(tempAirVal < 20 && gicleurVal < 126) gicleurAlert = {type:'alert', msg:`Gicleur ${gicleurVal} semble pauvre pour ${tempAirVal}°C. Risque moteur. Point de départ : 128–134, à confirmer avec l'app ROTAX MAX Jetting.`};
-    else if(tempAirVal >= 30 && gicleurVal > 128) gicleurAlert = {type:'warn', msg:`Gicleur ${gicleurVal} semble riche pour ${tempAirVal}°C (air chaud = appauvrir). Moteur étouffé mais sans risque. Point de départ : 122–126.`};
-    else if(tempAirVal >= 20 && gicleurVal > 132) gicleurAlert = {type:'warn', msg:`Gicleur ${gicleurVal} semble riche pour ${tempAirVal}°C. Point de départ : 125–130.`};
-  }
-
-  if(gicleurAlert) {
-    html += `<div class="diag-block">
-      <div class="diag-block-title"><span class="diag-icon">⚙️</span> Carburation</div>
-      <div class="${gicleurAlert.type === 'alert' ? 'alert-block' : 'info-block'}">
-        <div class="${gicleurAlert.type === 'alert' ? 'alert-title' : 'info-title'}">${gicleurAlert.type === 'alert' ? '🔴' : '⚠️'} Alerte gicleur</div>
-        <p>${gicleurAlert.msg}</p>
-      </div>
-    </div>`;
-  }
+  // ⛔ L'ALERTE GICLEUR A ÉTÉ RETIRÉE LE 2026-07-29.
+  // Elle jugeait la carburation sur la seule température air, sans distinguer
+  // les familles moteur. Deux défauts, dont un grave :
+  //   1. FAUX POSITIFS. Un pilote DD2 à 25°C avec son gicleur de base (135)
+  //      déclenchait "semble riche, point de départ 125-130".
+  //   2. CONSEIL DANGEREUX. Elle pouvait pousser un DD2 vers 122-126, soit
+  //      nettement sous le plancher que son motoriste accepte. Un mélange trop
+  //      pauvre, c'est une surchauffe, une détonation, un serrage.
+  // Un gicleur juste dépend de la densité de l'air : pression atmosphérique,
+  // altitude, hygrométrie, température. L'app n'a que la température. Le
+  // chiffre appartient au motoriste et à l'app officielle ROTAX MAX Jetting.
+  // Le champ gicleur reste dans le formulaire comme donnée de contexte : l'IA
+  // le lit pour interpréter un symptôme moteur, elle ne le prescrit jamais.
 
   // COHERENCE CHECKS
   let coherenceAlerts = [];
@@ -2315,7 +2303,7 @@ function runDiagnostic() {
   }
 
   // If nothing specific
-  if(!data.comportement && !hasPressure && !gicleurAlert && coherenceAlerts.length === 0) {
+  if(!data.comportement && !hasPressure && coherenceAlerts.length === 0) {
     html += `<div class="diag-block">
       <div class="diag-block-title"><span class="diag-icon">ℹ️</span> Analyse générale</div>
       <p style="color:var(--text-dim);font-size:13px;">Sélectionne un comportement dominant et/ou renseigne les pressions pour un diagnostic précis. La grille de setup a été enregistrée.</p>
@@ -3212,7 +3200,7 @@ function restoreSessionToForm(data) {
     if (r) { r.checked = true; selectChip(r.closest('.radio-chip'), name, data[name]); }
   });
   if (data.session) updateStrategyTip();
-  if (data.tempAir) { document.getElementById('temp-air').value = data.tempAir; updateSliderVal('temp-air','val-temp-air','°C'); updateGicleurReco(); }
+  if (data.tempAir) { document.getElementById('temp-air').value = data.tempAir; updateSliderVal('temp-air','val-temp-air','°C'); }
   if (data.tempPiste) { document.getElementById('temp-piste').value = data.tempPiste; updateSliderVal('temp-piste','val-temp-piste','°C'); }
   if (data.circuitName !== undefined) { const cn = document.getElementById('circuit-name'); if (cn) { cn.value = data.circuitName; onCircuitNameChange(); } }
   if (data.comportement) document.getElementById('comportement').value = data.comportement;
@@ -3263,7 +3251,7 @@ function restoreSessionToForm(data) {
   updateMonoRatio();
   if (data.couronneDD2) { document.getElementById('couronne-dd2').value = data.couronneDD2; updateDD2(); }
   if (data.couronneKz) { const kzEl = document.getElementById('couronne-kz'); if (kzEl) { kzEl.value = data.couronneKz; updateSliderVal('couronne-kz','val-couronne-kz',' dents'); } }
-  if (data.gicleur) { document.getElementById('gicleur').value = data.gicleur; updateSliderVal('gicleur','val-gicleur',''); updateGicleurReco(); }
+  if (data.gicleur) { document.getElementById('gicleur').value = data.gicleur; updateSliderVal('gicleur','val-gicleur',''); }
 }
 
 function loadSession(id) {
@@ -3599,7 +3587,9 @@ function applyRecommendedSetup(applyObj) {
     { key: 'pincement', el: 'pincement', decimals: 0, refresh: updatePincement },
     { key: 'chasse',   el: 'chasse',   decimals: 0, refresh: updateChasse },
     { key: 'carrossage', el: 'carrossage', decimals: 0, refresh: updateCarrossage },
-    { key: 'gicleur',  el: 'gicleur',  decimals: 0, refresh: () => { updateSliderVal('gicleur','val-gicleur',''); updateGicleurReco(); } },
+    // ⛔ Pas de 'gicleur' ici : la carburation n'est plus un levier applicable
+    // en un clic (2026-07-29). Le serveur retire déjà ce conseil, cette liste
+    // est le second verrou.
   ];
 
   // Transmission : delta en dents, sur le curseur correspondant a la famille
@@ -3959,7 +3949,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ?src=reel-03 dans le lien bio → on sait quelle vidéo amène du trafic
   track('page_view', { mobile: window.innerWidth <= 900, src: new URLSearchParams(location.search).get('src') || null });
   updateGripDesc('medium');
-  updateGicleurReco();
   updateStrategyTip();
   updateChasse();
   updatePincement();

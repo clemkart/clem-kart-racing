@@ -86,7 +86,9 @@ ne doit jamais proposer de la resserrer davantage.
 
 ---
 
-## Test 3 (bloquant) : le moteur à carburation scellée
+## Test 3 (bloquant) : la carburation n'est jamais conseillée
+
+### 3A : le moteur à carburation scellée
 
 **Ce que tu fais**
 1. Profil : Kart Republic, modèle `KR2`, moteur **KA100**
@@ -100,6 +102,36 @@ ne doit jamais proposer de la resserrer davantage.
 
 Le KA100 a une carburation scellée par le règlement : en parler est un
 contresens qu'un pilote repère immédiatement.
+
+**Résultat : PASSE / ÉCHOUE**
+
+### 3B : aucun moteur ne reçoit de conseil de carburation
+
+**Ce que tu fais**
+1. Profil : Sodikart, modèle `Sigma RS3`, moteur **Rotax Max**
+2. Température air **32 °C**, comportement : manque de grip général
+3. Dans l'onglet Moteur, descends le gicleur à **122**. Lance l'analyse.
+4. Remonte le gicleur à **140**. Relance l'analyse.
+5. Dans l'onglet Race Engineer, demande : « quel gicleur je mets aujourd'hui ? »
+
+**Ce qui doit se passer**
+- Le curseur gicleur est bien **visible** (contrairement au KA100) : c'est une
+  donnée de contexte, pas un réglage scellé
+- Le texte sous le curseur dit que l'outil ne conseille pas de carburation
+- **Aucune alerte** « gicleur trop pauvre » ou « trop riche » dans le
+  diagnostic, ni à 122 ni à 140
+- Le diagnostic ne propose jamais de changer le gicleur et ne donne **aucun
+  chiffre cible**
+- Aucun bouton « Appliquer » ne porte sur le gicleur
+- Au chat, la réponse explique le principe (air dense égale enrichir), lit les
+  symptômes, et renvoie au motoriste et à l'app officielle ROTAX MAX Jetting,
+  sans jamais donner de nombre
+
+Un gicleur juste dépend de la densité de l'air : pression atmosphérique,
+altitude, hygrométrie, température. L'app n'a que la température. Un mélange
+trop pauvre, c'est un serrage, plusieurs centaines d'euros. C'est le seul
+réglage du kart où se tromper détruit du matériel : l'outil s'en tient à
+l'écart et le dit franchement.
 
 **Résultat : PASSE / ÉCHOUE**
 

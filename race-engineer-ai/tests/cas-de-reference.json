@@ -46,12 +46,12 @@
       },
       "attendu": {
         "levierParmi": ["chasse", "carrossage", "pressionAv", "pressionAr", "parechocs", "arbre"],
-        "levierInterdit": ["voieAr", "barre", "siege", "siegeHauteur"],
+        "levierInterdit": ["voieAr", "barre", "siege", "siegeHauteur", "gicleur"],
         "sens": null,
         "motsInterdits": ["barre plate", "barre ronde", "sans barre"],
         "confianceMin": "moyenne",
         "doitRenvoyerCoach": false,
-        "_pourquoi": "Voie AR au maximum donc indisponible. Le Sigma n'a pas de barre de torsion. Le siege ne se touche pas en session."
+        "_pourquoi": "Voie AR au maximum donc indisponible. Le Sigma n'a pas de barre de torsion. Le siege ne se touche pas en session. La carburation n'est pas un levier de l'outil, quel que soit le moteur."
       }
     },
 
@@ -148,7 +148,7 @@
       },
       "attendu": {
         "levierParmi": ["pressionAr"],
-        "levierInterdit": ["siege", "voieAv"],
+        "levierInterdit": ["siege", "voieAv", "gicleur"],
         "sens": null,
         "motsInterdits": [],
         "confianceMin": "moyenne",
@@ -183,7 +183,7 @@
       },
       "attendu": {
         "levierParmi": [],
-        "levierInterdit": ["siege", "siegeHauteur"],
+        "levierInterdit": ["siege", "siegeHauteur", "gicleur"],
         "sens": null,
         "motsInterdits": [],
         "confianceMin": "moyenne",
