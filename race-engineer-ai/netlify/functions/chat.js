@@ -21,7 +21,7 @@ const { buildKartSpecBlock, getLeviersAbsents, CARBU_HORS_LEVIERS } = require(".
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://hkpknrrymgbnjmbewlyc.supabase.co";
 // ⚠️ Repli obligatoire : sans lui, si la variable d'env Netlify n'est pas
 // réglée (ou mal réglée), SUPABASE_ANON_KEY vaut "" et authenticateUser()
-// refuse alors TOUT LE MONDE, jeton valide ou non — la clé anon Supabase est
+// refuse alors TOUT LE MONDE, jeton valide ou non : la clé anon Supabase est
 // publique par conception (protégée par RLS, jamais un secret), donc ce
 // repli est aussi sûr que le SUPABASE_URL codé en dur juste au-dessus.
 // C'est la cause du "reconnecte-toi" en boucle alors que le pilote est
@@ -144,7 +144,13 @@ const APPLY_ENUMS = {
 // française naturelle. Le trait d'union U+002D des mots composés est préservé.
 // U+2014 = tiret cadratin, U+2013 = demi-cadratin. Écrits en échappements pour
 // que le caractère lui-même n'apparaisse dans AUCUN fichier du projet.
-const DASH_RE = new RegExp("\s*[\u2014\u2013]\s*", "g");
+// ⚠️ LES DOUBLES ANTISLASHS SONT OBLIGATOIRES, ne pas "simplifier" cette
+// ligne. La chaîne est d'abord lue comme littéral JS avant d'atteindre
+// RegExp : avec des antislashs simples, le motif compilé devenait
+// "s*[cadratin]s*", soit la LETTRE s au lieu d'un espace. Le tiret partait
+// quand même, mais les espaces qui l'entouraient restaient et le texte
+// sortait avec des doubles espaces, aussi voyants que le tiret d'origine.
+const DASH_RE = new RegExp("\\s*[\\u2014\\u2013]\\s*", "g");
 
 function stripLongDashes(value) {
   if (typeof value === "string") {

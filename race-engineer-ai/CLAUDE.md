@@ -22,7 +22,7 @@ L'idée : reproduire ce qu'un vrai race engineer ferait entre les sessions : ana
 
 ## Utilisateur cible
 
-- Homme 25–40 ans
+- Homme 25 à 40 ans
 - Pilote karting compétitif amateur (championnat régional, national)
 - Frustré par son irrégularité et son manque de données exploitables
 - N'a pas de race engineer humain

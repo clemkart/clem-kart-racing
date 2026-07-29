@@ -2182,7 +2182,7 @@ function runDiagnostic() {
     html += `<div class="diag-block">
       <div class="diag-block-title"><span class="diag-icon">🔵</span> Analyse des pressions</div>
       ${pressureGrid}
-      <div style="margin-top:8px;font-size:11px;color:var(--text-dim);">Delta cible : +0.13 à +0.17 bar 🟢 | Attention : 0.10–0.13 ou 0.17–0.20 🟠 | Problème : <0.10 ou >0.20 🔴</div>`;
+      <div style="margin-top:8px;font-size:11px;color:var(--text-dim);">Delta cible : +0.13 à +0.17 bar 🟢 | Attention : 0.10 à 0.13 ou 0.17 à 0.20 🟠 | Problème : <0.10 ou >0.20 🔴</div>`;
 
     pressureAlerts.forEach(a => {
       if(a.warn) {
