@@ -1,8 +1,8 @@
 # CONDITIONS GÉNÉRALES D'UTILISATION
 ## Race Engineer AI : Clem Kart Racing
 
-**Version** : 1.0
-**Date d'entrée en vigueur** : 2026-05-27
+**Version** : 1.1
+**Date d'entrée en vigueur** : 2026-07-29
 **Éditeur** : Clément DANIEL : projet Clem Kart Racing
 
 ---
@@ -57,11 +57,21 @@ Le Service propose :
 
 Le Service est un **outil d'assistance pédagogique et technique**. Il ne se substitue en aucun cas à :
 - Un mécanicien ou préparateur professionnel
+- Un motoriste
 - Un coach de pilotage humain
 - Le règlement officiel d'une catégorie de compétition (CIK-FIA, FFSA, FIA Karting, etc.)
 - Une formation à la sécurité en karting
 
-### 4.3 : Accessibilité
+### 4.3 : Exclusions explicites du périmètre
+
+Par choix délibéré de l'Éditeur, et pour des raisons de sécurité, le Service **ne fournit aucun conseil** sur :
+
+- **La carburation** : aucune valeur de gicleur, aucune plage, aucun réglage de richesse, quel que soit le moteur. Un réglage de carburation dépend de la densité de l'air (pression atmosphérique, altitude, hygrométrie) que le Service ne mesure pas, et une erreur peut détruire le moteur. Le Service explique le principe et renvoie systématiquement au motoriste de l'Utilisateur et aux outils officiels du constructeur.
+- **Les freins** : le Service peut expliquer ce qu'un réglage modifie, mais ne prescrit jamais d'intervention sur le système de freinage et ne fournit aucune procédure de démontage, de purge ou de réglage.
+- **La préparation et la modification moteur**, ainsi que tout contournement réglementaire (voir Article 7.3).
+- **Les couples et opérations de serrage** (roues, moyeux, axe, lestage), qui relèvent du montage et de la vérification mécanique, non du réglage de performance.
+
+### 4.4 : Accessibilité
 
 Le Service est accessible 24h/24, 7j/7, sous réserve :
 - D'une connexion internet fonctionnelle (pour les fonctions cloud et l'IA)
@@ -70,7 +80,7 @@ Le Service est accessible 24h/24, 7j/7, sous réserve :
 
 L'Éditeur ne garantit aucun niveau de service (SLA) particulier, sauf disposition contractuelle expresse.
 
-### 4.4 : Évolution du Service
+### 4.5 : Évolution du Service
 
 L'Éditeur se réserve le droit, à tout moment et sans préavis, de :
 - Modifier les fonctionnalités proposées
@@ -361,8 +371,7 @@ Pour les Utilisateurs non consommateurs (professionnels, équipes, structures), 
 
 Pour toute question, réclamation, demande d'exercice de droits RGPD ou signalement, l'Utilisateur peut contacter l'Éditeur :
 
-- **Par email** : (adresse de contact à insérer)
-- **Via le site** : (formulaire de contact à insérer)
+- **Par email** : daniel.clementpro@gmail.com
 
 L'Éditeur s'engage à répondre dans un délai raisonnable, sous 30 jours maximum pour les demandes RGPD.
 
@@ -374,13 +383,13 @@ L'Éditeur s'engage à répondre dans un délai raisonnable, sous 30 jours maxim
 
 1. **Les conseils du Service sont indicatifs**. Ils ne remplacent pas un mécanicien, un coach ou le règlement officiel de ta catégorie.
 2. **Tu restes responsable de ton matériel et de ta sécurité**. Vérifie ton kart avant chaque session. Ne suis pas aveuglément une recommandation.
-3. **Aucun conseil sur la préparation moteur ni le contournement réglementaire** ne sera donné. Va voir ton préparateur attitré pour ça.
+3. **Aucun conseil sur la carburation, les freins, la préparation moteur ou le contournement réglementaire** ne sera donné. Ce sont les quatre sujets où une erreur coûte un moteur ou une sortie de piste. Va voir ton motoriste ou ton mécanicien pour ça.
 4. **L'IA peut se tromper**. Garde ton esprit critique. En cas de doute, demande à un humain expérimenté.
 5. **Tes données t'appartiennent**. Tu peux les supprimer à tout moment.
 6. **Pas de garantie de performance**. Le Service t'aide à comprendre et progresser, pas à gagner automatiquement des courses.
 
 ---
 
-*Fin des Conditions Générales d'Utilisation : Race Engineer AI v1.0*
+*Fin des Conditions Générales d'Utilisation : Race Engineer AI v1.1*
 
-*Dernière mise à jour : 2026-05-27*
+*Dernière mise à jour : 2026-07-29*
