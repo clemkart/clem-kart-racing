@@ -2783,9 +2783,22 @@ function track(event, meta) {
 // Les démos ("Voir un exemple") ne comptent pas.
 // =============================================
 const DIAG_FREE = 3, DIAG_BONUS = 5;
+// Déblocage perso (fondateur) : ouvrir le site une fois avec ?illimite=1 dans
+// l'URL retire la limite d'aperçu pour CE navigateur, sans y toucher pour les
+// visiteurs normaux. La limite est par navigateur, pas par compte : Clément
+// tombe dessus comme n'importe qui tant qu'il n'a pas fait ça une fois.
+try {
+  if (new URLSearchParams(window.location.search).get('illimite') === '1') {
+    localStorage.setItem('re_founder_unlimited', '1');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+} catch (e) {}
 function diagCount(){ return parseInt(localStorage.getItem('re_diag_count') || '0', 10) || 0; }
 function diagTestimonialDone(){ return localStorage.getItem('re_testimonial_ok') === '1'; }
-function diagLimit(){ return DIAG_FREE + (diagTestimonialDone() ? DIAG_BONUS : 0); }
+function diagLimit(){
+  if (localStorage.getItem('re_founder_unlimited') === '1') return Infinity;
+  return DIAG_FREE + (diagTestimonialDone() ? DIAG_BONUS : 0);
+}
 function incDiagCount(){ try { localStorage.setItem('re_diag_count', String(diagCount() + 1)); } catch(e){} }
 
 function showDiagLimitModal(){

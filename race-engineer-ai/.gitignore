@@ -24,3 +24,5 @@ Thumbs.db
 
 # Netlify
 .netlify/
+netlify/.env.txt
+*.env.txt

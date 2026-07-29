@@ -19,7 +19,16 @@ const { buildKartSpecBlock, getLeviersAbsents } = require("./kart-specs");
 // CONFIG (env vars)
 // =============================================
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://hkpknrrymgbnjmbewlyc.supabase.co";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
+// ⚠️ Repli obligatoire : sans lui, si la variable d'env Netlify n'est pas
+// réglée (ou mal réglée), SUPABASE_ANON_KEY vaut "" et authenticateUser()
+// refuse alors TOUT LE MONDE, jeton valide ou non — la clé anon Supabase est
+// publique par conception (protégée par RLS, jamais un secret), donc ce
+// repli est aussi sûr que le SUPABASE_URL codé en dur juste au-dessus.
+// C'est la cause du "reconnecte-toi" en boucle alors que le pilote est
+// bien connecté (identique à la clé codée en dur dans index.html).
+const SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhrcGtucnJ5bWdibmptYmV3bHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODgyNzksImV4cCI6MjA5NzI2NDI3OX0.kNbCMJK2FNxoiPOFxgWNoh7sqb89gAAxumZGqTWW014";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 // Dev local uniquement : ALLOW_ANON_CHAT=true dans .env pour tester sans compte
 const ALLOW_ANON_CHAT = process.env.ALLOW_ANON_CHAT === "true";
