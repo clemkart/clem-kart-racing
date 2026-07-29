@@ -321,6 +321,27 @@ const ENGINE_MODEL_NOTES = {
     pilotage: "même exigence de dosage de la remise de gaz que le Senior [CD]",
     trajectoire: "trajectoire en 'U' comme le Senior : préserver la vitesse [CD]",
   },
+  // Le formulaire propose "Rotax DD2" depuis toujours, mais aucune fiche
+  // modèle n'existait à ce nom : ce pilote ne recevait AUCUNE précision
+  // moteur, là où un Rotax Max en reçoit six. Les éléments [CD] viennent du
+  // vécu direct. Ce qui n'est qu'hérité du Rotax Max est marqué [?] : c'est le
+  // même bloc moteur, mais la boîte 2 vitesses change assez le pilotage pour
+  // qu'aucune conclusion ne se transpose toute seule.
+  "Rotax DD2": {
+    puissance: "125cc 2T sur base Rotax, avec boîte 2 vitesses à changement automatique [OK]",
+    carbu:
+      "gicleur fixe Rotax. HORS LEVIERS de l'outil : l'app officielle ROTAX MAX Jetting a un mode DD2 dédié, c'est la seule référence à citer. Ne donne aucun chiffre toi-même [OK]",
+    pilotage:
+      "⚠️ Le 'point dur' en 2e vitesse décrit plus haut est LE trait dominant de ce moteur. Sur une entrée de virage lourde en DD2, vérifie-le avant d'incriminer le châssis : c'est souvent l'inertie de la 2e, pas le train avant [CD]",
+    freinage:
+      "freins avant ET arrière, pourtant ressentis MOINS efficaces que sur un KZ. Ne suppose jamais qu'un DD2 freine comme un shifter sous prétexte qu'il a des freins avant [CD]",
+    chassis:
+      "voie arrière de référence 139, pas 140 : ne recopie jamais la baseline du Rotax Max sur un DD2, l'arbre n'est pas le même [CD]",
+    trajectoire:
+      "⚠️ NE TRANSPOSE PAS la trajectoire en 'U' du Rotax Max. Le DD2 est plus rapide en ligne droite, sans doute plus coupleux en réaccélération, et son inertie en 2e change l'entrée. Appuie-toi sur le vécu du pilote plutôt que sur l'analogie avec le Max [?]",
+    temperature:
+      "même bloc moteur que le Rotax Max, donc fenêtre de température d'eau a priori proche, mais non vérifiée sur DD2 : ne l'affirme pas comme une valeur DD2 [?]",
+  },
   "X30 Senior": {
     puissance: "~28 ch [OK]",
     carbu:

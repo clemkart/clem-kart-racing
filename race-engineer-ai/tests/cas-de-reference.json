@@ -211,6 +211,40 @@
         "doitRenvoyerCoach": false,
         "_pourquoi": "En location le pilote ne regle rien. Le diagnostic doit etre 100% pilotage, et apply doit rester vide."
       }
+    },
+
+    {
+      "nom": "Sodikart Sigma DD2 x Rotax DD2, entree lourde par forte chaleur",
+      "contexte": {
+        "chassis": "Sodikart", "chassisModele": "Sigma DD2", "chassisAnnee": "2025",
+        "moteur": "Rotax DD2", "moteur_family": "dd2", "moteur_type": "dd2",
+        "categorie": "DD2", "taille": "179", "poids": "80",
+        "style": "agressif_freinage", "niveau": "national", "mode": "proprio",
+        "comportement": "understeer_entry", "intensite": "6",
+        "grip": "medium", "meteo": "sec", "circuit": "technique", "session": "libre",
+        "tempAir": "32", "tempPiste": "46",
+        "voieAr": "139", "voieAv": "3", "pincement": "0", "chasse": "1", "carrossage": "0",
+        "arbre": "medium", "arbreLongueur": "standard", "moyeux": "medium", "parechocs": "serre",
+        "gardeAv": "medium", "gardeAr": "medium", "siege": "standard", "siegeHauteur": "standard",
+        "lestage": "0", "gicleur": "132", "couronneDD2": "34",
+        "pneuMarque": "Mojo", "pneuModele": "D5",
+        "chronoBest": "47.60", "chronoAvg": "47.84", "chronoLaps": "17",
+        "pressures": {
+          "avg": {"froid": 0.60, "chaud": 0.74, "delta": 0.14},
+          "avd": {"froid": 0.60, "chaud": 0.74, "delta": 0.14},
+          "arg": {"froid": 0.56, "chaud": 0.70, "delta": 0.14},
+          "ard": {"froid": 0.56, "chaud": 0.70, "delta": 0.14}
+        }
+      },
+      "attendu": {
+        "levierParmi": ["chasse", "carrossage", "pressionAv", "pressionAr", "parechocs", "voieAr", "arbre", "moyeux"],
+        "levierInterdit": ["barre", "siege", "siegeHauteur", "gicleur", "pignon"],
+        "sens": null,
+        "motsInterdits": ["barre plate", "barre ronde", "sans barre"],
+        "confianceMin": "moyenne",
+        "doitRenvoyerCoach": false,
+        "_pourquoi": "Trois pieges d'un coup. 1) Le Sigma n'a pas de barre de torsion, le train avant passe par la bague excentrique. 2) Le DD2 n'a pas de pignon libre, seulement couronne et contre-pignon dont la somme fait 100. 3) Il fait 32 degres et le gicleur est a 132 : l'ancienne alerte poussait ce pilote vers 122-126, la carburation ne doit plus apparaitre comme un levier. Le diagnostic doit aussi savoir que l'inertie en 2e vitesse pese sur l'entree de virage avant d'incriminer le chassis."
+      }
     }
   ]
 }
