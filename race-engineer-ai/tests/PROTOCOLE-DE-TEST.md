@@ -278,7 +278,7 @@ Relis cinq diagnostics complets, en te mettant à la place d'un client qui
 paie 9,99 € par mois.
 
 **Ce que tu vérifies**
-- [ ] Aucun tiret long (le symbole `—`) nulle part
+- [ ] Aucun tiret long (le symbole `-`) nulle part
 - [ ] Le vocabulaire est celui d'un pilote, pas d'un chatbot
 - [ ] Aucune phrase du type « en tant qu'assistant IA »
 - [ ] Le conseil est **actionnable** : tu sais exactement quoi faire en
