@@ -232,6 +232,7 @@ Dans le cadre de l'utilisation du Service, les données suivantes peuvent être 
 - **Données de profil pilote** : taille, poids, catégorie de course, marque de châssis, type de moteur, style de pilotage, niveau d'expérience
 - **Données de session** : conditions de course saisies, ressenti pilote, chronos, réglages, historique des analyses
 - **Données techniques** : adresse IP, type de navigateur, données de connexion (pour rate limiting et sécurité)
+- **Témoignages** : prénom, catégorie de course et texte libre, uniquement si l'Utilisateur les saisit lui-même et coche la case d'autorisation. Aucun témoignage n'est enregistré sans ce consentement explicite.
 - **Cookies / localStorage** : préférences locales, session active
 
 ### 9.3 : Finalités du traitement
@@ -265,6 +266,7 @@ Aucune donnée n'est vendue, échangée ou divulguée à des fins commerciales.
 - **Données de Compte** : conservées tant que le Compte est actif. Suppression dans les 30 jours suivant la demande de l'Utilisateur.
 - **Données de session** : conservées tant que le Compte est actif. L'Utilisateur peut les supprimer à tout moment.
 - **Données techniques** (logs, IP) : 12 mois maximum.
+- **Témoignages** : conservés jusqu'au retrait du consentement, que l'Utilisateur peut demander à tout moment par email. Une demande d'effacement couvre l'ensemble des données, y compris les témoignages.
 
 ### 9.7 : Droits de l'Utilisateur
 

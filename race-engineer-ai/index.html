@@ -2771,16 +2771,23 @@ function track(event, meta) {
 // Les démos ("Voir un exemple") ne comptent pas.
 // =============================================
 const DIAG_FREE = 3, DIAG_BONUS = 5;
-// Déblocage perso (fondateur) : ouvrir le site une fois avec ?illimite=1 dans
-// l'URL retire la limite d'aperçu pour CE navigateur, sans y toucher pour les
-// visiteurs normaux. La limite est par navigateur, pas par compte : Clément
-// tombe dessus comme n'importe qui tant qu'il n'a pas fait ça une fois.
-try {
-  if (new URLSearchParams(window.location.search).get('illimite') === '1') {
-    localStorage.setItem('re_founder_unlimited', '1');
-    window.history.replaceState({}, '', window.location.pathname);
-  }
-} catch (e) {}
+// ⚠️ LE PARAMÈTRE D'URL ?illimite=1 A ÉTÉ RETIRÉ LE 2026-07-29.
+// Il posait le drapeau de déblocage à vie pour le navigateur, et il était
+// documenté en clair dans ce fichier, donc dans le source envoyé à CHAQUE
+// visiteur. N'importe qui lisant la page trouvait un lien qui retire le mur
+// des essais gratuits, définitivement et de façon partageable.
+//
+// Le drapeau lui-même reste lu, pour que Clément puisse se débloquer. Il se
+// pose une seule fois depuis la console du navigateur :
+//     localStorage.setItem('re_founder_unlimited','1')
+// Ça n'ouvre aucune nouvelle brèche : quiconque a accès à la console de SON
+// navigateur peut de toute façon remettre son propre compteur à zéro.
+//
+// À garder en tête : ce mur est une INCITATION, pas un verrou. Il compte dans
+// le localStorage, donc une navigation privée le contourne. C'est acceptable
+// parce qu'il ne protège aucun coût (le diagnostic local ne consomme aucune
+// API) : il sert à demander un témoignage au bon moment. Le vrai verrou de
+// coût, c'est le quota serveur du diagnostic IA.
 function diagCount(){ return parseInt(localStorage.getItem('re_diag_count') || '0', 10) || 0; }
 function diagTestimonialDone(){ return localStorage.getItem('re_testimonial_ok') === '1'; }
 function diagLimit(){
@@ -2844,7 +2851,12 @@ function loadDemoSession() {
 // WAITLIST PRO : capté au moment le plus chaud (quota épuisé)
 // =============================================
 function joinProWaitlist(btn) {
-  track('pro_waitlist', { email: authState.user?.email || null });
+  // ⚠️ On envoyait l'EMAIL ici, dans une table d'analytique que le code et les
+  // CGU décrivent comme anonyme. On envoie l'identifiant du compte à la place :
+  // il est joignable à auth.users depuis le tableau de bord Supabase, donc tu
+  // peux toujours contacter la liste d'attente, sans stocker d'identifiant
+  // direct dans la table des événements.
+  track('pro_waitlist', { user_id: authState.user?.id || null });
   if (btn) {
     btn.disabled = true;
     btn.textContent = '✅ Noté ! Tu seras prévenu en priorité.';

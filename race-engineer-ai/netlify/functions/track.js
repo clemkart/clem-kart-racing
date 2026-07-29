@@ -1,7 +1,15 @@
 // =============================================
 // Race Engineer AI : Analytics first-party
 // POST {event, meta} → table Supabase events (service_role)
-// Anonyme, sans cookies. No-op silencieux si non configuré.
+// Sans cookies, sans traceur tiers. No-op silencieux si non configuré.
+//
+// ⚠️ NE PAS DIRE "anonyme" SANS NUANCE, c'était le cas avant et c'était faux.
+// La quasi-totalité des événements ne portent aucun identifiant, mais
+// l'événement "testimonial" contient un PRÉNOM et un texte libre écrits par le
+// pilote, avec son consentement explicite via une case à cocher obligatoire.
+// Conséquence à ne pas oublier : cette table entre dans le périmètre du droit
+// à l'effacement. Une demande de suppression RGPD doit couvrir profiles,
+// sessions ET events.
 // =============================================
 
 const { createClient } = require('@supabase/supabase-js');
