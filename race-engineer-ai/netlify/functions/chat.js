@@ -63,7 +63,15 @@ const CACHE_TTL = process.env.CLAUDE_CACHE_TTL === "1h" ? "1h" : "5m";
 // =============================================
 const CREDITS_PER_MESSAGE = 10;
 const PLAN_MONTHLY_CREDITS = {
-  free: parseInt(process.env.FREE_MONTHLY_CREDITS, 10) || 100,
+  // 30 credits = 3 messages coach IA par mois. Ramene de 100 (soit 10
+  // messages) le 2026-07-29, sur decision de Clement, pour deux raisons.
+  // D'abord CLAUDE.md prevoyait 3 analyses gratuites depuis le debut : le code
+  // avait derive. Ensuite un utilisateur gratuit qui consommait ses 10 messages
+  // coutait entre 0,80 et 3,90 dollars par mois sans rien rapporter, alors que
+  // le noyau du skill pese 50 804 tokens a chaque appel. Diviser le quota
+  // gratuit par trois divise cette fuite par trois, sans retirer une ligne de
+  // connaissance ni degrader l'experience des payants.
+  free: parseInt(process.env.FREE_MONTHLY_CREDITS, 10) || 30,
   pro: 500,
   founder: 500, // fondateurs = Saison Pro à vie
   club: 500,   // legacy
