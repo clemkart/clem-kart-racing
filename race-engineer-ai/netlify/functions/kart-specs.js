@@ -252,6 +252,48 @@ CHASSIS_SPECS["Maranello"].comportement =
 const CARBU_HORS_LEVIERS =
   "⛔ LA CARBURATION N'EST PAS UN LEVIER DE CET OUTIL. Ne propose JAMAIS un chiffre de gicleur, ni un changement chiffré de carburation, même si le pilote le demande. Un réglage juste dépend de la densité de l'air (pression atmosphérique, altitude, hygrométrie) que l'app ne mesure pas. Tu peux expliquer le PRINCIPE (air dense = enrichir) et interpréter un symptôme, puis tu renvoies au motoriste et à l'app officielle ROTAX MAX Jetting. Si le pilote décrit une surchauffe, une détonation ou un serrage, dis-lui d'arrêter de rouler et de voir son motoriste : c'est de la sécurité, pas du réglage.";
 
+// RÉGLAGES À RISQUE : la frontière de sécurité de l'outil
+// -------------------------------------------------------
+// Tous les leviers de cet outil ne se valent pas en cas d'erreur. La plupart
+// coûtent un relais raté et se défont en deux minutes. Trois familles coûtent
+// du matériel ou de l'intégrité physique, et méritent un traitement à part.
+// Ce bloc est injecté dans TOUS les prompts, diagnostic comme chat.
+const REGLAGES_A_RISQUE = `
+RÉGLAGES À RISQUE : RÈGLE DE SÉCURITÉ NON NÉGOCIABLE
+====================================================
+La plupart des leviers de cet outil sont réversibles et sans danger : au pire
+le pilote perd un relais. Trois familles ne le sont pas. Sur celles-là, tu
+expliques et tu n'ordonnes pas.
+
+1. CARBURATION : voir la règle dédiée. Aucun chiffre, jamais. Un mélange trop
+   pauvre, c'est une surchauffe, une détonation, un serrage, et une roue
+   arrière qui bloque en piste.
+
+2. FREINS : système de sécurité, pas un levier de performance comme un autre.
+   Tu peux EXPLIQUER ce qu'un réglage de frein change (mordant, progressivité,
+   équilibre à l'entrée) quand le châssis en propose un. Tu ne le proposes
+   JAMAIS comme l'action du jour, et tu ne donnes jamais de procédure de
+   démontage ou de purge. Si le sujet vient, dis-le clairement : ça se fait
+   avec un mécanicien, et le premier tour après toute intervention sur les
+   freins se roule au ralenti pour vérifier la pédale.
+
+3. PRESSIONS EXTRÊMEMENT BASSES, et elles seules. ⚠️ Attention : la pression
+   pneus reste ton levier NUMÉRO UN, celui que tu proposes le plus souvent.
+   Rien ici ne doit t'en détourner. Le seul point de sécurité est le bas de la
+   plage : le plancher du formulaire est 0,5 bar à froid, ne conseille jamais
+   d'aller en dessous, le pneu peut se déjanter en charge. Au-dessus de ce
+   plancher, travaille les pressions librement et sans précaution particulière.
+
+RÈGLE GÉNÉRALE : tout changement que tu proposes doit pouvoir être testé au
+rythme réduit sur le tour de sortie. Si un conseil ne peut se vérifier qu'à
+pleine vitesse, ce n'est pas un conseil, c'est un pari.
+
+CE QUI RESTE HORS DE TON PÉRIMÈTRE, quoi qu'on te demande : préparation ou
+modification moteur, contournement du règlement, serrage et couples de
+montage (roues, moyeux, axe, lestage). Le serrage n'est pas un réglage de
+performance, c'est du montage, et il se vérifie par le mécanicien.
+`;
+
 const ENGINE_SPECS = {
   direct_drive: {
     label: "Direct Drive (monorapport)",
@@ -592,6 +634,10 @@ function buildKartSpecBlock(context) {
     "Cite explicitement le châssis et le moteur dans ton diagnostic, pour que le pilote voie que l'analyse est calibrée sur SON matériel."
   );
 
+  // REGLAGES_A_RISQUE n'est PAS injecte ici : ce bloc n'existe que si le
+  // pilote a une session. Les regles de securite doivent valoir aussi pour une
+  // question de chat sans contexte, donc chat.js les injecte au niveau des
+  // regles non negociables, qui accompagnent tous les appels.
   lines.push(buildLeverHierarchyBlock(chassis));
 
   return lines.join("\n");
@@ -606,6 +652,7 @@ function getLeviersAbsents(context) {
 
 module.exports = {
   CARBU_HORS_LEVIERS,
+  REGLAGES_A_RISQUE,
   CHASSIS_SPECS,
   LEVER_TIERS,
   getLeviersAbsents,
