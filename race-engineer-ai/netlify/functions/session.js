@@ -8,11 +8,34 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hkpknrrymgbnjmbewlyc.supabase.co';
-// Même repli que chat.js : la clé anon est publique par conception (RLS),
-// sans lui cette fonction retournait 500 des qu'ANON_KEY manquait cote Netlify.
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhrcGtucnJ5bWdibmptYmV3bHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODgyNzksImV4cCI6MjA5NzI2NDI3OX0.kNbCMJK2FNxoiPOFxgWNoh7sqb89gAAxumZGqTWW014';
+// ⚠️ Cette fonction portait sa PROPRE copie du repli "process.env.X || valeur
+// en dur". Or "||" ne se declenche que si la variable est ABSENTE : une
+// variable presente mais fausse passait telle quelle et getUser() rejetait
+// alors tous les jetons. La sauvegarde cloud repondait "Token invalide" en
+// silence, exactement comme le chat repondait "Connecte-toi". Deux symptomes,
+// une seule cause, mais deux copies du code : on n'avait corrige que l'un.
+// La resolution coherente vit maintenant dans supabase-config.js.
+const { SUPABASE_URL, SUPABASE_ANON_KEY } = require('./supabase-config');
+
+// ⚠️ NE JAMAIS ecrire "parseInt(x) || null". parseInt("0") vaut 0, et
+// "0 || null" vaut null : toute valeur ZERO etait donc enregistree comme
+// ABSENTE. C'est le defaut du formulaire pour le pincement, le carrossage et
+// la chasse, et 0 degre est une temperature d'air reelle. Autrement dit la
+// valeur la PLUS courante etait celle qu'on perdait, silencieusement, a chaque
+// sauvegarde cloud. Un rechargement de session restituait alors des reglages
+// faux. Ces deux aides preservent le zero et ne renvoient null que sur une
+// entree vide ou non numerique.
+function entierOuNull(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : null;
+}
+
+function flottantOuNull(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
 
 // Limites de taille (anti-abus stockage)
 const MAX_BODY_CHARS = 200000;
@@ -86,7 +109,13 @@ exports.handler = async (event) => {
       .order('created_at', { ascending: false })
       .limit(10);
 
-    if (error) return { statusCode: 500, headers, body: JSON.stringify({ error: error.message }) };
+    // ⚠️ Le message d'erreur brut de Postgres partait au navigateur : il peut
+    // reveler des noms de colonnes, de contraintes et de politiques. Il reste
+    // dans les logs, ou il est utile, et le client recoit un texte neutre.
+    if (error) {
+      console.error('[SESSION] lecture impossible :', error.message, error.code || '');
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Historique momentanement indisponible.' }) };
+    }
     return { statusCode: 200, headers, body: JSON.stringify({ sessions: data }) };
   }
 
@@ -112,52 +141,55 @@ exports.handler = async (event) => {
       circuit: context.circuit,
       meteo: context.meteo,
       grip: context.grip,
-      temp_air: parseInt(context.tempAir) || null,
-      temp_piste: parseInt(context.tempPiste) || null,
+      temp_air: entierOuNull(context.tempAir),
+      temp_piste: entierOuNull(context.tempPiste),
       session_type: context.session,
       comportement: context.comportement,
-      intensite: parseInt(context.intensite) || null,
+      intensite: entierOuNull(context.intensite),
       notes: typeof context.notes === 'string' ? context.notes.slice(0, 2000) : null,
       best_lap: typeof context.chronoBest === 'string' ? context.chronoBest.slice(0, 10) : null,
       avg_lap: typeof context.chronoAvg === 'string' ? context.chronoAvg.slice(0, 10) : null,
-      laps: parseInt(context.chronoLaps) || null,
+      laps: entierOuNull(context.chronoLaps),
       barre: context.barre,
-      voie_av: parseInt(context.voieAv) || null,
-      pincement: parseInt(context.pincement) || null,
-      voie_ar: parseFloat(context.voieAr) || null,
+      voie_av: entierOuNull(context.voieAv),
+      pincement: entierOuNull(context.pincement),
+      voie_ar: flottantOuNull(context.voieAr),
       arbre: context.arbre,
       arbre_longueur: context.arbreLongueur,
-      carrossage: parseInt(context.carrossage) || null,
+      carrossage: entierOuNull(context.carrossage),
       siege: context.siege,
       siege_hauteur: context.siegeHauteur,
-      lestage: parseInt(context.lestage) || null,
+      lestage: entierOuNull(context.lestage),
       pneu_marque: context.pneuMarque || null,
       pneu_modele: context.pneuModele || null,
       moyeux: context.moyeux,
       parechocs: context.parechocs,
-      chasse: parseInt(context.chasse) || null,
+      chasse: entierOuNull(context.chasse),
       garde_av: context.gardeAv,
       garde_ar: context.gardeAr,
       moteur: context.moteur,
       // collectData() ne produit jamais "couronne" : selon la famille moteur
       // c'est couronneMono, couronneDD2 ou couronneKz. L'ancienne ligne
       // enregistrait donc systematiquement null en base.
-      couronne: parseInt(
+      couronne: entierOuNull(
         context.moteur_type === 'dd2' ? context.couronneDD2
         : context.moteur_type === 'kz' ? context.couronneKz
         : context.couronneMono
-      ) || null,
-      pignon: parseInt(context.pignonMono) || null,
+      ),
+      pignon: entierOuNull(context.pignonMono),
       moteur_type: context.moteur_type || null,
       moteur_family: context.moteur_family || null,
       chassis: context.chassis || null,
-      gicleur: parseInt(context.gicleur) || null,
+      gicleur: entierOuNull(context.gicleur),
       pressures: context.pressures || null,
       diagnostic_html: typeof diagnostic_html === 'string' ? diagnostic_html.slice(0, MAX_DIAGNOSTIC_CHARS) : null,
       chat_history: sanitizeChatHistory(chat_history),
     }).select().single();
 
-    if (error) return { statusCode: 500, headers, body: JSON.stringify({ error: error.message }) };
+    if (error) {
+      console.error('[SESSION] sauvegarde impossible :', error.message, error.code || '');
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Sauvegarde momentanement indisponible. Ta session reste dans ce navigateur.' }) };
+    }
     return { statusCode: 200, headers, body: JSON.stringify({ session: data }) };
   }
 
