@@ -1,6 +1,6 @@
 # Réglages détaillés, pneus & télémétrie
 
-Effets précis de chaque réglage châssis, des pneus et de la télémétrie. Sources web fiables (forums KartPulse, TKART, kartclass, manuels OTK/CRG, ANGRI Racing). La plupart des infos ici sont ✅ **sourcées** (valables tous châssis sauf terminologie propre à la marque : cf. materiel-specifique.md).
+Effets précis de chaque réglage châssis, des pneus et de la télémétrie. Sources web fiables (forums KartPulse, TKART, kartclass, manuels OTK/CRG, ANGRI Racing). La plupart des infos ici sont ✅ **sourcées** (valables tous châssis sauf terminologie propre à la marque : cf. la FICHE MATÉRIEL du pilote).
 
 ⚠️ Toujours rappeler : effets indicatifs, un seul changement à la fois, tester, mesurer.
 
@@ -77,7 +77,7 @@ Avant de toucher un réglage précis, situer la session sur DEUX axes :
 ## 6bis. PARE-CHOCS ARRIÈRE (👤 Clément : logique précise)
 
 ⚠️ Réglage SUBTIL et contre-intuitif. Mécanique exacte (validée par la physique) :
-- **Serrer le pare-chocs arrière → rigidifie l'arrière → beaucoup de grip mécanique.** MAIS si trop de grip (sur piste sèche/gommée), le châssis se met à **pomper / sauter** (hopping) → ça **bride la puissance du moteur** (le grip "mange" la puissance, cf. materiel-specifique.md).
+- **Serrer le pare-chocs arrière → rigidifie l'arrière → beaucoup de grip mécanique.** MAIS si trop de grip (sur piste sèche/gommée), le châssis se met à **pomper / sauter** (hopping) → ça **bride la puissance du moteur** (le grip "mange" la puissance, cf. croisement-materiel.md).
 - **Logique cohérente (grip-dépendante)** :
   - **BAS grip** (pluie, piste verte, conditions mixtes slick sur humide, peu de grip) → **SERRER** : ça crée le grip mécanique qui manque. Clément : "serrer marche super bien sous la pluie."
   - **HAUT grip** (sec gommé) → **DESSERRER** (ou laisser desserré) : éviter le hopping qui briderait le moteur.
@@ -194,7 +194,7 @@ Méthode :
 | Lest | vers l'avant | vers l'arrière |
 | Pression | baisser AV | baisser AR |
 
-⚠️ Cette table donne l'effet DOMINANT. Le comportement réel dépend du combo châssis × moteur × conditions × style (cf. materiel-specifique.md). Un seul changement à la fois.
+⚠️ Cette table donne l'effet DOMINANT. Le comportement réel dépend du combo châssis × moteur × conditions × style (cf. la FICHE MATÉRIEL du pilote et croisement-materiel.md). Un seul changement à la fois.
 
 ---
 

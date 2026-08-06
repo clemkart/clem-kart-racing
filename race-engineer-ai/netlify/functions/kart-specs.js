@@ -12,7 +12,8 @@
 //   - le comportement caractéristique (prior)
 //   - les pièges à ne pas commettre sur ce matériel
 //
-// Niveaux de fiabilité (repris de skill/materiel-specifique.md) :
+// Niveaux de fiabilité (leur légende est servie au modèle par CADRE_MATERIEL,
+// plus bas ; les fichiers du skill utilisent une autre notation, ✅ / ⚠️ / 👤) :
 //   [OK]  sourcé (manuels constructeur, forums techniques, presse spécialisée)
 //   [?]   déduction ou connaissance générale : à présenter comme indicatif
 //   [CD]  validé par l'expérience directe de Clément Daniel
@@ -47,6 +48,7 @@ const OTK_SPEC = {
     "Sur piste froide, l'avant est déjà très vif : éviter de sur-rigidifier l'avant, ça rend l'arrière nerveux [?]",
     "Barre plus rigide = +grip avant et kart plus réactif en milieu de virage, MAIS peut créer du slide arrière [OK]",
     "La qualité d'un exemplaire individuel compte : un 2e châssis OTK identique peut être mauvais [CD]",
+    "Tony Kart, Kosmic, Exprit, FA Kart et EOS partagent la même plateforme et les mêmes pièces, que les revendeurs listent comme compatibles entre elles. Si le pilote demande de comparer deux de ces marques, parle de 'performances comparables sur une plateforme commune'. La formule 'identiques sauf la couleur' circule beaucoup mais n'est étayée par aucune source technique : ne la reprends pas. Les différences de comportement qui circulent entre ces marques relèvent du folklore de paddock [OK 2026-07]",
   ],
   terminologie: "terminologie native du formulaire (barre ronde/plate, voie AV en bagues, voie AR en cm, arbres dur/medium/tendre)",
 };
@@ -330,7 +332,7 @@ const ENGINE_SPECS = {
     leviersAbsents: [],
     pilotage:
       "frein avant + arrière. Le frein moteur (engine braking) est exploitable au rétrogradage : levier de pilotage absent des monorapports [OK]",
-    note: "la cascade complète des 6 rapports se travaille avec le préparateur : donner le principe, pas les valeurs.",
+    note: "125 cc à clapets, refroidissement liquide, environ 50 ch (37 kW) à 16 000 tr/min, homologation FIA-CIK stricte [OK]. La cascade complète des 6 rapports se travaille avec le préparateur : donner le principe, pas les valeurs.",
   },
   "4t": {
     label: "4 temps réglementé (KA100 et assimilés)",
@@ -392,11 +394,18 @@ const ENGINE_MODEL_NOTES = {
     circuits: "fort couple bas et mi-régime → efficace sur circuits techniques et serrés [OK]",
     pilotage:
       "a un embrayage (aide au freinage tardif). Réponse permissive : on peut mettre le pied à fond directement sans gêner le moteur : contrairement au Rotax [CD]",
+    comparaison:
+      "face au Rotax Max, le X30 a plus de couple ET va plus vite (vitesse de pointe et régime max supérieurs). Le Rotax n'est meilleur que dans le MID-RÉGIME et plafonne plus bas [CD]. ⚠️ Les specs web donnent pourtant Rotax ~30 ch contre X30 ~28 ch : présente ce point comme un RESSENTI, pas comme une vérité chiffrée, car il peut diverger selon la livrée de puissance, le gearing et le millésime.",
+    entretien: "maintenance plus technique que le Rotax à cause de la carburation, révisions un peu plus fréquentes [OK]",
   },
   "X30 Junior": { carbu: "carbu ajustable, même logique que le Senior", circuits: "couple bas régime, circuits techniques [OK]" },
   "X30 Mini": { carbu: "carbu ajustable", circuits: "puissance réduite, réglages limités [?]" },
   OK: {
     puissance: "125cc reed valve, ~35 ch, limite ~15 000 tr/min [OK]",
+    carbu:
+      "30 mm à cuve OU 24 mm à boisseau selon l'ASN et le pays, donc à membrane ou à flotteur : vérifier lequel avec le pilote avant d'interpréter un symptôme moteur [OK]",
+    variantes:
+      "OK-N et OK-N Junior sont une évolution récente (homologation FIA 2023), avec leurs propres motoristes dont TM. Ne pas supposer que les données OK s'y transposent telles quelles [?]",
     pilotage:
       "⚠️ DIRECT DRIVE SANS EMBRAYAGE : contrairement au X30, pas de point mort à bas régime. Le pilote doit adapter son style avec des TRAJECTOIRES PLUS LARGES et garder la vitesse : il ne peut pas se permettre de trop ralentir [OK]",
   },
@@ -461,7 +470,7 @@ const REGLAGES_HORS_SESSION = {
     "calé sur le poids du pilote pour atteindre le minimum de la catégorie. Se vérifie à la pesée, pas en cours de session.",
 };
 
-function buildLeverHierarchyBlock(chassis) {
+function buildLeverHierarchyBlock() {
   const lines = ["\nHIÉRARCHIE DES LEVIERS (ordre de travail d'un ingénieur de course)"];
   lines.push("=================================================================");
   LEVER_TIERS.forEach((t) => {
@@ -473,16 +482,65 @@ function buildLeverHierarchyBlock(chassis) {
   lines.push("\nHORS SESSION (à connaître, à ne JAMAIS proposer comme action du jour) :");
   Object.entries(REGLAGES_HORS_SESSION).forEach(([k, v]) => lines.push(`  · ${k} : ${v}`));
 
+  // ⚠️ Cette consigne disait "Propose TOUJOURS le levier le plus haut". Le
+  // TOUJOURS entrait en contradiction avec la règle qui demande de ne proposer
+  // AUCUN réglage quand le problème vient du pilotage : le harnais l'a montré
+  // sur le cas 5 (irrégularité majeure), où le modèle sortait un réglage tout
+  // en écrivant par ailleurs que le kart n'était pas en cause. La hiérarchie
+  // dit désormais dans quel ORDRE choisir, pas qu'il faut choisir.
   lines.push(
-    "\n→ Propose TOUJOURS le levier le plus haut dans cette hiérarchie qui traite réellement le problème. Ne descends au tier suivant que si les leviers du tier au-dessus sont indisponibles (en butée, absents de ce châssis) ou déjà exploités."
+    "\n→ Dès qu'un réglage est la bonne réponse, propose TOUJOURS le levier le plus haut de cette hiérarchie qui traite réellement le problème. Ne descends au tier suivant que si les leviers du tier au-dessus sont indisponibles (en butée, absents de ce châssis) ou déjà exploités. Descendre au tier 2 alors qu'un levier de tier 1 est encore disponible est une faute : un ingénieur de course ne va pas chercher le pare-chocs quand il lui reste de la voie arrière."
   );
-  if (chassis && chassis.leverPriority) {
-    lines.push(
-      `→ À tier égal, l'ordre propre à cette marque prime : ${chassis.leverPriority.join(" puis ")}.`
-    );
-  }
+  lines.push(
+    "→ À tier égal, l'ordre propre à la marque du pilote prime sur cet ordre générique : sa FICHE MATÉRIEL donne cet ordre, commence par le premier levier disponible de cette liste et pas par un autre."
+  );
+  lines.push(
+    "→ SEULE EXCEPTION, et elle ne change rien à l'ordre ci-dessus : quand le problème ne vient pas du kart (voir la frontière ingénieur / coach), tu ne descends dans AUCUN tier, tu le dis franchement et \"apply\" reste vide. Sortir quand même un réglage dans ce cas contredit ton propre diagnostic et se voit immédiatement."
+  );
+  // L'ordre propre à la marque n'est PLUS recopié ici : la fiche matériel du
+  // pilote le donne déjà, à la ligne "ORDRE DE PRIORITÉ DES LEVIERS". Le
+  // recopier obligeait à régénérer toute cette hiérarchie par pilote, donc à
+  // la refacturer plein tarif à chaque message, pour une seule ligne.
+  lines.push(
+    "→ À tier égal, l'ordre propre à la marque du pilote prime sur cet ordre générique : sa fiche matériel le donne."
+  );
   return lines.join("\n");
 }
+
+// =============================================
+// CADRE MATÉRIEL : la partie INVARIANTE du raisonnement matériel
+// =============================================
+// Ce bloc est identique pour tous les pilotes, à chaque appel. Il est donc
+// injecté dans la zone CACHÉE du prompt par chat.js, et non dans la fiche du
+// pilote. Mesuré : 1 321 tokens qui étaient refacturés plein tarif à chaque
+// message parce qu'ils étaient produits à l'intérieur de buildKartSpecBlock.
+// ⚠️ N'y mettre AUCUNE valeur qui dépende du pilote, du kart ou de la session,
+// sinon on retombe sur une entrée de cache par pilote.
+const CADRE_MATERIEL = `
+CADRE D'EXPLOITATION DE LA FICHE MATÉRIEL
+=========================================
+⚠️ Ce cadre est toujours présent, la fiche qu'il décrit ne l'est PAS toujours.
+Quand le contexte plus bas contient une FICHE MATÉRIEL, elle décrit LE kart
+exact de ce pilote (marque de châssis, modèle, millésime, moteur) et elle prime
+sur toute généralité de ce prompt. Deux karts différents ne peuvent pas
+recevoir le même diagnostic : si ton analyse resterait valable en changeant de
+châssis, c'est qu'elle est trop générique. Recommence.
+Quand il n'y a AUCUNE fiche matériel plus bas, c'est que le pilote n'a pas
+renseigné son kart : ne fais semblant de rien connaître de son matériel, reste
+sur la physique générale, et demande-lui sa marque de châssis et son moteur
+avant tout conseil de réglage chiffré. N'invente jamais une fiche absente.
+
+NIVEAU DE FIABILITÉ DES INFORMATIONS DE CETTE FICHE :
+- [OK] : sourcé (constructeur, presse technique). Tu peux t'appuyer dessus.
+- [CD] : validé par l'expérience directe du fondateur. Fiable, mais c'est un ressenti, pas une mesure.
+- [?]  : déduction non vérifiée. Ne construis JAMAIS une recommandation sur cette seule base. Si c'est ton unique argument, baisse ta confiance à "faible" et dis au pilote de recouper.
+En l'absence de donnée fiable pour ce matériel, applique la physique générale du kart et dis-le honnêtement, plutôt que d'inventer une spécificité de marque.
+
+RÈGLE DE CROISEMENT
+Croise TOUJOURS châssis × moteur × conditions × style pilote avant de conclure. Un même symptôme n'a pas la même cause principale sur deux karts différents, et le levier à bouger en premier dépend de la marque.
+Cite explicitement le châssis et le moteur dans ton diagnostic, pour que le pilote voie que l'analyse est calibrée sur SON matériel.
+${buildLeverHierarchyBlock()}
+`;
 
 // --- CONSTRUCTION DU BLOC INJECTÉ DANS LE PROMPT ---------------------------
 
@@ -510,15 +568,13 @@ function buildKartSpecBlock(context) {
   const lines = [];
   lines.push("\nFICHE MATÉRIEL DE CE PILOTE : À APPLIQUER IMPÉRATIVEMENT");
   lines.push("========================================================");
+  // ⚠️ Le mode d'emploi de cette fiche (priorité sur les généralités, sens des
+  // marqueurs [OK] / [CD] / [?], règle de croisement, hiérarchie des leviers)
+  // vit dans CADRE_MATERIEL, injecté plus haut dans la zone CACHÉE du prompt.
+  // Il est le même pour tous les pilotes : le régénérer ici le faisait
+  // refacturer plein tarif à chaque message. Ne pas le réintroduire.
   lines.push(
-    "Ce bloc décrit LE kart exact de ce pilote. Deux karts différents ne peuvent pas recevoir le même diagnostic : si ton analyse resterait valable en changeant de châssis, c'est qu'elle est trop générique. Recommence."
-  );
-  lines.push(
-    "\nNIVEAU DE FIABILITÉ DES INFORMATIONS CI-DESSOUS :\n" +
-      "- [OK] : sourcé (constructeur, presse technique). Tu peux t'appuyer dessus.\n" +
-      "- [CD] : validé par l'expérience directe du fondateur. Fiable, mais c'est un ressenti, pas une mesure.\n" +
-      "- [?]  : déduction non vérifiée. Ne construis JAMAIS une recommandation sur cette seule base. Si c'est ton unique argument, baisse ta confiance à \"faible\" et dis au pilote de recouper.\n" +
-      "En l'absence de donnée fiable pour ce matériel, applique la physique générale du kart et dis-le honnêtement, plutôt que d'inventer une spécificité de marque."
+    "Le mode d'emploi de cette fiche et le sens des marqueurs [OK], [CD] et [?] sont donnés plus haut, dans le CADRE D'EXPLOITATION DE LA FICHE MATÉRIEL."
   );
 
   // --- Châssis ---
@@ -625,21 +681,12 @@ function buildKartSpecBlock(context) {
     }
   }
 
-  // --- Croisement ---
-  lines.push("\n### RÈGLE DE CROISEMENT");
-  lines.push(
-    "Croise TOUJOURS châssis × moteur × conditions × style pilote avant de conclure. Un même symptôme n'a pas la même cause principale sur deux karts différents, et le levier à bouger en premier dépend de la marque (voir l'ordre de priorité ci-dessus)."
-  );
-  lines.push(
-    "Cite explicitement le châssis et le moteur dans ton diagnostic, pour que le pilote voie que l'analyse est calibrée sur SON matériel."
-  );
-
-  // REGLAGES_A_RISQUE n'est PAS injecte ici : ce bloc n'existe que si le
-  // pilote a une session. Les regles de securite doivent valoir aussi pour une
-  // question de chat sans contexte, donc chat.js les injecte au niveau des
-  // regles non negociables, qui accompagnent tous les appels.
-  lines.push(buildLeverHierarchyBlock(chassis));
-
+  // ⚠️ Ni la RÈGLE DE CROISEMENT ni la HIÉRARCHIE DES LEVIERS ne sont produites
+  // ici : elles sont identiques pour tous les pilotes et vivent dans
+  // CADRE_MATERIEL, injecté dans la zone cachée du prompt. Même raison que pour
+  // REGLAGES_A_RISQUE, qui n'a jamais été ici : ces règles doivent aussi valoir
+  // pour une question de chat SANS session, alors que ce bloc-ci n'existe que
+  // si le pilote a rempli le formulaire.
   return lines.join("\n");
 }
 
@@ -651,6 +698,7 @@ function getLeviersAbsents(context) {
 }
 
 module.exports = {
+  CADRE_MATERIEL,
   CARBU_HORS_LEVIERS,
   REGLAGES_A_RISQUE,
   CHASSIS_SPECS,

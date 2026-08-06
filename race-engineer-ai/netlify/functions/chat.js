@@ -13,7 +13,13 @@ const fs = require("fs");
 const path = require("path");
 // Registre des spécificités châssis × moteur : c'est lui qui garantit qu'un
 // Sodikart en Rotax ne reçoit pas le même diagnostic qu'un Tony Kart en X30.
-const { buildKartSpecBlock, getLeviersAbsents, CARBU_HORS_LEVIERS, REGLAGES_A_RISQUE } = require("./kart-specs");
+const {
+  buildKartSpecBlock,
+  getLeviersAbsents,
+  CADRE_MATERIEL,
+  CARBU_HORS_LEVIERS,
+  REGLAGES_A_RISQUE,
+} = require("./kart-specs");
 
 // =============================================
 // CONFIG (env vars)
@@ -48,14 +54,24 @@ const EFFORT_CHAT = process.env.CLAUDE_EFFORT_CHAT || "low";
 // rien tant qu'il n'est pas atteint. Relevé de 4000 à 8000 le 2026-07-29.
 const MAX_TOKENS_DIAGNOSTIC = parseInt(process.env.CLAUDE_MAX_TOKENS_DIAGNOSTIC, 10) || 8000;
 const MAX_TOKENS_CHAT = parseInt(process.env.CLAUDE_MAX_TOKENS_CHAT, 10) || 4000;
-// Durée de vie du cache de prompt. Le noyau du skill pèse 50 769 tokens
+// Durée de vie du cache de prompt. Le noyau du skill pèse 50 915 tokens
 // mesurés : le garder en cache est le premier levier de coût de l'app.
-//   "5m" (défaut) : écriture 1.25x, rentable dès 2 appels rapprochés
-//   "1h"          : écriture 2x, rentable à partir de 3 appels dans l'heure
-// Un pilote qui lance un diagnostic puis pose 3 questions sur 30 minutes paie
-// 4 écritures en 5m contre 1 écriture + 3 lectures en 1h. Réglable sans
-// redéploiement pour arbitrer une fois l'usage réel mesuré.
-const CACHE_TTL = process.env.CLAUDE_CACHE_TTL === "1h" ? "1h" : "5m";
+//   "1h" (défaut) : écriture 2x, puis lectures à 0,1x
+//   "5m"          : écriture 1,25x, mais le cache meurt entre deux messages
+// ⚠️ Le compteur REPART À ZÉRO à chaque lecture, gratuitement. C'est ce qui
+// décide du bon réglage : sur une journée de roulage réelle (piste ouverte de
+// 9h à 12h30, pause, puis 14h à 18h), tous les messages d'une demi-journée
+// sont espacés de moins d'une heure. En "1h" on paie donc UNE écriture le
+// matin, une autre après la pause de midi, et tout le reste en lectures. En
+// "5m" le cache est mort entre deux messages du même pilote, donc chaque
+// message repayait une écriture : le cache ne servait à rien.
+// Mesuré : 4 messages espacés sur une session coûtent 1,73 dollar en "5m"
+// contre 0,98 en "1h". Le "1h" est plus cher (+49 %) uniquement pour un pilote
+// qui lance UN diagnostic isolé et ne pose aucune question.
+// ⚠️ Ce cache ne contient QUE le skill. Il n'a rien à voir avec la mémoire de
+// conversation, qui passe par l'historique renvoyé par le navigateur et par
+// Supabase. Un cache expiré ne perd aucune donnée du pilote.
+const CACHE_TTL = process.env.CLAUDE_CACHE_TTL === "5m" ? "5m" : "1h";
 // =============================================
 // CRÉDITS (aligné sur les offres : Découverte 100 / Saison Pro 500 / Paddock 1500)
 // 1 message coach IA = 10 crédits. Le diagnostic express local reste gratuit.
@@ -470,7 +486,13 @@ const SKILL_CORE_FILES = [
   "vision-pilote.md",
   "principes-universels.md",
   "mecanique-kart-specifique.md",
-  "materiel-specifique.md",
+  // ⚠️ materiel-specifique.md a été retiré du noyau le 2026-07-30. Ses fiches
+  // par marque et par moteur (6 610 tokens sur 8 767, MESURÉS) doublonnaient
+  // kart-specs.js, qui produit déjà la fiche du kart EXACT du pilote et
+  // l'injecte dans chaque prompt. Deux registres des mêmes faits, c'est ainsi
+  // que le folklore "les OTK sont identiques sauf la couleur" était revenu une
+  // fois. Ne reste que la logique de croisement, qui ne dépend d'aucune marque.
+  "croisement-materiel.md",
   "reglages-detailles.md",
   "matrice-symptomes.md",
   "methodologie-coach.md",
@@ -984,7 +1006,12 @@ Tu réponds UNIQUEMENT en JSON valide avec deux clés : "message" et "apply".
 
 "message" : ta réponse en français. Suis le format DIAGNOSTIC / CAUSE PROBABLE / ACTION CONCRÈTE / POURQUOI (2-3 lignes max) / POUR APPROFONDIR / À OBSERVER (cf. methodologie-coach.md). Max 250 mots. Utilise le vocabulaire pilote karting (rotation, délestage, light hands, freinage dégressif, point de corde, point d'accélération, micro-glisse contrôlée, châssis qui respire). Bannis le jargon générique IA.`;
 
-    const formatInstructions = `
+    // ⚠️ CE BLOC NE DOIT CONTENIR QUE DU TEXTE STATIQUE, identique d'un appel
+    // à l'autre pour un mode donné. Il est mis en cache (voir plus bas). Y
+    // glisser une valeur du pilote ou de la session ferait une entrée de cache
+    // par pilote, donc une écriture au lieu d'une lecture à chaque message.
+    // Tout ce qui varie va dans contextStr, qui est le dernier bloc.
+    const reglesStatiques = `
 
 # FORMAT DE RÉPONSE OBLIGATOIRE
 ${responseShape}
@@ -1043,15 +1070,25 @@ RÈGLES NON-NÉGOCIABLES :
 - Tu disposes de l'historique de la conversation : tiens compte des échanges précédents (réglages déjà testés, problèmes déjà évoqués), ne te répète pas.
 
 ${REGLAGES_A_RISQUE}
-${contextStr}
+${CADRE_MATERIEL}
 `;
 
-    // === System prompt : noyau caché + modules conditionnels cachés + format ===
+    // === System prompt : trois blocs cachés, puis le contexte du pilote ===
+    // Le cache est un cache de PRÉFIXE : il faut donc ranger du plus stable au
+    // plus volatil, sinon un octet qui change tôt invalide tout ce qui suit.
+    //   1. noyau du skill      : identique pour tout le monde
+    //   2. modules             : varie selon les mots-clés de la demande
+    //   3. règles et format    : identique pour tout le monde dans un mode
+    //   4. contexte du pilote  : NON caché, il change à chaque message
+    // Le bloc 3 était auparavant collé au contexte, donc refacturé plein tarif
+    // à chaque appel : 4 025 tokens en diagnostic, 3 028 en chat, MESURÉS. À
+    // eux seuls ils coûtaient plus cher que les 50 915 tokens du noyau dès que
+    // le cache était chaud. Trois points de césure sur les quatre autorisés.
     const skillModules = selectSkillModules(message, context, isDiagnostic);
     const system = [
       {
         type: "text",
-        // 50 769 tokens MESURÉS le 2026-07-29 via count_tokens, pas estimés.
+        // 50 915 tokens MESURÉS le 2026-07-29 via count_tokens, pas estimés.
         // C'est le premier poste de coût de l'application : à plein tarif ce
         // seul bloc vaut environ 0,25 dollar par appel, contre 0,03 en lecture
         // de cache. Le taux de cache décide de la marge des abonnements.
@@ -1066,7 +1103,13 @@ ${contextStr}
         cache_control: { type: "ephemeral", ttl: CACHE_TTL },
       });
     }
-    system.push({ type: "text", text: formatInstructions }); // petit, variable selon contexte
+    system.push({
+      type: "text",
+      text: reglesStatiques,
+      cache_control: { type: "ephemeral", ttl: CACHE_TTL },
+    });
+    // Dernier bloc, jamais caché : la session du pilote change à chaque message.
+    system.push({ type: "text", text: contextStr });
 
     // === Messages : historique de conversation + question actuelle ===
     // Le diagnostic est une analyse ponctuelle de la session : pas d'historique

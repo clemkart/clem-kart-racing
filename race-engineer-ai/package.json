@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test:diagnostic": "node tests/run-diagnostics.js",
-    "dev": "node tests/dev-server.js"
+    "dev": "node tests/dev-server.js",
+    "test:chat": "node tests/run-chat.js"
   },
   "engines": {
     "node": ">=18"
