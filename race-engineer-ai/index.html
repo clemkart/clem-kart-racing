@@ -1215,33 +1215,27 @@ const KB = {
   grip: {
     verte: {
       desc: "Piste verte = personne n'a encore roulé. Caoutchouc absent, grip très bas. Contre-intuitif : rigidifie le châssis pour forcer le délestage mécanique de la roue arrière intérieure.",
-      philosophy: "En condition de grip très bas, l'erreur classique est d'assouplir pour chercher du grip. C'est l'inverse : rigidifie (barre plate en position verticale, voie AR étroite, arbre dur) pour créer un délestage mécanique. Le kart doit pivoter par délestage, pas par adhérence.",
-      setup: ["Barre plate en position verticale (sur le chant)", "Voie AR étroite (135-136)", "Arbre dur", "Pressions basses pour maximiser la surface de contact"]
+      philosophy: "En condition de grip très bas, l'erreur classique est d'assouplir pour chercher du grip. C'est l'inverse : rigidifie (barre plate en position verticale, voie AR étroite, arbre dur) pour créer un délestage mécanique. Le kart doit pivoter par délestage, pas par adhérence."
     },
     sale: {
       desc: "Piste sale : débris, poussière, grip instable et imprévisible. Mise en chauffe longue, comportement irrégulier.",
-      philosophy: "Setup conservateur. Évite les extrêmes. Pressions légèrement basses.",
-      setup: ["Setup neutre à légèrement rigide", "Pressions normales à légèrement basses"]
+      philosophy: "Setup conservateur. Évite les extrêmes. Pressions légèrement basses."
     },
     medium: {
       desc: "Grip normal : comportement standard du kart. Base de référence pour les réglages.",
-      philosophy: "C'est ta base de référence. Setup neutre, ajuste selon le comportement observé.",
-      setup: ["Setup de référence"]
+      philosophy: "C'est ta base de référence. Setup neutre, ajuste selon le comportement observé."
     },
     propre: {
       desc: "Piste propre : bonne adhérence, comportement prévisible. Le kart répond bien.",
-      philosophy: "Grip correct. Commence à légèrement assouplir pour maximiser le transfert de charge.",
-      setup: ["Voie AR peut s'élargir légèrement", "Arbre medium à tendre"]
+      philosophy: "Grip correct. Commence à légèrement assouplir pour maximiser le transfert de charge."
     },
     grippee: {
       desc: "Piste grippée : caoutchouc bien déposé, fort grip. Kart peut devenir nerveux. Assouplir progressivement.",
-      philosophy: "Beaucoup de grip = le kart a tendance à bloquer la roue AR. Assouplir pour laisser le kart respirer.",
-      setup: ["Barre ronde ou sans barre", "Voie AR large (139-140)", "Arbre tendre", "Pressions légèrement plus hautes"]
+      philosophy: "Beaucoup de grip = le kart a tendance à bloquer la roue AR. Assouplir pour laisser le kart respirer."
     },
     ultra: {
       desc: "Ultra grippée : grip extrême (fin de journée, piste mouillée qui sèche). Kart très nerveux, risque de blocage AR permanent.",
-      philosophy: "Maximum de souplesse. La priorité est de laisser le châssis fléchir pour éviter le blocage complet de la roue AR intérieure.",
-      setup: ["Sans barre avant", "Voie AR à la butée max (140)", "Arbre le plus tendre", "Moyeux longs", "Pressions hautes"]
+      philosophy: "Maximum de souplesse. La priorité est de laisser le châssis fléchir pour éviter le blocage complet de la roue AR intérieure."
     }
   },
   // Libellés des symptômes UNIQUEMENT.
@@ -1264,19 +1258,22 @@ const KB = {
   chatbot: {
     'sous-virage': {
       keywords: ['sous-virage', 'pousse', 'sous vire', 'understeer', 'refuse de tourner', 'kart tout droit', 'plonge tout droit'],
-      response: `<strong>Sous-virage, les causes principales :</strong><br><br>
-1. <strong>Châssis trop rigide</strong> → le chassis ne peut pas se déformer pour délester la roue AR intérieure. Solution : enlever ou alléger la barre avant.<br><br>
-2. <strong>Chasse insuffisante</strong> → la chasse crée le pivot à l'entrée. Augmente de 1 cran.<br><br>
-3. <strong>Pression AV trop basse</strong> → moins de précision directionnelle. Augmente de 0.05 bar.<br><br>
-4. <strong>Voie AR trop étroite</strong> → la roue AR intérieure reste au sol et bloque la rotation. Élargis de 0.5 cm.<br><br>
-<em>Rappel : le volant ne fait pas tourner le kart. C'est le délestage de la roue AR intérieure via le freinage qui initie la rotation.</em>`
+      response: `<strong>Sous-virage : le kart refuse de s'inscrire.</strong><br><br>
+<strong>D'abord le pilotage, avant tout réglage.</strong> Le sous-virage à l'entrée vient très souvent du frein maintenu trop longtemps dans l'angle : l'avant sature, la roue arrière intérieure ne se déleste pas, et le kart part tout droit. Freine plus droit, relâche progressivement à mesure que tu inscris, et mets moins de volant, pas plus.<br><br>
+<strong>Ensuite le châssis, dans cet ordre :</strong><br>
+1. <strong>Pressions</strong> → le levier le plus rapide et le plus réversible.<br>
+2. <strong>Voie arrière</strong> → trop resserrée, la roue AR intérieure reste au sol et bloque la rotation.<br>
+3. <strong>Géométrie avant</strong> (chasse, carrossage) → c'est elle qui crée le pivot à l'entrée.<br>
+4. <strong>Rigidité avant</strong> → un avant trop rigide empêche le châssis de travailler. Le réglage qui la commande dépend de ta marque.<br><br>
+<em>Rappel : le volant ne fait pas tourner le kart. C'est le délestage de la roue AR intérieure via le freinage qui initie la rotation.</em><br><br>
+<em>Je te donne l'ordre, pas les valeurs : la bonne amplitude dépend de ton châssis, de tes réglages actuels et de tes butées, que je ne vois pas hors ligne.</em>`
     },
     'survirage': {
       keywords: ['survirage', 'part', 'sur vire', 'oversteer', 'glisse arrière', 'queue', 'chasse'],
-      response: `<strong>Survirage, les causes principales :</strong><br><br>
-<strong>À l'entrée :</strong> Trop de délestage AR → réduire la chasse (-1), arbre plus dur, voie AR légèrement plus large.<br><br>
-<strong>À la sortie :</strong> Souvent le point d'accélération. Accélérer avant la fin de la rotation = pneus dans le mauvais axe = départ AR. Attends que le kart soit aligné.<br><br>
-<strong>Pression AR trop basse</strong> → augmente de 0.05 à 0.10 bar et vérifie le delta.<br><br>
+      response: `<strong>Survirage : l'arrière décroche.</strong><br><br>
+<strong>La question qui tranche : à l'entrée ou à la sortie ?</strong> Ce ne sont pas le même problème et ils n'ont pas la même réponse.<br><br>
+<strong>À la sortie</strong> → commence par le pilotage, c'est là que ça se joue dans la grande majorité des cas. Remettre les gaz avant la fin de la rotation met les pneus dans le mauvais axe et l'arrière part. Attends que le kart soit aligné. Sur un moteur qui reprend fort, la remise de gaz doit être progressive, pas binaire.<br><br>
+<strong>À l'entrée</strong> → là c'est plutôt le châssis : trop de délestage arrière. Les leviers vont dans le sens de rendre l'arrière plus posé et l'avant moins mordant, en commençant par les pressions puis la voie arrière.<br><br>
 <em>Si le problème est uniquement en sortie : c'est 80% un problème de pilotage, pas de réglage.</em>`
     },
     'rotation': {
@@ -1360,8 +1357,8 @@ Un gicleur juste dépend de la <strong>densité de l'air</strong> : température
       response: `<strong>Philosophie OTK, la vérité contre-intuitive :</strong><br><br>
 Sur piste à bas grip (verte, sale), l'erreur classique est d'assouplir le kart pour "chercher" de l'adhérence. C'est l'inverse.<br><br>
 <strong>En no-grip → RIGIDIFIE :</strong><br>
-• Barre plate en position verticale (max rigidité)<br>
-• Voie AR étroite (135-136 cm)<br>
+• Train avant plus rigide (le réglage qui le commande dépend de ta marque : barre de torsion chez les uns, bague excentrique ou système propriétaire chez les autres)<br>
+• Voie arrière plutôt resserrée, vers le bas de ta plage<br>
 • Arbre dur<br>
 • Pare-chocs serré<br><br>
 <strong>Pourquoi ?</strong> Sans caoutchouc au sol, le seul moyen d'initier la rotation est le <strong>délestage mécanique</strong>. Un châssis rigide force la roue AR intérieure à se soulever. Un châssis souple absorbe les contraintes sans délester.<br><br>
@@ -1387,9 +1384,9 @@ La couronne va de 32 à 38 dents (couronnes DD2 spécifiques).<br><br>
 <strong>Voie avant (en bagues) :</strong><br>
 • Large (6 bagues) → plus de grip AV, meilleure stabilité en appui<br>
 • Étroite (0 bague) → moins de grip AV, meilleure rotation initiale<br><br>
-<strong>Voie arrière (135 à 141 cm) :</strong><br>
-• Étroite (135) → blocage AR → moins de rotation → plus de stabilité<br>
-• Large (141) → AR libre → beaucoup de rotation → mais peut devenir instable<br><br>
+<strong>Voie arrière (136 à 140 cm, la plage utilisable de l'app) :</strong><br>
+• Resserrée (vers 136) → blocage AR → moins de rotation → plus de stabilité<br>
+• Large (vers 140) → AR libre → beaucoup de rotation → mais peut devenir instable<br><br>
 <em>La voie AR est souvent le réglage le plus efficace et rapide à changer. Une demi-centimètre peut transformer le comportement du kart.</em>`
     }
   }
@@ -3900,9 +3897,21 @@ async function sendChat() {
     clearInterval(loadingTimer);
     document.getElementById(loadingId)?.remove();
     console.error('Erreur API:', err);
-    // Fallback sur le système keywords si l'API est indisponible
-    const fallback = getChatResponse(msg);
-    addMsg('⚠️ <em>Connexion impossible au serveur.</em> Mode hors-ligne : ' + fallback, 'bot');
+    // Repli hors ligne. ⚠️ Ce repli ne connaît NI le kart du pilote, NI ses
+    // réglages actuels, NI ses butées : il ne peut donc donner que des
+    // principes, jamais une valeur à appliquer. On adapte quand même le
+    // vocabulaire au châssis (un pilote Sodikart n'a pas de barre de torsion)
+    // et on annonce clairement la limite, sinon le pilote prend un texte
+    // générique pour un diagnostic calibré sur son kart.
+    const chassisPilote = document.getElementById('profil-chassis')?.value || '';
+    const fallback = adaptTextToChassis(getChatResponse(msg), chassisPilote);
+    addMsg(
+      '⚠️ <em>Connexion impossible au serveur.</em><br>Voici le principe général, '
+      + 'mais <strong>hors ligne je ne vois ni ton kart ni tes réglages actuels</strong> : '
+      + 'ne prends aucun chiffre d\'ici comme une consigne, relance quand tu auras du réseau.'
+      + '<br><br>' + fallback,
+      'bot'
+    );
   }
 }
 
@@ -3920,25 +3929,37 @@ function addMsg(text, type) {
   area.scrollTop = area.scrollHeight;
 }
 
-function getChatResponse(msg) {
-  const msgLower = msg.toLowerCase();
-
-  // Détecter si le pilote décrit un problème → proposer diagnostic guidé
-  const problemKeywords = ['sous-virage','survire','survirage','tourne pas','rotation','pas de grip','instable','nerveux','glisse','part','pousse'];
-  if(problemKeywords.some(kw => msgLower.includes(kw))) {
-    const topic = KB.chatbot;
-    for(const [key, data] of Object.entries(topic)) {
-      if(data.keywords.some(kw => msgLower.includes(kw))) {
-        return data.response + `<br><br><button class="apply-setup-btn" onclick="startDiagSession()" style="margin-top:8px;">🔍 Lancer le diagnostic guidé pour ce problème</button>`;
+// Cherche l'entrée dont le mot-clé CORRESPONDANT est le plus long, donc le
+// plus spécifique. ⚠️ Ne pas revenir à un "premier qui matche" : l'entrée
+// survirage porte le mot-clé "chasse" et l'entrée barre avant porte "châssis",
+// or elles arrivent avant les entrées dédiées à ces deux sujets. En premier
+// match, toute question sur la chasse renvoyait la réponse survirage, et
+// l'explication de la chasse était injoignable.
+function meilleureEntreeKB(msgLower) {
+  let meilleur = null, longueur = 0;
+  for (const [nom, data] of Object.entries(KB.chatbot)) {
+    for (const kw of data.keywords) {
+      if (msgLower.includes(kw) && kw.length > longueur) {
+        longueur = kw.length;
+        meilleur = data;
       }
     }
   }
+  return meilleur;
+}
 
-    // Match direct KB
-  for(const [topic, data] of Object.entries(KB.chatbot)) {
-    if(data.keywords.some(kw => msgLower.includes(kw))) {
-      return data.response;
-    }
+function getChatResponse(msg) {
+  const msgLower = msg.toLowerCase();
+  const data = meilleureEntreeKB(msgLower);
+
+  if (data) {
+    // Le pilote décrit un comportement → l'orienter vers le diagnostic guidé,
+    // qui lui, connaît son kart.
+    const problemKeywords = ['sous-virage','survire','survirage','tourne pas','rotation','pas de grip','instable','nerveux','glisse','part','pousse'];
+    const decritUnProbleme = problemKeywords.some(kw => msgLower.includes(kw));
+    return data.response + (decritUnProbleme
+      ? `<br><br><button class="apply-setup-btn" onclick="startDiagSession()" style="margin-top:8px;">🔍 Lancer le diagnostic guidé pour ce problème</button>`
+      : '');
   }
 
   if(msgLower.includes('merci') || msgLower.includes('cool') || msgLower.includes('parfait') || msgLower.includes('top')) {

@@ -619,6 +619,15 @@ function checkRateLimit(ip) {
   const now = Date.now();
   const entry = rateLimitMap.get(ip);
   if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
+    // Purge des fenêtres expirées. ⚠️ Sans ça, cette Map ne faisait que
+    // GROSSIR : une adresse vue une fois y restait pour la vie de l'instance
+    // Lambda. Sur une instance tiède qui sert beaucoup d'adresses, c'est une
+    // fuite mémoire lente, et elle finit par tuer la fonction.
+    if (rateLimitMap.size > 500) {
+      for (const [cle, val] of rateLimitMap) {
+        if (now - val.windowStart > RATE_WINDOW_MS) rateLimitMap.delete(cle);
+      }
+    }
     rateLimitMap.set(ip, { count: 1, windowStart: now });
     return true;
   }
@@ -716,11 +725,45 @@ function currentMonth() {
   return new Date().toISOString().slice(0, 7); // 'YYYY-MM'
 }
 
-// Retourne { allowed, used, limit, unlimited, plan } en CRÉDITS : fail-open si la DB est KO
-// (mieux vaut une réponse IA en trop qu'un produit cassé)
+// =============================================
+// MODE DÉGRADÉ : le garde-fou quand le quota n'est plus vérifiable
+// =============================================
+// ⚠️ Avant le 2026-08-06, toute panne de quota renvoyait unlimited:true. Une
+// variable Netlify absente ou mal nommée suffisait donc à rendre l'app
+// GRATUITE ET ILLIMITÉE pour tout le monde, sans la moindre erreur visible :
+// elle fonctionnait parfaitement, elle était juste offerte. Ce projet a déjà
+// perdu une semaine sur exactement ce scénario avec SUPABASE_ANON_KEY.
+//
+// On distingue maintenant deux pannes que le code confondait :
+//   - la clé service ABSENTE : erreur de configuration, état permanent
+//   - la base INJOIGNABLE : incident transitoire
+// Dans les deux cas on continue de servir (un produit cassé est pire), mais
+// avec un plafond de secours compté en mémoire, et un journal criard.
+const PLAFOND_DEGRADE = parseInt(process.env.DEGRADED_MAX_MESSAGES, 10) || 5;
+const usageDegrade = new Map(); // userId -> nombre de messages servis à l'aveugle
+
+function quotaDegrade(userId, cause) {
+  const servis = usageDegrade.get(userId) || 0;
+  // Journal greppable : chercher [QUOTA-DEGRADE] dans les logs de fonction.
+  console.error(
+    `[QUOTA-DEGRADE] ${cause}. Le quota n'est PAS verifiable, plafond de secours ` +
+      `${servis}/${PLAFOND_DEGRADE} pour cet utilisateur sur cette instance. ` +
+      `Verifier SUPABASE_SERVICE_ROLE_KEY dans les variables Netlify.`
+  );
+  usageDegrade.set(userId, servis + 1);
+  return {
+    allowed: servis < PLAFOND_DEGRADE,
+    used: servis * CREDITS_PER_MESSAGE,
+    limit: PLAFOND_DEGRADE * CREDITS_PER_MESSAGE,
+    unlimited: false, // ⛔ ne jamais remettre true ici, c'était la fuite
+    degrade: true,
+    plan: "free",
+  };
+}
+
+// Retourne { allowed, used, limit, unlimited, plan } en CRÉDITS.
 async function checkQuota(admin, userId) {
-  const noQuota = { allowed: true, used: 0, limit: PLAN_MONTHLY_CREDITS.free, unlimited: true, plan: "free" };
-  if (!admin) return noQuota;
+  if (!admin) return quotaDegrade(userId, "SUPABASE_SERVICE_ROLE_KEY absente");
   try {
     const { data: profile } = await admin
       .from("profiles").select("plan").eq("id", userId).single();
@@ -739,8 +782,7 @@ async function checkQuota(admin, userId) {
       plan,
     };
   } catch (e) {
-    console.error("checkQuota failed (fail-open):", e.message);
-    return noQuota;
+    return quotaDegrade(userId, `base Supabase injoignable (${e.message})`);
   }
 }
 
@@ -840,10 +882,32 @@ exports.handler = async (event) => {
 
     // === QUOTA mensuel en crédits (selon le plan) ===
     const admin = user ? getAdminClient() : null;
+    // ⚠️ Ce unlimited:true est le SEUL légitime du fichier, et il n'existe
+    // qu'en dev : en production ALLOW_ANON_CHAT est false, donc `user` est
+    // toujours défini (sinon on a déjà renvoyé 401 plus haut) et cette valeur
+    // est immédiatement remplacée par checkQuota. Ne pas s'en inspirer pour
+    // "réparer" un quota indisponible : c'était exactement la fuite fermée le
+    // 2026-08-06, voir quotaDegrade().
     let quota = { allowed: true, used: 0, limit: PLAN_MONTHLY_CREDITS.free, unlimited: true, plan: "free" };
     if (user) {
       quota = await checkQuota(admin, user.id);
       if (!quota.allowed) {
+        // ⚠️ En mode dégradé, ce n'est PAS le quota du pilote qui est épuisé,
+        // c'est notre compteur qui est hors service. Lui dire qu'il a consommé
+        // son mois serait un mensonge, et il attendrait le 1er pour rien.
+        if (quota.degrade) {
+          return {
+            statusCode: 503,
+            headers,
+            body: JSON.stringify({
+              code: "service_degraded",
+              message:
+                "Le coach IA est temporairement limité de notre côté, ça n'a rien à voir avec ton quota. " +
+                "Ton diagnostic express et ton historique restent disponibles sans limite. Réessaie plus tard.",
+              apply: {},
+            }),
+          };
+        }
         const upsell = quota.plan === "free"
           ? " Passe en Saison Pro pour 500 crédits chaque mois (guide offert)."
           : "";

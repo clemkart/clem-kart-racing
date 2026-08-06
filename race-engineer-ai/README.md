@@ -48,6 +48,14 @@ Cette clé est publique (protégée par RLS), pas un secret.
 | `SUPABASE_URL` | URL du projet Supabase | Non (fallback codé) |
 | `FREE_MONTHLY_CREDITS` | Quota mensuel plan gratuit, en CRÉDITS (défaut : 30 crédits, soit 3 messages IA/mois car 1 message = 10 crédits) | Non |
 | `ALLOW_ANON_CHAT` | `true` = chat sans compte (DEV LOCAL UNIQUEMENT, jamais en prod) | Non |
+| `DEGRADED_MAX_MESSAGES` | Plafond de secours par utilisateur quand le quota n'est plus vérifiable (défaut : 5). Voir ci-dessous. | Non |
+
+**⚠️ Si `SUPABASE_SERVICE_ROLE_KEY` est absente ou mal nommée**, le quota n'est
+plus vérifiable. L'app continue de servir, mais avec un plafond de secours de
+5 messages par utilisateur et par instance, et elle écrit `[QUOTA-DEGRADE]`
+dans les logs de fonction Netlify. Cherchez ce marqueur : avant le 2026-08-06,
+ce cas rendait l'app **gratuite et illimitée pour tout le monde**, sans aucune
+erreur visible.
 
 ### Réglages de coût (tous facultatifs, modifiables sans redéploiement)
 
@@ -106,12 +114,24 @@ FROM events WHERE event = 'feedback' AND meta->>'vote' = 'down';
 netlify dev
 ```
 
-## Harnais de test (consomment des crédits API, pas Netlify)
+## Harnais de test
 
 ```bash
+npm run test:coherence    # GRATUIT et instantané : à lancer à chaque modif
 npm run test:diagnostic   # 7 cas de diagnostic (tests/cas-de-reference.json)
 npm run test:chat         # mode chat, cas sans profil, garde-fous, marques hors harnais
 ```
+
+**`test:coherence` ne consomme aucun crédit API.** Il vérifie les valeurs qui
+vivent EN DOUBLE dans `index.html` et dans les functions : butées de réglage,
+codes de symptôme, marques de châssis, moteurs, châssis sans barre de torsion,
+et l'absence de valeur conseillée hors des butées de l'app. Sans lui, rien
+n'empêchait le navigateur d'afficher une chose et l'IA d'en dire une autre sur
+le même écran. Lancez-le systématiquement après avoir touché un réglage, un
+symptôme ou une marque.
+
+Les deux autres consomment des crédits API (environ 0,60 € au premier appel
+puis 0,08 € chacun).
 
 ⚠️ **Le score de ces harnais varie d'un tir à l'autre sur du code identique.**
 Certains cas passent environ une fois sur deux. Un échec isolé ne prouve donc

@@ -179,9 +179,13 @@ CAS.push(
 
 const DASH = /[\u2014\u2013]/;
 
+const args = process.argv.slice(2);
+const seul = args.includes("--cas") ? parseInt(args[args.indexOf("--cas") + 1], 10) : null;
+
 (async () => {
   let total = 0, ok = 0;
-  for (const c of CAS) {
+  for (const [i, c] of CAS.entries()) {
+    if (seul && i + 1 !== seul) continue;
     const t0 = Date.now();
     const res = await handler({
       httpMethod: "POST",
