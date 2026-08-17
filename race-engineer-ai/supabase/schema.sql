@@ -205,3 +205,32 @@ ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
 -- Consultation : Supabase Dashboard → Table Editor, ou requêtes SQL ad hoc.
 
 CREATE INDEX IF NOT EXISTS events_event_created_idx ON public.events(event, created_at DESC);
+
+-- =============================================
+-- COLONNE `plan` NON MODIFIABLE PAR LE PILOTE
+-- =============================================
+-- ⚠️ CE BLOC EST UN CORRECTIF DE SÉCURITÉ, PAS UNE OPTION.
+-- La policy "Profiles: mise à jour propre" autorise un pilote à mettre à jour
+-- SA ligne. Sans le grant colonne par colonne ci-dessous, elle l'autorise donc
+-- aussi à écrire `plan` : n'importe quel compte gratuit pouvait s'attribuer
+-- `paddock` et s'offrir 1500 crédits par mois. RLS dit QUELLES LIGNES on peut
+-- toucher, jamais QUELLES COLONNES : c'est le grant qui le dit.
+--
+-- Ce bloc vivait uniquement dans migration-2026-07-29-plan-non-modifiable.sql,
+-- donc toute installation neuve à partir de ce schéma rouvrait le trou en
+-- silence. Ajouté ici le 2026-08-07. Ne pas le retirer.
+REVOKE UPDATE ON public.profiles FROM authenticated;
+
+GRANT UPDATE (
+  taille_cm, poids_kg, categorie_principale,
+  chassis, chassis_modele, chassis_annee, moteur,
+  style_pilotage, niveau, mode_pilotage, qui_pilote,
+  updated_at
+) ON public.profiles TO authenticated;
+
+-- Le rôle anonyme n'a rien à faire en écriture sur les profils.
+REVOKE UPDATE ON public.profiles FROM anon;
+
+-- Vérification : la liste ne doit PAS contenir `plan`.
+--   SELECT column_name FROM information_schema.column_privileges
+--   WHERE table_name = 'profiles' AND grantee = 'authenticated' AND privilege_type = 'UPDATE';

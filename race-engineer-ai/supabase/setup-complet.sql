@@ -222,6 +222,32 @@ REVOKE EXECUTE ON FUNCTION public.increment_ai_usage(UUID, TEXT) FROM authentica
 GRANT  EXECUTE ON FUNCTION public.increment_ai_usage(UUID, TEXT) TO service_role;
 
 
+
+-- =============================================
+-- 7 bis. COLONNE `plan` NON MODIFIABLE PAR LE PILOTE
+-- =============================================
+-- ⚠️ CORRECTIF DE SECURITE, PAS UNE OPTION.
+-- La policy "Profiles: mise a jour propre" autorise le pilote a mettre a jour
+-- SA ligne. Sans le grant colonne par colonne ci-dessous, elle l autorise donc
+-- aussi a ecrire `plan` : n importe quel compte gratuit pouvait s attribuer
+-- `paddock` et s offrir 1500 credits par mois. RLS dit QUELLES LIGNES on peut
+-- toucher, jamais QUELLES COLONNES : c est le grant qui le dit.
+--
+-- Ce fichier s appelle "setup complet" : il DOIT produire une base sure. Le
+-- bloc ne vivait que dans migration-2026-07-29-plan-non-modifiable.sql, donc
+-- toute installation neuve faite avec ce script rouvrait le trou en silence.
+-- Ajoute ici le 2026-08-07. Ne pas le retirer.
+REVOKE UPDATE ON public.profiles FROM authenticated;
+
+GRANT UPDATE (
+  taille_cm, poids_kg, categorie_principale,
+  chassis, chassis_modele, chassis_annee, moteur,
+  style_pilotage, niveau, mode_pilotage, qui_pilote,
+  updated_at
+) ON public.profiles TO authenticated;
+
+REVOKE UPDATE ON public.profiles FROM anon;
+
 -- =============================================
 -- 8. VERIFICATION FINALE
 -- =============================================

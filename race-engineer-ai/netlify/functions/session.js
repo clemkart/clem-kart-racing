@@ -16,6 +16,8 @@ const { createClient } = require('@supabase/supabase-js');
 // une seule cause, mais deux copies du code : on n'avait corrige que l'un.
 // La resolution coherente vit maintenant dans supabase-config.js.
 const { SUPABASE_URL, SUPABASE_ANON_KEY } = require('./supabase-config');
+// Journal d'audit : chercher [AUDIT] dans les logs de fonction Netlify.
+const { audit } = require('./audit-log');
 
 // ⚠️ NE JAMAIS ecrire "parseInt(x) || null". parseInt("0") vaut 0, et
 // "0 || null" vaut null : toute valeur ZERO etait donc enregistree comme
@@ -93,12 +95,19 @@ exports.handler = async (event) => {
   });
 
   // Vérifier l'utilisateur
+  const clientIp = event.headers['x-forwarded-for'] || '';
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) {
+    audit('auth-echec', { ip: clientIp, cause: 'session-jeton-invalide' });
     return { statusCode: 401, headers, body: JSON.stringify({ error: 'Token invalide' }) };
   }
 
   const path = event.path.replace('/.netlify/functions/session', '');
+
+  // Accès aux données du pilote : une ligne par requête. C'est ce qui permet de
+  // voir après coup qu'un compte a aspiré tout son historique, ou qu'un jeton
+  // volé a servi depuis un autre réseau que d'habitude.
+  audit('donnees-acces', { user: user.id, ip: clientIp, methode: event.httpMethod, route: path || '/' });
 
   // ── GET /list → 10 dernières sessions ──
   if (event.httpMethod === 'GET' && path === '/list') {

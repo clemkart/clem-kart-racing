@@ -28,6 +28,9 @@ const {
 // vit dans supabase-config.js : session.js souffrait EXACTEMENT du même défaut
 // et la logique dupliquée avait fait qu'on n'avait corrigé qu'un seul des deux.
 const { SUPABASE_URL, SUPABASE_ANON_KEY, lireJetonSupabase } = require("./supabase-config");
+// Journal d'audit : une ligne par action sensible, sans donnée personnelle.
+// Chercher [AUDIT] dans les logs de fonction Netlify.
+const { audit } = require("./audit-log");
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 // Dev local uniquement : ALLOW_ANON_CHAT=true dans .env pour tester sans compte
 const ALLOW_ANON_CHAT = process.env.ALLOW_ANON_CHAT === "true";
@@ -673,7 +676,7 @@ function validateInputs(message, history, context) {
 // en-tête manquant d'un jeton d'un autre projet. C'est ce silence qui a fait
 // que le bug a survécu à plusieurs tentatives de correction. Chaque échec est
 // maintenant nommé dans les logs de fonction Netlify.
-async function authenticateUser(event) {
+async function authenticateUser(event, ip) {
   const h = event.headers || {};
   const authHeader = h["authorization"] || h["Authorization"] || "";
   // Tolérant sur la casse du schéma : "bearer xxx" comme "Bearer xxx".
@@ -681,6 +684,7 @@ async function authenticateUser(event) {
 
   if (!token) {
     console.warn("[AUTH] Aucun jeton dans l'en-tete Authorization.");
+    audit("auth-echec", { ip, cause: "jeton-absent" });
     return null;
   }
   if (!SUPABASE_ANON_KEY) {
@@ -703,12 +707,16 @@ async function authenticateUser(event) {
     const { data, error } = await sb.auth.getUser(token);
     if (error) {
       console.error(`[AUTH] getUser a refuse le jeton : ${error.message}`);
+      audit("auth-echec", { ip, cause: "jeton-refuse" });
       return null;
     }
     if (!data || !data.user) {
       console.error("[AUTH] getUser n'a renvoye aucun utilisateur, sans erreur explicite.");
       return null;
     }
+    // Connexion REUSSIE : c est la ligne qui manquait. Sans elle, impossible
+    // de voir qui se connecte, ni de reperer une rafale depuis un meme reseau.
+    audit("auth-ok", { user: data.user.id, ip });
     return data.user;
   } catch (e) {
     console.error(`[AUTH] Appel a getUser impossible : ${e.message}`);
@@ -850,7 +858,7 @@ exports.handler = async (event) => {
     // === AUTH : compte obligatoire (sauf dev local avec ALLOW_ANON_CHAT=true) ===
     let user = null;
     if (!ALLOW_ANON_CHAT) {
-      user = await authenticateUser(event);
+      user = await authenticateUser(event, clientIp);
       if (!user) {
         return {
           statusCode: 401,
@@ -873,6 +881,10 @@ exports.handler = async (event) => {
       .filter(Boolean)
       .join("\n");
     if (detectEngineMod(texteDuPilote)) {
+      // Un refus moteur n'est pas qu'un garde-fou : c'est un SIGNAL. Un pilote
+      // se fait refuser une fois et comprend ; une rafale de refus depuis la
+      // même adresse, c'est quelqu'un qui cherche la faille du filtre.
+      audit("refus-moteur", { user: user && user.id, ip: clientIp, mode: isDiagnostic ? "diagnostic" : "chat" });
       return {
         statusCode: 200,
         headers,
@@ -908,6 +920,7 @@ exports.handler = async (event) => {
             }),
           };
         }
+        audit("quota-epuise", { user: user.id, ip: clientIp, plan: quota.plan, used: quota.used, limit: quota.limit });
         const upsell = quota.plan === "free"
           ? " Passe en Saison Pro pour 500 crédits chaque mois (guide offert)."
           : "";
