@@ -8,6 +8,9 @@
   },
   "scripts": {
     "test:coherence": "node tests/run-coherence.js",
+    "test:repli": "node tests/run-repli.js",
+    "test:quota": "node tests/run-quota.js",
+    "test:gratuit": "node tests/run-coherence.js && node tests/run-repli.js && node tests/run-quota.js",
     "test:diagnostic": "node tests/run-diagnostics.js",
     "test:chat": "node tests/run-chat.js",
     "dev": "node tests/dev-server.js"

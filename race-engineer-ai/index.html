@@ -1257,7 +1257,7 @@ const KB = {
   },
   chatbot: {
     'sous-virage': {
-      keywords: ['sous-virage', 'pousse', 'sous vire', 'understeer', 'refuse de tourner', 'kart tout droit', 'plonge tout droit'],
+      keywords: ['sous-virage', 'sous-vire', 'sous vire', 'sousvire', 'pousse', 'understeer', 'refuse de tourner', 'kart tout droit', 'plonge tout droit'],
       response: `<strong>Sous-virage : le kart refuse de s'inscrire.</strong><br><br>
 <strong>D'abord le pilotage, avant tout réglage.</strong> Le sous-virage à l'entrée vient très souvent du frein maintenu trop longtemps dans l'angle : l'avant sature, la roue arrière intérieure ne se déleste pas, et le kart part tout droit. Freine plus droit, relâche progressivement à mesure que tu inscris, et mets moins de volant, pas plus.<br><br>
 <strong>Ensuite le châssis, dans cet ordre :</strong><br>
@@ -1269,7 +1269,7 @@ const KB = {
 <em>Je te donne l'ordre, pas les valeurs : la bonne amplitude dépend de ton châssis, de tes réglages actuels et de tes butées, que je ne vois pas hors ligne.</em>`
     },
     'survirage': {
-      keywords: ['survirage', 'part', 'sur vire', 'oversteer', 'glisse arrière', 'queue', 'chasse'],
+      keywords: ['survirage', 'survire', 'sur-vire', 'sur vire', 'oversteer', 'arrière part', 'arrière glisse', 'arrière chasse', 'glisse arrière', 'queue'],
       response: `<strong>Survirage : l'arrière décroche.</strong><br><br>
 <strong>La question qui tranche : à l'entrée ou à la sortie ?</strong> Ce ne sont pas le même problème et ils n'ont pas la même réponse.<br><br>
 <strong>À la sortie</strong> → commence par le pilotage, c'est là que ça se joue dans la grande majorité des cas. Remettre les gaz avant la fin de la rotation met les pneus dans le mauvais axe et l'arrière part. Attends que le kart soit aligné. Sur un moteur qui reprend fort, la remise de gaz doit être progressive, pas binaire.<br><br>
@@ -1309,7 +1309,7 @@ Ton échelle : -1 (Déchassé) | 0 (Moins) | 1 (Neutre) | 2 (Plus) | 3 (Maximum)
 <em>En pluie : réduis la chasse. La piste est glissante et trop de pivot = survirage dangereux.</em>`
     },
     'barre avant': {
-      keywords: ['barre', 'barre avant', 'rigidité', 'chassis', 'châssis', 'flex'],
+      keywords: ['barre', 'barre avant', 'barre de torsion', 'rigidité', 'flex'],
       response: `<strong>La barre avant, du plus souple au plus rigide :</strong><br><br>
 <strong>Sans barre</strong> → maximum de souplesse → idéal grip ultra élevé<br>
 <strong>Barre plate horizontale (à plat)</strong> → souple → la lame fléchit facilement<br>
@@ -1353,7 +1353,7 @@ Un gicleur juste dépend de la <strong>densité de l'air</strong> : température
 <em>En pluie, le driver est LE réglage principal. Souplesse des mains, progressivité au freinage, point d'accélération très tardif.</em>`
     },
     'no-grip': {
-      keywords: ['no grip', 'no-grip', 'sans grip', 'verte', 'philosophie', 'otk', 'glisse'],
+      keywords: ['no grip', 'no-grip', 'sans grip', 'bas grip', 'piste verte', 'verte', 'glisse'],
       response: `<strong>Philosophie OTK, la vérité contre-intuitive :</strong><br><br>
 Sur piste à bas grip (verte, sale), l'erreur classique est d'assouplir le kart pour "chercher" de l'adhérence. C'est l'inverse.<br><br>
 <strong>En no-grip → RIGIDIFIE :</strong><br>
@@ -3935,12 +3935,20 @@ function addMsg(text, type) {
 // or elles arrivent avant les entrées dédiées à ces deux sujets. En premier
 // match, toute question sur la chasse renvoyait la réponse survirage, et
 // l'explication de la chasse était injoignable.
+// ⚠️ Le départage des ÉGALITÉS est aussi important que la longueur. Le mot
+// "chasse" apparaît dans les mots-clés de survirage ET comme nom de l'entrée
+// chasse : même longueur, donc un simple "le plus long gagne" retombait sur
+// l'ordre d'insertion et renvoyait survirage. À longueur égale, l'entrée dont
+// le NOM est le mot-clé gagne : c'est l'entrée dédiée au sujet.
 function meilleureEntreeKB(msgLower) {
-  let meilleur = null, longueur = 0;
+  let meilleur = null, meilleurScore = -1;
   for (const [nom, data] of Object.entries(KB.chatbot)) {
     for (const kw of data.keywords) {
-      if (msgLower.includes(kw) && kw.length > longueur) {
-        longueur = kw.length;
+      if (!msgLower.includes(kw)) continue;
+      // longueur x2 pour dominer, +1 si le mot-clé est le sujet de l'entrée
+      const score = kw.length * 2 + (nom === kw || nom.indexOf(kw) === 0 ? 1 : 0);
+      if (score > meilleurScore) {
+        meilleurScore = score;
         meilleur = data;
       }
     }

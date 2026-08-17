@@ -131,20 +131,38 @@ if (limFront && limFront.voieAr) {
 // une question precise recoit une reponse a cote.
 console.log("\n7. Routage du repli hors ligne");
 const kbChat = litteral(html, "chatbot: {");
+// ⚠️ La version précédente de ce contrôle comparait avec un `>` STRICT et ne
+// voyait donc pas les ÉGALITÉS. Il a validé au vert la collision réelle entre
+// le mot-clé "chasse" de l'entrée survirage et l'entrée chasse elle-même, qui
+// font tous deux 6 caractères. Un vert mensonger coûte plus cher qu'un rouge :
+// on rejoue ici la MÊME formule de score que meilleureEntreeKB() d'index.html,
+// et on exige que chaque sujet gagne sur son propre nom.
+// Le comportement de la vraie fonction, lui, est vérifié par test:repli.
+function scoreKB(nomEntree, kw) {
+  return kw.length * 2 + (nomEntree === kw || nomEntree.indexOf(kw) === 0 ? 1 : 0);
+}
 if (kbChat) {
   const noms = Object.keys(kbChat);
-  const masques = [];
-  for (const nom of noms) {
-    const propre = (kbChat[nom].keywords || []).filter((k) => k === nom || nom.includes(k));
-    if (!propre.length) continue;
-    for (const autre of noms) {
-      if (autre === nom) continue;
-      const plusLong = (kbChat[autre].keywords || []).some((k) => nom.includes(k) && k.length > Math.max(...propre.map((p) => p.length)));
-      if (plusLong) masques.push(nom + " masque par " + autre);
+  const perdants = [];
+  for (const sujet of noms) {
+    let gagnant = null, meilleur = -1;
+    for (const nom of noms) {
+      for (const kw of kbChat[nom].keywords || []) {
+        if (!sujet.includes(kw)) continue;
+        const s = scoreKB(nom, kw);
+        if (s > meilleur) { meilleur = s; gagnant = nom; }
+      }
     }
+    if (gagnant && gagnant !== sujet) perdants.push(`"${sujet}" part vers [${gagnant}]`);
   }
-  verifie("aucune entree n'est masquee par une autre", masques.length === 0, masques.join(" | "));
+  verifie("chaque sujet gagne sur son propre nom", perdants.length === 0, perdants.join(" | "));
   verifie("chaque entree a au moins un mot-cle", noms.every((n) => (kbChat[n].keywords || []).length > 0));
+  // ⚠️ Pas de règle sur la LONGUEUR des mots-clés ici. J'en avais ajouté une
+  // (minimum 4 caractères) le 2026-08-07 : elle refusait "dd2", "axe" et "hub",
+  // qui sont des termes karting parfaitement légitimes, et elle produisait donc
+  // un rouge sur des données correctes. Vérifié en exécutant la vraie fonction :
+  // ces trois-là routent juste. Le risque réel n'est pas la longueur, c'est le
+  // masquage, et le contrôle ci-dessus le couvre déjà.
 } else verifie("table du repli lisible", false);
 
 console.log(`\nRESULTAT : ${controles - echecs}/${controles} controles passes`);

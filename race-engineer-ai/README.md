@@ -117,10 +117,20 @@ netlify dev
 ## Harnais de test
 
 ```bash
-npm run test:coherence    # GRATUIT et instantané : à lancer à chaque modif
-npm run test:diagnostic   # 7 cas de diagnostic (tests/cas-de-reference.json)
-npm run test:chat         # mode chat, cas sans profil, garde-fous, marques hors harnais
+npm run test:gratuit      # les 3 harnais GRATUITS d'un coup, à lancer à chaque modif
+npm run test:coherence    #   valeurs dupliquées navigateur <-> serveur
+npm run test:repli        #   exécute le repli hors ligne (code navigateur)
+npm run test:quota        #   prouve que le quota indisponible n'est jamais illimité
+npm run test:diagnostic   # PAYANT : 7 cas de diagnostic contre le vrai modèle
+npm run test:chat         # PAYANT : mode chat, sans profil, garde-fous, marques
 ```
+
+`test:gratuit` ne consomme **aucun crédit API**. Les trois harnais couvrent ce
+qu'aucun test ne voyait avant : les valeurs qui vivent en double entre
+`index.html` et les functions, le code du repli hors ligne (que les harnais
+payants n'exécutent jamais, puisqu'il vit dans le navigateur), et le garde-fou
+qui empêche l'app de devenir gratuite et illimitée quand Supabase est
+injoignable.
 
 **`test:coherence` ne consomme aucun crédit API.** Il vérifie les valeurs qui
 vivent EN DOUBLE dans `index.html` et dans les functions : butées de réglage,
