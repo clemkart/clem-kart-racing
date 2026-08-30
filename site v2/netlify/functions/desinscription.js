@@ -1,5 +1,5 @@
-// =============================================
-// Clem Kart Racing — Désinscription en un clic
+﻿// =============================================
+// Clem Kart Racing : Désinscription en un clic
 // GET  ?e=<email>&t=<jeton> -> page de confirmation (un bouton).
 // POST (mêmes paramètres)   -> blacklist l'adresse chez Brevo, plus aucun email.
 //
@@ -36,7 +36,7 @@ function page(title, message, formHtml) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>${title} — Clem Kart Racing</title>
+<title>${title} | Clem Kart Racing</title>
 <style>
   body{background:#070707;color:rgb(242,237,232);font-family:Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;}
   .card{background:#0F0F0F;border:1px solid rgba(242,237,232,0.08);border-top:2px solid #D9171D;padding:40px 36px;max-width:460px;text-align:center;}

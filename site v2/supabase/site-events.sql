@@ -1,5 +1,5 @@
--- =============================================
--- Clem Kart Racing — Analytics site (first-party)
+﻿-- =============================================
+-- Clem Kart Racing : Analytics site (first-party)
 -- Table des événements du site vitrine.
 -- Anonyme, sans cookies, sans PII (pas d'IP stockée).
 -- Écriture/lecture : uniquement via les fonctions Netlify (service_role).

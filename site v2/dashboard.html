@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Dashboard — Clem Kart Racing</title>
+<title>Dashboard | Clem Kart Racing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
@@ -105,7 +105,7 @@
 <div id="login">
   <div class="login-card">
     <h1>ANALYTICS</h1>
-    <p>Tableau de bord privé — Clem Kart Racing</p>
+    <p>Tableau de bord privé de Clem Kart Racing</p>
     <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="current-password">
     <button class="btn" id="loginBtn">Entrer</button>
     <div class="err" id="loginErr"></div>
@@ -117,7 +117,7 @@
   <header>
     <div>
       <h1>ANALY<span>TICS</span></h1>
-      <div class="sub" id="subLine">Site vitrine — 30 derniers jours</div>
+      <div class="sub" id="subLine">Site vitrine, 30 derniers jours</div>
     </div>
     <div class="tools">
       <div class="periods">
@@ -139,32 +139,32 @@
   <div class="grid-kpi">
     <div class="kpi">
       <div class="label">Visiteurs</div>
-      <div class="val"><span id="kVis">—</span><span class="delta" id="dVis"></span></div>
+      <div class="val"><span id="kVis">-</span><span class="delta" id="dVis"></span></div>
       <div class="hint"><span class="cmp" id="cVis"></span> sessions uniques</div>
     </div>
     <div class="kpi">
       <div class="label">Pages vues</div>
-      <div class="val"><span id="kPv">—</span><span class="delta" id="dPv"></span></div>
+      <div class="val"><span id="kPv">-</span><span class="delta" id="dPv"></span></div>
       <div class="hint"><span class="cmp" id="cPv"></span> total</div>
     </div>
     <div class="kpi">
       <div class="label">Clics Gumroad</div>
-      <div class="val"><span id="kClk">—</span><span class="delta" id="dClk"></span></div>
+      <div class="val"><span id="kClk">-</span><span class="delta" id="dClk"></span></div>
       <div class="hint"><span class="cmp" id="cClk"></span> vers l'achat</div>
     </div>
     <div class="kpi accent">
       <div class="label">Taux de clic</div>
-      <div class="val"><span id="kCtr">—</span></div>
+      <div class="val"><span id="kCtr">-</span></div>
       <div class="hint"><span class="cmp" id="cCtr"></span> visiteurs → clic achat</div>
     </div>
     <div class="kpi accent">
       <div class="label">Emails récoltés</div>
-      <div class="val"><span id="kInsc">—</span><span class="delta" id="dInsc"></span></div>
+      <div class="val"><span id="kInsc">-</span><span class="delta" id="dInsc"></span></div>
       <div class="hint"><span class="cmp" id="cInsc"></span> <span id="kInscHint">inscriptions</span></div>
     </div>
     <div class="kpi accent">
       <div class="label">Chiffre d'affaires</div>
-      <div class="val"><span id="kCa">—</span></div>
+      <div class="val"><span id="kCa">-</span></div>
       <div class="hint"><span class="cmp" id="cCa"></span> <span id="kVentesHint">ventes réelles</span></div>
     </div>
   </div>
@@ -175,7 +175,7 @@
 
   <!-- FUNNEL -->
   <div class="panel">
-    <h2>Entonnoir <small>— du trafic à la vente, en passant par l'email</small></h2>
+    <h2>Entonnoir <small>du trafic à la vente, en passant par l'email</small></h2>
     <div id="funnelBox"></div>
     <p style="color:var(--wd);font-size:11px;margin-top:10px;">
       Le pourcentage compare chaque étape à <b>celle juste au-dessus</b> : c'est là qu'on voit exactement où ça fuit.
@@ -190,7 +190,7 @@
 
   <!-- COURBE -->
   <div class="panel">
-    <h2>Évolution <small>— par jour</small></h2>
+    <h2>Évolution <small>par jour</small></h2>
     <div class="chart-box"><canvas id="dayChart"></canvas></div>
   </div>
 
@@ -213,14 +213,14 @@
       <div id="pagesBox"></div>
     </div>
     <div class="panel">
-      <h2>Boutons qui convertissent <small>— clics par bouton</small></h2>
+      <h2>Boutons qui convertissent <small>clics par bouton</small></h2>
       <div id="ctaBox"></div>
     </div>
   </div>
 
   <!-- CAMPAGNES -->
   <div class="panel">
-    <h2>Campagnes <small>— trafic marqué (ManyChat, bio, liens UTM)</small></h2>
+    <h2>Campagnes <small>trafic marqué (ManyChat, bio, liens UTM)</small></h2>
     <div id="campBox"></div>
     <p style="color:var(--wd);font-size:11px;margin-top:8px;">
       Seuls les liens qui portent des UTM apparaissent ici. Le lien ManyChat de l'extrait en pose automatiquement.
@@ -229,7 +229,7 @@
 
   <!-- CONVERSION PAR SOURCE -->
   <div class="panel">
-    <h2>Conversion par source <small>— % de visiteurs qui cliquent Gumroad</small></h2>
+    <h2>Conversion par source <small>% de visiteurs qui cliquent Gumroad</small></h2>
     <div id="convBox"></div>
   </div>
 
@@ -237,10 +237,10 @@
   <div class="panel">
     <h2>Autres actions</h2>
     <div class="mini">
-      <div class="m"><div class="label">Clics extrait gratuit</div><div class="val"><span id="kExt">—</span><span class="delta" id="dExt"></span></div></div>
-      <div class="m"><div class="label">Clics vers le tableur</div><div class="val"><span id="kTabClk">—</span><span class="delta" id="dTabClk"></span></div></div>
-      <div class="m"><div class="label">Inscriptions tableur</div><div class="val"><span id="kTab">—</span><span class="delta" id="dTab"></span></div></div>
-      <div class="m"><div class="label">Inscriptions extrait</div><div class="val"><span id="kExtSign">—</span><span class="delta" id="dExtSign"></span></div></div>
+      <div class="m"><div class="label">Clics extrait gratuit</div><div class="val"><span id="kExt">-</span><span class="delta" id="dExt"></span></div></div>
+      <div class="m"><div class="label">Clics vers le tableur</div><div class="val"><span id="kTabClk">-</span><span class="delta" id="dTabClk"></span></div></div>
+      <div class="m"><div class="label">Inscriptions tableur</div><div class="val"><span id="kTab">-</span><span class="delta" id="dTab"></span></div></div>
+      <div class="m"><div class="label">Inscriptions extrait</div><div class="val"><span id="kExtSign">-</span><span class="delta" id="dExtSign"></span></div></div>
     </div>
     <p style="color:var(--wd);font-size:11px;margin-top:8px;">« Inscriptions » = email réellement envoyé avec succès. « Clics » = simple intérêt, pas encore une inscription confirmée.</p>
   </div>
@@ -379,7 +379,7 @@
     setCmp('cCa', t.ventes, prev.ventes, showCmp, partial);
     setCmp('cInsc', insc, prev.inscriptions ?? 0, showCmp, partial);
 
-    let sub = 'Site vitrine — ' + periodLabel(d.period_days);
+    let sub = 'Site vitrine, ' + periodLabel(d.period_days);
     if(d.tracking_since) sub += ' · suivi depuis le ' + fmtDate(d.tracking_since);
     $('subLine').textContent = sub;
 
@@ -422,11 +422,11 @@
   function renderDates(dates){
     const box = $('datesBox'); if(!box) return;
     const items = [
-      ['Suivi depuis', dates.suivi_depuis ? fmtDate(dates.suivi_depuis) : '—'],
-      ['Meilleur jour', dates.meilleur_jour ? fmtDate(dates.meilleur_jour.date) + ' (' + fr(dates.meilleur_jour.visiteurs) + ' visiteurs)' : '—'],
-      ['Dernière inscription', dates.derniere_inscription ? fmtDate(dates.derniere_inscription) : '—'],
-      ['Première vente', dates.premiere_vente ? fmtDate(dates.premiere_vente) : '—'],
-      ['Dernière vente', dates.derniere_vente ? fmtDate(dates.derniere_vente) : '—'],
+      ['Suivi depuis', dates.suivi_depuis ? fmtDate(dates.suivi_depuis) : '-'],
+      ['Meilleur jour', dates.meilleur_jour ? fmtDate(dates.meilleur_jour.date) + ' (' + fr(dates.meilleur_jour.visiteurs) + ' visiteurs)' : '-'],
+      ['Dernière inscription', dates.derniere_inscription ? fmtDate(dates.derniere_inscription) : '-'],
+      ['Première vente', dates.premiere_vente ? fmtDate(dates.premiere_vente) : '-'],
+      ['Dernière vente', dates.derniere_vente ? fmtDate(dates.derniere_vente) : '-'],
     ];
     box.innerHTML = items.map(([l, v]) =>
       '<div class="m"><div class="label">' + esc(l) + '</div><div class="val" style="font-size:20px;">' + esc(v) + '</div></div>'

@@ -1,5 +1,5 @@
--- =============================================
--- Clem Kart Racing — Ventes reelles Gumroad (Phase 2)
+﻿-- =============================================
+-- Clem Kart Racing : Ventes reelles Gumroad (Phase 2)
 -- Table des ventes recues via le webhook "Ping" de Gumroad.
 -- Pas d'email ni de nom stockes (ni dans les colonnes, ni dans "raw").
 -- Ecriture : uniquement via netlify/functions/gumroad-ping.js (service_role).

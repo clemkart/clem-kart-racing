@@ -1,5 +1,5 @@
-// =============================================
-// Clem Kart Racing — Reception des ventes Gumroad (Phase 2)
+﻿// =============================================
+// Clem Kart Racing : Reception des ventes Gumroad (Phase 2)
 // POST (Gumroad "Ping", form-urlencoded) -> table Supabase sales.
 // Protege par un jeton secret dans l'URL (Gumroad ne signe pas ses pings).
 // Contrairement a track-site.js : les erreurs internes renvoient 500 pour

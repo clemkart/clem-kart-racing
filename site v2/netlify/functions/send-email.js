@@ -1,5 +1,5 @@
-// =============================================
-// Clem Kart Racing — Envoi des lead magnets par email (Brevo)
+﻿// =============================================
+// Clem Kart Racing : Envoi des lead magnets par email (Brevo)
 // POST { email, magnet? } -> contact ajouté à la liste Brevo + email transactionnel.
 // magnet = 'tableur' (défaut, page tableur-reglages.html)
 //        | 'extrait' (page extrait-guide.html : extrait v2 du guide + tableur en cadeau)
@@ -143,7 +143,7 @@ function blocPiecesJointes(fichiers) {
                   <td style="padding:0 24px 20px;">
                     <div style="border-top:1px solid ${C.line};padding-top:14px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:${C.muted};">
                       <strong style="color:${C.text};">Pense à les télécharger</strong> : ils sont attachés à cet email, pas derrière un lien.
-                      Sur téléphone, les pièces jointes sont tout en bas du message — appuie dessus, puis enregistre-les.
+                      Sur téléphone, les pièces jointes sont tout en bas du message : appuie dessus, puis enregistre-les.
                     </div>
                   </td>
                 </tr>

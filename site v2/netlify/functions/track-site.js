@@ -1,5 +1,5 @@
-// =============================================
-// Clem Kart Racing — Analytics site (first-party)
+﻿// =============================================
+// Clem Kart Racing : Analytics site (first-party)
 // POST { type, path, referrer, utm_*, session_id, meta } -> table Supabase site_events
 // Ecriture en REST (fetch, SANS SDK ni dependance npm), style send-email.js.
 // Anonyme, sans cookie, sans PII : l'IP sert UNIQUEMENT au rate-limit, jamais stockee.
@@ -9,7 +9,7 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hkpknrrymgbnjmbewlyc.supabase.co';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-// Allowlist stricte des types (table dediee) — tout le reste est jete.
+// Allowlist stricte des types (table dediee), tout le reste est jete.
 const ALLOWED_TYPES = new Set([
   'pageview',
   'gumroad_click',
@@ -43,7 +43,7 @@ function buildHeaders(event) {
   };
 }
 
-// Rate limit leger en memoire (anti-flood). Par instance "chaude" — suffisant ici.
+// Rate limit leger en memoire (anti-flood). Par instance "chaude", suffisant ici.
 const rateLimitMap = new Map();
 function checkRateLimit(ip) {
   const now = Date.now();
@@ -149,7 +149,7 @@ exports.handler = async (event) => {
       meta,
     };
 
-    // Insert via API REST Supabase (service_role) — pas de SDK.
+    // Insert via API REST Supabase (service_role), sans SDK.
     const res = await fetch(`${SUPABASE_URL}/rest/v1/site_events`, {
       method: 'POST',
       headers: {
