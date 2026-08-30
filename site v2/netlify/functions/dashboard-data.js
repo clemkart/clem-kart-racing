@@ -45,6 +45,42 @@ const CTA_LABELS = {
 };
 function ctaLabel(raw) { return CTA_LABELS[raw] || raw || '(sans nom)'; }
 
+// Chemins -> noms lisibles. Sans ça la liste des pages est une suite de fichiers .html.
+const PAGE_LABELS = {
+  '/': 'Accueil',
+  '/index.html': 'Accueil',
+  '/extrait-guide.html': "Page extrait (capture email)",
+  '/extrait': "Page extrait (capture email)",
+  '/tableur-reglages.html': 'Page tableur (capture email)',
+  '/race-engineer-ai.html': 'Page app Race Engineer AI',
+  '/blog.html': 'Blog (sommaire)',
+  '/merci.html': 'Page merci (apres achat)',
+  '/merci-fondateur.html': 'Page merci (fondateur app)',
+  '/mentions-legales.html': 'Mentions legales',
+  '/app-preview.html': "Apercu de l'app",
+  '/blog-freinage-degressif.html': 'Article : freinage degressif',
+  '/blog-mental-karting.html': 'Article : mental',
+  '/blog-trajectoire-grip.html': 'Article : trajectoire et grip',
+  '/blog-volant-karting.html': 'Article : le volant',
+};
+function pageLabel(path) {
+  if (PAGE_LABELS[path]) return PAGE_LABELS[path];
+  return (path || '(inconnu)').replace(/^\//, '').replace(/\.html$/, '');
+}
+
+// Pages de capture email : elles alimentent l'entonnoir, pas seulement la liste des pages.
+const PAGE_EXTRAIT = new Set(['/extrait-guide.html', '/extrait']);
+const PAGE_TABLEUR = new Set(['/tableur-reglages.html']);
+
+// Les visites du dashboard, ce sont les miennes : elles fausseraient visiteurs et pages vues.
+const PATHS_EXCLUS = new Set(['/dashboard.html']);
+
+// Libelle d'une campagne d'acquisition (les UTM poses par ManyChat, la bio, etc.).
+function campaignLabel(row) {
+  const parts = [row.utm_source, row.utm_medium, row.utm_campaign].filter(Boolean);
+  return parts.length ? parts.join(' · ') : null;
+}
+
 function blankTotals() {
   return {
     visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, extrait_signups: 0, ctr: 0,
@@ -73,11 +109,19 @@ function finalize(tot, sessionsSize, uniqueClickersSize) {
 function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
   const daySales = new Map(); // 'YYYY-MM-DD' -> nb ventes
   let curVentes = 0, curRevenueCents = 0, prevVentes = 0, d24Ventes = 0, currency = '';
+  // Dates calculees sur TOUT l'historique recupere, pas seulement la periode affichee :
+  // « ma premiere vente » ne doit pas changer parce qu'on regarde 7 jours.
+  let firstSaleDate = null, lastSaleDate = null;
 
   for (const s of salesRows) {
     const ts = Date.parse(s.created_at);
     if (isNaN(ts)) continue;
     const amount = (s.price_cents || 0) * (s.quantity || 1);
+    const day = (s.created_at || '').slice(0, 10);
+    if (day) {
+      if (!firstSaleDate || day < firstSaleDate) firstSaleDate = day;
+      if (!lastSaleDate || day > lastSaleDate) lastSaleDate = day;
+    }
 
     if (ts >= dayStart) d24Ventes++;
 
@@ -85,14 +129,13 @@ function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
       curVentes++;
       curRevenueCents += amount;
       if (s.currency) currency = s.currency;
-      const day = (s.created_at || '').slice(0, 10);
       if (day) daySales.set(day, (daySales.get(day) || 0) + 1);
     } else if (ts >= prevStart) {
       prevVentes++;
     }
   }
 
-  return { curVentes, curRevenueCents, prevVentes, d24Ventes, daySales, currency };
+  return { curVentes, curRevenueCents, prevVentes, d24Ventes, daySales, currency, firstSaleDate, lastSaleDate };
 }
 
 // Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
@@ -113,6 +156,9 @@ function aggregate(rows, days, salesRows) {
   const pageViews = new Map();    // path -> nb pageviews
   const ctaMap = new Map();       // cta brut -> { gumroad, extract }
   const srcGumroadClickers = new Map(); // source -> Set(session_id) ayant clique gumroad
+  const daySignups = new Map();   // 'YYYY-MM-DD' -> nb inscriptions email
+  // campagne -> { visiteurs:Set, inscriptions, clics_guide }
+  const campaigns = new Map();
 
   // Periode precedente (juste les totaux, pour comparaison)
   const prev = blankTotals();
@@ -127,9 +173,11 @@ function aggregate(rows, days, salesRows) {
   for (const r of rows) {
     const ts = Date.parse(r.created_at);
     if (isNaN(ts)) continue;
+    if (PATHS_EXCLUS.has(r.path)) continue; // mes propres consultations du dashboard
     if (earliestTs === null || ts < earliestTs) earliestTs = ts;
     const type = r.type;
     const sid = r.session_id || null;
+    const estInscription = type === 'tableur_signup' || type === 'extrait_signup';
 
     // --- deltas 24h (independants de la periode) ---
     if (ts >= dayStart) {
@@ -156,9 +204,19 @@ function aggregate(rows, days, salesRows) {
         if (!dayVisitors.has(day)) dayVisitors.set(day, new Set());
         if (sid) dayVisitors.get(day).add(sid);
         if (type === 'gumroad_click') dayGumroad.set(day, (dayGumroad.get(day) || 0) + 1);
+        if (estInscription) daySignups.set(day, (daySignups.get(day) || 0) + 1);
       }
       if (type === 'pageview' && r.path) {
         pageViews.set(r.path, (pageViews.get(r.path) || 0) + 1);
+      }
+      // Attribution par campagne : d'ou vient le trafic ET qui laisse son email.
+      const camp = campaignLabel(r);
+      if (camp) {
+        if (!campaigns.has(camp)) campaigns.set(camp, { visiteurs: new Set(), inscriptions: 0, clics_guide: 0 });
+        const c = campaigns.get(camp);
+        if (sid) c.visiteurs.add(sid);
+        if (estInscription) c.inscriptions++;
+        if (type === 'gumroad_click') c.clics_guide++;
       }
       if (type === 'gumroad_click' || type === 'extract_click') {
         const cta = (r.meta && r.meta.cta) ? String(r.meta.cta).slice(0, 40) : '';
@@ -205,9 +263,56 @@ function aggregate(rows, days, salesRows) {
       date: dd,
       visiteurs: dayVisitors.has(dd) ? dayVisitors.get(dd).size : 0,
       gumroad_clicks: dayGumroad.get(dd) || 0,
+      inscriptions: daySignups.get(dd) || 0,
       ventes: salesAgg.daySales.get(dd) || 0,
     });
   }
+
+  // ---------- Entonnoir reel : du trafic a la vente, en passant par l'email ----------
+  cur.inscriptions = cur.tableur_signups + cur.extrait_signups;
+  prev.inscriptions = prev.tableur_signups + prev.extrait_signups;
+  cur.vues_page_extrait = 0;
+  cur.vues_page_tableur = 0;
+  for (const [path, vues] of pageViews.entries()) {
+    if (PAGE_EXTRAIT.has(path)) cur.vues_page_extrait += vues;
+    if (PAGE_TABLEUR.has(path)) cur.vues_page_tableur += vues;
+  }
+  const vuesCapture = cur.vues_page_extrait + cur.vues_page_tableur;
+
+  // taux : chaque etape rapportee a la precedente (c'est la que ca fuit).
+  const taux = (a, b) => (b ? +((a / b) * 100).toFixed(1) : 0);
+  const funnel = [
+    { etape: 'Visiteurs du site', valeur: cur.visiteurs, taux: null },
+    { etape: 'Vues des pages de capture', valeur: vuesCapture, taux: taux(vuesCapture, cur.visiteurs) },
+    { etape: 'Emails laisses', valeur: cur.inscriptions, taux: taux(cur.inscriptions, vuesCapture) },
+    { etape: 'Clics vers le guide', valeur: cur.gumroad_clicks, taux: taux(cur.gumroad_clicks, cur.inscriptions) },
+    { etape: 'Ventes', valeur: cur.ventes, taux: taux(cur.ventes, cur.gumroad_clicks) },
+  ];
+
+  // Meilleur jour de la periode (en visiteurs), utile apres une video qui marche.
+  let meilleurJour = null;
+  for (const j of by_day) {
+    if (!meilleurJour || j.visiteurs > meilleurJour.visiteurs) meilleurJour = j;
+  }
+
+  const dates = {
+    suivi_depuis: earliestTs ? new Date(earliestTs).toISOString().slice(0, 10) : null,
+    meilleur_jour: meilleurJour && meilleurJour.visiteurs ? meilleurJour : null,
+    premiere_vente: salesAgg.firstSaleDate,
+    derniere_vente: salesAgg.lastSaleDate,
+    derniere_inscription: [...daySignups.keys()].sort().pop() || null,
+  };
+
+  const by_campaign = [...campaigns.entries()]
+    .map(([campagne, c]) => ({
+      campagne,
+      visiteurs: c.visiteurs.size,
+      inscriptions: c.inscriptions,
+      clics_guide: c.clics_guide,
+      taux_inscription: c.visiteurs.size ? +((c.inscriptions / c.visiteurs.size) * 100).toFixed(1) : 0,
+    }))
+    .sort((a, b) => b.visiteurs - a.visiteurs)
+    .slice(0, 10);
 
   // Visiteurs uniques par source / appareil
   const srcCount = {};
@@ -218,8 +323,11 @@ function aggregate(rows, days, salesRows) {
   for (const d of devOfSession.values()) devCount[d] = (devCount[d] || 0) + 1;
   const by_device = Object.entries(devCount).map(([device, visiteurs]) => ({ device, visiteurs })).sort((a, b) => b.visiteurs - a.visiteurs);
 
-  // Top pages par pages vues
-  const by_page = [...pageViews.entries()].map(([path, pageviews]) => ({ path, pageviews })).sort((a, b) => b.pageviews - a.pageviews).slice(0, 8);
+  // Top pages par pages vues, avec un nom lisible
+  const by_page = [...pageViews.entries()]
+    .map(([path, pageviews]) => ({ path, nom: pageLabel(path), pageviews }))
+    .sort((a, b) => b.pageviews - a.pageviews)
+    .slice(0, 12);
 
   // Clics par bouton (CTA), avec libelle lisible
   const by_cta = [...ctaMap.entries()]
@@ -241,6 +349,7 @@ function aggregate(rows, days, salesRows) {
     tableur_clicks: d24.tableur_clicks,
     tableur_signups: d24.tableur_signups,
     extrait_signups: d24.extrait_signups,
+    inscriptions: d24.tableur_signups + d24.extrait_signups,
     ventes: salesAgg.d24Ventes,
   };
 
@@ -251,10 +360,13 @@ function aggregate(rows, days, salesRows) {
     totals: cur,
     previous: prev,
     deltas24h,
+    funnel,
+    dates,
     by_day,
     by_source,
     by_device,
     by_page,
+    by_campaign,
     by_cta,
     conv_by_source,
   };

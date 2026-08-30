@@ -158,6 +158,11 @@
       <div class="hint"><span class="cmp" id="cCtr"></span> visiteurs → clic achat</div>
     </div>
     <div class="kpi accent">
+      <div class="label">Emails récoltés</div>
+      <div class="val"><span id="kInsc">—</span><span class="delta" id="dInsc"></span></div>
+      <div class="hint"><span class="cmp" id="cInsc"></span> <span id="kInscHint">inscriptions</span></div>
+    </div>
+    <div class="kpi accent">
       <div class="label">Chiffre d'affaires</div>
       <div class="val"><span id="kCa">—</span></div>
       <div class="hint"><span class="cmp" id="cCa"></span> <span id="kVentesHint">ventes réelles</span></div>
@@ -170,19 +175,17 @@
 
   <!-- FUNNEL -->
   <div class="panel">
-    <h2>Entonnoir <small>— trafic vers vente</small></h2>
-    <div class="funnel-row">
-      <div class="funnel-head"><span class="name">Visiteurs</span><span><span class="num" id="fVis">0</span></span></div>
-      <div class="bar"><i id="fVisBar" style="width:100%"></i></div>
-    </div>
-    <div class="funnel-row">
-      <div class="funnel-head"><span class="name">Clics Gumroad</span><span><span class="num" id="fClk">0</span><span class="pct" id="fClkPct"></span></span></div>
-      <div class="bar"><i id="fClkBar" style="width:0%"></i></div>
-    </div>
-    <div class="funnel-row">
-      <div class="funnel-head"><span class="name">Ventes</span><span><span class="num" id="fVentes">0</span><span class="pct" id="fVentesPct"></span></span></div>
-      <div class="bar" id="fVentesBarWrap"><i id="fVentesBar" style="width:0%"></i></div>
-    </div>
+    <h2>Entonnoir <small>— du trafic à la vente, en passant par l'email</small></h2>
+    <div id="funnelBox"></div>
+    <p style="color:var(--wd);font-size:11px;margin-top:10px;">
+      Le pourcentage compare chaque étape à <b>celle juste au-dessus</b> : c'est là qu'on voit exactement où ça fuit.
+    </p>
+  </div>
+
+  <!-- DATES CLES -->
+  <div class="panel">
+    <h2>Dates clés</h2>
+    <div class="mini" id="datesBox"></div>
   </div>
 
   <!-- COURBE -->
@@ -213,6 +216,15 @@
       <h2>Boutons qui convertissent <small>— clics par bouton</small></h2>
       <div id="ctaBox"></div>
     </div>
+  </div>
+
+  <!-- CAMPAGNES -->
+  <div class="panel">
+    <h2>Campagnes <small>— trafic marqué (ManyChat, bio, liens UTM)</small></h2>
+    <div id="campBox"></div>
+    <p style="color:var(--wd);font-size:11px;margin-top:8px;">
+      Seuls les liens qui portent des UTM apparaissent ici. Le lien ManyChat de l'extrait en pose automatiquement.
+    </p>
   </div>
 
   <!-- CONVERSION PAR SOURCE -->
@@ -348,12 +360,16 @@
     $('kTabClk').textContent = fr(t.tableur_clicks);
     $('kTab').textContent = fr(t.tableur_signups);
     $('kExtSign').textContent = fr(t.extrait_signups ?? 0);
+    const insc = t.inscriptions ?? ((t.tableur_signups || 0) + (t.extrait_signups || 0));
+    $('kInsc').textContent = fr(insc);
+    $('kInscHint').textContent = fr(t.extrait_signups ?? 0) + ' extrait · ' + fr(t.tableur_signups ?? 0) + ' tableur';
     $('kCa').textContent = fmtMoney(t.revenu_cents, t.currency);
     $('kVentesHint').textContent = fr(t.ventes) + ' vente' + (t.ventes > 1 ? 's' : '') + ' réelle' + (t.ventes > 1 ? 's' : '');
 
     setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.gumroad_clicks);
     setDelta('dExt', dl.extract_clicks); setDelta('dTabClk', dl.tableur_clicks); setDelta('dTab', dl.tableur_signups);
     setDelta('dExtSign', dl.extrait_signups ?? 0);
+    setDelta('dInsc', dl.inscriptions ?? 0);
 
     const partial = !!d.previous_partial;
     setCmp('cVis', t.visiteurs, prev.visiteurs, showCmp, partial);
@@ -361,22 +377,14 @@
     setCmp('cClk', t.gumroad_clicks, prev.gumroad_clicks, showCmp, partial);
     setCmp('cCtr', t.ctr, prev.ctr, showCmp, partial);
     setCmp('cCa', t.ventes, prev.ventes, showCmp, partial);
+    setCmp('cInsc', insc, prev.inscriptions ?? 0, showCmp, partial);
 
     let sub = 'Site vitrine — ' + periodLabel(d.period_days);
     if(d.tracking_since) sub += ' · suivi depuis le ' + fmtDate(d.tracking_since);
     $('subLine').textContent = sub;
 
-    // Entonnoir
-    $('fVis').textContent = fr(t.visiteurs);
-    $('fClk').textContent = fr(t.gumroad_clicks);
-    const pct = t.visiteurs ? (t.gumroad_clicks / t.visiteurs * 100) : 0;
-    $('fClkBar').style.width = Math.min(100, pct) + '%';
-    $('fClkPct').textContent = t.gumroad_clicks ? '('+pct.toLocaleString('fr-FR',{maximumFractionDigits:1})+'%)' : '';
-
-    $('fVentes').textContent = fr(t.ventes) + (t.revenu_cents ? ' · ' + fmtMoney(t.revenu_cents, t.currency) : '');
-    const pctVentes = t.visiteurs ? (t.ventes / t.visiteurs * 100) : 0;
-    $('fVentesBar').style.width = Math.min(100, pctVentes) + '%';
-    $('fVentesPct').textContent = t.ventes ? '('+pctVentes.toLocaleString('fr-FR',{maximumFractionDigits:1})+'% des visiteurs)' : '';
+    renderFunnel(d.funnel || [], t);
+    renderDates(d.dates || {});
 
     $('emptyNote').style.display = (t.visiteurs || t.pageviews) ? 'none' : 'block';
 
@@ -384,9 +392,45 @@
     renderDoughnut('src', d.by_source || [], 'source', SRC_COLORS);
     renderDoughnut('dev', d.by_device || [], 'device', { mobile:'#D9171D', desktop:'#C9A84C' });
 
-    renderBarList('pagesBox', d.by_page, { label:x=>x.path, value:x=>x.pageviews, fmt:x=>fr(x.pageviews)+' vues' });
+    renderBarList('pagesBox', d.by_page, { label:x=>x.nom || x.path, value:x=>x.pageviews, fmt:x=>fr(x.pageviews)+' vues' });
+    renderBarList('campBox', d.by_campaign, {
+      label:x=>x.campagne,
+      value:x=>x.visiteurs,
+      fmt:x=>fr(x.visiteurs)+' visiteurs · '+fr(x.inscriptions)+' email'+(x.inscriptions>1?'s':'')+' ('+x.taux_inscription+'%)'
+    });
     renderBarList('ctaBox', d.by_cta, { label:x=>x.cta, value:x=>x.total, fmt:x=>fr(x.gumroad)+' achat'+(x.extract?(' · '+fr(x.extract)+' extrait'):'') });
     renderBarList('convBox', d.conv_by_source, { label:x=>x.source, value:x=>x.rate, fmt:x=>x.rate+'% ('+fr(x.gumroad_clicks)+'/'+fr(x.visiteurs)+')' });
+  }
+
+  // Entonnoir : une barre par etape, largeur proportionnelle a la 1re etape,
+  // et le % affiche est celui de l'etape precedente (la ou ca fuit).
+  function renderFunnel(steps, t){
+    const box = $('funnelBox'); if(!box) return;
+    if(!steps.length){ box.innerHTML = '<div class="empty">Aucune donnée pour l’instant.</div>'; return; }
+    const base = steps[0].valeur || 0;
+    box.innerHTML = steps.map((s, i) => {
+      const w = base > 0 ? Math.max(1.5, Math.round(s.valeur / base * 100)) : 0;
+      const pct = s.taux === null || s.taux === undefined ? '' :
+        '<span class="pct">' + s.taux.toLocaleString('fr-FR') + '% de l’étape précédente</span>';
+      const extra = (i === steps.length - 1 && t.revenu_cents) ? ' · ' + fmtMoney(t.revenu_cents, t.currency) : '';
+      return '<div class="funnel-row"><div class="funnel-head"><span class="name">' + esc(s.etape) +
+             '</span><span><span class="num">' + fr(s.valeur) + extra + '</span>' + pct +
+             '</span></div><div class="bar"><i style="width:' + w + '%"></i></div></div>';
+    }).join('');
+  }
+
+  function renderDates(dates){
+    const box = $('datesBox'); if(!box) return;
+    const items = [
+      ['Suivi depuis', dates.suivi_depuis ? fmtDate(dates.suivi_depuis) : '—'],
+      ['Meilleur jour', dates.meilleur_jour ? fmtDate(dates.meilleur_jour.date) + ' (' + fr(dates.meilleur_jour.visiteurs) + ' visiteurs)' : '—'],
+      ['Dernière inscription', dates.derniere_inscription ? fmtDate(dates.derniere_inscription) : '—'],
+      ['Première vente', dates.premiere_vente ? fmtDate(dates.premiere_vente) : '—'],
+      ['Dernière vente', dates.derniere_vente ? fmtDate(dates.derniere_vente) : '—'],
+    ];
+    box.innerHTML = items.map(([l, v]) =>
+      '<div class="m"><div class="label">' + esc(l) + '</div><div class="val" style="font-size:20px;">' + esc(v) + '</div></div>'
+    ).join('');
   }
 
   function renderDay(byDay){
@@ -397,7 +441,8 @@
         labels: byDay.map(x => x.date.slice(5).replace('-','/')),
         datasets:[
           { label:'Visiteurs', data:byDay.map(x=>x.visiteurs), borderColor:C.red, backgroundColor:'rgba(217,23,29,0.15)', fill:true, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 },
-          { label:'Clics Gumroad', data:byDay.map(x=>x.gumroad_clicks), borderColor:C.gold, backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 },
+          { label:'Emails récoltés', data:byDay.map(x=>x.inscriptions||0), borderColor:C.gold, backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 },
+          { label:'Clics Gumroad', data:byDay.map(x=>x.gumroad_clicks), borderColor:'#7a7570', backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, borderDash:[4,3], pointRadius:0, pointHoverRadius:4 },
           { label:'Ventes', data:byDay.map(x=>x.ventes||0), borderColor:'#46d17a', backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4, yAxisID:'y' }
         ]
       },
