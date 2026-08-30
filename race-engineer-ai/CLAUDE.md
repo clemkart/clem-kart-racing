@@ -84,7 +84,7 @@ L'idée : reproduire ce qu'un vrai race engineer ferait entre les sessions : ana
 
 ## Concepts clés du karting à maîtriser
 
-Ces concepts viennent du guide PDF vendu sur Gumroad (32 pages, 16,99€) :
+Ces concepts viennent du guide PDF vendu sur Gumroad (59 pages, 16,99€) :
 
 - **Light hands (Ch.3)** : le volant est un capteur, pas une commande. Serrer = châssis figé.
 - **Freinage dégressif (Ch.4)** : pic de pression → relâché progressif. Maintenir = kart refuse de pivoter. ~2-3 dixièmes perdus par virage si raté.

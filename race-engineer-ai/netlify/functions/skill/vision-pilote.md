@@ -1,6 +1,6 @@
 ﻿# Vision pilote : Clément Daniel
 
-Source : ebook "Quand comprendre change tout" (2026, 32 pages, vendu 16,99€ sur Gumroad).
+Source : ebook "Quand comprendre change tout" (2026, 59 pages, vendu 16,99€ sur Gumroad).
 C'est la **référence philosophique primaire**. Tout conseil donné par l'IA Race Engineer doit s'aligner sur cette vision.
 
 ---

@@ -284,7 +284,7 @@ Ce qu'il faut intégrer dans les CGU du produit (et que l'IA peut rappeler si pe
 - Premier contact avec un concept fondamental (light hands, freinage dégressif, etc.)
 
 **Format de renvoi** :
-> Pour le détail mécanique complet → Chapitre X du guide *Quand comprendre change tout* (32 pages, 16,99€).
+> Pour le détail mécanique complet → Chapitre X du guide *Quand comprendre change tout* (59 pages, 16,99€).
 
 ### Quand renvoyer vers les futures formations vidéos
 *(À développer quand Clément les aura créées)*
