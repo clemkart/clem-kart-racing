@@ -59,12 +59,26 @@ const post = (body, ip = '1.2.3.4') => ({
   const orderOk = calls.findIndex((c) => c.url.includes('/smtp/email')) < calls.findIndex((c) => c.method === 'PUT');
   check('ordre : envoi puis marquage de livraison', orderOk);
 
+  section('send-email : contenu du mail de livraison');
+  const htmlExtrait = sendCall.body.htmlContent;
+  check('dit explicitement que les fichiers sont joints', /fichiers joints à cet email/i.test(htmlExtrait));
+  check('demande de telecharger les pieces jointes', /Pense à les télécharger/i.test(htmlExtrait));
+  check('explique ou les trouver sur telephone', /tout en bas du message/i.test(htmlExtrait));
+  check('nomme les deux fichiers dans le corps', /Extrait du guide \(PDF\)/.test(htmlExtrait) && /Tableur de réglages kart \(Excel\)/.test(htmlExtrait));
+  check('AUCUN lien vers le guide payant dans le mail de livraison', !htmlExtrait.includes('gumroad.com'), 'lien gumroad trouve');
+  check('aucun prix affiche dans le mail de livraison', !/\d+[,.]\d\d\s*€/.test(htmlExtrait));
+  check('mise en page en tableaux (compatible Outlook/Gmail)', htmlExtrait.includes('role="presentation"') && !htmlExtrait.includes('display:flex'));
+  check('texte d apercu (preheader) present', htmlExtrait.includes('mso-hide:all'));
+  check('objet mentionne la piece jointe', /pièce jointe/i.test(sendCall.body.subject), sendCall.body.subject);
+
   reset();
   r = await sendEmail.handler(post({ email: 'pilote@exemple.fr' }, 'ip-b'));
   check('retro-compatibilite : sans champ magnet -> 200 (tableur)', r.statusCode === 200);
   const tabCall = calls.find((c) => c.url.includes('/smtp/email'));
   check('magnet par defaut = 1 seule piece jointe', tabCall && tabCall.body.attachment.length === 1);
   check('magnet par defaut pose TABLEUR_ENVOYE', calls.filter((c) => c.method === 'PUT').pop().body.attributes.TABLEUR_ENVOYE !== undefined);
+  check('mail tableur : pas de guide payant non plus', !tabCall.body.htmlContent.includes('gumroad.com'));
+  check('mail tableur : piece jointe mise en avant', /fichiers joints à cet email/i.test(tabCall.body.htmlContent));
 
   for (const [label, payload] of [
     ['email absent', {}],
@@ -125,7 +139,7 @@ const post = (body, ip = '1.2.3.4') => ({
     { email: 'extrait-8j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(8.5) } },
     { email: 'extrait-3j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(3) } },
     { email: 'extrait-20j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(20) } },
-    { email: 'tableur-seul@x.fr', attributes: { TABLEUR_ENVOYE: dayISO(8), SOURCE: 'tableur-reglages' } },
+    { email: 'tableur-seul@x.fr', attributes: { TABLEUR_ENVOYE: dayISO(7.2), SOURCE: 'tableur-reglages' } },
     { email: 'historique@x.fr', attributes: {}, createdAt: new Date(Date.now() - 8 * DAY).toISOString() },
     { email: 'deja-relance@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(8), RELANCE_GUIDE: dayISO(1) } },
     { email: 'blackliste@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(8) }, emailBlacklisted: true },
@@ -133,13 +147,24 @@ const post = (body, ip = '1.2.3.4') => ({
   reset(listResponder(contacts));
   await relance.handler();
   const sent = sentTo();
-  check('relance les 2 contacts servis dans la fenetre 7-9j', sent.length === 2, JSON.stringify(sent));
-  check('inscrit tableur JAMAIS relance (le mail parle de l extrait)', !sent.includes('tableur-seul@x.fr'));
+  check('relance les 3 contacts servis dans la fenetre 7-9j', sent.length === 3, JSON.stringify(sent));
   check('contact historique sans attribut jamais relance', !sent.includes('historique@x.fr'));
   check('hors fenetre (3j et 20j) non relances', !sent.includes('extrait-3j@x.fr') && !sent.includes('extrait-20j@x.fr'));
   check('deja relance -> ignore', !sent.includes('deja-relance@x.fr'));
   check('blackliste -> ignore', !sent.includes('blackliste@x.fr'));
   check('le plus ancien traite en premier', sent[0] === 'extrait-8j@x.fr', JSON.stringify(sent));
+
+  // Le point critique : chacun reçoit un texte qui parle de CE QU IL A recu.
+  const mailDe = (adr) => calls.find((c) => c.url.includes('/smtp/email') && c.body.to[0].email === adr).body;
+  const mailExtrait = mailDe('extrait-7j@x.fr');
+  const mailTableur = mailDe('tableur-seul@x.fr');
+  check('relance extrait : parle de l extrait', /extrait de mon guide/i.test(mailExtrait.htmlContent));
+  check('relance extrait : ne pretend pas avoir envoye le tableur', !/tu as reçu mon tableur/i.test(mailExtrait.htmlContent));
+  check('relance tableur : parle du tableur', /tu as reçu mon tableur/i.test(mailTableur.htmlContent));
+  check('relance tableur : ne pretend PAS qu il a recu l extrait', !/extrait de mon guide/i.test(mailTableur.htmlContent), mailTableur.subject);
+  check('objets de relance differents selon le parcours', mailExtrait.subject !== mailTableur.subject, mailTableur.subject);
+  check('relance : lien vers le guide payant present', mailExtrait.htmlContent.includes('gumroad.com'));
+  check('relance : prix a jour 16,99', /16,99/.test(mailExtrait.htmlContent) && !/14,99/.test(mailExtrait.htmlContent));
   const iMark = calls.findIndex((c) => c.method === 'PUT' && c.body.attributes && c.body.attributes.RELANCE_GUIDE);
   const iSend = calls.findIndex((c) => c.url.includes('/smtp/email'));
   check('marquage AVANT envoi (at-most-once)', iMark >= 0 && iMark < iSend, `mark=${iMark} send=${iSend}`);

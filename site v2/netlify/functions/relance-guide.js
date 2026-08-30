@@ -1,12 +1,14 @@
-// =============================================
+﻿// =============================================
 // Clem Kart Racing — Relance J+7 vers le guide complet (fonction planifiée)
 // Tourne chaque jour (cron dans netlify.toml). Relance UNE fois, vers le guide complet,
 // les contacts à qui l'extrait a réellement été livré il y a 7 à 9 jours.
 //
 // Garde-fous (dans l'ordre d'importance) :
-// 1. Eligibilité fondée sur l'attribut EXTRAIT_ENVOYE, posé par send-email.js APRES un
-//    envoi réussi. Un contact de la liste qui n'a jamais reçu l'extrait (inscrits tableur,
-//    contacts historiques, envoi échoué) n'a pas cet attribut : il n'est jamais relancé.
+// 1. Eligibilité fondée sur un attribut de livraison (EXTRAIT_ENVOYE / TABLEUR_ENVOYE)
+//    posé par send-email.js APRES un envoi réussi, et le texte de la relance est choisi
+//    d'après cet attribut. Un contact qui n'a rien reçu (contacts historiques, envoi
+//    échoué) n'a aucun de ces attributs : il n'est jamais relancé, et personne ne reçoit
+//    un email qui parle d'un document qu'il n'a pas eu.
 // 2. Fenêtre 7-9 jours : même si un attribut traînait, le stock historique est hors fenêtre.
 // 3. Attribut RELANCE_GUIDE posé AVANT l'envoi (sémantique at-most-once) : en cas de crash
 //    ou de timeout, on rate une relance plutôt que d'en envoyer deux.
@@ -30,13 +32,10 @@ const SEND_CONCURRENCY = 5;  // les fonctions planifiées Netlify sont coupées 
 const PAGE_LIMIT = 500;      // pagination Brevo (max 500)
 const MAX_PAGES = 20;        // garde-fou : 10 000 contacts max parcourus
 
-const DELIVERED_ATTRIBUTE = 'EXTRAIT_ENVOYE';
 const RELANCE_ATTRIBUTE = 'RELANCE_GUIDE';
 // Attributs que send-email.js et cette fonction écrivent. Brevo ignore SILENCIEUSEMENT
 // un attribut inconnu du compte : ils doivent donc exister avant tout marquage.
-const REQUIRED_ATTRIBUTES = [RELANCE_ATTRIBUTE, DELIVERED_ATTRIBUTE, 'TABLEUR_ENVOYE'];
-
-const RELANCE_SUBJECT = 'Tu as lu l’extrait ? Voilà ce qui vient après';
+const REQUIRED_ATTRIBUTES = [RELANCE_ATTRIBUTE, 'EXTRAIT_ENVOYE', 'TABLEUR_ENVOYE'];
 
 // Dupliqué depuis send-email.js : chaque fonction Netlify est bundlée isolément.
 function unsubscribeToken(email) {
@@ -51,40 +50,130 @@ function unsubscribeUrl(email) {
   return `${SITE_URL}/.netlify/functions/desinscription?e=${encodeURIComponent(email)}&t=${unsubscribeToken(email)}`;
 }
 
-function relanceHtml(email) {
-  return `
-  <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#070707;color:#f2ede8;padding:40px 32px;">
-    <h1 style="font-family:Arial,sans-serif;font-size:28px;margin-bottom:8px;color:#f2ede8;">Et maintenant, la suite 🏁</h1>
-    <p style="color:rgba(242,237,232,0.7);line-height:1.7;margin-bottom:24px;">
-      Il y a une semaine, tu as reçu l'extrait du guide et le tableur de réglages.
-      Si tu as lu le chapitre sur le freinage dégressif, tu sais déjà que
-      <strong style="color:#f2ede8;">la façon dont tu relâches le frein compte plus que la façon dont tu appuies dessus</strong>.
-    </p>
-    <p style="color:rgba(242,237,232,0.7);line-height:1.7;margin-bottom:24px;">
-      L'extrait s'arrête exactement là où ça devient intéressant. Le guide complet, c'est 13 chapitres pour :
-    </p>
-    <ul style="color:rgba(242,237,232,0.7);line-height:1.8;margin:0 0 24px;padding-left:20px;">
-      <li>utiliser ton regard pour anticiper au lieu de subir ;</li>
-      <li>découper chaque virage en points de référence, pour te répéter tour après tour ;</li>
-      <li>faire de la réaccélération ton vrai levier de chrono ;</li>
-      <li>construire une confiance calme, à la place d'un pilotage nerveux et aléatoire.</li>
-    </ul>
-    <p style="color:rgba(242,237,232,0.7);line-height:1.7;margin-bottom:32px;">
-      14,99€, accès immédiat, <strong style="color:#f2ede8;">garantie satisfait ou remboursé 7 jours</strong>, sans condition.
-      Ce que tu lis ce soir, tu l'appliques à ta prochaine session.
-    </p>
-    <a href="${GUIDE_URL}"
-       style="display:inline-block;background:#D9171D;color:#f2ede8;font-family:Arial,sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 28px;">
-      Obtenir le guide complet · 14,99€ →
-    </a>
-    <p style="color:rgba(242,237,232,0.5);font-size:13px;margin-top:24px;line-height:1.6;">
-      Déjà pris le guide ? Ignore cet email, et merci pour ta confiance.
-    </p>
-    <p style="color:rgba(242,237,232,0.4);font-size:12px;margin-top:32px;line-height:1.6;">
-      Clem Kart Racing · <a href="${unsubscribeUrl(email)}" style="color:rgba(242,237,232,0.55);">Me désinscrire en un clic</a>.
-    </p>
-  </div>
-`;
+// Palette et briques identiques aux emails de livraison (send-email.js) : tableaux HTML
+// et styles inline, seule mise en forme que Gmail, Outlook et Apple Mail respectent.
+const C = {
+  page: '#050505', card: '#0F0F0F', line: '#241f1f',
+  text: '#f2ede8', muted: '#a49e97', faint: '#6f6a65',
+  red: '#D9171D'
+};
+
+// Accroche propre à chaque parcours : on ne parle que de ce que le contact a vraiment reçu.
+const ACCROCHES = {
+  EXTRAIT_ENVOYE: {
+    subject: 'Tu as lu l’extrait ? Voilà ce qui vient après',
+    apercu: 'La suite du chapitre sur le freinage dégressif.',
+    intro: `Il y a une semaine, tu as reçu l'extrait de mon guide. Si tu as lu le chapitre sur le freinage dégressif,
+            tu sais déjà que <strong style="color:${C.text};">la façon dont tu relâches le frein compte plus que la façon dont tu appuies dessus</strong>.`,
+    transition: "L'extrait s'arrête exactement là où ça devient intéressant. Le guide complet, c'est 13 chapitres pour :"
+  },
+  TABLEUR_ENVOYE: {
+    subject: 'Ton tableur est rempli ? Il manque la grille de lecture',
+    apercu: 'Noter tes réglages, c\'est la moitié du travail.',
+    intro: `Il y a une semaine, tu as reçu mon tableur de réglages. Si tu l'as rempli deux ou trois fois,
+            tu commences à voir des schémas revenir. Et très vite arrive la vraie question :
+            <strong style="color:${C.text};">pourquoi ce réglage marche ici et pas là-bas ?</strong>`,
+    transition: "Noter, c'est la moitié du travail. Comprendre, c'est l'autre moitié. Le guide, c'est 13 chapitres pour :"
+  }
+};
+
+function relanceHtml(email, attribut) {
+  const a = ACCROCHES[attribut];
+  const puces = [
+    'comprendre le rôle exact du freinage dans la rotation du kart ;',
+    'utiliser ton regard pour anticiper au lieu de subir ;',
+    'découper chaque virage en points de référence, pour te répéter tour après tour ;',
+    'construire une confiance calme, à la place d\'un pilotage nerveux et aléatoire.'
+  ].map((p) => `
+                  <tr>
+                    <td width="18" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${C.red};">▸</td>
+                    <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${C.muted};padding-bottom:6px;">${p}</td>
+                  </tr>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+</head>
+<body style="margin:0;padding:0;background:${C.page};">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">${a.apercu}</div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${C.page};">
+  <tr>
+    <td align="center" style="padding:24px 12px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:100%;max-width:600px;background:${C.card};border-top:3px solid ${C.red};">
+        <tr>
+          <td style="padding:32px 36px 0;">
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:${C.text};">
+              CLEM <span style="color:${C.red};">KART</span> RACING
+            </div>
+            <div style="height:2px;width:44px;background:${C.red};margin-top:12px;font-size:0;line-height:0;">&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:26px 36px 0;">
+            <h1 style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1.2;color:${C.text};font-weight:bold;">Et maintenant, la suite 🏁</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:18px 36px 0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${C.muted};">
+            ${a.intro}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:18px 36px 0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${C.muted};">
+            ${a.transition}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:18px 36px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">${puces}</table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:22px 36px 0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${C.muted};">
+            16,99&nbsp;€, accès immédiat, <strong style="color:${C.text};">garantie satisfait ou remboursé 7 jours</strong>, sans condition.
+            Ce que tu lis ce soir, tu l'appliques à ta prochaine session.
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:28px 36px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="background:${C.red};">
+                  <a href="${GUIDE_URL}" style="display:inline-block;padding:15px 30px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:${C.text};text-decoration:none;">Découvrir le guide · 16,99&nbsp;€</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:30px 36px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td style="border-top:1px solid ${C.line};padding-top:22px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.7;color:${C.muted};">
+                  Déjà pris le guide ? Ignore cet email, et merci pour ta confiance.<br><br>
+                  Bonnes sessions 🏁<br>
+                  <strong style="color:${C.text};">Clément</strong><br>
+                  <span style="font-size:12px;color:${C.faint};">Clem Kart Racing · Champion Régional 2023</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:26px 36px 34px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.7;color:${C.faint};">
+            Tu reçois cet email parce que tu as demandé une ressource gratuite sur clemkartracing.<br>
+            <a href="${unsubscribeUrl(email)}" style="color:${C.faint};text-decoration:underline;">Me désinscrire en un clic</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`;
 }
 
 function brevoHeaders(key) {
@@ -136,21 +225,25 @@ async function fetchListContacts(key, listId) {
   return [...byEmail.values()];
 }
 
-// Date de livraison de l'extrait (YYYY-MM-DD posé par send-email.js), en ms. null si absent.
-function deliveredAt(contact) {
-  const raw = (contact.attributes || {})[DELIVERED_ATTRIBUTE];
-  if (!raw) return null;
-  const ts = Date.parse(raw);
-  return Number.isNaN(ts) ? null : ts;
+// Ce que le contact a REELLEMENT reçu, et quand (YYYY-MM-DD posé par send-email.js après
+// un envoi réussi). L'extrait prime : c'est l'engagement le plus fort, et son email de
+// relance rebondit sur le chapitre lu. null si le contact n'a jamais rien reçu.
+function livraison(contact) {
+  const attrs = contact.attributes || {};
+  for (const nom of ['EXTRAIT_ENVOYE', 'TABLEUR_ENVOYE']) {
+    const ts = Date.parse(attrs[nom] || '');
+    if (!Number.isNaN(ts)) return { attribut: nom, date: ts };
+  }
+  return null;
 }
 
 function isEligible(contact, now) {
   if (!contact || !contact.email) return false;
   if (contact.emailBlacklisted) return false;
   if ((contact.attributes || {})[RELANCE_ATTRIBUTE]) return false; // déjà relancé
-  const delivered = deliveredAt(contact);
-  if (delivered === null) return false; // n'a jamais reçu l'extrait
-  const ageDays = (now - delivered) / DAY_MS;
+  const recu = livraison(contact);
+  if (!recu) return false; // n'a jamais reçu de lead magnet
+  const ageDays = (now - recu.date) / DAY_MS;
   return ageDays >= WINDOW_MIN_DAYS && ageDays < WINDOW_MAX_DAYS;
 }
 
@@ -165,7 +258,7 @@ async function markRelanced(key, email, dateISO) {
   }
 }
 
-async function sendRelance(key, email) {
+async function sendRelance(key, email, attribut) {
   const unsubUrl = unsubscribeUrl(email);
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
@@ -173,8 +266,8 @@ async function sendRelance(key, email) {
     body: JSON.stringify({
       sender: SENDER,
       to: [{ email }],
-      subject: RELANCE_SUBJECT,
-      htmlContent: relanceHtml(email),
+      subject: ACCROCHES[attribut].subject,
+      htmlContent: relanceHtml(email, attribut),
       headers: {
         'List-Unsubscribe': `<${unsubUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
@@ -189,6 +282,8 @@ async function sendRelance(key, email) {
 // Marquage PUIS envoi : un contact marqué mais non servi rate sa relance,
 // ce qui est préférable à un doublon.
 async function relanceOne(key, contact, dateISO) {
+  const recu = livraison(contact);
+  if (!recu) return false; // filtré en amont par isEligible, garde-fou de dernier recours
   try {
     await markRelanced(key, contact.email, dateISO);
   } catch (err) {
@@ -196,7 +291,7 @@ async function relanceOne(key, contact, dateISO) {
     return false;
   }
   try {
-    await sendRelance(key, contact.email);
+    await sendRelance(key, contact.email, recu.attribut);
     return true;
   } catch (err) {
     console.error(`relance-guide: envoi échoué après marquage (${err.message})`);
@@ -220,7 +315,7 @@ exports.handler = async function() {
     const eligible = contacts
       .filter((c) => isEligible(c, now))
       // Les plus anciens d'abord : ce sont eux qui vont sortir de la fenêtre en premier.
-      .sort((a, b) => deliveredAt(a) - deliveredAt(b));
+      .sort((a, b) => livraison(a).date - livraison(b).date);
 
     if (eligible.length === 0) {
       console.log(`relance-guide: aucun contact éligible (${contacts.length} contacts dans la liste ${LIST_ID}).`);
