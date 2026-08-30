@@ -244,7 +244,7 @@ footer{background:var(--b2);padding:36px 60px;display:flex;align-items:center;ju
     <p>La méthode complète du freinage dégressif est dans le guide — avec les repères concrets pour sentir le bon relâché, virage par virage. 32 pages. Accès immédiat. Des pilotes l'ont appliqué dès la sortie suivante.</p>
     <div class="cta-btns">
       <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btn-p">Obtenir le guide · 14,99&nbsp;€ →</a>
-      <a href="https://clemkartracing.gumroad.com/l/Extrait" target="_blank" rel="noopener" class="btn-g">Lire un extrait gratuit</a>
+      <a href="extrait-guide.html" class="btn-g">Recevoir l'extrait gratuit</a>
     </div>
   </div>
 
@@ -300,7 +300,7 @@ document.querySelectorAll('a').forEach(el=>{el.addEventListener('mouseenter',()=
       var a=e.target.closest?e.target.closest('a[href]'):null; if(!a) return;
       var h=a.getAttribute('href')||'';
       if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
-      else if(h.indexOf('/l/Extrait')>-1) send('extract_click',{cta:a.className||''});
+      else if(h.indexOf('extrait-guide')>-1) send('extract_click',{cta:a.className||''});
       else if(h.indexOf('tableur-reglages')>-1) send('tableur_click',{cta:a.className||''});
     },true);
   })();

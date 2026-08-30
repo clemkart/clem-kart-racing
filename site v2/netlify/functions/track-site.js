@@ -16,6 +16,7 @@ const ALLOWED_TYPES = new Set([
   'extract_click',
   'tableur_click',   // clic vers la page tableur (interet, pas encore une inscription)
   'tableur_signup',  // email reellement envoye avec succes (evenement reel de conversion)
+  'extrait_signup',  // extrait du guide reellement envoye par email (page extrait-guide.html)
   'app_page_click',  // clic vers la page Race Engineer AI depuis le site
   'app_plan_click',  // clic sur le CTA d'une carte tarif (meta.plan = decouverte|pro|paddock)
   'app_early_access',// envoi du formulaire early access de l'app
@@ -69,6 +70,8 @@ function classify(hint) {
   const h = hint.toLowerCase();
   if (h.includes('tiktok')) return 'tiktok';
   if (h.includes('instagram') || h === 'ig') return 'instagram';
+  // fb.me / fb.watch : liens raccourcis frequents depuis l'app Facebook et Messenger.
+  if (h.includes('facebook') || h === 'fb' || h === 'fb.me' || h === 'fb.watch') return 'facebook';
   if (h.includes('youtube') || h.includes('youtu.be') || h === 'yt') return 'youtube';
   if (h.includes('google')) return 'google';
   return null;

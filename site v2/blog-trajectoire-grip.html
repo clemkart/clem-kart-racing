@@ -181,7 +181,7 @@ footer{background:var(--b2);padding:36px 60px;display:flex;align-items:center;ju
     <p>Le guide t'explique comment modifier ta ligne selon les conditions : piste froide, piste sale, humide, sans tâtonner pendant 10 tours. 32 pages de méthode concrète. Accès immédiat.</p>
     <div class="cta-btns">
       <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btn-p">Obtenir le guide · 14,99&nbsp;€ →</a>
-      <a href="https://clemkartracing.gumroad.com/l/Extrait" target="_blank" rel="noopener" class="btn-g">Lire un extrait gratuit</a>
+      <a href="extrait-guide.html" class="btn-g">Recevoir l'extrait gratuit</a>
     </div>
   </div>
 
@@ -236,7 +236,7 @@ document.querySelectorAll('a').forEach(el=>{el.addEventListener('mouseenter',()=
       var a=e.target.closest?e.target.closest('a[href]'):null; if(!a) return;
       var h=a.getAttribute('href')||'';
       if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
-      else if(h.indexOf('/l/Extrait')>-1) send('extract_click',{cta:a.className||''});
+      else if(h.indexOf('extrait-guide')>-1) send('extract_click',{cta:a.className||''});
       else if(h.indexOf('tableur-reglages')>-1) send('tableur_click',{cta:a.className||''});
     },true);
   })();

@@ -16,3 +16,24 @@
   # On l'exclut du scan de secrets Netlify (qui reste actif pour le reste :
   # la vraie cle SUPABASE_SERVICE_ROLE_KEY, elle, n'est jamais dans le code).
   SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL"
+
+# Relance J+7 vers le guide complet : tous les jours a 9h UTC (11h Paris l'ete).
+# La fonction ne relance que les contacts inscrits il y a 7 a 9 jours, une seule fois.
+[functions."relance-guide"]
+  schedule = "0 9 * * *"
+
+# URL courte pour ManyChat / bio Instagram -> page de capture de l'extrait.
+[[redirects]]
+  from = "/extrait"
+  to = "/extrait-guide.html"
+  status = 301
+
+# Le dossier des fonctions est un sous-dossier de "site v2" : sans cette regle, Netlify
+# sert leur code source en statique (verifie : GET /netlify/functions/send-email.js
+# renvoyait 200 avec le JS complet). Les fonctions elles-memes restent appelees via
+# /.netlify/functions/* et ne sont pas concernees par ce blocage.
+[[redirects]]
+  from = "/netlify/*"
+  to = "/index.html"
+  status = 404
+  force = true

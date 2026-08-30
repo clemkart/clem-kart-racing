@@ -292,8 +292,8 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
       <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btp">
         <span>Je veux le guide · 14,99&nbsp;€</span><span>→</span>
       </a>
-      <a href="https://clemkartracing.gumroad.com/l/Extrait" target="_blank" rel="noopener" class="btg">
-        Lire un extrait gratuit
+      <a href="extrait-guide.html" class="btg">
+        Recevoir l'extrait gratuit
       </a>
     </div>
   </div>
@@ -661,7 +661,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
       var a=e.target.closest?e.target.closest('a[href]'):null; if(!a) return;
       var h=a.getAttribute('href')||'';
       if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
-      else if(h.indexOf('/l/Extrait')>-1) send('extract_click',{cta:a.className||''});
+      else if(h.indexOf('extrait-guide')>-1) send('extract_click',{cta:a.className||''});
       else if(h.indexOf('tableur-reglages')>-1) send('tableur_click',{cta:a.className||''});
       else if(h.indexOf('race-engineer-ai')>-1) send('app_page_click',{cta:a.className||''});
     },true);

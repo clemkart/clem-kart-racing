@@ -228,8 +228,9 @@
       <div class="m"><div class="label">Clics extrait gratuit</div><div class="val"><span id="kExt">—</span><span class="delta" id="dExt"></span></div></div>
       <div class="m"><div class="label">Clics vers le tableur</div><div class="val"><span id="kTabClk">—</span><span class="delta" id="dTabClk"></span></div></div>
       <div class="m"><div class="label">Inscriptions tableur</div><div class="val"><span id="kTab">—</span><span class="delta" id="dTab"></span></div></div>
+      <div class="m"><div class="label">Inscriptions extrait</div><div class="val"><span id="kExtSign">—</span><span class="delta" id="dExtSign"></span></div></div>
     </div>
-    <p style="color:var(--wd);font-size:11px;margin-top:8px;">« Inscriptions » = email réellement envoyé avec succès. « Clics vers le tableur » = simple intérêt, pas encore une inscription confirmée.</p>
+    <p style="color:var(--wd);font-size:11px;margin-top:8px;">« Inscriptions » = email réellement envoyé avec succès. « Clics » = simple intérêt, pas encore une inscription confirmée.</p>
   </div>
 </div>
 
@@ -237,7 +238,7 @@
   const FN_URL = '/.netlify/functions/dashboard-data';
   const PWD_KEY = 'ckr_dash_pwd';
   const C = { red:'#D9171D', gold:'#C9A84C', cream:'rgb(242,237,232)', dim:'rgba(242,237,232,0.55)', grid:'rgba(242,237,232,0.08)' };
-  const SRC_COLORS = { tiktok:'#D9171D', instagram:'#C9A84C', youtube:'#A51115', google:'rgb(242,237,232)', direct:'#5a5a5a', autre:'#2a2a2a' };
+  const SRC_COLORS = { tiktok:'#D9171D', instagram:'#C9A84C', youtube:'#A51115', facebook:'#4267B2', google:'rgb(242,237,232)', direct:'#5a5a5a', autre:'#2a2a2a' };
   const charts = {};
   let currentDays = 30;
   const $ = (id) => document.getElementById(id);
@@ -346,11 +347,13 @@
     $('kExt').textContent = fr(t.extract_clicks);
     $('kTabClk').textContent = fr(t.tableur_clicks);
     $('kTab').textContent = fr(t.tableur_signups);
+    $('kExtSign').textContent = fr(t.extrait_signups ?? 0);
     $('kCa').textContent = fmtMoney(t.revenu_cents, t.currency);
     $('kVentesHint').textContent = fr(t.ventes) + ' vente' + (t.ventes > 1 ? 's' : '') + ' réelle' + (t.ventes > 1 ? 's' : '');
 
     setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.gumroad_clicks);
     setDelta('dExt', dl.extract_clicks); setDelta('dTabClk', dl.tableur_clicks); setDelta('dTab', dl.tableur_signups);
+    setDelta('dExtSign', dl.extrait_signups ?? 0);
 
     const partial = !!d.previous_partial;
     setCmp('cVis', t.visiteurs, prev.visiteurs, showCmp, partial);

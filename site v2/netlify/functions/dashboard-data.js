@@ -47,7 +47,7 @@ function ctaLabel(raw) { return CTA_LABELS[raw] || raw || '(sans nom)'; }
 
 function blankTotals() {
   return {
-    visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, ctr: 0,
+    visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, extrait_signups: 0, ctr: 0,
     ventes: 0, revenu_cents: 0, taux_achat: 0,
   };
 }
@@ -57,6 +57,7 @@ function bump(tot, type) {
   else if (type === 'extract_click') tot.extract_clicks++;
   else if (type === 'tableur_click') tot.tableur_clicks++;
   else if (type === 'tableur_signup') tot.tableur_signups++;
+  else if (type === 'extrait_signup') tot.extrait_signups++;
 }
 // ctr = % de VISITEURS UNIQUES ayant clique au moins une fois vers Gumroad
 // (et non le nombre brut de clics, qui compterait 2x la meme personne si elle
@@ -119,7 +120,7 @@ function aggregate(rows, days, salesRows) {
   const prevGumroadClickers = new Set();
 
   // Deltas dernieres 24h
-  const d24 = { visiteurs: new Set(), pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0 };
+  const d24 = { visiteurs: new Set(), pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, extrait_signups: 0 };
 
   let earliestTs = null;
 
@@ -137,6 +138,7 @@ function aggregate(rows, days, salesRows) {
       else if (type === 'extract_click') d24.extract_clicks++;
       else if (type === 'tableur_click') d24.tableur_clicks++;
       else if (type === 'tableur_signup') d24.tableur_signups++;
+      else if (type === 'extrait_signup') d24.extrait_signups++;
       if (sid) d24.visiteurs.add(sid);
     }
 
@@ -238,6 +240,7 @@ function aggregate(rows, days, salesRows) {
     extract_clicks: d24.extract_clicks,
     tableur_clicks: d24.tableur_clicks,
     tableur_signups: d24.tableur_signups,
+    extrait_signups: d24.extrait_signups,
     ventes: salesAgg.d24Ventes,
   };
 
