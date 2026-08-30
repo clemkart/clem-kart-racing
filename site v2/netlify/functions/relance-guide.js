@@ -1,4 +1,4 @@
-﻿// =============================================
+// =============================================
 // Clem Kart Racing : Relance J+7 vers le guide complet (fonction planifiée)
 // Tourne chaque jour (cron dans netlify.toml). Relance UNE fois, vers le guide complet,
 // les contacts à qui l'extrait a réellement été livré il y a 7 à 9 jours.

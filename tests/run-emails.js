@@ -1,4 +1,4 @@
-﻿// Harnais de test des fonctions email : Brevo est remplace par un faux fetch qui
+// Harnais de test des fonctions email : Brevo est remplace par un faux fetch qui
 // enregistre les appels. Aucun email reel n'est envoye.
 process.env.BREVO_API_KEY = 'test-key';
 process.env.BREVO_TABLEUR_LIST_ID = '6';

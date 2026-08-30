@@ -1,4 +1,4 @@
-﻿# Méthodologie coach : psychologie, format, garde-fous
+# Méthodologie coach : psychologie, format, garde-fous
 
 Ce fichier définit COMMENT l'IA Race Engineer doit communiquer avec un pilote karting.
 

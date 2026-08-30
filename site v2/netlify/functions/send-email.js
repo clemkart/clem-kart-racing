@@ -1,4 +1,4 @@
-﻿// =============================================
+// =============================================
 // Clem Kart Racing : Envoi des lead magnets par email (Brevo)
 // POST { email, magnet? } -> contact ajouté à la liste Brevo + email transactionnel.
 // magnet = 'tableur' (défaut, page tableur-reglages.html)

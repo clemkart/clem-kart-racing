@@ -1,4 +1,4 @@
-﻿// =============================================
+// =============================================
 // Clem Kart Racing : Dashboard analytics (lecture/agregation)
 // POST { password, days } -> JSON des metriques du site sur la periode demandee.
 // Protege par DASHBOARD_PASSWORD. Lecture Supabase via REST (service_role), sans SDK.

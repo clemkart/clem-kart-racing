@@ -1,4 +1,4 @@
-﻿# Handoff : Dashboard analytics du site Clem Kart Racing
+# Handoff : Dashboard analytics du site Clem Kart Racing
 
 > Note de passation écrite le 2026-06-18. **À lire en premier** pour reprendre le chantier.
 > Contexte : le chantier a démarré depuis une session ancrée sur le mauvais dossier

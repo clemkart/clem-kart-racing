@@ -1,4 +1,4 @@
-﻿# Race Engineer AI : Contexte projet pour Claude Code
+# Race Engineer AI : Contexte projet pour Claude Code
 
 ## ⚠️ RÈGLE ABSOLUE AVANT DE CODER
 **Ne jamais coder immédiatement.** Avant toute implémentation :

@@ -1,4 +1,4 @@
-﻿// =============================================
+// =============================================
 // Clem Kart Racing : Désinscription en un clic
 // GET  ?e=<email>&t=<jeton> -> page de confirmation (un bouton).
 // POST (mêmes paramètres)   -> blacklist l'adresse chez Brevo, plus aucun email.

@@ -1,4 +1,4 @@
-﻿// =============================================
+// =============================================
 // Clem Kart Racing : Analytics site (first-party)
 // POST { type, path, referrer, utm_*, session_id, meta } -> table Supabase site_events
 // Ecriture en REST (fetch, SANS SDK ni dependance npm), style send-email.js.
