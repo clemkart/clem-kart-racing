@@ -28,6 +28,36 @@
   to = "/extrait-guide.html"
   status = 301
 
+# Articles de blog depublies le 2026-08-31 : ils donnaient gratuitement 70 a 78 % des
+# chapitres du guide, phrases-signatures comprises. Les liens entrants existants
+# (partages, historique, moteurs de recherche) atterrissent sur la page extrait plutot
+# que sur une 404. Le texte des articles reste dans l'historique git et a la racine
+# du depot, hors dossier publie.
+[[redirects]]
+  from = "/blog.html"
+  to = "/extrait-guide.html"
+  status = 301
+
+[[redirects]]
+  from = "/blog-freinage-degressif.html"
+  to = "/extrait-guide.html"
+  status = 301
+
+[[redirects]]
+  from = "/blog-mental-karting.html"
+  to = "/extrait-guide.html"
+  status = 301
+
+[[redirects]]
+  from = "/blog-trajectoire-grip.html"
+  to = "/extrait-guide.html"
+  status = 301
+
+[[redirects]]
+  from = "/blog-volant-karting.html"
+  to = "/extrait-guide.html"
+  status = 301
+
 # Le dossier des fonctions est un sous-dossier de "site v2" : sans cette regle, Netlify
 # sert leur code source en statique (verifie : GET /netlify/functions/send-email.js
 # renvoyait 200 avec le JS complet). Les fonctions elles-memes restent appelees via

@@ -53,15 +53,17 @@ const PAGE_LABELS = {
   '/extrait': "Page extrait (capture email)",
   '/tableur-reglages.html': 'Page tableur (capture email)',
   '/race-engineer-ai.html': 'Page app Race Engineer AI',
-  '/blog.html': 'Blog (sommaire)',
+  '/blog.html': 'Blog, sommaire (depublie)',
   '/merci.html': 'Page merci (apres achat)',
   '/merci-fondateur.html': 'Page merci (fondateur app)',
   '/mentions-legales.html': 'Mentions legales',
   '/app-preview.html': "Apercu de l'app",
-  '/blog-freinage-degressif.html': 'Article : freinage degressif',
-  '/blog-mental-karting.html': 'Article : mental',
-  '/blog-trajectoire-grip.html': 'Article : trajectoire et grip',
-  '/blog-volant-karting.html': 'Article : le volant',
+  // Articles depublies le 2026-08-31 : le libelle reste, sinon l'historique du
+  // dashboard afficherait des chemins bruts pour les visites d'avant cette date.
+  '/blog-freinage-degressif.html': 'Article freinage degressif (depublie)',
+  '/blog-mental-karting.html': 'Article mental (depublie)',
+  '/blog-trajectoire-grip.html': 'Article trajectoire et grip (depublie)',
+  '/blog-volant-karting.html': 'Article le volant (depublie)',
 };
 function pageLabel(path) {
   if (PAGE_LABELS[path]) return PAGE_LABELS[path];

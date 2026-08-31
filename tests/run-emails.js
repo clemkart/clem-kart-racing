@@ -134,12 +134,16 @@ const post = (body, ip = '1.2.3.4') => ({
   const sentTo = () => calls.filter((c) => c.url.includes('/smtp/email')).map((c) => c.body.to[0].email);
 
   section('relance-guide : qui est relance');
+  // Uniquement des nombres entiers de jours : l'attribut stocke une DATE (minuit UTC),
+  // donc un decalage de 7,5 jours donne un age reel compris entre 7,5 et 8,5 selon
+  // l'heure a laquelle tourne le test. Avec des entiers, l'age d'une date vieille de
+  // N jours reste dans [N, N+1) quelle que soit l'heure, et le test est deterministe.
   const contacts = [
-    { email: 'extrait-7j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(7.5) } },
-    { email: 'extrait-8j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(8.5) } },
+    { email: 'extrait-7j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(7) } },
+    { email: 'extrait-8j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(8) } },
     { email: 'extrait-3j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(3) } },
     { email: 'extrait-20j@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(20) } },
-    { email: 'tableur-seul@x.fr', attributes: { TABLEUR_ENVOYE: dayISO(7.2), SOURCE: 'tableur-reglages' } },
+    { email: 'tableur-seul@x.fr', attributes: { TABLEUR_ENVOYE: dayISO(7), SOURCE: 'tableur-reglages' } },
     { email: 'historique@x.fr', attributes: {}, createdAt: new Date(Date.now() - 8 * DAY).toISOString() },
     { email: 'deja-relance@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(8), RELANCE_GUIDE: dayISO(1) } },
     { email: 'blackliste@x.fr', attributes: { EXTRAIT_ENVOYE: dayISO(8) }, emailBlacklisted: true },
