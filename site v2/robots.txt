@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Pages privees ou sans interet pour la recherche
+Disallow: /dashboard.html
+Disallow: /merci.html
+Disallow: /merci-fondateur.html
+Disallow: /app-preview.html
+Disallow: /netlify/
+Disallow: /.netlify/
+
+Sitemap: https://comprendre-comment-rouler-plus-vite.netlify.app/sitemap.xml
