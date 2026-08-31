@@ -1,0 +1,1047 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script data-cfasync="false" data-gumroad-sandbox-shim>
+  (function () {
+    function memStorage() {
+      var store = Object.create(null);
+      return {
+        getItem: function (k) { return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null; },
+        setItem: function (k, v) { store[k] = String(v); },
+        removeItem: function (k) { delete store[k]; },
+        clear: function () { store = {}; },
+        key: function (i) { return Object.keys(store)[i] || null; },
+        get length() { return Object.keys(store).length; }
+      };
+    }
+    ["localStorage", "sessionStorage"].forEach(function (name) {
+      var throws = false;
+      try { void window[name]; } catch (e) { throws = true; }
+      if (throws) {
+        try { Object.defineProperty(window, name, { value: memStorage(), configurable: true }); } catch (e) {}
+      }
+    });
+    var cookieThrows = false;
+    try { void document.cookie; } catch (e) { cookieThrows = true; }
+    if (cookieThrows) {
+      var jar = Object.create(null);
+      try {
+        Object.defineProperty(document, "cookie", {
+          configurable: true,
+          get: function () { return Object.keys(jar).map(function (k) { return k + "=" + jar[k]; }).join("; "); },
+          set: function (v) {
+            var first = String(v).split(";")[0];
+            var eq = first.indexOf("=");
+            if (eq < 1) { return; }
+            jar[first.slice(0, eq).trim()] = first.slice(eq + 1).trim();
+          }
+        });
+      } catch (e) {}
+    }
+  })();
+</script>
+
+    <link rel="stylesheet" href="https://assets.gumroad.com/assets/pages/pages-tailwind-7410b6316ee1.css">
+    
+  </head>
+  <body>
+    
+
+
+
+
+
+<style>
+/* ============================================================
+   CLEM KART RACING . page produit "télémétrie"
+   Palette : asphalte + rouge course. Clair et sombre.
+   ============================================================ */
+
+:root{
+  --red:#e10600;
+  --red-soft:#ff2b1f;
+  --bg:#f2f1ee;
+  --bg-2:#e7e5e0;
+  --surface:#ffffff;
+  --ink:#0b0c0e;
+  --ink-2:#3b3f46;
+  --muted:#6c727c;
+  --line:rgba(11,12,14,.12);
+  --line-2:rgba(11,12,14,.06);
+  --asphalt:#d9d6cf;
+  --track-line:rgba(11,12,14,.42);
+  --ideal:#0b0c0e;
+  --shadow:0 1px 2px rgba(11,12,14,.05), 0 18px 44px -22px rgba(11,12,14,.32);
+  --grid:rgba(11,12,14,.05);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --radius:16px;
+  --maxw:1080px;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#08090b;
+    --bg-2:#0e1014;
+    --surface:#121419;
+    --ink:#f6f6f5;
+    --ink-2:#c8ccd3;
+    --muted:#878d98;
+    --line:rgba(255,255,255,.14);
+    --line-2:rgba(255,255,255,.07);
+    --asphalt:#272b34;
+    --track-line:rgba(255,255,255,.34);
+    --ideal:#ffffff;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 24px 60px -24px rgba(0,0,0,.9);
+    --grid:rgba(255,255,255,.045);
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{-webkit-text-size-adjust:100%}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img{max-width:100%;display:block;height:auto}
+
+a{color:inherit}
+
+/* ---------- layout ---------- */
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 22px}
+section{position:relative}
+.band{padding:82px 0}
+.band--tight{padding:58px 0}
+
+/* ---------- typographie ---------- */
+h1,h2,h3{margin:0;letter-spacing:-.035em;line-height:1.02;font-weight:800}
+h1{font-size:clamp(2.25rem,6.4vw,3.75rem);text-wrap:balance}
+h2{font-size:clamp(1.85rem,4.8vw,3rem);text-wrap:balance}
+h3{font-size:1.08rem;letter-spacing:-.015em;line-height:1.3}
+p{margin:0}
+.lede{font-size:clamp(1.05rem,2.4vw,1.32rem);color:var(--ink-2);line-height:1.5;max-width:38ch}
+.tag{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:.685rem;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;
+}
+.tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red);flex:none}
+.eyebrow{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--red);font-weight:700;margin-bottom:18px;display:block;
+}
+.red{color:var(--red)}
+
+/* ---------- boutons ---------- */
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:14px;
+  background:var(--red);color:#fff;
+  font-family:var(--font);font-size:1.05rem;font-weight:750;letter-spacing:-.01em;
+  padding:19px 30px;border:0;border-radius:12px;
+  text-decoration:none;cursor:pointer;
+  box-shadow:0 10px 30px -12px rgba(225,6,0,.85);
+  transition:transform .18s cubic-bezier(.2,.8,.3,1), box-shadow .18s ease, background .18s ease;
+  width:100%;max-width:440px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta:hover{background:var(--red-soft);transform:translateY(-2px);box-shadow:0 18px 40px -14px rgba(225,6,0,.95)}
+.cta:active{transform:translateY(0)}
+.cta__price{
+  font-family:var(--mono);font-weight:700;font-size:.98rem;
+  background:rgba(0,0,0,.24);padding:5px 11px;border-radius:7px;white-space:nowrap;
+}
+.cta__arrow{transition:transform .18s ease}
+.cta:hover .cta__arrow{transform:translateX(4px)}
+
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:3px solid var(--red);outline-offset:3px;border-radius:8px;
+}
+
+.reassure{
+  font-family:var(--mono);font-size:.73rem;letter-spacing:.06em;color:var(--muted);
+  margin-top:16px;line-height:1.7;
+}
+
+/* ---------- hero ---------- */
+.hero{
+  padding:64px 0 74px;
+  background:
+    radial-gradient(120% 92% at 12% 0%, color-mix(in srgb, var(--red) 12%, transparent) 0%, transparent 58%),
+    linear-gradient(var(--grid) 1px,transparent 1px) 0 0/100% 46px,
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/46px 100%,
+    var(--bg);
+  border-bottom:1px solid var(--line-2);
+  overflow:hidden;
+}
+.hero__grid{display:grid;gap:46px;align-items:center}
+@media (min-width:940px){
+  .hero{padding:84px 0 92px}
+  .hero__grid{grid-template-columns:1.06fr .94fr;gap:62px}
+}
+.hero h1{margin:20px 0 22px}
+.hero h1 em{font-style:normal;color:var(--red);display:block}
+.hero__buy{margin-top:32px}
+
+.cover{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--line);background:var(--bg-2);
+  box-shadow:var(--shadow);
+  aspect-ratio:16/9;
+}
+.cover img{width:100%;height:100%;object-fit:cover}
+/* la couverture porte déjà la marque : aucun bandeau par dessus */
+
+/* ---------- bandeau data ---------- */
+.strip{border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);background:var(--bg-2)}
+.strip__grid{display:grid;grid-template-columns:repeat(2,1fr)}
+@media (min-width:720px){.strip__grid{grid-template-columns:repeat(4,1fr)}}
+.cell{padding:24px 22px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+@media (min-width:720px){.cell{border-bottom:0}}
+.cell:last-child{border-right:0}
+.cell__k{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.cell__v{font-size:clamp(1.15rem,3.6vw,1.55rem);font-weight:800;letter-spacing:-.03em;margin-top:5px;line-height:1.15}
+
+/* ---------- cartes croyances ---------- */
+.beliefs{display:grid;gap:16px;margin-top:44px}
+@media (min-width:860px){.beliefs{grid-template-columns:repeat(3,1fr)}}
+.belief{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 24px 28px;position:relative;overflow:hidden;
+  transition:border-color .2s ease, transform .2s ease;
+}
+.belief::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--red);opacity:.55}
+.belief:hover{border-color:color-mix(in srgb,var(--red) 45%,var(--line));transform:translateY(-3px)}
+.belief__q{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;
+}
+.belief__claim{font-size:1.22rem;font-weight:750;letter-spacing:-.025em;line-height:1.24;margin-bottom:16px}
+.belief__truth{color:var(--ink-2);font-size:.96rem;line-height:1.62}
+.belief__truth b{color:var(--ink);font-weight:700}
+
+/* ---------- télémétrie ---------- */
+.telemetry{background:var(--bg-2);border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.telemetry__grid{display:grid;gap:38px;align-items:center}
+@media (min-width:940px){.telemetry__grid{grid-template-columns:.86fr 1.14fr;gap:56px}}
+.diagram{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;box-shadow:var(--shadow);
+}
+.diagram svg{width:100%;height:auto;display:block;border-radius:9px;overflow:visible}
+/* les pastilles du schéma sont en HTML : le sanitizer Gumroad retire les <text> SVG */
+.plan{position:relative}
+.pin{
+  position:absolute;transform:translate(-50%,-50%);
+  width:27px;height:27px;border-radius:50%;
+  background:var(--red);color:#fff;
+  font-family:var(--mono);font-size:.8rem;font-weight:700;line-height:1;
+  display:grid;place-items:center;
+  box-shadow:0 0 0 3px var(--surface);
+}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:14px;padding:2px 6px 4px}
+.legend span{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;color:var(--muted);text-transform:uppercase}
+.legend i{width:20px;height:3px;border-radius:2px;display:inline-block;flex:none}
+.notes{list-style:none;margin:14px 0 4px;padding:0 6px;display:grid;gap:11px}
+.notes li{
+  display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:start;
+  color:var(--ink-2);font-size:.9rem;line-height:1.5;
+}
+.notes b{
+  font-family:var(--mono);font-size:.7rem;font-weight:700;color:#fff;background:var(--red);
+  width:20px;height:20px;border-radius:50%;display:grid;place-items:center;margin-top:2px;
+}
+.delta{
+  margin-top:30px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  border-top:1px solid var(--line);padding-top:26px;
+}
+.delta__n{font-family:var(--mono);font-size:clamp(2.4rem,6.4vw,3.5rem);font-weight:700;color:var(--red);letter-spacing:-.04em;line-height:1}
+.delta__l{font-family:var(--mono);font-size:.74rem;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-2);line-height:1.7}
+.delta__l small{display:block;font-size:.92em;letter-spacing:.08em;color:var(--muted)}
+
+/* ---------- sommaire ---------- */
+.toc{display:grid;gap:0;margin-top:46px;border-top:1px solid var(--line)}
+@media (min-width:820px){.toc{grid-template-columns:1fr 1fr;column-gap:44px}}
+.toc__item{
+  display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;
+  padding:22px 4px;border-bottom:1px solid var(--line);
+}
+.toc__n{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--red);padding-top:3px;letter-spacing:.04em}
+.toc__t{font-weight:750;letter-spacing:-.02em;font-size:1.04rem;margin-bottom:5px}
+.toc__d{color:var(--muted);font-size:.93rem;line-height:1.55}
+
+/* ---------- extraits ---------- */
+.quotes{display:grid;gap:16px;margin-top:44px}
+@media (min-width:860px){.quotes{grid-template-columns:repeat(3,1fr)}}
+.quote{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:28px 26px 26px;margin:0;
+  display:flex;flex-direction:column;
+}
+.quote p{
+  font-size:1.1rem;font-weight:650;letter-spacing:-.02em;line-height:1.38;
+  text-wrap:balance;
+}
+.quote__src{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--red);margin-top:auto;padding-top:20px;display:block;
+}
+
+/* ---------- qualification ---------- */
+.qualify{display:grid;gap:16px;margin-top:44px}
+@media (min-width:820px){.qualify{grid-template-columns:1fr 1fr}}
+.qbox{border:1px solid var(--line);border-radius:var(--radius);padding:28px 26px;background:var(--surface)}
+.qbox--out{background:transparent;border-style:dashed}
+.qbox h3{margin-bottom:20px;font-size:1.18rem}
+.qbox ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.qbox li{
+  display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:start;
+  color:var(--ink-2);font-size:.97rem;line-height:1.5;
+}
+.qbox li::before{
+  content:"✓";font-family:var(--mono);font-size:.8rem;font-weight:700;color:#fff;background:var(--red);
+  width:21px;height:21px;border-radius:50%;display:grid;place-items:center;margin-top:2px;
+}
+.qbox--out li::before{content:"✕";background:transparent;color:var(--muted);border:1px solid var(--line)}
+
+/* ---------- auteur ---------- */
+.author{display:grid;gap:32px;align-items:center}
+@media (min-width:820px){.author{grid-template-columns:355px 1fr;gap:52px}}
+.author__ph{
+  border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+  background:var(--bg-2);box-shadow:var(--shadow);aspect-ratio:3/2;
+}
+.author__ph img{width:100%;height:100%;object-fit:cover}
+.author__name{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+.author__role{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:20px}
+.author p{color:var(--ink-2);margin-bottom:14px;max-width:56ch}
+
+/* ---------- faq ---------- */
+.faq{margin-top:38px;border-top:1px solid var(--line)}
+details{border-bottom:1px solid var(--line)}
+summary{
+  cursor:pointer;list-style:none;padding:22px 44px 22px 0;position:relative;
+  font-weight:700;font-size:1.04rem;letter-spacing:-.018em;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{
+  content:"";position:absolute;right:10px;top:50%;width:9px;height:9px;
+  border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);
+  transform:translateY(-70%) rotate(45deg);transition:transform .22s ease;
+}
+details[open] summary::after{transform:translateY(-30%) rotate(225deg)}
+details[open] summary{color:var(--red)}
+.faq__a{padding:0 0 24px;color:var(--ink-2);max-width:62ch;font-size:.99rem}
+
+/* ---------- offre finale ---------- */
+.close{
+  background:
+    radial-gradient(100% 100% at 50% 0%, color-mix(in srgb, var(--red) 16%, transparent) 0%, transparent 62%),
+    var(--bg-2);
+  border-top:1px solid var(--line-2);text-align:center;
+}
+.close .lede{margin:22px auto 0;max-width:46ch}
+.close .cta{display:flex;margin:26px auto 0}
+.close__title{
+  margin-top:36px;font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);
+}
+.price-line{
+  display:flex;align-items:baseline;justify-content:center;gap:12px;margin-top:10px;
+  font-family:var(--mono);flex-wrap:wrap;
+}
+.price-line b{font-size:2.6rem;font-weight:700;letter-spacing:-.04em;color:var(--ink)}
+.price-line span{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.guarantee{
+  display:inline-flex;align-items:center;gap:12px;margin-top:30px;
+  border:1px dashed var(--line);border-radius:99px;padding:11px 20px;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.guarantee b{color:var(--ink);font-weight:700}
+
+/* ---------- footer ---------- */
+.foot{padding:38px 0 46px;text-align:center}
+.foot p{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);line-height:2}
+.foot a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.foot a:hover{color:var(--red)}
+
+/* ---------- révélation au scroll ---------- */
+.js .rv{opacity:0;transform:translateY(20px);transition:opacity .62s cubic-bezier(.2,.7,.3,1), transform .62s cubic-bezier(.2,.7,.3,1)}
+.js .rv.in{opacity:1;transform:none}
+.js .rv-2{transition-delay:.09s}
+.js .rv-3{transition-delay:.18s}
+
+/* ---------- tracés ---------- */
+.js .lap{stroke-dasharray:1400;stroke-dashoffset:1400}
+.js .diagram.in .lap{transition:stroke-dashoffset 1.9s cubic-bezier(.35,.1,.2,1);stroke-dashoffset:0}
+.js .diagram.in .lap--feel{transition-delay:.15s}
+.js .diagram.in .lap--ideal{transition-delay:.75s}
+.js .lap-lbl,.js .pin{opacity:0;transition:opacity .5s ease .9s}
+.js .diagram.in .lap-lbl,.js .diagram.in .pin{opacity:1}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+  .js .rv{opacity:1;transform:none}
+  .js .lap{stroke-dashoffset:0}
+  .js .lap-lbl,.js .pin{opacity:1}
+}
+</style>
+
+
+<script>document.documentElement.className+=" js";</script>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <p class="tag">Guide PDF · 59 pages · accès immédiat</p>
+      <h1>Ton meilleur tour, tu ne sais pas pourquoi il était bon.<em>Alors tu ne le refais pas.</em>
+</h1>
+      <p class="lede">La grille de lecture qui transforme tes sensations en chrono. 13 chapitres, de la mécanique du kart jusqu'à l'analyse d'après session.</p>
+
+      <div class="hero__buy">
+        <button class="cta" type="button" data-gumroad-action="buy" data-gumroad-checkout-params="{}">
+          <span>Télécharge le guide</span>
+          <span class="cta__price" data-gumroad-field="price">€16.99</span>
+          <span class="cta__arrow" aria-hidden="true">→</span>
+        </button>
+        <p class="reassure">Paiement unique, pas d'abonnement.<br>Garantie 7 jours, satisfait ou remboursé sans question.</p>
+      </div>
+    </div>
+
+    <div class="cover rv">
+      <img src="https://public-files.gumroad.com/pds6n764vvu65pzh314qguqbipim" alt="Couverture du guide Comprendre comment rouler plus vite, la méthode complète, par Clem Kart Racing" width="1280" height="720">
+    </div>
+  </div>
+</header>
+
+<!-- ==================== BANDEAU DATA ==================== -->
+<section class="strip" aria-label="Informations produit">
+  <div class="wrap" style="padding:0">
+    <div class="strip__grid">
+      <div class="cell">
+<p class="cell__k">Format</p>
+<p class="cell__v">PDF, 59 pages</p>
+</div>
+      <div class="cell">
+<p class="cell__k">L'auteur</p>
+<p class="cell__v">Champion Régional 2023</p>
+</div>
+      <div class="cell">
+<p class="cell__k">Note</p>
+<p class="cell__v" data-gumroad-field="rating">À venir</p>
+</div>
+      <div class="cell">
+<p class="cell__k">Avis de pilotes</p>
+<p class="cell__v" data-gumroad-field="review-count">Les premiers</p>
+</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== LE CONSTAT ==================== -->
+<section class="band">
+  <div class="wrap">
+    <span class="eyebrow rv">Le vrai problème</span>
+    <h2 class="rv">Tu n'as pas un problème de vitesse.<br>Tu as un problème de <span class="red">répétabilité</span>.</h2>
+    <p class="lede rv rv-2" style="margin-top:22px;max-width:52ch">Tu es capable de sortir un tour canon. Le souci, c'est que tu ne sais pas ce que tu as fait de différent. Alors tu ne le refais pas. Tu roules, tu espères, tu recommences.</p>
+
+    <div class="beliefs">
+      <article class="belief rv">
+        <p class="belief__q">Ce que tu crois</p>
+        <p class="belief__claim">« Je dois freiner plus tard. »</p>
+        <p class="belief__truth">Freiner plus tard décale ton relâché. La roue arrière intérieure ne se décharge plus, le kart refuse de pivoter. <b>2 à 3 dixièmes</b> perdus dans le virage que tu croyais avoir gagné.</p>
+      </article>
+      <article class="belief rv rv-2">
+        <p class="belief__q">Ce que tu crois</p>
+        <p class="belief__claim">« Je dois braquer plus fort. »</p>
+        <p class="belief__truth">Le volant est un capteur, pas une commande. Plus tu serres et plus tu braques, plus tu <b>satures le châssis</b>. Il ne respire plus, et il tourne moins.</p>
+      </article>
+      <article class="belief rv rv-3">
+        <p class="belief__q">Ce que tu crois</p>
+        <p class="belief__claim">« Je dois suivre la trajectoire idéale. »</p>
+        <p class="belief__truth">Elle n'existe pas. C'est <b>le grip qui dicte la trajectoire</b>, et il change à chaque session. La rigidité scolaire est une cause de lenteur, pas une solution.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TÉLÉMÉTRIE ==================== -->
+<section class="band telemetry">
+  <div class="wrap telemetry__grid">
+    <div>
+      <span class="eyebrow rv">Le même virage</span>
+      <h2 class="rv">Même kart.<br>Même piste.<br>Même pilote.</h2>
+      <p class="lede rv rv-2" style="margin-top:22px">Tout se joue entre le moment où tu touches le frein et le moment où tu remets les gaz. Une fenêtre de quelques dixièmes.</p>
+      <div class="delta rv rv-3">
+        <p class="delta__n"><span id="delta-count">0,0</span> s</p>
+        <p class="delta__l">perdues à chaque tour<small>2 dixièmes par virage, sur 12 virages</small></p>
+      </div>
+      <p class="rv rv-3" style="margin-top:24px;color:var(--ink-2);max-width:44ch">La session te coûte le même prix, que tu comprennes ou non ce que tu fais. La seule variable, c'est ce que tu en ramènes.</p>
+    </div>
+
+    <div class="diagram rv rv-2" id="diagram">
+      <div class="plan">
+      <svg viewbox="10 14 566 402" role="img" aria-label="Schéma d'un virage à droite comparant deux trajectoires. En rouge, la trajectoire au feeling prend la corde trop tôt puis se retrouve collée au bord extérieur avant la fin du virage. En blanc, la trajectoire comprise reste large à l'entrée, vise le vrai point de corde et déroule vers la sortie.">
+        <!-- asphalte -->
+        <path d="M 70 404 L 70 230 A 110 110 0 0 1 180 120 L 566 120" fill="none" stroke="var(--asphalt)" stroke-width="96" stroke-linecap="butt"></path>
+        <!-- bords de piste -->
+        <path d="M 22 404 L 22 230 A 158 158 0 0 1 180 72 L 566 72" fill="none" stroke="var(--track-line)" stroke-width="2.5"></path>
+        <path d="M 118 404 L 118 230 M 180 168 L 566 168" fill="none" stroke="var(--track-line)" stroke-width="2.5"></path>
+        <!-- vibreur intérieur, en segments alternés : le sanitizer Gumroad retire stroke-dasharray -->
+        <path d="M 121 230 A 59 59 0 0 1 122.1 218.5" fill="none" stroke="var(--red)" stroke-width="11"></path>
+        <path d="M 122.1 218.5 A 59 59 0 0 1 125.5 207.4" fill="none" stroke="#f4f4f2" stroke-width="11"></path>
+        <path d="M 125.5 207.4 A 59 59 0 0 1 130.9 197.2" fill="none" stroke="var(--red)" stroke-width="11"></path>
+        <path d="M 130.9 197.2 A 59 59 0 0 1 138.3 188.3" fill="none" stroke="#f4f4f2" stroke-width="11"></path>
+        <path d="M 138.3 188.3 A 59 59 0 0 1 147.2 180.9" fill="none" stroke="var(--red)" stroke-width="11"></path>
+        <path d="M 147.2 180.9 A 59 59 0 0 1 157.4 175.5" fill="none" stroke="#f4f4f2" stroke-width="11"></path>
+        <path d="M 157.4 175.5 A 59 59 0 0 1 168.5 172.1" fill="none" stroke="var(--red)" stroke-width="11"></path>
+        <path d="M 168.5 172.1 A 59 59 0 0 1 180 171" fill="none" stroke="#f4f4f2" stroke-width="11"></path>
+        <!-- sens de marche -->
+        <path d="M 59 371 L 70 357 L 81 371" fill="none" stroke="var(--muted)" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M 59 393 L 70 379 L 81 393" fill="none" stroke="var(--muted)" stroke-width="3" stroke-linecap="round"></path>
+
+        <!-- trajectoire au feeling -->
+        <path class="lap lap--feel" d="M 86 404 C 86 332 86 274 104 241 C 110 229 113 218 118 207 C 138 172 165 122 205 96 C 220 86 235 78 258 76 L 566 76" fill="none" stroke="var(--red)" stroke-width="5" stroke-linecap="round"></path>
+        <!-- trajectoire comprise -->
+        <path class="lap lap--ideal" d="M 34 404 C 34 302 40 240 90 205 C 106 194 120 190 133 184 C 162 170 178 142 232 116 C 274 96 306 88 356 88 L 566 88" fill="none" stroke="var(--ideal)" stroke-width="5" stroke-linecap="round"></path>
+
+        <!-- lignes de rappel vers les repères (les pastilles sont en HTML, voir .pin) -->
+        <path class="lap-lbl" d="M 150 252 L 128 211" fill="none" stroke="var(--red)" stroke-width="2.5"></path>
+        <path class="lap-lbl" d="M 300 59 L 300 73" fill="none" stroke="var(--red)" stroke-width="2.5"></path>
+      </svg>
+      <span class="pin" style="left:26.1%;top:62.7%">1</span>
+      <span class="pin" style="left:51.2%;top:7%">2</span>
+      </div>
+
+      <div class="legend">
+        <span><i style="background:var(--red)"></i> Ton tour au feeling</span>
+        <span><i style="background:var(--ideal)"></i> Ton tour compris</span>
+      </div>
+      <ol class="notes">
+        <li>
+<b>1</b> Tu prends la corde trop tôt. Le kart tourne encore alors que tu accélères déjà.</li>
+        <li>
+<b>2</b> Tu n'as plus de piste avant la fin du virage. Tu lèves le pied, ou tu élargis.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SOMMAIRE ==================== -->
+<section class="band">
+  <div class="wrap">
+    <span class="eyebrow rv">Ce qu'il y a dedans</span>
+    <h2 class="rv">Treize chapitres, dans l'ordre où ça se passe sous toi.</h2>
+    <p class="lede rv rv-2" style="margin-top:22px;max-width:56ch">Quatre parties : ce qui se passe sous toi, les cinq piliers techniques, lire la piste, construire le pilote. Aucune page de remplissage.</p>
+
+    <div class="toc">
+      <div class="toc__item rv">
+<span class="toc__n">01</span><div>
+<p class="toc__t">Le rôle du pilote</p>
+<p class="toc__d">Tu n'imposes rien au kart, tu crées les conditions. Pourquoi le meilleur pilote est celui qui en fait le moins.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">02</span><div>
+<p class="toc__t">La mécanique du kart</p>
+<p class="toc__d">Train arrière rigide, zéro suspension, transfert de masse instantané. Les cinq spécificités qui expliquent tout le reste.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">03</span><div>
+<p class="toc__t">Les mains légères</p>
+<p class="toc__d">Le volant est un capteur. Ce que tu perds exactement au moment où tu serres.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">04</span><div>
+<p class="toc__t">Le freinage dégressif</p>
+<p class="toc__d">La phase la plus mal comprise du karting. Ce n'est pas l'attaque qui fait le virage, c'est le relâché.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">05</span><div>
+<p class="toc__t">La rotation</p>
+<p class="toc__d">Un état mécanique, pas une action volontaire. La fenêtre pour la déclencher, et ce qui se passe quand tu la rates des deux côtés.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">06</span><div>
+<p class="toc__t">Le point d'accélération</p>
+<p class="toc__d">Le kart te dit quand il est prêt. Le signal est mécanique, pas visuel, et il s'apprend.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">07</span><div>
+<p class="toc__t">La trajectoire réelle</p>
+<p class="toc__d">Deux pilotes, deux lignes différentes, le même chrono. Pourquoi la trajectoire des schémas te ralentit.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">08</span><div>
+<p class="toc__t">Les quatre états de grip</p>
+<p class="toc__d">Froid, chaud, sale, humide. Ce que chacun t'oblige à changer, et pourquoi deux tours suffisent pour le lire.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">09</span><div>
+<p class="toc__t">La constance</p>
+<p class="toc__d">Ton premier tour rapide doit devenir ta référence, pas ton record. Les trois clés qui rendent un tour reproductible.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">10</span><div>
+<p class="toc__t">Le mental</p>
+<p class="toc__d">L'ego est l'ennemi silencieux, et il se lit dans ton relâché de frein. Où placer ton attention selon le moment.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">11</span><div>
+<p class="toc__t">L'analyse d'après session</p>
+<p class="toc__d">Trois questions à poser dans les trente secondes qui suivent l'arrêt moteur. Et un seul point à corriger, jamais deux.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">12</span><div>
+<p class="toc__t">Six exercices ciblés</p>
+<p class="toc__d">Une session, un exercice, une compétence. De quoi transformer tes prochaines sorties en entraînement au lieu de tours à vide.</p>
+</div>
+</div>
+      <div class="toc__item rv">
+<span class="toc__n">13</span><div>
+<p class="toc__t">Les dix fondements</p>
+<p class="toc__d">La synthèse du guide sur une page, à relire avant de monter dans le kart.</p>
+</div>
+</div>
+    </div>
+
+    <div style="margin-top:44px" class="rv">
+      <button class="cta" type="button" data-gumroad-action="buy" data-gumroad-checkout-params="{}">
+        <span>Je veux la grille de lecture</span>
+        <span class="cta__price" data-gumroad-field="price">€16.99</span>
+        <span class="cta__arrow" aria-hidden="true">→</span>
+      </button>
+      <p class="reassure">Téléchargement immédiat après le paiement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXTRAITS ==================== -->
+<section class="band telemetry">
+  <div class="wrap">
+    <span class="eyebrow rv">Trois phrases du guide</span>
+    <h2 class="rv">Pour que tu saches ce que tu achètes.</h2>
+
+    <div class="quotes">
+      <figure class="quote rv">
+        <p>« La rotation est un état mécanique, pas une action volontaire. »</p>
+        <figcaption class="quote__src">Chapitre 5</figcaption>
+      </figure>
+      <figure class="quote rv rv-2">
+        <p>« Un pilote constant pense au geste, pas au chrono. Les gestes construisent le temps, jamais l'inverse. »</p>
+        <figcaption class="quote__src">Chapitre 9</figcaption>
+      </figure>
+      <figure class="quote rv rv-3">
+        <p>« Tu n'as pas besoin d'être parfait. Tu as besoin d'être cohérent. Le kart te le rendra. »</p>
+        <figcaption class="quote__src">Conclusion</figcaption>
+      </figure>
+    </div>
+
+    <div class="author" style="margin-top:72px">
+      <div class="author__ph rv">
+        <img src="https://public-files.gumroad.com/ucj51av2zs5b4k9a9i4ya4vs8uxm" alt="Clément Daniel dans le paddock, casque sous le bras" width="400" height="267">
+      </div>
+      <div class="rv rv-2">
+        <span class="eyebrow">Qui écrit ça</span>
+        <p class="author__name">Clément Daniel</p>
+        <p class="author__role">8 ans de compétition · Champion Régional 2023</p>
+        <p>Ce guide, c'est ma méthode écrite en entier. Le même raisonnement que dans mes vidéos, sauf qu'ici les pièces sont dans l'ordre et que rien n'est coupé pour tenir en soixante secondes.</p>
+        <p>Il est écrit pour les pilotes qui veulent comprendre ce qui fait vraiment la différence sur la piste : anticiper au lieu de corriger, et construire leur vitesse par la maîtrise, pas par l'ego.</p>
+        <p style="color:var(--muted);font-size:.92rem;margin-top:20px">Plus de 350 000 vues sur les vidéos qui expliquent ces principes. Plus de 70 pilotes ont déjà le guide entre les mains.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CE QUE CE N'EST PAS ==================== -->
+<section class="band">
+  <div class="wrap">
+    <span class="eyebrow rv">Soyons honnêtes</span>
+    <h2 class="rv">Ce guide ne s'adresse pas à tout le monde.</h2>
+
+    <div class="qualify">
+      <article class="qbox rv">
+        <h3>Prends-le si</h3>
+        <ul>
+          <li>Tu roules déjà, même quelques fois par an, et tu veux comprendre ce que tu fais au lieu de le subir.</li>
+          <li>Tu as déjà sorti un tour que tu n'as jamais réussi à refaire.</li>
+          <li>Tu préfères une explication mécanique à une astuce.</li>
+          <li>Tu acceptes de ne travailler qu'un seul point par session. C'est la méthode, et elle demande de la patience.</li>
+        </ul>
+      </article>
+      <article class="qbox qbox--out rv rv-2">
+        <h3>Passe ton chemin si</h3>
+        <ul>
+          <li>Tu n'as jamais mis les pieds dans un kart. Le guide part du principe que tu as déjà des sensations à expliquer.</li>
+          <li>Tu cherches un tableau de réglages. Il n'y en a pas une ligne, c'est du pilotage.</li>
+          <li>Tu veux des dixièmes sans changer ta façon de rouler. Ça n'existe pas, et je ne vais pas te le vendre.</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section class="band band--tight">
+  <div class="wrap">
+    <span class="eyebrow rv">Les questions qu'on me pose</span>
+    <h2 class="rv">Avant de cliquer.</h2>
+
+    <div class="faq rv rv-2">
+      <details>
+        <summary>Je débute, est-ce que c'est trop technique ?</summary>
+        <p class="faq__a">Si tu as déjà roulé quelques fois, non : chaque terme est expliqué au moment où il est posé. Si tu n'as jamais conduit un kart, oui, ça arrivera trop tôt. Le guide explique des sensations, il faut donc en avoir eu.</p>
+      </details>
+      <details>
+        <summary>Il y a des exercices, ou seulement de la théorie ?</summary>
+        <p class="faq__a">Un chapitre entier est consacré à six exercices ciblés, un par session, une compétence à la fois. Et le guide se termine sur dix fondements tenant sur une page, à relire avant de monter dans le kart.</p>
+      </details>
+      <details>
+        <summary>Je roule en location, pas en compétition.</summary>
+        <p class="faq__a">La physique est la même. Le délestage, le relâché de frein et la lecture du grip ne dépendent ni de ton budget ni de ta licence. C'est même là que l'écart se creuse le plus vite.</p>
+      </details>
+      <details>
+        <summary>Je reçois quoi exactement, et quand ?</summary>
+        <p class="faq__a">Un PDF de 59 pages, téléchargeable immédiatement après le paiement, lisible sur téléphone comme sur ordinateur. Tu le gardes à vie, sans abonnement.</p>
+      </details>
+      <details>
+        <summary>Et si ça ne m'apporte rien ?</summary>
+        <p class="faq__a">Tu es remboursé. Sept jours, sans question et sans justification à fournir.</p>
+      </details>
+      <details>
+        <summary>C'est différent de tes vidéos ?</summary>
+        <p class="faq__a">Une vidéo dure une minute et traite un mécanisme isolé. Le guide les remet dans l'ordre, montre comment ils s'enchaînent, et donne le dosage complet que je ne détaille jamais en ligne.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== OFFRE FINALE ==================== -->
+<section class="band close">
+  <div class="wrap">
+    <span class="eyebrow rv">Dernière ligne droite</span>
+    <h2 class="rv">Arrête de deviner.<br>Commence à <span class="red">comprendre</span>.</h2>
+    <p class="lede rv rv-2">Une session de location coûte entre 20 et 30 €. Un plein d'essence sur une journée d'essais, autour de 60 €. Le guide se paie une seule fois et sert à toutes les sessions qui suivent.</p>
+
+    <p class="close__title rv rv-2" data-gumroad-field="name">Comprendre Comment Rouler Plus Vite.</p>
+    <p class="price-line rv rv-2"><b data-gumroad-field="price">€16.99</b><span>paiement unique</span></p>
+
+    <button class="cta rv rv-3" type="button" data-gumroad-action="buy" data-gumroad-checkout-params="{}">
+      <span>Télécharge le guide</span>
+      <span class="cta__arrow" aria-hidden="true">→</span>
+    </button>
+
+    <p class="guarantee rv rv-3"><b>Garantie 7 jours</b> satisfait ou remboursé</p>
+    <p class="reassure rv rv-3">Accès immédiat · paiement sécurisé par Gumroad · sans abonnement</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Clem Kart Racing · Clément Daniel<br><a href="https://clemkartracing.gumroad.com">Voir tous les produits</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targets = document.querySelectorAll('.rv, #diagram');
+
+  if (!('IntersectionObserver' in window) || reduce) {
+    for (var i = 0; i < targets.length; i++) targets[i].classList.add('in');
+    var d0 = document.getElementById('delta-count');
+    if (d0) d0.textContent = '2,4';
+    return;
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+      if (e.target.id === 'diagram') countDelta();
+    });
+  }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+  for (var j = 0; j < targets.length; j++) io.observe(targets[j]);
+
+  var counted = false;
+  function countDelta(){
+    if (counted) return;
+    counted = true;
+    var el = document.getElementById('delta-count');
+    if (!el) return;
+    var end = 2.4, start = null, dur = 1500;
+    function step(ts){
+      if (start === null) start = ts;
+      var p = Math.min(1, (ts - start) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (end * eased).toFixed(1).replace('.', ',');
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+})();
+</script>
+
+
+
+    <script data-cfasync="false">
+      document.addEventListener("click", function (e) {
+        var target = e.target;
+        var buyButton = target && target.closest ? target.closest('[data-gumroad-action="buy"]') : null;
+        if (!buyButton) return;
+        e.preventDefault();
+
+        var params = {};
+        try {
+          params = JSON.parse(buyButton.dataset.gumroadCheckoutParams || "{}");
+        } catch (_e) {}
+
+        parent.postMessage({type:"gumroad:checkout",params:params},"*");
+      }, true);
+    </script>
+    <script data-cfasync="false" data-gumroad-navigation-bridge>
+  (function () {
+    var STORE_HOSTNAMES = ["clemkartracing.gumroad.com"];
+    var GUMROAD_NAV_HOSTS = ["gumroad.com","app.gumroad.com"];
+    var GUMROAD_NAV_PATHS = ["/library","/checkout"];
+    function gumroadNavigationTarget(url, storeHostnames) {
+      if (storeHostnames.indexOf(url.hostname) !== -1) return url.href;
+      if (GUMROAD_NAV_HOSTS.indexOf(url.hostname) === -1) return null;
+      var path = url.pathname.replace(/\/+$/, "");
+      if (GUMROAD_NAV_PATHS.indexOf(path) === -1) return null;
+      return url.origin + path;
+    }
+    document.addEventListener("click", function (e) {
+      // Only plain left-clicks: modified clicks (new tab, etc.) keep
+      // the browser's default handling.
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      // Viewed directly (not framed) there is no trusted parent to ask,
+      // so leave the click alone.
+      if (window.parent === window) return;
+      var link = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!link) return;
+      var target = (link.getAttribute("target") || "").toLowerCase();
+      if (target && target !== "_self") return;
+      if (link.hasAttribute("download")) return;
+      var url;
+      try { url = new URL(link.getAttribute("href"), document.baseURI); } catch (_err) { return; }
+      if (url.protocol !== "https:" && url.protocol !== "http:") return;
+      var destination = gumroadNavigationTarget(url, STORE_HOSTNAMES);
+      if (destination === null) return;
+      // Same-page fragment links should scroll within the iframe, not
+      // reload the profile at the top level.
+      var here = new URL(document.baseURI);
+      if (url.hash && url.pathname === here.pathname && url.search === here.search && url.hostname === here.hostname) return;
+      e.preventDefault();
+      parent.postMessage({ type: "gumroad:navigate", url: destination }, "*");
+    }, true);
+  })();
+</script>
+
+    <script data-cfasync="false" data-gumroad-background-bridge>
+  (function () {
+    // Viewed directly (not framed) there is no wrapper to color.
+    if (window.parent === window) return;
+    function colorAlpha(color) {
+  if (!color || color === "transparent") return 0;
+  var body = color.match(/\(([^)]*)\)\s*$/);
+  if (!body) return color.indexOf("(") === -1 ? 1 : null;
+  var parts = body[1].split("/");
+  var alpha = parts.length > 1 ? parts[parts.length - 1] : null;
+  if (alpha === null) {
+    var channels = body[1].split(",");
+    if (channels.length > 3) alpha = channels[3];
+  }
+  if (alpha === null) return 1;
+  var value = parseFloat(alpha);
+  if (!isFinite(value)) return null;
+  return alpha.indexOf("%") === -1 ? value : value / 100;
+}
+function opaque(color) {
+  return colorAlpha(color) === 1;
+}
+
+    function flatRootPaint(style) {
+      return style.opacity === "1" &&
+        style.filter === "none" &&
+        style.clipPath === "none" &&
+        style.maskImage === "none" &&
+        (!style.webkitMaskImage || style.webkitMaskImage === "none") &&
+        (!style.maskBorderSource || style.maskBorderSource === "none") &&
+        (!style.webkitMaskBoxImage || style.webkitMaskBoxImage === "none") &&
+        style.mixBlendMode === "normal" &&
+        style.display !== "none";
+    }
+    function establishesContainment(style) {
+      return style.contain !== "none" ||
+        (style.contentVisibility && style.contentVisibility !== "visible") ||
+        (style.containerType && style.containerType !== "normal");
+    }
+    function paint(color, colorScheme) {
+      return { color: color, colorScheme: colorScheme };
+    }
+    function schemeBackplate(style) {
+      if (!style.colorScheme || style.colorScheme === "normal") return paint(null, null);
+      // The trusted wrapper resolves Canvas. Probing here would alter the
+      // seller's DOM, including :last-child selectors.
+      return paint(null, style.colorScheme);
+    }
+    function canvasPaint() {
+      var rootStyle = window.getComputedStyle(document.documentElement);
+      if (!flatRootPaint(rootStyle)) return paint(null, null);
+      var root = rootStyle.backgroundColor;
+      var rootAlpha = colorAlpha(root);
+      if (rootStyle.backgroundImage !== "none") return paint(null, null);
+      if (rootAlpha === 1) return paint(root, null);
+      if (rootAlpha !== 0 || !document.body) return paint(null, null);
+      var bodyStyle = window.getComputedStyle(document.body);
+      if (
+        bodyStyle.display === "none" ||
+        establishesContainment(rootStyle) ||
+        establishesContainment(bodyStyle)
+      ) return schemeBackplate(rootStyle);
+      var body = bodyStyle.backgroundColor;
+      if (bodyStyle.backgroundImage !== "none") return paint(null, null);
+      if (opaque(body)) return paint(body, null);
+      if (colorAlpha(body) !== 0) return paint(null, null);
+      return schemeBackplate(rootStyle);
+    }
+    var reportedColor = null;
+    var reportedColorScheme = null;
+    var hasReported = false;
+    function report(force) {
+      var current = canvasPaint();
+      if (
+        !force &&
+        hasReported &&
+        current.color === reportedColor &&
+        current.colorScheme === reportedColorScheme
+      ) return;
+      reportedColor = current.color;
+      reportedColorScheme = current.colorScheme;
+      hasReported = true;
+      // The first null matters after an iframe reload: its wrapper may
+      // still hold the previous document's tint.
+      parent.postMessage({
+        type: "gumroad:background",
+        color: current.color,
+        colorScheme: current.colorScheme
+      }, "*");
+    }
+    window.addEventListener("message", function (e) {
+      var d = e.data;
+      if (e.source === parent && d && d.type === "gumroad:background:request") report(true);
+    });
+    var queued = false;
+    var queuedForce = false;
+    function queueReport(force) {
+      if (force === true) queuedForce = true;
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () {
+        var shouldForce = queuedForce;
+        queued = false;
+        queuedForce = false;
+        report(shouldForce);
+      });
+    }
+    // Ignore ordinary DOM churn; only selectors and stylesheets can move
+    // the canvas color.
+    function stylesheetNode(node) {
+      var name = node && node.localName;
+      return name === "style" || name === "link";
+    }
+    // A link repaints after insertion, when its own load event fires.
+    function watchStylesheetLoad(node) {
+      if (node && node.localName === "link") node.addEventListener("load", queueReport);
+    }
+    function eachStylesheet(node, fn) {
+      if (!node) return;
+      if (stylesheetNode(node)) fn(node);
+      if (!node.querySelectorAll) return;
+      var found = node.querySelectorAll("style,link");
+      for (var i = 0; i < found.length; i++) fn(found[i]);
+    }
+    function affectsCanvas(records) {
+      var affects = false;
+      for (var i = 0; i < records.length; i++) {
+        var record = records[i];
+        if (record.type === "attributes") {
+          if (
+            record.target === document.documentElement ||
+            record.target === document.body ||
+            stylesheetNode(record.target)
+          ) affects = true;
+          // href swapped on a <link> that is already in the document — the
+          // new sheet lands late too.
+          if (stylesheetNode(record.target)) watchStylesheetLoad(record.target);
+        }
+        if (stylesheetNode(record.target)) affects = true;
+        if (stylesheetNode(record.target.parentNode)) affects = true;
+        for (var j = 0; j < record.addedNodes.length; j++) {
+          eachStylesheet(record.addedNodes[j], function (sheet) {
+            affects = true;
+            watchStylesheetLoad(sheet);
+          });
+        }
+        for (var k = 0; k < record.removedNodes.length; k++) {
+          eachStylesheet(record.removedNodes[k], function () { affects = true; });
+        }
+      }
+      return affects;
+    }
+    report();
+    // After load the stylesheet and any seller scripts have applied, so
+    // this is the first reading that reflects the finished page.
+    window.addEventListener("load", queueReport);
+    try {
+      new MutationObserver(function (records) {
+        if (affectsCanvas(records)) queueReport();
+      }).observe(document.documentElement, {
+        attributes: true,
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+    } catch (_err) {}
+    try {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+        // The declared scheme can stay "dark light" while Canvas changes.
+        queueReport(true);
+      });
+    } catch (_err) {}
+    // CSSOM writes emit no mutation, so poll a clean style tree as a backstop.
+    try {
+      setInterval(function () {
+        if (!document.hidden) queueReport();
+      }, 1000);
+      document.addEventListener("visibilitychange", queueReport);
+    } catch (_err) {}
+  })();
+</script>
+
+  </body>
+</html>
