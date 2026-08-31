@@ -62,6 +62,13 @@ nav.sc{background:rgba(7,7,7,0.95);backdrop-filter:blur(16px);-webkit-backdrop-f
 .hsub{font-size:1.05rem;font-weight:300;line-height:1.75;color:var(--wd);max-width:500px;margin-bottom:46px;opacity:0;transform:translateY(18px);animation:fu .75s .75s forwards;}
 .hsub strong{color:var(--w);font-weight:500;}
 .hacts{display:flex;gap:16px;align-items:center;flex-wrap:wrap;opacity:0;transform:translateY(18px);animation:fu .75s 1s forwards;}
+/* PREUVE SOCIALE : sous les CTA du hero, et dans le bloc prix */
+.hproof{margin-top:20px;font-family:var(--fc);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wd);opacity:0;transform:translateY(18px);animation:fu .75s 1.2s forwards;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.hproof strong{color:var(--w);font-weight:700;}
+.hproof .dot{color:var(--red);}
+.ebproof{display:flex;align-items:center;gap:10px;font-family:var(--fc);font-size:.76rem;letter-spacing:.13em;text-transform:uppercase;color:var(--wd);margin-top:10px;}
+.ebproof::before{content:'★';color:var(--gold);}
+.ebproof strong{color:var(--w);font-weight:700;}
 @keyframes fu{to{opacity:1;transform:translateY(0);}}
 .hscr{position:absolute;bottom:40px;left:60px;display:flex;align-items:center;gap:14px;opacity:0;animation:fu .7s 1.4s forwards;}
 .sline{width:36px;height:1px;background:var(--red);position:relative;overflow:hidden;}
@@ -303,6 +310,7 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
         Recevoir l'extrait gratuit
       </a>
     </div>
+    <p class="hproof"><strong>70 pilotes</strong> ont déjà le guide <span class="dot">&middot;</span> Garantie 7 jours</p>
   </div>
   <div class="hscr"><div class="sline"></div><span class="stxt">Descendre</span></div>
 </section>
@@ -427,6 +435,7 @@ footer{background:var(--b3);padding:36px 60px;display:flex;align-items:center;ju
           <span class="prnt">Accès immédiat<br>PDF · 59 pages</span>
         </div>
         <div class="guar">Garantie satisfait ou remboursé 7 jours, sans condition</div>
+        <div class="ebproof"><strong>70 pilotes</strong> l'ont déjà entre les mains</div>
       </div>
     </div>
 
