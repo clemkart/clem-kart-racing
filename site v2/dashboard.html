@@ -394,6 +394,23 @@
 <script>
   const FN_URL = '/.netlify/functions/dashboard-data';
   const PWD_KEY = 'ckr_dash_pwd';
+
+  // Certains navigateurs, ou un reglage de confidentialite strict, interdisent
+  // l'acces au stockage et lancent une SecurityError (DOMException code 18).
+  // C'est ce qui affichait « Erreur serveur (18) » a la connexion : le mot de
+  // passe etait bon, les donnees arrivaient, mais l'ecriture du jeton plantait
+  // avant l'affichage. Un dashboard ne doit jamais devenir inaccessible parce
+  // qu'il n'a pas pu memoriser une preference : on retombe en memoire vive.
+  const enMemoire = Object.create(null);
+  function coffre(zone, prefixe){
+    return {
+      get(k){ try{ return zone().getItem(k); }catch(e){ return enMemoire[prefixe+k] ?? null; } },
+      set(k,v){ try{ zone().setItem(k,v); }catch(e){ enMemoire[prefixe+k] = v; } },
+      del(k){ try{ zone().removeItem(k); }catch(e){ delete enMemoire[prefixe+k]; } },
+    };
+  }
+  const session = coffre(() => sessionStorage, 's:');
+  const prefs   = coffre(() => localStorage, 'p:');
   const C = { red:'#D9171D', gold:'#C9A84C', cream:'rgb(242,237,232)', dim:'rgba(242,237,232,0.55)', grid:'rgba(242,237,232,0.08)' };
   const SRC_COLORS = { tiktok:'#D9171D', instagram:'#C9A84C', youtube:'#A51115', facebook:'#4267B2', google:'rgb(242,237,232)', direct:'#5a5a5a', autre:'#2a2a2a' };
   const charts = {};
@@ -421,31 +438,31 @@
   async function tryLogin(password, fromInput){
     try{
       const data = await fetchData(password, currentDays);
-      sessionStorage.setItem(PWD_KEY, password);
       $('login').style.display = 'none';
       $('app').style.display = 'block';
+      session.set(PWD_KEY, password);
       render(data);
       renderPersonaBar(); askCoach();
     }catch(e){
       if(fromInput){
         $('loginErr').textContent = e.code === 401 ? 'Mot de passe invalide.' : 'Erreur serveur ('+(e.code||'réseau')+').';
       }else{
-        sessionStorage.removeItem(PWD_KEY);
+        session.del(PWD_KEY);
       }
     }
   }
 
   async function load(days){
-    const p = sessionStorage.getItem(PWD_KEY); if(!p) return;
+    const p = session.get(PWD_KEY); if(!p) return;
     currentDays = days;
     document.querySelectorAll('.periods button').forEach(b => b.classList.toggle('active', parseInt(b.dataset.days,10) === days));
     try{ render(await fetchData(p, days)); askCoach(); }
-    catch(e){ if(e.code === 401){ sessionStorage.removeItem(PWD_KEY); location.reload(); } else { alert('Chargement impossible.'); } }
+    catch(e){ if(e.code === 401){ session.del(PWD_KEY); location.reload(); } else { alert('Chargement impossible.'); } }
   }
 
   $('loginBtn').onclick = () => { const p = $('pwd').value.trim(); if(p) tryLogin(p, true); };
   $('pwd').addEventListener('keydown', e => { if(e.key === 'Enter') $('loginBtn').click(); });
-  $('logoutBtn').onclick = () => { sessionStorage.removeItem(PWD_KEY); location.reload(); };
+  $('logoutBtn').onclick = () => { session.del(PWD_KEY); location.reload(); };
   $('refreshBtn').onclick = () => load(currentDays);
   $('coachAsk').onclick = () => { const q = $('coachQ').value.trim(); askCoach(q); $('coachQ').value = ''; };
   $('coachQ').addEventListener('keydown', e => { if(e.key === 'Enter') $('coachAsk').click(); });
@@ -660,7 +677,7 @@
     { cle:'stratege',     nom:'Le Stratège',     sous:'positionnement, long terme' },
     { cle:'operationnel', nom:'Le Contremaître', sous:'une seule priorité' },
   ];
-  let personaActif = localStorage.getItem(PERSONA_KEY) || 'ingenieur';
+  let personaActif = prefs.get(PERSONA_KEY) || 'ingenieur';
   let dernieresMetriques = null;
 
   function renderPersonaBar(){
@@ -671,7 +688,7 @@
     bar.querySelectorAll('.persona').forEach(b => {
       b.addEventListener('click', () => {
         personaActif = b.dataset.p;
-        localStorage.setItem(PERSONA_KEY, personaActif);
+        prefs.set(PERSONA_KEY, personaActif);
         renderPersonaBar();
         askCoach();
       });
@@ -759,7 +776,7 @@
       '<div class="skel" style="width:82%"></div><div class="skel" style="width:64%"></div>' +
       '<div class="skel" style="width:71%"></div>';
     try{
-      const pwd = sessionStorage.getItem(PWD_KEY);
+      const pwd = session.get(PWD_KEY);
       const res = await fetch(COACH_URL, {
         method:'POST', headers:{ 'Content-Type':'application/json' },
         body: JSON.stringify({
@@ -780,7 +797,7 @@
 
   // ---------- Auto-login ----------
   (function(){
-    const p = sessionStorage.getItem(PWD_KEY);
+    const p = session.get(PWD_KEY);
     if(p) tryLogin(p, false);
   })();
 </script>
