@@ -68,6 +68,10 @@ function clip(v, max) {
 function classify(hint) {
   if (!hint) return null;
   const h = hint.toLowerCase();
+  // ManyChat : l'appel a l'action Instagram ("commente EXTRAIT") passe par un DM
+  // automatise. Sans ce bucket, ces arrivees tombaient dans 'autre' ou 'direct'
+  // et on ne pouvait pas mesurer la fuite entre le commentaire et l'email laisse.
+  if (h.includes('manychat') || h === 'mc') return 'manychat';
   if (h.includes('tiktok')) return 'tiktok';
   if (h.includes('instagram') || h === 'ig') return 'instagram';
   // fb.me / fb.watch : liens raccourcis frequents depuis l'app Facebook et Messenger.

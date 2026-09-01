@@ -109,6 +109,48 @@ const ev = (o) => Object.assign({
   check('les inscriptions sont dans la courbe', jour && jour.inscriptions === 3, jour && jour.inscriptions);
   check('les ventes sont dans la courbe', data.by_day.some(j => j.ventes === 1));
 
+  section("extrait gratuit vs vente payante");
+  // Gumroad envoie un ping pour le produit gratuit exactement comme pour une vente.
+  // Sans tri, chaque telechargement gonflait ventes, CA et taux d'achat.
+  events = [
+    ev({ type: 'pageview', path: '/extrait-guide.html', session_id: 'x1' }),
+    ev({ type: 'pageview', path: '/extrait-guide.html', session_id: 'x2' }),
+    ev({ type: 'extrait_signup', path: '/extrait-guide.html', session_id: 'x1' })
+  ];
+  sales = [
+    { created_at: iso(1), product_name: 'Comprendre Comment Rouler Plus Vite.', price_cents: 1699, quantity: 1, currency: 'EUR', raw: { permalink: 'umjfwx' } },
+    { created_at: iso(1), product_name: 'Comprendre... (Extrait)', price_cents: 0, quantity: 1, currency: 'EUR', raw: { permalink: 'ehdkm' } },
+    { created_at: iso(2), product_name: '', price_cents: 0, quantity: 1, currency: 'EUR', raw: { product_permalink: 'https://clemkartracing.gumroad.com/l/Extrait' } }
+  ];
+  ({ data } = await appel(30));
+  check('une seule vraie vente comptee', data.totals.ventes === 1, data.totals.ventes);
+  check('les 2 extraits gratuits comptes a part', data.totals.extraits_gumroad === 2, data.totals.extraits_gumroad);
+  check('le CA ne contient que la vente payante', data.totals.revenu_cents === 1699, data.totals.revenu_cents);
+  check('l entonnoir ne gonfle pas', data.funnel[data.funnel.length - 1].valeur === 1);
+
+  // Un produit payant inconnu doit rester une vente : mieux vaut mal etiqueter
+  // qu'effacer du chiffre d'affaires.
+  sales = [{ created_at: iso(1), product_name: 'Produit inconnu', price_cents: 2500, quantity: 1, currency: 'EUR', raw: {} }];
+  ({ data } = await appel(30));
+  check('produit payant inconnu reste une vente', data.totals.ventes === 1 && data.totals.revenu_cents === 2500);
+
+  section("entonnoir extrait");
+  events = [
+    ev({ type: 'pageview', path: '/extrait-guide.html', session_id: 'e1' }),
+    ev({ type: 'pageview', path: '/extrait-guide.html', session_id: 'e2' }),
+    ev({ type: 'pageview', path: '/extrait-guide.html', session_id: 'e3' }),
+    ev({ type: 'pageview', path: '/extrait-guide.html', session_id: 'e4' }),
+    ev({ type: 'extrait_signup', path: '/extrait-guide.html', session_id: 'e1' }),
+    ev({ type: 'tableur_signup', path: '/tableur-reglages.html', session_id: 'e9' })
+  ];
+  sales = [];
+  ({ data } = await appel(30));
+  check('l entonnoir extrait existe', Array.isArray(data.funnel_extrait) && data.funnel_extrait.length === 3);
+  check('vues de la page extrait isolees du tableur', data.funnel_extrait[0].valeur === 4, data.funnel_extrait[0].valeur);
+  check('inscriptions extrait seules, sans le tableur', data.funnel_extrait[1].valeur === 1, data.funnel_extrait[1].valeur);
+  check('taux page extrait -> email', data.funnel_extrait[1].taux === 25, data.funnel_extrait[1].taux);
+  check('mails envoyes = inscriptions reussies', data.funnel_extrait[2].valeur === 1);
+
   section('robustesse');
   events = []; sales = [];
   ({ data } = await appel(7));

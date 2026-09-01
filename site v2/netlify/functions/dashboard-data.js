@@ -86,7 +86,7 @@ function campaignLabel(row) {
 function blankTotals() {
   return {
     visiteurs: 0, pageviews: 0, gumroad_clicks: 0, extract_clicks: 0, tableur_clicks: 0, tableur_signups: 0, extrait_signups: 0, ctr: 0,
-    ventes: 0, revenu_cents: 0, taux_achat: 0,
+    ventes: 0, revenu_cents: 0, taux_achat: 0, extraits_gumroad: 0,
   };
 }
 function bump(tot, type) {
@@ -108,16 +108,48 @@ function finalize(tot, sessionsSize, uniqueClickersSize) {
 
 // Agrege les ventes reelles (Gumroad) sur les memes fenetres temporelles que les visites.
 // salesRows est deja filtre (is_test=false, is_refund=false) par la requete Supabase.
+// L'extrait est un produit Gumroad a 0 EUR : Gumroad envoie un ping pour lui
+// exactement comme pour une vente payante. Sans ce tri, chaque telechargement
+// gonflait le nombre de "ventes reelles", le taux d'achat et l'entonnoir, alors
+// qu'il n'a rapporte aucun euro.
+const EXTRAIT_PERMALINKS = String(process.env.GUMROAD_EXTRAIT_PERMALINKS || 'extrait,ehdkm')
+  .toLowerCase().split(',').map((x) => x.trim()).filter(Boolean);
+
+function estExtraitGratuit(s) {
+  const raw = s.raw || {};
+  const liens = [];
+  for (const v of [raw.permalink, raw.short_product_id, raw.product_permalink, raw.product_id]) {
+    if (!v) continue;
+    const str = String(v).toLowerCase().replace(/[?#].*$/, '').replace(/\/+$/, '');
+    liens.push(str.slice(str.lastIndexOf('/') + 1));
+  }
+  if (liens.length) return liens.some((x) => EXTRAIT_PERMALINKS.includes(x));
+  const nom = String(s.product_name || '').toLowerCase();
+  if (nom) return nom.includes('extrait');
+  // Sans nom ni permalink, un prix nul est presque toujours l'extrait offert.
+  // Un produit payant inconnu reste une vente : mieux vaut une vente mal
+  // etiquetee qu'une vente perdue.
+  return (s.price_cents || 0) === 0;
+}
+
 function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
   const daySales = new Map(); // 'YYYY-MM-DD' -> nb ventes
   let curVentes = 0, curRevenueCents = 0, prevVentes = 0, d24Ventes = 0, currency = '';
   // Dates calculees sur TOUT l'historique recupere, pas seulement la periode affichee :
   // « ma premiere vente » ne doit pas changer parce qu'on regarde 7 jours.
   let firstSaleDate = null, lastSaleDate = null;
+  let curExtraits = 0, prevExtraits = 0, d24Extraits = 0;
 
   for (const s of salesRows) {
     const ts = Date.parse(s.created_at);
     if (isNaN(ts)) continue;
+    // Un extrait gratuit n'est pas une vente : compte a part, jamais dans le CA.
+    if (estExtraitGratuit(s)) {
+      if (ts >= dayStart) d24Extraits++;
+      if (ts >= curStart) curExtraits++;
+      else if (ts >= prevStart) prevExtraits++;
+      continue;
+    }
     const amount = (s.price_cents || 0) * (s.quantity || 1);
     const day = (s.created_at || '').slice(0, 10);
     if (day) {
@@ -137,7 +169,8 @@ function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
     }
   }
 
-  return { curVentes, curRevenueCents, prevVentes, d24Ventes, daySales, currency, firstSaleDate, lastSaleDate };
+  return { curVentes, curRevenueCents, prevVentes, d24Ventes, daySales, currency, firstSaleDate, lastSaleDate,
+           curExtraits, prevExtraits, d24Extraits };
 }
 
 // Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
@@ -271,6 +304,8 @@ function aggregate(rows, days, salesRows) {
   }
 
   // ---------- Entonnoir reel : du trafic a la vente, en passant par l'email ----------
+  cur.extraits_gumroad = salesAgg.curExtraits;
+  prev.extraits_gumroad = salesAgg.prevExtraits;
   cur.inscriptions = cur.tableur_signups + cur.extrait_signups;
   prev.inscriptions = prev.tableur_signups + prev.extrait_signups;
   cur.vues_page_extrait = 0;
@@ -289,6 +324,16 @@ function aggregate(rows, days, salesRows) {
     { etape: 'Emails laisses', valeur: cur.inscriptions, taux: taux(cur.inscriptions, vuesCapture) },
     { etape: 'Clics vers le guide', valeur: cur.gumroad_clicks, taux: taux(cur.gumroad_clicks, cur.inscriptions) },
     { etape: 'Ventes', valeur: cur.ventes, taux: taux(cur.ventes, cur.gumroad_clicks) },
+  ];
+
+  // Entonnoir de l'extrait seul. L'entonnoir global melange tableur et extrait,
+  // or l'appel a l'action Instagram ("commente EXTRAIT") a son propre parcours :
+  // commentaire -> DM ManyChat -> page extrait -> email laisse -> mail envoye.
+  // Le nombre de commentaires vit dans ManyChat, le dashboard prend la suite.
+  const funnel_extrait = [
+    { etape: 'Vues de la page extrait', valeur: cur.vues_page_extrait, taux: null },
+    { etape: 'Emails laisses', valeur: cur.extrait_signups, taux: taux(cur.extrait_signups, cur.vues_page_extrait) },
+    { etape: 'Mails extrait envoyes', valeur: cur.extrait_signups, taux: 100 },
   ];
 
   // Meilleur jour de la periode (en visiteurs), utile apres une video qui marche.
@@ -363,6 +408,7 @@ function aggregate(rows, days, salesRows) {
     previous: prev,
     deltas24h,
     funnel,
+    funnel_extrait,
     dates,
     by_day,
     by_source,
@@ -409,7 +455,7 @@ exports.handler = async (event) => {
 
     const salesUrl =
       `${SUPABASE_URL}/rest/v1/sales` +
-      `?select=created_at,price_cents,quantity,currency` +
+      `?select=created_at,product_name,price_cents,quantity,currency,raw` +
       `&created_at=gte.${encodeURIComponent(sinceISO)}` +
       `&is_test=eq.false&is_refund=eq.false` +
       `&order=created_at.asc&limit=100000`;
