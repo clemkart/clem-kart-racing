@@ -48,7 +48,7 @@ Pour le pilote qui roule deja, qui sort parfois un tour qui le surprend, et qui 
 
 Ecrit par Clement Daniel, 8 ans de karting de competition, Champion Regional 2023, une dizaine de victoires et podiums.
 
-Garantie satisfait ou rembourse 7 jours, sans condition et sans justification.
+Garantie satisfait ou rembourse 30 jours, sans condition et sans justification.
 
 ---
 
