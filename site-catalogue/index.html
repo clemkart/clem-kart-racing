@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Clem Kart Racing | Comprends pourquoi tu vas vite</title>
+<meta name="description" content="Guide de pilotage karting et débrief vidéo personnalisé par Clément Daniel, Champion Régional 2023. Pour le pilote amateur qui stagne et veut comprendre où sont ses dixièmes."/>
+<link rel="canonical" href="https://comprendre-comment-rouler-plus-vite-2.netlify.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Clem Kart Racing | Comprends pourquoi tu vas vite">
+<meta property="og:description" content="Guide de pilotage et débrief vidéo personnalisé pour pilotes de karting amateurs.">
+<meta property="og:image" content="https://comprendre-comment-rouler-plus-vite-2.netlify.app/partage.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D9171D;--red-dark:#A51115;--red-glow:rgba(217,23,29,0.28);
+  --black:#070707;--b2:#0F0F0F;--b3:#161616;
+  --w:rgb(242,237,232);--wd:rgba(242,237,232,0.62);--wf:rgba(242,237,232,0.08);--wf2:rgba(242,237,232,0.04);
+  --gold:#C9A84C;
+  --fd:'Bebas Neue','Arial Narrow',Impact,sans-serif;--fc:'Barlow Condensed','Arial Narrow',sans-serif;--fb:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --pad:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);overflow-x:hidden;line-height:1.6;}
+img{max-width:100%;display:block;}
+.wrap{max-width:860px;margin:0 auto;padding-left:var(--pad);padding-right:var(--pad);}
+section{padding-block:60px;}
+.kick{font-family:var(--fc);font-size:.74rem;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:var(--red);margin-bottom:16px;}
+h1,h2{font-family:var(--fd);letter-spacing:.015em;line-height:.95;text-transform:uppercase;}
+h1{font-size:clamp(40px,11vw,84px);}
+h2{font-size:clamp(28px,6.6vw,46px);margin-bottom:20px;}
+h3{font-family:var(--fd);font-size:1.6rem;letter-spacing:.02em;line-height:1.05;text-transform:uppercase;margin-bottom:10px;}
+p{font-size:1.02rem;font-weight:300;color:var(--wd);}
+p+p{margin-top:14px;}
+strong{color:var(--w);font-weight:600;}
+.r{color:var(--red);}
+
+.top{position:sticky;top:0;z-index:60;background:rgba(7,7,7,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--wf);}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;padding-block:13px;}
+.logo{font-family:var(--fd);font-size:1.18rem;letter-spacing:.05em;color:var(--w);text-decoration:none;white-space:nowrap;}
+.logo span{color:var(--red);}
+.tlink{font-family:var(--fc);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wd);text-decoration:none;white-space:nowrap;}
+.tlink:hover{color:var(--w);}
+
+#hero{position:relative;padding-top:52px;padding-bottom:56px;overflow:hidden;}
+.hbg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 75% 55% at 60% 30%,rgba(217,23,29,.12) 0%,transparent 66%),var(--black);}
+.hgrid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(242,237,232,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(242,237,232,.022) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,black 0%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,black 0%,transparent 100%);}
+#hero .wrap{position:relative;z-index:2;}
+.hsub{font-size:1.08rem;margin-top:20px;max-width:36em;}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:24px;font-family:var(--fc);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);}
+.trust span{display:flex;align-items:center;gap:7px;}
+.trust span::before{content:'';width:5px;height:5px;background:var(--red);border-radius:50%;flex:none;}
+
+.prods{display:grid;gap:18px;}
+.prod{background:var(--b2);border:1px solid var(--wf);padding:26px 22px;display:flex;flex-direction:column;}
+.prod .tagline{font-family:var(--fc);font-size:.74rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.prod .meta{font-family:var(--fc);font-size:.8rem;letter-spacing:.13em;text-transform:uppercase;color:var(--wd);margin-top:16px;padding-top:16px;border-top:1px solid var(--wf);}
+.prod .price{font-family:var(--fd);font-size:2.3rem;line-height:1;color:var(--w);margin-top:14px;}
+.prod .price small{font-family:var(--fc);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wd);display:block;margin-top:5px;font-weight:400;}
+.prod .sp{flex:1;}
+.btp{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;font-family:var(--fc);font-size:.98rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;background:var(--red);color:var(--w);padding:15px 26px;text-decoration:none;margin-top:20px;transition:background .2s,box-shadow .3s;}
+.btp:hover{background:var(--red-dark);box-shadow:0 0 26px var(--red-glow);}
+.bts{background:transparent;border:1px solid rgba(242,237,232,.24);color:var(--w);}
+.bts:hover{background:var(--wf);box-shadow:none;}
+
+#who{background:var(--b2);border-block:1px solid var(--wf);}
+.auth{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;}
+.auth img{width:150px;height:150px;object-fit:cover;border:1px solid var(--wf);flex:none;filter:grayscale(.25);}
+.auth .at{flex:1;min-width:230px;}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
+.stat{background:var(--b3);border:1px solid var(--wf);padding:9px 14px;font-family:var(--fc);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--w);}
+
+footer{border-top:1px solid var(--wf);padding-block:34px;text-align:center;}
+footer p{font-family:var(--fc);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,237,232,.38);}
+footer a{color:var(--wd);text-decoration:none;}
+
+@media(min-width:720px){
+  :root{--pad:32px;}
+  section{padding-block:84px;}
+  .prods{grid-template-columns:1fr 1fr;}
+  .btp{margin-top:auto;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <a class="logo" href="/">CLEM <span>KART</span> RACING</a>
+    <a class="tlink" href="#produits">Produits</a>
+  </div>
+</div>
+
+<section id="hero">
+  <div class="hbg"></div><div class="hgrid"></div>
+  <div class="wrap">
+    <div class="kick">Pilotage karting · Amateurs</div>
+    <h1>Comprends<br>pourquoi<br><span class="r">tu vas vite.</span></h1>
+    <p class="hsub">Tu sais faire un bon tour. Le vrai problème, c'est que tu ne sais pas encore <strong>pourquoi</strong> il était bon. Et sans ça, tu ne peux pas le reproduire.</p>
+    <div class="trust">
+      <span>Champion Régional 2023</span>
+      <span>8 ans de compétition</span>
+      <span>Tout appris seul</span>
+    </div>
+  </div>
+</section>
+
+<section id="produits">
+  <div class="wrap">
+    <div class="kick">Ce que je propose</div>
+    <h2>Deux façons d'arrêter<br>de subir ton pilotage</h2>
+    <div class="prods">
+
+      <div class="prod">
+        <div class="tagline">Pour comprendre</div>
+        <h3>Comprendre comment rouler plus vite</h3>
+        <p>Le guide complet : comment tu construis un bon tour, pourquoi il est bon, et comment le reproduire dix fois de suite au lieu d'une. Des années d'essais et d'erreurs condensées en principes clairs, lisibles ce soir et applicables demain matin.</p>
+        <div class="sp"></div>
+        <div class="meta">PDF · 59 pages · 13 chapitres · Accès immédiat · Garantie 7 jours</div>
+        <div class="price">16,99 €<small>Paiement unique</small></div>
+        <a class="btp" href="https://clemkartracing.gumroad.com/l/umjfwx">Obtenir le guide →</a>
+      </div>
+
+      <div class="prod">
+        <div class="tagline">Pour corriger</div>
+        <h3>Débrief onboard personnalisé</h3>
+        <p>Commence par le diagnostic : sept questions, et tu sais déjà où part probablement ton temps. Ensuite tu m'envoies ton onboard, je le regarde tour par tour, et tu reçois une vidéo commentée sur tes images, tes trois priorités et un objectif pour ta prochaine sortie.</p>
+        <div class="sp"></div>
+        <div class="meta">Diagnostic gratuit · Livré sous 72 h · Vidéo privée</div>
+        <div class="price">30 €<small>Par débrief</small></div>
+        <a class="btp" href="/onboard/">Faire le diagnostic →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="who">
+  <div class="wrap">
+    <div class="kick">Qui je suis</div>
+    <h2>Champion. Pilote.<br>Pas un théoricien.</h2>
+    <div class="auth">
+      <img src="/clement.jpg" alt="Clément Daniel au paddock, casque et trophée en main" loading="lazy" width="560" height="560">
+      <div class="at">
+        <p>Je n'ai pas eu de mécano, pas de coach, pas de team pour m'expliquer quoi que ce soit. J'ai tout appris seul : essais, erreurs, recherche, et beaucoup de sessions passées à ne pas comprendre pourquoi le tour précédent était meilleur.</p>
+        <p>Il n'existe quasiment rien de structuré sur le pilotage karting en français. Les bonnes références sont anglophones, et le reste, ce sont les conseils du paddock. <strong>C'est ce trou-là que je remplis.</strong></p>
+        <div class="stats">
+          <div class="stat">8 ans de compétition</div>
+          <div class="stat">Champion Régional 2023</div>
+          <div class="stat">Une dizaine de victoires et podiums</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Clem Kart Racing © 2026 Clément Daniel · Tous droits réservés<br>
+    <a href="mailto:clemkartracing@gmail.com">clemkartracing@gmail.com</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

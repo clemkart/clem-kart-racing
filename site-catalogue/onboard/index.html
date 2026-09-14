@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Débrief onboard karting | Clem Kart Racing</title>
+<meta name="description" content="Sept questions, ton diagnostic de pilotage, et le débrief vidéo qui va avec. Par Clément Daniel, Champion Régional 2023."/>
+<link rel="canonical" href="https://comprendre-comment-rouler-plus-vite-2.netlify.app/onboard/">
+<meta property="og:type" content="website"><meta property="og:title" content="Pourquoi tes chronos ne bougent plus. En 7 questions.">
+<meta property="og:description" content="Réponds à 7 questions, je te dis où part ton temps. Puis je le vérifie sur tes images.">
+<meta property="og:image" content="https://comprendre-comment-rouler-plus-vite-2.netlify.app/partage.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+ --red:#D9171D;--red-dark:#A51115;--red-glow:rgba(217,23,29,.3);
+ --black:#070707;--b2:#0F0F0F;--b3:#161616;--b4:#1C1C1C;
+ --w:rgb(242,237,232);--wd:rgba(242,237,232,.62);--wq:rgba(242,237,232,.42);--wf:rgba(242,237,232,.09);--wf2:rgba(242,237,232,.04);
+ --gold:#C9A84C;--green:#3FB27F;
+ --fd:'Bebas Neue','Arial Narrow',Impact,sans-serif;--fc:'Barlow Condensed','Arial Narrow',sans-serif;--fb:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+ --pad:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);line-height:1.6;overflow-x:hidden;}
+img{max-width:100%;display:block;}
+.wrap{max-width:660px;margin:0 auto;padding-inline:var(--pad);}
+h1,h2{font-family:var(--fd);letter-spacing:.015em;line-height:.96;text-transform:uppercase;}
+h2{font-size:clamp(27px,7vw,44px);margin-bottom:20px;}
+h3{font-family:var(--fc);font-size:1.04rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:7px;}
+p{font-size:1.01rem;font-weight:300;color:var(--wd);}
+p+p{margin-top:14px;}
+strong{color:var(--w);font-weight:600;}
+.r{color:var(--red);}
+.kick{font-family:var(--fc);font-size:.73rem;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red);margin-bottom:14px;}
+.bgfx{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 55% at 55% 22%,rgba(217,23,29,.13) 0%,transparent 68%),var(--black);}
+.gridfx{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(242,237,232,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(242,237,232,.02) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,#000,transparent);-webkit-mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,#000,transparent);}
+
+/* ===== QUIZ ===== */
+#quiz{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;}
+#quiz>.wrap{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding-top:14px;padding-bottom:26px;}
+.qbar{display:flex;align-items:center;gap:12px;margin-bottom:26px;}
+.qlogo{font-family:var(--fd);font-size:1.06rem;letter-spacing:.05em;color:var(--w);text-decoration:none;white-space:nowrap;}
+.qlogo span{color:var(--red);}
+.prog{flex:1;height:3px;background:var(--wf);overflow:hidden;}
+.prog i{display:block;height:100%;width:12%;background:var(--red);transition:width .55s cubic-bezier(.4,0,.2,1);}
+.qcount{font-family:var(--fc);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wq);white-space:nowrap;}
+
+.stage{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.step{display:none;animation:in .45s cubic-bezier(.2,.7,.3,1) both;}
+.step.on{display:block;}
+@keyframes in{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+
+.qtxt{font-family:var(--fd);font-size:clamp(30px,8.4vw,52px);line-height:1.0;text-transform:uppercase;margin-bottom:10px;}
+.qhint{font-size:.95rem;color:var(--wq);margin-bottom:22px;}
+.opts{display:flex;flex-direction:column;gap:10px;}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--b2);border:1px solid var(--wf);color:var(--w);font-family:var(--fb);font-size:1.02rem;font-weight:400;padding:16px 18px;cursor:pointer;transition:border-color .18s,background .18s,transform .1s;}
+.opt:hover{border-color:rgba(217,23,29,.5);background:var(--b3);}
+.opt:active{transform:scale(.985);}
+.opt .dot{width:19px;height:19px;border:1.5px solid rgba(242,237,232,.3);border-radius:50%;flex:none;position:relative;transition:border-color .18s;}
+.opt.sel .dot{border-color:var(--red);}
+.opt.sel .dot::after{content:'';position:absolute;inset:3.5px;background:var(--red);border-radius:50%;}
+.opt.sel{border-color:var(--red);background:rgba(217,23,29,.07);}
+
+.insight{margin-top:20px;background:var(--b2);border-left:2px solid var(--red);padding:17px 18px;animation:in .4s .05s both;}
+.insight .il{font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin-bottom:7px;}
+.insight p{font-size:.98rem;}
+
+.qnav{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px;}
+.next{font-family:var(--fc);font-size:.98rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;background:var(--red);color:var(--w);border:none;padding:15px 30px;cursor:pointer;transition:background .2s,box-shadow .3s,opacity .2s;}
+.next:hover{background:var(--red-dark);box-shadow:0 0 24px var(--red-glow);}
+.next[disabled]{opacity:.28;pointer-events:none;}
+.prev{background:none;border:none;color:var(--wq);font-family:var(--fc);font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;padding:8px 0;}
+.prev:hover{color:var(--w);}
+
+/* analyse */
+.lab{font-family:var(--fc);font-size:.95rem;letter-spacing:.1em;text-transform:uppercase;color:var(--wd);display:flex;align-items:center;gap:12px;padding:9px 0;opacity:.25;transition:opacity .3s,color .3s;}
+.lab.done{opacity:1;color:var(--w);}
+.lab .tick{width:17px;height:17px;border:1.5px solid var(--wf);border-radius:50%;flex:none;position:relative;}
+.lab.done .tick{border-color:var(--green);}
+.lab.done .tick::after{content:'';position:absolute;left:5px;top:2px;width:4px;height:9px;border:solid var(--green);border-width:0 1.6px 1.6px 0;transform:rotate(42deg);}
+
+/* ===== DIAGNOSTIC ===== */
+#diag{display:none;}
+#diag.on{display:block;}
+.dhead{position:relative;overflow:hidden;padding-block:44px 34px;}
+.dhead .wrap{position:relative;z-index:2;}
+.badge{display:inline-block;font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--green);border:1px solid rgba(63,178,127,.35);background:rgba(63,178,127,.07);padding:6px 13px;margin-bottom:16px;}
+.dtitle{font-family:var(--fd);font-size:clamp(30px,8.2vw,52px);line-height:1;text-transform:uppercase;}
+.dcards{display:grid;gap:12px;margin-top:26px;}
+.dcard{background:var(--b2);border:1px solid var(--wf);padding:21px 19px;}
+.dcard .dl{font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:9px;}
+.honest{margin-top:18px;font-size:.9rem;color:var(--wq);font-style:italic;}
+
+/* ===== SECTIONS ===== */
+section.blk{padding-block:52px;}
+.card{background:var(--b2);border:1px solid var(--wf);padding:22px 20px;}
+.grid{display:grid;gap:12px;}
+.num{font-family:var(--fd);font-size:2rem;color:var(--red);line-height:1;margin-bottom:9px;}
+#ego{background:var(--b2);border-block:1px solid var(--wf);}
+.ei{display:flex;gap:14px;align-items:flex-start;}
+.ei+.ei{margin-top:20px;}
+.ei .ic{font-family:var(--fd);font-size:1.4rem;color:var(--red);line-height:1;flex:none;width:24px;}
+.auth{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;}
+.auth img{width:140px;height:140px;object-fit:cover;border:1px solid var(--wf);flex:none;filter:grayscale(.25);}
+.auth .at{flex:1;min-width:215px;}
+.stats{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px;}
+.stat{background:var(--b3);border:1px solid var(--wf);padding:8px 13px;font-family:var(--fc);font-size:.79rem;letter-spacing:.1em;text-transform:uppercase;}
+#prix{background:var(--b2);border-block:1px solid var(--wf);}
+.anchor{background:var(--b3);border:1px solid var(--wf);padding:19px 20px;margin-bottom:24px;}
+.pbox{background:var(--b3);border:1px solid rgba(217,23,29,.3);padding:26px 20px;text-align:center;}
+.pnum{font-family:var(--fd);font-size:clamp(54px,15vw,84px);line-height:.9;}
+.pnum sup{font-size:.38em;vertical-align:super;margin-left:4px;color:var(--red);}
+.plab{font-family:var(--fc);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wd);margin-top:7px;}
+.bump{border:1px dashed rgba(242,237,232,.22);background:var(--wf2);padding:15px 17px;margin-top:20px;text-align:left;}
+.bump .bt{font-family:var(--fc);font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.guar{display:flex;gap:12px;align-items:flex-start;margin-top:20px;text-align:left;border-top:1px solid var(--wf);padding-top:18px;}
+.guar .ic{font-family:var(--fd);font-size:1.35rem;color:var(--gold);line-height:1;flex:none;}
+.btp{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;font-family:var(--fc);font-size:1rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:var(--red);color:var(--w);padding:16px 26px;text-decoration:none;transition:background .2s,box-shadow .3s;}
+.btp:hover{background:var(--red-dark);box-shadow:0 0 24px var(--red-glow);}
+.btw{margin-top:24px;}
+.btnote{font-family:var(--fc);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--wq);text-align:center;margin-top:10px;}
+details{border-bottom:1px solid var(--wf);padding:16px 0;}
+summary{font-family:var(--fc);font-size:1rem;font-weight:600;color:var(--w);cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:13px;align-items:flex-start;}
+summary::-webkit-details-marker{display:none;}
+summary::after{content:'+';font-family:var(--fd);font-size:1.45rem;color:var(--red);line-height:.8;flex:none;}
+details[open] summary::after{content:'–';}
+details p{margin-top:11px;font-size:.96rem;}
+#final{position:relative;overflow:hidden;text-align:center;}
+footer{border-top:1px solid var(--wf);padding-block:30px;text-align:center;}
+footer p{font-family:var(--fc);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,237,232,.36);}
+footer a{color:var(--wd);text-decoration:none;}
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(7,7,7,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--wf);padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));transform:translateY(120%);transition:transform .3s;}
+.sticky.on{transform:none;}
+.sticky .in{max-width:660px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.sticky .st{flex:1;min-width:0;}
+.sticky .s1{font-family:var(--fc);font-size:.92rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
+.sticky .s2{font-family:var(--fc);font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:var(--wd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
+.sticky .btp{width:auto;flex:none;padding:12px 20px;font-size:.86rem;letter-spacing:.11em;}
+body.diag{padding-bottom:80px;}
+@media(min-width:700px){:root{--pad:32px;}section.blk{padding-block:74px;}.grid.g3{grid-template-columns:repeat(3,1fr);}.dcards{grid-template-columns:repeat(3,1fr);}.btp{width:auto;}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+</head>
+<body>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz">
+  <div class="bgfx"></div><div class="gridfx"></div>
+  <div class="wrap">
+    <div class="qbar">
+      <a class="qlogo" href="/">CLEM <span>KART</span></a>
+      <div class="prog"><i id="pg"></i></div>
+      <div class="qcount" id="qc">1 / 7</div>
+    </div>
+
+    <div class="stage" id="stage">
+
+      <div class="step on" data-step="0">
+        <div class="kick">Diagnostic pilotage · 7 questions · 60 secondes</div>
+        <h1 class="qtxt">Tes chronos ne bougent plus.<br><span class="r">Trouvons où part le temps.</span></h1>
+        <p class="qhint">Sept questions. À la fin, tu sais où part ton temps et ce que je regarderais en premier sur tes images. Pas d'email, pas d'inscription.</p>
+        <div class="qnav"><span></span><button class="next" data-act="start">Commencer →</button></div>
+      </div>
+
+      <div class="step" data-step="1" data-key="kart">
+        <div class="qtxt">Tu roules sur quoi ?</div>
+        <div class="qhint">Première chose à savoir : le kart change tout.</div>
+        <div class="opts">
+          <button class="opt" data-v="perso" data-i="Bien. Ce que tu ressens vient donc de ton pilotage, pas d'un châssis différent à chaque sortie. Tout ce qu'on va voir ensuite compte vraiment."><span class="dot"></span><span>Mon propre kart</span></button>
+          <button class="opt" data-v="loc" data-stop="loc" data-i="Je vais être direct : en location, tu changes de kart à chaque session. La moitié de ce que je verrais serait du matériel, pas toi. Je ne te vendrai pas un débrief dans ces conditions."><span class="dot"></span><span>De la location</span></button>
+          <button class="opt" data-v="mixte" data-i="C'est ton kart perso qui compte. C'est le seul où tu peux comparer une session à l'autre et savoir si tu progresses."><span class="dot"></span><span>Les deux</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="2" data-key="stag">
+        <div class="qtxt">Depuis quand tes chronos ne bougent plus ?</div>
+        <div class="qhint">Sois honnête, c'est le point de départ.</div>
+        <div class="opts">
+          <button class="opt" data-v="semaines" data-i="Quelques semaines, c'est tout frais. Souvent, à ce stade, il ne manque qu'un ou deux repères pour repartir. C'est le moment le moins cher pour corriger."><span class="dot"></span><span>Quelques semaines</span></button>
+          <button class="opt" data-v="mois" data-i="Quelques mois, c'est récent. C'est le meilleur moment pour corriger, avant que le geste ne se fige."><span class="dot"></span><span>Quelques mois</span></button>
+          <button class="opt" data-v="1an" data-i="Un an de plateau, ce n'est pas un manque de roulage. C'est un manque de retour : tu roules, et rien ne te dit ce qui a marché."><span class="dot"></span><span>Environ un an</span></button>
+          <button class="opt" data-v="2ans" data-i="Deux ans, c'est long. Et c'est presque toujours le même schéma : les gestes se figent, et plus personne ne te dit lesquels te coûtent du temps."><span class="dot"></span><span>Deux ans ou plus</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="3" data-key="why">
+        <div class="qtxt">Ton meilleur tour, tu sais dire pourquoi il était bon ?</div>
+        <div class="qhint">La question qui décide de tout le reste.</div>
+        <div class="opts">
+          <button class="opt" data-v="oui" data-i="Alors tu es déjà devant la plupart des pilotes de ton club. Ce qu'il te reste à gagner est plus fin : ça se voit à l'image, plus au ressenti."><span class="dot"></span><span>Oui, précisément</span></button>
+          <button class="opt" data-v="vague" data-i="« Vaguement », ça veut dire que tu le refais une fois sur cinq, au feeling. Et c'est la régularité, pas la pointe de vitesse, qui te sépare des rapides de ton club."><span class="dot"></span><span>Vaguement</span></button>
+          <button class="opt" data-v="non" data-i="C'est la réponse la plus fréquente, et la plus utile. Tant que tu ne sais pas pourquoi il était bon, tu ne le refais pas à volonté. Tu attends qu'il revienne."><span class="dot"></span><span>Non, honnêtement pas</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="4" data-key="zone">
+        <div class="qtxt">Où tu sens que ça part ?</div>
+        <div class="qhint">Ton intuition suffit, on la vérifiera sur les images.</div>
+        <div class="opts">
+          <button class="opt" data-v="frein" data-i="Le freinage, c'est le plus gros gisement de temps chez l'amateur. Et jamais là où on croit : ce n'est pas la force, c'est le relâché."><span class="dot"></span><span>Au freinage</span></button>
+          <button class="opt" data-v="traj" data-i="La trajectoire, c'est le symptôme le plus visible et le plus mal diagnostiqué. Neuf fois sur dix, elle est fausse à cause de ce qui s'est passé avant, pas au point de corde lui-même."><span class="dot"></span><span>En entrée, au point de corde</span></button>
+          <button class="opt" data-v="gaz" data-i="La remise de gaz, c'est là que le chrono se signe. Un dixième perdu en sortie se paie sur toute la ligne droite qui suit."><span class="dot"></span><span>À la remise de gaz</span></button>
+          <button class="opt" data-v="nsp" data-i="Ne pas savoir dire, ce n'est pas un problème d'œil. C'est un manque de mots : personne ne t'a jamais appris à décrire ce que fait ton kart. C'est la première chose que je te donne."><span class="dot"></span><span>Je ne sais pas dire</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="5" data-key="essai" data-multi="1">
+        <div class="qtxt">Tu as essayé quoi jusqu'ici ?</div>
+        <div class="qhint">Plusieurs réponses possibles.</div>
+        <div class="opts">
+          <button class="opt" data-v="matos"><span class="dot"></span><span>Du meilleur matériel</span></button>
+          <button class="opt" data-v="volume"><span class="dot"></span><span>Rouler plus souvent</span></button>
+          <button class="opt" data-v="paddock"><span class="dot"></span><span>Les conseils du paddock</span></button>
+          <button class="opt" data-v="onboard"><span class="dot"></span><span>Regarder des onboards</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="6" data-key="rage">
+        <div class="qtxt">Qu'est-ce qui t'agace le plus ?</div>
+        <div class="qhint">Il n'y a pas de bonne réponse.</div>
+        <div class="opts">
+          <button class="opt" data-v="potes" data-i="C'est la vraie raison chez presque tout le monde. Et ce n'est pas de la vanité : tu veux qu'on te regarde comme toi tu regardes les rapides de ton club."><span class="dot"></span><span>Me faire battre par mes potes</span></button>
+          <button class="opt" data-v="argent" data-i="Tu as raison d'être agacé. Châssis, pneus, carburant, week-ends : tu as tout payé. Sauf l'explication. Et c'est la seule ligne du budget qui aurait changé tes chronos."><span class="dot"></span><span>Dépenser autant sans avancer</span></button>
+          <button class="opt" data-v="flou" data-i="Rouler sans comprendre, c'est épuisant. Tu finis la journée vidé sans savoir si tu as progressé. C'est ce flou qui use, plus que le chrono."><span class="dot"></span><span>Rouler sans comprendre ce que je fais</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="7" data-key="video">
+        <div class="qtxt">Tu as des images onboard ?</div>
+        <div class="qhint">Dernière question. Le placement de la caméra compte autant que sa qualité.</div>
+        <div class="opts">
+          <button class="opt" data-v="souvent" data-i="Parfait. Tu as déjà tout ce qu'il faut. Vérifie juste une chose : la caméra doit te montrer, toi. Fixée sur le radiateur ou le ponton et tournée vers le pilote, c'est idéal. Sur un baudrier, je ne vois que le bitume qui défile."><span class="dot"></span><span>Oui, à chaque session</span></button>
+          <button class="opt" data-v="parfois" data-i="Une seule session suffit, même en essais libres. Le seul vrai critère : qu'on voie ce que tu fais. Caméra sur le radiateur ou le ponton, orientée vers toi. Pas sur un baudrier, sinon je ne vois que le bitume."><span class="dot"></span><span>De temps en temps</span></button>
+          <button class="opt" data-v="jamais" data-stop="nocam" data-i="Sans images, je ne peux rien faire. Une caméra d'occasion à 80 € suffit largement, fixée sur le radiateur ou le ponton et tournée vers toi. Filme une session, reviens, on regarde ça."><span class="dot"></span><span>Jamais filmé</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="8">
+        <div class="kick">Analyse en cours</div>
+        <div class="qtxt">Je croise tes réponses.</div>
+        <div style="margin-top:26px;">
+          <div class="lab" id="l1"><span class="tick"></span>Profil de roulage</div>
+          <div class="lab" id="l2"><span class="tick"></span>Origine probable du plateau</div>
+          <div class="lab" id="l3"><span class="tick"></span>Zone de perte de temps</div>
+          <div class="lab" id="l4"><span class="tick"></span>Priorité de travail</div>
+        </div>
+      </div>
+
+      <div class="step" data-step="9" id="stopbox">
+        <div class="kick">Je préfère être honnête</div>
+        <div class="qtxt" id="stoptitle"></div>
+        <p class="qhint" id="stoptext" style="margin-top:14px;"></p>
+        <div class="btw"><a class="btp" href="https://clemkartracing.gumroad.com/l/umjfwx">Voir le guide · 16,99 € →</a>
+          <div class="btnote">59 pages · Garantie 7 jours</div></div>
+        <div class="qnav"><button class="prev" data-act="back">← Revenir en arrière</button><span></span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ DIAGNOSTIC + OFFRE ============ -->
+<div id="diag">
+
+  <div class="dhead">
+    <div class="bgfx"></div><div class="gridfx"></div>
+    <div class="wrap">
+      <div class="badge">Ton diagnostic</div>
+      <div class="dtitle" id="dTitle"></div>
+      <div class="dcards">
+        <div class="dcard"><div class="dl">Ce que tu décris</div><p id="dA"></p></div>
+        <div class="dcard"><div class="dl">Ce que ça veut dire</div><p id="dB"></p></div>
+        <div class="dcard"><div class="dl">Ce que je regarderais en premier</div><p id="dC"></p></div>
+      </div>
+      <p class="honest">Ce diagnostic vient de tes sept réponses, rien de plus. Il pointe la bonne direction, il ne remplace pas tes images. Le travail réel commence quand je vois ton kart tourner.</p>
+      <div class="btw"><a class="btp cta" href="#">Faire vérifier sur mes images →</a>
+        <div class="btnote">Débrief complet · Livré sous 72 h</div></div>
+    </div>
+  </div>
+
+  <section class="blk">
+    <div class="wrap">
+      <div class="kick">Ce que tu reçois</div>
+      <h2>Trois choses, sous 72 heures</h2>
+      <div class="grid g3">
+        <div class="card"><div class="num">01</div><h3>La vidéo de débrief</h3><p>Je commente tes images, tour par tour. Freinage, trajectoire, remise de gaz, placement. Ton pilotage sur ton circuit, pas un cours général.</p></div>
+        <div class="card"><div class="num">02</div><h3>Ta fiche de points</h3><p>Tes trois priorités, classées par gain de temps. Pour que tu saches par quoi commencer au lieu de tout corriger d'un coup.</p></div>
+        <div class="card"><div class="num">03</div><h3>Un objectif unique</h3><p>Une seule chose à travailler à ta prochaine sortie. Une. Dix consignes en tête à l'entrée du virage, ça ne marche pas.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="ego">
+    <div class="wrap">
+      <div class="kick">Avant que tu te poses la question</div>
+      <h2>Je ne note pas ton niveau</h2>
+      <div class="ei"><div class="ic">01</div><div><h3>Ta vidéo reste entre toi et moi</h3><p>Je ne la publie pas et je ne m'en sers pour aucun contenu sans ton accord. Au moment du paiement, tu choisis toi-même si tu m'autorises ou non à en utiliser un extrait. Si tu dis non, elle ne sort jamais de mon disque.</p></div></div>
+      <div class="ei"><div class="ic">02</div><div><h3>Ce n'est pas du coaching de compétiteur</h3><p>C'est fait pour celui qui roule pour le plaisir, qu'il sorte deux fois par mois ou deux fois par an. Pas pour un pilote de championnat qui a déjà un ingénieur derrière lui.</p></div></div>
+      <div class="ei"><div class="ic">03</div><div><h3>Je ne cherche pas tes fautes</h3><p>Je cherche où part ton temps. Ce n'est pas la même chose, et ça ne s'écrit pas pareil.</p></div></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="wrap">
+      <div class="kick">Comment ça se passe</div>
+      <h2>Trois étapes, rien à installer</h2>
+      <div class="grid g3">
+        <div class="card"><div class="num">01</div><h3>Tu envoies ta vidéo</h3><p>Tu colles le lien de ton onboard au moment du paiement. YouTube, Drive, WeTransfer. Rien à m'envoyer par message.</p></div>
+        <div class="card"><div class="num">02</div><h3>Je la regarde</h3><p>Tour par tour, chrono à l'appui. Je remonte du symptôme à la cause.</p></div>
+        <div class="card"><div class="num">03</div><h3>Tu reçois tout</h3><p>Par email, sous 72 heures. La vidéo commentée, ta fiche, ton objectif.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="wrap">
+      <div class="kick">Qui regarde ta vidéo</div>
+      <h2>Clément Daniel</h2>
+      <div class="auth">
+        <img src="/clement.jpg" alt="Clément Daniel au paddock, casque et trophée en main" loading="lazy" width="560" height="560">
+        <div class="at">
+          <p>Pas de mécano, pas de coach, pas de team. J'ai tout appris seul : des essais, des erreurs, et beaucoup de sessions passées à ne pas comprendre pourquoi le tour d'avant était meilleur.</p>
+          <p><strong>C'est exactement là où tu es.</strong> La différence, c'est que j'ai fini par trouver les mots pour décrire ce que fait le kart. Ces mots, je te les donne sur tes images.</p>
+          <div class="stats"><div class="stat">8 ans de compétition</div><div class="stat">Champion Régional 2023</div><div class="stat">Une dizaine de victoires et podiums</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="prix">
+    <div class="wrap">
+      <div class="kick">Le prix</div>
+      <h2>Tu as tout acheté pour aller vite, sauf l'explication</h2>
+      <div class="anchor">
+        <p>Un train de pneus, c'est <strong>200 €</strong>. Une casse, <strong>300 à 400 €</strong>. Ajoute le carburant, l'entretien, les entrées de circuit et la route pour y aller.</p>
+        <p>Que ton karting te coûte mille euros par an ou dix mille, le constat est le même : tu as payé la machine, les consommables et les week-ends. Tout, sauf quelqu'un qui te dise ce qui se passe entre tes mains et le bitume.</p>
+      </div>
+      <div class="pbox">
+        <div class="pnum">30<sup>€</sup></div>
+        <div class="plab">Débrief complet · Livré sous 72 h</div>
+        <div class="bump">
+          <div class="bt">Option au moment du paiement</div>
+          <p>Tu peux ajouter le guide <strong>Comprendre comment rouler plus vite</strong> (59 pages) à <strong>9,99 € au lieu de 16,99 €</strong>. Il te sert à travailler entre deux sessions ce que le débrief te montre.</p>
+        </div>
+        <div class="guar"><div class="ic">✦</div><div><h3 style="margin-bottom:4px;">Satisfait ou remboursé, sans condition</h3><p>Sept jours après réception de ton débrief. Tu m'écris, je te rembourse. Pas de justification, pas de discussion.</p></div></div>
+        <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 30 € →</a><div class="btnote" style="text-align:center;">Paiement sécurisé par Stripe</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="wrap">
+      <div class="kick">Les questions qu'on me pose</div>
+      <h2>Avant de te décider</h2>
+      <details><summary>Quelle vidéo je dois envoyer ?</summary><p>Il me faut une image où l'on voit <strong>ce que tu fais</strong>, pas seulement la piste. Le mieux, c'est une caméra fixée sur le <strong>radiateur</strong>, orientée vers toi : on voit tes mains, le volant et la piste devant. Sur le <strong>ponton</strong>, ça marche aussi. En revanche, <strong>oublie le baudrier</strong> : une caméra sur la poitrine ne montre que le bitume qui défile, et je ne vois rien de ton pilotage. Si ta vidéo est inexploitable, je te le dis avant de commencer et je te rembourse.</p></details>
+      <details><summary>Je ne roule pas souvent. Ça vaut le coup ?</summary><p>C'est justement pour ça. Moins tu roules, plus chaque session compte. Arriver avec un objectif précis au lieu de tourner en espérant, c'est ce qui fait bouger le chrono sans rouler davantage. Un pilote qui sort quatre fois dans l'année a plus besoin d'un cap qu'un type qui roule toutes les semaines.</p></details>
+      <details><summary>Quelle différence avec le guide ?</summary><p>Le guide donne la grille de lecture. Le débrief l'applique à tes images. Le guide explique comment ça marche, le débrief te dit ce que toi tu fais.</p></details>
+      <details><summary>Et si je suis vraiment lent ?</summary><p>Alors il y a beaucoup de temps à récupérer, et c'est une bonne nouvelle. Je n'ai aucun intérêt à te juger, mon travail c'est de trouver où est le temps. Et personne d'autre ne voit ta vidéo.</p></details>
+      <details><summary>Comment je t'envoie mon onboard ?</summary><p>Tu colles le lien dans un champ prévu au moment du paiement. YouTube en non répertorié, Google Drive, WeTransfer : tout marche.</p></details>
+      <details><summary>Je reçois quoi, et quand ?</summary><p>Une vidéo de débrief commentée sur tes images, une fiche avec tes trois priorités, un objectif unique. Par email, sous 72 heures après réception de ta vidéo.</p></details>
+    </div>
+  </section>
+
+  <section class="blk" id="final">
+    <div class="bgfx"></div>
+    <div class="wrap" style="position:relative;z-index:2;">
+      <h2>Tu peux faire dix sessions<br>de plus en espérant<br>que ça vienne.</h2>
+      <p style="max-width:29em;margin:0 auto;">Ou tu envoies une vidéo que tu as déjà, et dans trois jours tu sais où part ton temps.</p>
+      <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 30 € →</a><div class="btnote" style="text-align:center;">Livré sous 72 h · Remboursé si tu veux · Vidéo privée</div></div>
+    </div>
+  </section>
+
+  <footer><div class="wrap"><p>Clem Kart Racing © 2026 Clément Daniel<br><a href="/">Tous les produits</a></p></div></footer>
+</div>
+
+<div class="sticky" id="sticky">
+  <div class="in">
+    <div class="st"><div class="s1">Débrief onboard</div><div class="s2">30 € · Livré sous 72 h</div></div>
+    <a class="btp cta" href="#">Envoyer →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var BASE='https://buy.stripe.com/14AcN44Wn7krbQw9Vh04801';
+  var TOTAL=7, cur=0, ans={}, stopped=null;
+  var stage=document.getElementById('stage'), pg=document.getElementById('pg'), qc=document.getElementById('qc');
+  var steps=[].slice.call(stage.querySelectorAll('.step'));
+  function show(n){
+    steps.forEach(function(s){s.classList.toggle('on', +s.dataset.step===n);});
+    cur=n;
+    if(n>=1 && n<=TOTAL){ qc.textContent=n+' / '+TOTAL; pg.style.width=(12+(n-1)/TOTAL*88)+'%'; }
+    if(n===0){ qc.textContent='1 / '+TOTAL; pg.style.width='12%'; }
+    if(n===8){ qc.textContent='Analyse'; pg.style.width='100%'; }
+    window.scrollTo(0,0);
+  }
+  function addNav(step,multi){
+    if(step.querySelector('.qnav')) return;
+    var nav=document.createElement('div'); nav.className='qnav';
+    var b=document.createElement('button'); b.className='prev'; b.textContent='← Retour'; b.dataset.act='back';
+    var n=document.createElement('button'); n.className='next'; n.textContent=multi?'Continuer →':'Continuer →'; n.dataset.act='fwd'; n.disabled=true;
+    nav.appendChild(b); nav.appendChild(n); step.appendChild(nav);
+  }
+  steps.forEach(function(s){ if(s.dataset.key) addNav(s, s.dataset.multi); });
+
+  stage.addEventListener('click', function(e){
+    var opt=e.target.closest('.opt');
+    if(opt){
+      var step=opt.closest('.step'), multi=step.dataset.multi, key=step.dataset.key;
+      if(multi){
+        opt.classList.toggle('sel');
+        var sel=[].slice.call(step.querySelectorAll('.opt.sel')).map(function(o){return o.dataset.v;});
+        ans[key]=sel;
+        step.querySelector('.next').disabled = sel.length===0;
+      }else{
+        [].slice.call(step.querySelectorAll('.opt')).forEach(function(o){o.classList.remove('sel');});
+        opt.classList.add('sel'); ans[key]=opt.dataset.v;
+        var old=step.querySelector('.insight'); if(old) old.remove();
+        if(opt.dataset.i){
+          var d=document.createElement('div'); d.className='insight';
+          d.innerHTML='<div class="il">'+(opt.dataset.stop?'Ce que j\'en pense':'Ce que ça dit')+'</div><p>'+opt.dataset.i+'</p>';
+          step.insertBefore(d, step.querySelector('.qnav'));
+        }
+        stopped = opt.dataset.stop || null;
+        step.querySelector('.next').disabled=false;
+      }
+      return;
+    }
+    var btn=e.target.closest('button[data-act]'); if(!btn) return;
+    var act=btn.dataset.act;
+    if(act==='start'){ show(1); return; }
+    if(act==='back'){ stopped=null; show(Math.max(0,(cur===9?TOTAL:cur)-1)); return; }
+    if(act==='fwd'){
+      if(stopped){ doStop(stopped); return; }
+      if(cur<TOTAL){ show(cur+1); } else { runAnalysis(); }
+    }
+  });
+
+  function doStop(kind){
+    var t=document.getElementById('stoptitle'), x=document.getElementById('stoptext');
+    if(kind==='loc'){
+      t.textContent='Le débrief n\'est pas fait pour toi.';
+      x.textContent="En location, le kart change à chaque session : châssis, moteur, pneus, pression. Je passerais mon temps à commenter du matériel au lieu de commenter ton pilotage, et tu paierais 30 € pour ça. Le guide, lui, fonctionne quel que soit le kart : il t'apprend à lire ce que la machine te dit.";
+    }else{
+      t.textContent='Il me faut des images.';
+      x.textContent="Sans onboard, il n'y a rien à débriefer. Une caméra d'occasion à 80 € suffit largement : tu la fixes sur le radiateur ou sur le ponton, tournée vers toi, de façon à ce qu'on voie tes mains et la piste. Évite le baudrier, on n'y voit que le bitume. Filme une session, reviens, et on regarde ça ensemble. En attendant, le guide te donne déjà de quoi travailler.";
+    }
+    show(9);
+  }
+
+  function runAnalysis(){
+    show(8);
+    var ids=['l1','l2','l3','l4'], i=0;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var gap = reduce?60:520;
+    (function tick(){
+      if(i<ids.length){ document.getElementById(ids[i]).classList.add('done'); i++; setTimeout(tick,gap); }
+      else{ setTimeout(reveal, reduce?60:420); }
+    })();
+  }
+
+  function reveal(){
+    var t=buildDiag();
+    document.getElementById('dTitle').innerHTML=t.title;
+    document.getElementById('dA').textContent=t.a;
+    document.getElementById('dB').textContent=t.b;
+    document.getElementById('dC').textContent=t.c;
+    var ref=buildRef();
+    [].slice.call(document.querySelectorAll('a.cta')).forEach(function(a){ a.href=BASE+'?client_reference_id='+ref; });
+    document.getElementById('quiz').style.display='none';
+    document.getElementById('diag').classList.add('on');
+    document.body.classList.add('diag');
+    window.scrollTo(0,0);
+    var s=document.getElementById('sticky'), f=document.getElementById('final');
+    function upd(){ var fb=f.getBoundingClientRect().top; s.classList.toggle('on', window.scrollY>420 && fb>window.innerHeight*0.8); }
+    window.addEventListener('scroll',upd,{passive:true}); window.addEventListener('resize',upd,{passive:true}); upd();
+  }
+
+  function buildRef(){
+    var p=['kart-'+(ans.kart||'na'),'stag-'+(ans.stag||'na'),'why-'+(ans.why||'na'),'zone-'+(ans.zone||'na'),'rage-'+(ans.rage||'na'),'vid-'+(ans.video||'na')];
+    if(ans.essai && ans.essai.length) p.push('try-'+ans.essai.join('_'));
+    return p.join('-').replace(/[^A-Za-z0-9_-]/g,'').slice(0,200);
+  }
+
+  function buildDiag(){
+    var titles={
+      potes:'Le pilote qui<br><span class="r">en a marre de regarder</span><br>les chronos des autres.',
+      argent:'Le pilote qui<br><span class="r">a tout acheté</span><br>sauf l\'explication.',
+      flou:'Le pilote qui<br><span class="r">roule à l\'aveugle</span><br>depuis trop longtemps.'
+    };
+    var stagTxt={semaines:'depuis quelques semaines',mois:'depuis quelques mois',['1an']:'depuis environ un an',['2ans']:'depuis deux ans ou plus'};
+    var zoneA={frein:'le freinage',traj:'l\'entrée de virage',gaz:'la remise de gaz',nsp:'un endroit que tu n\'arrives pas encore à nommer'};
+    var whyB={
+      oui:'Tu sais déjà lire une partie de ton pilotage. Ce qui te reste à gagner ne se sent plus au volant, il se voit à l\'image, au ralenti.',
+      vague:'Tu refais ton bon tour une fois sur cinq, au feeling. Ce n\'est pas ton niveau qui plafonne, c\'est ta régularité. Et la régularité, ça se construit avec des repères précis, pas avec des sensations.',
+      non:'Tant que tu ne sais pas pourquoi ton meilleur tour était bon, tu ne le reproduis pas : tu attends qu\'il revienne. C\'est exactement ce qui donne l\'impression de stagner alors que tu roules bien par moments.'
+    };
+    var zoneC={
+      frein:'Ton point de freinage et surtout ton relâché. Chez l\'amateur, le temps ne se perd presque jamais dans la force appliquée, il se perd dans la manière de relâcher et dans ce que le kart fait juste après.',
+      traj:'Ce qui se passe avant ton point de corde. Une trajectoire fausse est presque toujours la conséquence d\'une entrée mal préparée, pas d\'une erreur de visée.',
+      gaz:'Le moment exact où tu remets les gaz et ce que fait l\'arrière à cet instant. Un dixième perdu en sortie se paie sur toute la ligne droite suivante.',
+      nsp:'Le tour complet, pour te donner d\'abord le vocabulaire. On ne peut pas corriger ce qu\'on ne sait pas nommer, donc je commence par mettre des mots sur ce que ton kart fait.'
+    };
+    var tries={matos:'le matériel',volume:'plus de roulage',paddock:'les conseils du paddock',onboard:'regarder tes onboards'};
+    var tl=(ans.essai||[]).map(function(k){return tries[k];}).filter(Boolean);
+    var tTxt = tl.length ? ('Ce que tu as déjà tenté : '+tl.join(', ')+'. '+(tl.length>1?'Rien de tout ça n\'a suffi.':'Ça n\'a pas suffi.')+' ') : '';
+    var a = 'Tu roules '+(ans.kart==='loc'?'en location':'sur ton propre kart')+', et tes chronos ne bougent plus '+(stagTxt[ans.stag]||'')+'. Tu situes la perte de temps '+(ans.zone==='nsp'?'sans réussir à la nommer':'sur '+zoneA[ans.zone])+'. '+tTxt;
+    var b = whyB[ans.why]||whyB.non;
+    if((ans.essai||[]).indexOf('onboard')>-1){ b += ' Et si regarder des onboards ne t\'a rien donné, ce n\'est pas un manque d\'œil : personne ne t\'a appris quoi y chercher.'; }
+    else if((ans.essai||[]).indexOf('matos')>-1){ b += ' Le matériel, lui, ne corrigera jamais un geste. Il rend juste l\'erreur plus rapide.'; }
+    return {title:titles[ans.rage]||titles.flou, a:a, b:b, c:zoneC[ans.zone]||zoneC.nsp};
+  }
+
+  show(0);
+})();
+</script>
+</body>
+</html>

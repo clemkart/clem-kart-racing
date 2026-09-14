@@ -1,2 +1,5 @@
-# Documents business privés — ne jamais committer (repo potentiellement public)
+# Documents business privés : ne jamais committer (repo public)
 _business/
+
+# PDF payant du guide : ce dépôt est public, le fichier ne vit que dans le dossier déposé sur Netlify
+site-catalogue/*.pdf
