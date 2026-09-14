@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Clem Kart Racing | Comprends pourquoi tu vas vite</title>
-<meta name="description" content="Guide de pilotage karting et débrief vidéo personnalisé par Clément Daniel, Champion Régional 2023. Pour le pilote amateur qui stagne et veut comprendre où sont ses dixièmes."/>
+<title>Clem Kart Racing | Guide de pilotage et débrief onboard karting</title>
+<meta name="description" content="Les rapides n'ont pas un truc en plus&nbsp;: ils savent où sont leurs dixièmes. Guide de pilotage karting et débrief de ton onboard, par Clément Daniel, Champion Régional 2023."/>
 <link rel="canonical" href="https://comprendre-comment-rouler-plus-vite-2.netlify.app/">
+<meta name="theme-color" content="#070707">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070707'/%3E%3Cpath d='M12 48 28 16h8L20 48z' fill='%23D9171D'/%3E%3Cpath d='M30 48 46 16h8L38 48z' fill='%23F2EDE8'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Clem Kart Racing | Comprends pourquoi tu vas vite">
-<meta property="og:description" content="Guide de pilotage et débrief vidéo personnalisé pour pilotes de karting amateurs.">
+<meta property="og:title" content="Les rapides n'ont pas un truc en plus.">
+<meta property="og:description" content="Ils savent où sont leurs dixièmes. Guide de pilotage et débrief onboard, par Clément Daniel, Champion Régional 2023.">
 <meta property="og:image" content="https://comprendre-comment-rouler-plus-vite-2.netlify.app/partage.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +20,7 @@
 :root{
   --red:#D9171D;--red-dark:#A51115;--red-glow:rgba(217,23,29,0.28);
   --black:#070707;--b2:#0F0F0F;--b3:#161616;
-  --w:rgb(242,237,232);--wd:rgba(242,237,232,0.62);--wf:rgba(242,237,232,0.08);--wf2:rgba(242,237,232,0.04);
+  --w:rgb(242,237,232);--wd:rgba(242,237,232,0.62);--wq:rgba(242,237,232,0.42);--wf:rgba(242,237,232,0.08);
   --gold:#C9A84C;
   --fd:'Bebas Neue','Arial Narrow',Impact,sans-serif;--fc:'Barlow Condensed','Arial Narrow',sans-serif;--fb:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
   --pad:20px;
@@ -40,32 +42,48 @@ strong{color:var(--w);font-weight:600;}
 .r{color:var(--red);}
 
 .top{position:sticky;top:0;z-index:60;background:rgba(7,7,7,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--wf);}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;padding-block:13px;}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-block:13px;}
 .logo{font-family:var(--fd);font-size:1.18rem;letter-spacing:.05em;color:var(--w);text-decoration:none;white-space:nowrap;}
 .logo span{color:var(--red);}
-.tlink{font-family:var(--fc);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wd);text-decoration:none;white-space:nowrap;}
-.tlink:hover{color:var(--w);}
+.tcta{font-family:var(--fc);font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);text-decoration:none;white-space:nowrap;}
+.tcta:hover{color:var(--w);}
 
-#hero{position:relative;padding-top:52px;padding-bottom:56px;overflow:hidden;}
+.btp{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;font-family:var(--fc);font-size:.98rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-align:center;background:var(--red);color:var(--w);padding:15px 22px;text-decoration:none;transition:background .2s,box-shadow .3s;}
+.btp:hover{background:var(--red-dark);box-shadow:0 0 26px var(--red-glow);}
+.btp:focus-visible,.hsec:focus-visible,.tcta:focus-visible,.logo:focus-visible{outline:2px solid var(--w);outline-offset:3px;}
+.note{font-family:var(--fc);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);text-align:center;margin-top:10px;}
+
+#hero{position:relative;padding-top:48px;padding-bottom:52px;overflow:hidden;}
 .hbg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 75% 55% at 60% 30%,rgba(217,23,29,.12) 0%,transparent 66%),var(--black);}
 .hgrid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(242,237,232,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(242,237,232,.022) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,black 0%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,black 0%,transparent 100%);}
 #hero .wrap{position:relative;z-index:2;}
-.hsub{font-size:1.08rem;margin-top:20px;max-width:36em;}
-.trust{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:24px;font-family:var(--fc);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);}
+.hsub{font-size:1.08rem;margin-top:20px;max-width:34em;}
+.hact{margin-top:28px;max-width:420px;}
+.hsec{display:block;margin-top:16px;font-family:var(--fc);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wd);text-decoration:none;text-align:center;}
+.hsec:hover{color:var(--w);}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:32px;font-family:var(--fc);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);}
 .trust span{display:flex;align-items:center;gap:7px;}
 .trust span::before{content:'';width:5px;height:5px;background:var(--red);border-radius:50%;flex:none;}
 
 .prods{display:grid;gap:18px;}
 .prod{background:var(--b2);border:1px solid var(--wf);padding:26px 22px;display:flex;flex-direction:column;}
 .prod .tagline{font-family:var(--fc);font-size:.74rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.prod .sp{flex:1;}
+.proof{display:flex;align-items:center;gap:9px;margin-top:16px;font-family:var(--fc);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--wd);}
+.proof::before{content:'\2605';color:var(--gold);flex:none;}
+.proof--free::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);}
+.proof strong{font-weight:700;}
 .prod .meta{font-family:var(--fc);font-size:.8rem;letter-spacing:.13em;text-transform:uppercase;color:var(--wd);margin-top:16px;padding-top:16px;border-top:1px solid var(--wf);}
 .prod .price{font-family:var(--fd);font-size:2.3rem;line-height:1;color:var(--w);margin-top:14px;}
 .prod .price small{font-family:var(--fc);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wd);display:block;margin-top:5px;font-weight:400;}
-.prod .sp{flex:1;}
-.btp{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;font-family:var(--fc);font-size:.98rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;background:var(--red);color:var(--w);padding:15px 26px;text-decoration:none;margin-top:20px;transition:background .2s,box-shadow .3s;}
-.btp:hover{background:var(--red-dark);box-shadow:0 0 26px var(--red-glow);}
-.bts{background:transparent;border:1px solid rgba(242,237,232,.24);color:var(--w);}
-.bts:hover{background:var(--wf);box-shadow:none;}
+.prod .btp{margin-top:20px;}
+
+#avis{padding-top:0;}
+.quotes{display:grid;gap:14px;}
+.quote{background:var(--b2);border:1px solid var(--wf);border-left:2px solid var(--gold);padding:20px 20px 18px;}
+.quote p{color:var(--w);font-size:1.02rem;}
+.quote figcaption{margin-top:12px;font-family:var(--fc);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wd);}
+.qnote{margin-top:14px;font-size:.88rem;font-style:italic;color:var(--wq);}
 
 #who{background:var(--b2);border-block:1px solid var(--wf);}
 .auth{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;}
@@ -74,6 +92,11 @@ strong{color:var(--w);font-weight:600;}
 .stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
 .stat{background:var(--b3);border:1px solid var(--wf);padding:9px 14px;font-family:var(--fc);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--w);}
 
+#go{position:relative;overflow:hidden;text-align:center;}
+#go .wrap{position:relative;z-index:2;max-width:640px;}
+#go p{max-width:30em;margin-inline:auto;}
+#go .cta{max-width:420px;margin:28px auto 0;}
+
 footer{border-top:1px solid var(--wf);padding-block:34px;text-align:center;}
 footer p{font-family:var(--fc);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,237,232,.38);}
 footer a{color:var(--wd);text-decoration:none;}
@@ -81,31 +104,38 @@ footer a{color:var(--wd);text-decoration:none;}
 @media(min-width:720px){
   :root{--pad:32px;}
   section{padding-block:84px;}
-  .prods{grid-template-columns:1fr 1fr;}
-  .btp{margin-top:auto;}
+  #avis{padding-top:0;}
+  .prods,.quotes{grid-template-columns:1fr 1fr;}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}html{scroll-behavior:auto;}}
 </style>
 </head>
 <body>
 
-<div class="top">
+<header class="top">
   <div class="wrap">
     <a class="logo" href="/">CLEM <span>KART</span> RACING</a>
-    <a class="tlink" href="#produits">Produits</a>
+    <a class="tcta" href="/onboard/">Diagnostic gratuit</a>
   </div>
-</div>
+</header>
+
+<main>
 
 <section id="hero">
   <div class="hbg"></div><div class="hgrid"></div>
   <div class="wrap">
-    <div class="kick">Pilotage karting · Amateurs</div>
-    <h1>Comprends<br>pourquoi<br><span class="r">tu vas vite.</span></h1>
-    <p class="hsub">Tu sais faire un bon tour. Le vrai problème, c'est que tu ne sais pas encore <strong>pourquoi</strong> il était bon. Et sans ça, tu ne peux pas le reproduire.</p>
+    <div class="kick">Pilotage karting · Pilotes amateurs</div>
+    <h1>Les rapides<br>n'ont pas<br><span class="r">un truc en plus.</span></h1>
+    <p class="hsub">Ils font les mêmes erreurs que toi. Eux savent lesquelles. Ici, tu apprends à trouver où sont <strong>tes</strong> dixièmes.</p>
+    <div class="hact">
+      <a class="btp" href="/onboard/">Faire le diagnostic gratuit&nbsp;→</a>
+      <p class="note">7&nbsp;questions · 2&nbsp;minutes · Sans email</p>
+      <a class="hsec" href="#produits">Voir le guide et le débrief&nbsp;↓</a>
+    </div>
     <div class="trust">
       <span>Champion Régional 2023</span>
-      <span>8 ans de compétition</span>
-      <span>Tout appris seul</span>
+      <span>8&nbsp;ans de compétition</span>
+      <span>Plus de 350&nbsp;000 vues sur mes vidéos</span>
     </div>
   </div>
 </section>
@@ -113,44 +143,64 @@ footer a{color:var(--wd);text-decoration:none;}
 <section id="produits">
   <div class="wrap">
     <div class="kick">Ce que je propose</div>
-    <h2>Deux façons d'arrêter<br>de subir ton pilotage</h2>
+    <h2>Deux façons d'arrêter<br>de rouler sans comprendre</h2>
     <div class="prods">
 
-      <div class="prod">
-        <div class="tagline">Pour comprendre</div>
+      <article class="prod">
+        <div class="tagline">À ton rythme</div>
         <h3>Comprendre comment rouler plus vite</h3>
-        <p>Le guide complet : comment tu construis un bon tour, pourquoi il est bon, et comment le reproduire dix fois de suite au lieu d'une. Des années d'essais et d'erreurs condensées en principes clairs, lisibles ce soir et applicables demain matin.</p>
+        <p>Pourquoi ton meilleur tour était bon, et comment le refaire à volonté au lieu d'attendre qu'il revienne. La méthode complète, dans l'ordre. Tu la lis ce soir, tu l'appliques à ta prochaine sortie.</p>
+        <div class="proof"><span><strong>Plus de 70&nbsp;pilotes</strong> l'ont déjà</span></div>
         <div class="sp"></div>
-        <div class="meta">PDF · 59 pages · 13 chapitres · Accès immédiat · Garantie 7 jours</div>
-        <div class="price">16,99 €<small>Paiement unique</small></div>
-        <a class="btp" href="https://clemkartracing.gumroad.com/l/umjfwx">Obtenir le guide →</a>
-      </div>
+        <div class="meta">Guide PDF · Accès immédiat · Garantie 7&nbsp;jours</div>
+        <div class="price">16,99&nbsp;€<small>Paiement unique</small></div>
+        <a class="btp" href="https://clemkartracing.gumroad.com/l/umjfwx">Obtenir le guide&nbsp;→</a>
+      </article>
 
-      <div class="prod">
-        <div class="tagline">Pour corriger</div>
+      <article class="prod">
+        <div class="tagline">Sur tes images</div>
         <h3>Débrief onboard personnalisé</h3>
-        <p>Commence par le diagnostic : sept questions, et tu sais déjà où part probablement ton temps. Ensuite tu m'envoies ton onboard, je le regarde tour par tour, et tu reçois une vidéo commentée sur tes images, tes trois priorités et un objectif pour ta prochaine sortie.</p>
+        <p>Tu m'envoies ton onboard. Je le regarde tour par tour et je te montre, en vidéo, où sont tes dixièmes. Tu repars avec tes trois priorités et un seul objectif pour ta prochaine sortie. Ta vidéo reste entre toi et moi.</p>
+        <div class="proof proof--free"><span><strong>Diagnostic gratuit</strong> avant de payer</span></div>
         <div class="sp"></div>
-        <div class="meta">Diagnostic gratuit · Livré sous 72 h · Vidéo privée</div>
-        <div class="price">30 €<small>Par débrief</small></div>
-        <a class="btp" href="/onboard/">Faire le diagnostic →</a>
-      </div>
+        <div class="meta">Livré sous 72&nbsp;h · Vidéo privée · Garantie 7&nbsp;jours</div>
+        <div class="price">30&nbsp;€<small>Par débrief</small></div>
+        <a class="btp" href="/onboard/">Faire le diagnostic gratuit&nbsp;→</a>
+      </article>
 
     </div>
+  </div>
+</section>
+
+<section id="avis">
+  <div class="wrap">
+    <div class="kick">Ils ont lu le guide</div>
+    <h2>Ce qu'ils en disent</h2>
+    <div class="quotes">
+      <figure class="quote">
+        <p>«&nbsp;J'ai appris beaucoup et comme je suis visuel, ça fonctionne très bien. Je me suis vraiment amélioré en compétition, un podium le week-end dernier. Merci de tes conseils.&nbsp;»</p>
+        <figcaption>Pilote en compétition</figcaption>
+      </figure>
+      <figure class="quote">
+        <p>«&nbsp;Vraiment neuf, ça fait du bien à lire. Les concepts sont bien expliqués et c'est applicable rapidement.&nbsp;»</p>
+        <figcaption>Lecteur du guide</figcaption>
+      </figure>
+    </div>
+    <p class="qnote">Messages reçus de lecteurs, reproduits tels quels.</p>
   </div>
 </section>
 
 <section id="who">
   <div class="wrap">
     <div class="kick">Qui je suis</div>
-    <h2>Champion. Pilote.<br>Pas un théoricien.</h2>
+    <h2>Champion Régional. Pilote.<br>Pas un théoricien.</h2>
     <div class="auth">
-      <img src="/clement.jpg" alt="Clément Daniel au paddock, casque et trophée en main" loading="lazy" width="560" height="560">
+      <img src="/clement.jpg" alt="Clément Daniel au paddock, casque à la main" loading="lazy" width="560" height="560">
       <div class="at">
-        <p>Je n'ai pas eu de mécano, pas de coach, pas de team pour m'expliquer quoi que ce soit. J'ai tout appris seul : essais, erreurs, recherche, et beaucoup de sessions passées à ne pas comprendre pourquoi le tour précédent était meilleur.</p>
-        <p>Il n'existe quasiment rien de structuré sur le pilotage karting en français. Les bonnes références sont anglophones, et le reste, ce sont les conseils du paddock. <strong>C'est ce trou-là que je remplis.</strong></p>
+        <p>Pas de mécano, pas de coach, pas de team pour m'expliquer quoi que ce soit. J'ai tout appris seul&nbsp;: des essais, des erreurs, et beaucoup de sessions à ne pas comprendre pourquoi le tour d'avant était meilleur.</p>
+        <p>Il n'existe presque rien de structuré en français sur le pilotage en karting. Les bonnes références sont en anglais, et le reste, ce sont les conseils du paddock. <strong>C'est ce trou-là que je remplis.</strong></p>
         <div class="stats">
-          <div class="stat">8 ans de compétition</div>
+          <div class="stat">8&nbsp;ans de compétition</div>
           <div class="stat">Champion Régional 2023</div>
           <div class="stat">Une dizaine de victoires et podiums</div>
         </div>
@@ -158,6 +208,20 @@ footer a{color:var(--wd);text-decoration:none;}
     </div>
   </div>
 </section>
+
+<section id="go">
+  <div class="hbg"></div>
+  <div class="wrap">
+    <div class="kick">Par où commencer</div>
+    <h2>Pas sûr de ce<br>qu'il te faut&nbsp;?</h2>
+    <p>Fais le diagnostic. Sept questions, deux minutes, sans email. À la fin, tu sais par où commencer à chercher tes dixièmes. Et si le débrief n'est pas fait pour toi, je te le dis.</p>
+    <div class="cta">
+      <a class="btp" href="/onboard/">Faire le diagnostic gratuit&nbsp;→</a>
+    </div>
+  </div>
+</section>
+
+</main>
 
 <footer>
   <div class="wrap">
