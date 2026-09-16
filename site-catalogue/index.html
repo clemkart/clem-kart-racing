@@ -115,7 +115,7 @@ footer a{color:var(--wd);text-decoration:none;}
 <header class="top">
   <div class="wrap">
     <a class="logo" href="/">CLEM <span>KART</span> RACING</a>
-    <a class="tcta" href="/onboard/">Diagnostic gratuit</a>
+    <a class="tcta" href="/onboard/" data-cta="top">Diagnostic gratuit</a>
   </div>
 </header>
 
@@ -128,7 +128,7 @@ footer a{color:var(--wd);text-decoration:none;}
     <h1>Les rapides<br>n'ont pas<br><span class="r">un truc en plus.</span></h1>
     <p class="hsub">Ils font les mêmes erreurs que toi. Eux savent lesquelles. Ici, tu apprends à trouver où sont <strong>tes</strong> dixièmes.</p>
     <div class="hact">
-      <a class="btp" href="/onboard/">Faire le diagnostic gratuit&nbsp;→</a>
+      <a class="btp" href="/onboard/" data-cta="hero">Faire le diagnostic gratuit&nbsp;→</a>
       <p class="note">7&nbsp;questions · 2&nbsp;minutes · Sans email</p>
       <a class="hsec" href="#produits">Voir le guide et le débrief&nbsp;↓</a>
     </div>
@@ -154,7 +154,7 @@ footer a{color:var(--wd);text-decoration:none;}
         <div class="sp"></div>
         <div class="meta">Guide PDF · Accès immédiat · Garantie 7&nbsp;jours</div>
         <div class="price">16,99&nbsp;€<small>Paiement unique</small></div>
-        <a class="btp" href="https://clemkartracing.gumroad.com/l/umjfwx">Obtenir le guide&nbsp;→</a>
+        <a class="btp" href="https://clemkartracing.gumroad.com/l/umjfwx" data-cta="carte-guide">Obtenir le guide&nbsp;→</a>
       </article>
 
       <article class="prod">
@@ -165,7 +165,7 @@ footer a{color:var(--wd);text-decoration:none;}
         <div class="sp"></div>
         <div class="meta">Livré sous 72&nbsp;h · Vidéo privée · Garantie 7&nbsp;jours</div>
         <div class="price">29,99&nbsp;€<small>Par débrief</small></div>
-        <a class="btp" href="/onboard/">Faire le diagnostic gratuit&nbsp;→</a>
+        <a class="btp" href="/onboard/" data-cta="carte">Faire le diagnostic gratuit&nbsp;→</a>
       </article>
 
     </div>
@@ -216,7 +216,7 @@ footer a{color:var(--wd);text-decoration:none;}
     <h2>Pas sûr de ce<br>qu'il te faut&nbsp;?</h2>
     <p>Fais le diagnostic. Sept questions, deux minutes, sans email. À la fin, tu sais par où commencer à chercher tes dixièmes. Et si le débrief n'est pas fait pour toi, je te le dis.</p>
     <div class="cta">
-      <a class="btp" href="/onboard/">Faire le diagnostic gratuit&nbsp;→</a>
+      <a class="btp" href="/onboard/" data-cta="final">Faire le diagnostic gratuit&nbsp;→</a>
     </div>
   </div>
 </section>
@@ -229,6 +229,39 @@ footer a{color:var(--wd);text-decoration:none;}
     <a href="mailto:clemkartracing@gmail.com">clemkartracing@gmail.com</a></p>
   </div>
 </footer>
+
+<script>
+/* Mesure d'audience maison : anonyme, sans cookie, sans donnee personnelle.
+   Les evenements partent vers la fonction du site 1, qui les range dans le meme tableau de bord. */
+(function(){
+  var FN='https://comprendre-comment-rouler-plus-vite.netlify.app/.netlify/functions/track-site';
+  var sid=null, utm={};
+  try{
+    sid=sessionStorage.getItem('ckr_sid');
+    if(!sid){ sid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2); sessionStorage.setItem('ckr_sid',sid); }
+    var q=new URLSearchParams(location.search);
+    if(q.get('utm_source')){ utm={utm_source:q.get('utm_source'),utm_medium:q.get('utm_medium'),utm_campaign:q.get('utm_campaign')}; sessionStorage.setItem('ckr_utm',JSON.stringify(utm)); }
+    else{ utm=JSON.parse(sessionStorage.getItem('ckr_utm')||'{}'); }
+  }catch(e){}
+  function track(type,meta){
+    try{
+      var body=JSON.stringify({type:type,site:location.hostname,path:location.pathname,referrer:document.referrer||'',utm_source:utm.utm_source||null,utm_medium:utm.utm_medium||null,utm_campaign:utm.utm_campaign||null,session_id:sid,meta:meta||null});
+      /* text/plain : pas de requete preliminaire CORS, et l'envoi part meme pendant un changement de page */
+      if(navigator.sendBeacon && navigator.sendBeacon(FN,new Blob([body],{type:'text/plain;charset=UTF-8'}))) return;
+      fetch(FN,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=UTF-8'},body:body});
+    }catch(e){}
+  }
+  window.ckrTrack=track;
+  window.ckrSid=function(){ return sid; };
+  track('pageview');
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[data-cta]'); if(!a) return;
+    var href=a.getAttribute('href')||'';
+    if(href.indexOf('gumroad.com')>-1) track('gumroad_click',{cta:a.getAttribute('data-cta')});
+    else if(href.indexOf('/onboard/')>-1) track('diag_click',{cta:a.getAttribute('data-cta')});
+  });
+})();
+</script>
 
 </body>
 </html>

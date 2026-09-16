@@ -274,7 +274,7 @@ body.diag{padding-bottom:80px;}
         <div class="kick">Je préfère être honnête</div>
         <div class="qtxt" id="stoptitle"></div>
         <p class="qhint" id="stoptext" style="margin-top:14px;"></p>
-        <div class="btw"><a class="btp" href="https://clemkartracing.gumroad.com/l/umjfwx">Voir le guide · 16,99&nbsp;€&nbsp;→</a>
+        <div class="btw"><a class="btp" id="guideSortie" href="https://clemkartracing.gumroad.com/l/umjfwx">Voir le guide · 16,99&nbsp;€&nbsp;→</a>
           <div class="btnote">Plus de 70&nbsp;pilotes l'ont déjà · Garantie 7&nbsp;jours</div></div>
         <div class="qnav"><button type="button" class="prev" data-act="back">←&nbsp;Revenir en arrière</button><span></span></div>
       </div>
@@ -297,7 +297,7 @@ body.diag{padding-bottom:80px;}
         <div class="dcard"><div class="dl">Ce que je regarderais en premier</div><p id="dC"></p></div>
       </div>
       <p class="honest">Ce diagnostic vient de tes sept réponses, rien de plus. Il pointe la bonne direction, il ne remplace pas tes images. Le travail réel commence quand je vois ton kart tourner.</p>
-      <div class="btw"><a class="btp cta" id="ctaDiag" href="#">Faire vérifier sur mes images&nbsp;→</a>
+      <div class="btw"><a class="btp cta" id="ctaDiag" data-cta="diag" href="#">Faire vérifier sur mes images&nbsp;→</a>
         <div class="btnote">Débrief complet · Livré sous 72&nbsp;h · Vidéo privée</div></div>
     </div>
   </div>
@@ -373,7 +373,7 @@ body.diag{padding-bottom:80px;}
           <p>Ajoute le guide <strong>Comprendre comment rouler plus vite</strong> à <strong>9,99&nbsp;€ au lieu de 16,99&nbsp;€</strong>. Il te sert à travailler, entre deux sorties, ce que le débrief va te montrer.</p>
         </div>
         <div class="guar"><div class="ic">✦</div><div><h3 style="margin-bottom:4px;">Satisfait ou remboursé, sans condition</h3><p>Tu as sept jours après réception de ton débrief. Tu m'écris, je te rembourse. Pas de justification, pas de discussion.</p></div></div>
-        <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 29,99&nbsp;€&nbsp;→</a><div class="btnote">Paiement sécurisé par Stripe</div></div>
+        <div class="btw"><a class="btp cta" data-cta="prix" href="#">Envoyer ma vidéo · 29,99&nbsp;€&nbsp;→</a><div class="btnote">Paiement sécurisé par Stripe</div></div>
       </div>
     </div>
   </section>
@@ -397,7 +397,7 @@ body.diag{padding-bottom:80px;}
     <div class="wrap" style="position:relative;z-index:2;">
       <h2>Tu peux faire dix sessions<br>de plus en espérant<br>que ça vienne.</h2>
       <p style="max-width:29em;margin:0 auto;">Ou tu envoies une vidéo que tu as déjà, et dans trois jours, tu sais où sont tes dixièmes.</p>
-      <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 29,99&nbsp;€&nbsp;→</a><div class="btnote" style="text-align:center;">Livré sous 72&nbsp;h · Garantie 7&nbsp;jours · Vidéo privée</div></div>
+      <div class="btw"><a class="btp cta" data-cta="final" href="#">Envoyer ma vidéo · 29,99&nbsp;€&nbsp;→</a><div class="btnote" style="text-align:center;">Livré sous 72&nbsp;h · Garantie 7&nbsp;jours · Vidéo privée</div></div>
     </div>
   </section>
 
@@ -409,16 +409,45 @@ body.diag{padding-bottom:80px;}
 <div class="sticky" id="sticky">
   <div class="in">
     <div class="st"><div class="s1">Débrief onboard</div><div class="s2">Sous 72&nbsp;h · Vidéo privée</div></div>
-    <a class="btp cta" href="#">Envoyer ma vidéo&nbsp;→</a>
+    <a class="btp cta" data-cta="barre" href="#">Envoyer ma vidéo&nbsp;→</a>
   </div>
 </div>
 
 <script>
+/* Mesure d'audience maison : anonyme, sans cookie, sans donnee personnelle.
+   Les evenements partent vers la fonction du site 1, qui les range dans le meme tableau de bord. */
+(function(){
+  var FN='https://comprendre-comment-rouler-plus-vite.netlify.app/.netlify/functions/track-site';
+  var sid=null, utm={};
+  try{
+    sid=sessionStorage.getItem('ckr_sid');
+    if(!sid){ sid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2); sessionStorage.setItem('ckr_sid',sid); }
+    var q=new URLSearchParams(location.search);
+    if(q.get('utm_source')){ utm={utm_source:q.get('utm_source'),utm_medium:q.get('utm_medium'),utm_campaign:q.get('utm_campaign')}; sessionStorage.setItem('ckr_utm',JSON.stringify(utm)); }
+    else{ utm=JSON.parse(sessionStorage.getItem('ckr_utm')||'{}'); }
+  }catch(e){}
+  function track(type,meta){
+    try{
+      var body=JSON.stringify({type:type,site:location.hostname,path:location.pathname,referrer:document.referrer||'',utm_source:utm.utm_source||null,utm_medium:utm.utm_medium||null,utm_campaign:utm.utm_campaign||null,session_id:sid,meta:meta||null});
+      /* text/plain : pas de requete preliminaire CORS, et l'envoi part meme pendant un changement de page */
+      if(navigator.sendBeacon && navigator.sendBeacon(FN,new Blob([body],{type:'text/plain;charset=UTF-8'}))) return;
+      fetch(FN,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=UTF-8'},body:body});
+    }catch(e){}
+  }
+  window.ckrTrack=track;
+  window.ckrSid=function(){ return sid; };
+  track('pageview');
+})();
+</script>
+
+<script>
 (function(){
   var BASE='https://buy.stripe.com/aFa14mdsT6gnaMs6J504802';
-  var TOTAL=7, cur=0, ans={}, stopped=null, stopAt=0;
+  var TOTAL=7, cur=0, ans={}, stopped=null, stopAt=0, lastStop=null;
   var stage=document.getElementById('stage'), pg=document.getElementById('pg'), qc=document.getElementById('qc');
   var steps=[].slice.call(stage.querySelectorAll('.step'));
+  // Suivi anonyme : sans effet si le script de mesure n'a pas pu se charger.
+  function suivre(type, meta){ if(window.ckrTrack) window.ckrTrack(type, meta); }
 
   function show(n){
     steps.forEach(function(s){s.classList.toggle('on', +s.dataset.step===n);});
@@ -475,13 +504,15 @@ body.diag{padding-bottom:80px;}
     }
     var btn=e.target.closest('button[data-act]'); if(!btn) return;
     var act=btn.dataset.act;
-    if(act==='start'){ show(1); return; }
+    if(act==='start'){ suivre('diag_start'); show(1); return; }
     if(act==='back'){
       // Depuis une sortie honnete, on revient a la question qui l'a declenchee, reponse conservee
       if(cur===9){ show(stopAt); return; }
       stopped=null; show(Math.max(0,cur-1)); return;
     }
     if(act==='fwd'){
+      var cle=steps[cur] && steps[cur].dataset.key;
+      if(cle){ var rep=ans[cle]; suivre('diag_step',{step:cur,key:cle,value:Array.isArray(rep)?rep.join('_'):rep}); }
       if(stopped){ doStop(stopped); return; }
       if(cur<TOTAL){ show(cur+1); } else { runAnalysis(); }
     }
@@ -497,6 +528,8 @@ body.diag{padding-bottom:80px;}
       x.textContent='Sans onboard, il n\'y a rien à débriefer. Une caméra d\'occasion à 80\u00a0€ suffit largement. Fixe-la sur le radiateur ou le ponton, tournée vers toi, pour qu\'on voie tes mains et la piste. Évite le baudrier\u00a0: on n\'y voit que le bitume. Filme une session et reviens. En attendant, le guide te donne déjà de quoi travailler.';
     }
     stopAt=cur;
+    lastStop=kind;
+    suivre('diag_exit',{kind:kind,step:cur});
     show(9);
   }
 
@@ -518,6 +551,7 @@ body.diag{padding-bottom:80px;}
     document.getElementById('dB').textContent=t.b;
     document.getElementById('dC').textContent=t.c;
     var ref=buildRef();
+    suivre('diag_result',{kart:ans.kart||null,stag:ans.stag||null,why:ans.why||null,zone:ans.zone||null,essai:(ans.essai||[]).join('_'),rage:ans.rage||null,video:ans.video||null});
     [].slice.call(document.querySelectorAll('a.cta')).forEach(function(a){ a.href=BASE+'?client_reference_id='+ref; });
     // Le premier bouton reprend la zone choisie : il vient de la nommer, il veut la faire verifier
     var ctaText={frein:'Faire vérifier mon freinage\u00a0→', traj:'Faire vérifier mes entrées de virage\u00a0→', gaz:'Faire vérifier ma remise de gaz\u00a0→', nsp:'Faire regarder mon onboard\u00a0→'};
@@ -534,7 +568,10 @@ body.diag{padding-bottom:80px;}
   function buildRef(){
     var p=['kart-'+(ans.kart||'na'),'stag-'+(ans.stag||'na'),'why-'+(ans.why||'na'),'zone-'+(ans.zone||'na'),'rage-'+(ans.rage||'na'),'vid-'+(ans.video||'na')];
     if(ans.essai && ans.essai.length) p.push('try-'+ans.essai.join('_'));
-    return p.join('-').replace(/[^A-Za-z0-9_-]/g,'').slice(0,200);
+    // Identifiant de visite anonyme en fin de profil : relie la vente a sa source dans le dashboard.
+    var sid=(window.ckrSid && window.ckrSid()) || '';
+    var suffixe=sid ? '-sid-'+String(sid).replace(/[^A-Za-z0-9]/g,'').slice(0,12) : '';
+    return p.join('-').replace(/[^A-Za-z0-9_-]/g,'').slice(0,200-suffixe.length)+suffixe;
   }
 
   function joinFr(list){
@@ -576,6 +613,15 @@ body.diag{padding-bottom:80px;}
     else if(essai.indexOf('matos')>-1){ b+=' Le matériel, lui, ne corrigera jamais un geste. Il te fait juste refaire la même chose, plus vite.'; }
     return {title:titles[ans.rage]||titles.flou, a:a, b:b, c:zoneC[ans.zone]||zoneC.nsp};
   }
+
+  document.addEventListener('click', function(e){
+    var a=e.target.closest('a.cta');
+    if(a && a.getAttribute('href')!=='#'){ suivre('stripe_click',{cta:a.getAttribute('data-cta'),zone:ans.zone||null}); return; }
+    if(e.target.closest('#guideSortie')) suivre('gumroad_click',{cta:'sortie-'+(lastStop||'')});
+  });
+  [].slice.call(document.querySelectorAll('#diag details')).forEach(function(d, i){
+    d.addEventListener('toggle', function(){ if(d.open) suivre('faq_open',{q:i+1}); });
+  });
 
   show(0);
 })();
