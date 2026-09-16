@@ -123,8 +123,16 @@
   .panel h2{ font-family:var(--fc); font-size:16px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--w); margin-bottom:16px; }
   .panel h2 small{ color:var(--wd); font-weight:400; text-transform:none; letter-spacing:0; }
   .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  /* Sans min-width:0, un graphique garde sa largeur de depart et fait deborder la grille sur mobile. */
+  .grid-2 > *{ min-width:0; }
   .chart-box{ position:relative; height:240px; }
   .empty{ color:var(--wd); font-size:14px; text-align:center; padding:30px 0; }
+  .sub{ font-family:var(--fc); font-size:13px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:var(--wd); margin:0 0 10px; }
+  .sub small{ font-weight:400; text-transform:none; letter-spacing:0; }
+  .prof-q{ font-family:var(--fc); font-size:13px; color:var(--w); margin:0 0 8px; }
+  .prof{ margin-bottom:14px; }
+  /* Les liens d'exemple (UTM) sont longs : ils passent a la ligne au lieu de deborder sur mobile. */
+  code{ overflow-wrap:anywhere; }
 
   /* ---------- Funnel ---------- */
   .funnel-row{ margin-bottom:14px; }
@@ -302,7 +310,7 @@
     </div>
     <p class="ai-foot">
       Le coach ne voit que des agrégats : aucune adresse email, aucune donnée personnelle ne lui est transmise.
-      Il analyse, il ne mesure pas — quand un chiffre est trop faible pour conclure, il doit le dire plutôt que d'inventer une tendance.
+      Il analyse, il ne mesure pas : quand un chiffre est trop faible pour conclure, il doit le dire plutôt que d'inventer une tendance.
     </p>
   </div>
 
@@ -313,8 +321,32 @@
     <p style="color:var(--wd);font-size:11px;margin-top:10px;">
       Le nombre de commentaires vit dans ManyChat, le dashboard prend la suite à l'arrivée sur le site.
       Pour voir combien viennent du DM, le bouton ManyChat doit pointer vers
-      <code>…/extrait-guide.html?utm_source=manychat&amp;utm_campaign=extrait</code> —
+      <code>…/extrait-guide.html?utm_source=manychat&amp;utm_campaign=extrait</code> :
       la source apparaît alors dans « D'où viennent les visiteurs ».
+    </p>
+  </div>
+
+  <!-- TUNNEL DU DEBRIEF (site 2) -->
+  <div class="panel">
+    <h2>Tunnel du débrief <small>site 2 : diagnostic en 7 questions, puis paiement Stripe</small></h2>
+    <div class="note" id="stripeNote" style="display:none"></div>
+    <div id="funnelDebriefBox"></div>
+    <div class="mini" id="debriefMini" style="margin-top:16px;"></div>
+    <div class="grid-2" style="margin-top:20px;">
+      <div><h3 class="sub">Question par question <small>(% de ceux qui ont commencé)</small></h3><div id="etapesBox"></div></div>
+      <div><h3 class="sub">Boutons de paiement cliqués</h3><div id="paiementBox"></div></div>
+    </div>
+    <div class="grid-2" style="margin-top:20px;">
+      <div><h3 class="sub">Questions de la FAQ ouvertes</h3><div id="faqBox"></div></div>
+      <div><h3 class="sub">Ventes du débrief par source</h3><div id="ventesSourceBox"></div></div>
+    </div>
+    <h3 class="sub" style="margin-top:22px;">Profils des répondants <small>(dernière réponse de chaque visiteur)</small></h3>
+    <div class="grid-2" id="profilsBox"></div>
+    <p style="color:var(--wd);font-size:11px;margin-top:12px;">
+      Visiteurs uniques. Les brouillons Netlify et les aperçus locaux sont ignorés.
+      Pour savoir quelle story vend, mets en story
+      <code>…/onboard/?utm_source=instagram&amp;utm_medium=story&amp;utm_campaign=nom-de-la-story</code> :
+      la story apparaît alors dans « Campagnes » et dans les ventes par source.
     </p>
   </div>
 
@@ -489,7 +521,9 @@
   function periodLabel(days){ days = days || 30; return days >= 3650 ? "tout l'historique" : days + ' derniers jours'; }
   function fmtMoney(cents, currency){
     const n = ((cents||0)/100).toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
-    return n + ' ' + (currency || '');
+    // Gumroad écrit « EUR », Stripe « eur » : les deux s'affichent en €.
+    const dev = String(currency || '').toUpperCase();
+    return n + ' ' + (dev === 'EUR' ? '€' : dev);
   }
   function fmtDate(iso){
     if(!iso) return '';
@@ -545,8 +579,11 @@
     const insc = t.inscriptions ?? ((t.tableur_signups || 0) + (t.extrait_signups || 0));
     countUp('kInsc', insc);
     $('kInscHint').textContent = fr(t.extrait_signups ?? 0) + ' extrait · ' + fr(t.tableur_signups ?? 0) + ' tableur';
-    $('kCa').textContent = fmtMoney(t.revenu_cents, t.currency);
-    $('kVentesHint').textContent = fr(t.ventes) + ' vente' + (t.ventes > 1 ? 's' : '') + ' réelle' + (t.ventes > 1 ? 's' : '');
+    // Chiffre d'affaires total : guide (Gumroad) + débrief (Stripe), détaillé dessous.
+    const db = d.debrief || null;
+    const nbDebriefs = db ? (db.ventes || 0) : 0;
+    $('kCa').textContent = fmtMoney(t.revenu_total_cents ?? t.revenu_cents, t.currency || (db && db.currency) || 'EUR');
+    $('kVentesHint').textContent = fr(t.ventes) + ' guide' + (t.ventes > 1 ? 's' : '') + ' · ' + fr(nbDebriefs) + ' débrief' + (nbDebriefs > 1 ? 's' : '');
 
     setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.gumroad_clicks);
     setDelta('dExt', dl.extract_clicks); setDelta('dTabClk', dl.tableur_clicks); setDelta('dTab', dl.tableur_signups);
@@ -567,6 +604,7 @@
 
     renderFunnel(d.funnel || [], t);
     renderFunnel(d.funnel_extrait || [], t, 'funnelExtraitBox');
+    renderDebrief(d.debrief);
     dernieresMetriques = metriquesPourCoach(d);
     renderDates(d.dates || {});
 
@@ -603,6 +641,41 @@
     }).join('');
   }
 
+  // Tunnel du débrief (site 2) : entonnoir, abandons, boutons, FAQ, profils, ventes Stripe.
+  function renderDebrief(db){
+    const note = $('stripeNote');
+    if(!db){
+      ['funnelDebriefBox','etapesBox','paiementBox','faqBox','ventesSourceBox'].forEach(id => renderBarList(id, [], {}));
+      return;
+    }
+    const st = db.stripe || {};
+    if(st.statut === 'ok'){ note.style.display = 'none'; }
+    else {
+      note.style.display = 'block';
+      note.innerHTML = st.statut === 'non_configure'
+        ? '<b>Ventes Stripe non affichées.</b> Ajoute la clé de lecture <code>STRIPE_READ_KEY</code> dans Netlify (site 1), puis redéploie. Le reste du tunnel est déjà mesuré.'
+        : '<b>Stripe ne répond pas.</b> Les ventes du débrief ne sont pas à jour (' + esc(st.detail || 'erreur') + '). Vérifie les droits de la clé de lecture.';
+    }
+    renderFunnel(db.funnel || [], { revenu_cents: db.revenu_cents, currency: db.currency }, 'funnelDebriefBox');
+    const s = db.sorties || {};
+    const ca = db.clics_accueil || {};
+    $('debriefMini').innerHTML = [
+      ['Sorties « location »', fr(s.location)],
+      ['Sorties « pas d’images »', fr(s.sans_images)],
+      ['Options guide prises', fr(db.options_guide)],
+      ['Accueil → diagnostic', fr(ca.diagnostic)],
+    ].map(([l, v]) => '<div class="m"><div class="label">' + esc(l) + '</div><div class="val">' + esc(v) + '</div></div>').join('');
+    renderBarList('etapesBox', db.etapes, { label:x=>'Q' + x.step + ' · ' + x.question, value:x=>x.sessions, fmt:x=>fr(x.sessions) + ' (' + (x.taux_depuis_depart || 0).toLocaleString('fr-FR') + ' %)' });
+    renderBarList('paiementBox', db.boutons_paiement, { label:x=>x.label, value:x=>x.sessions, fmt:x=>fr(x.sessions) + ' visiteur' + (x.sessions > 1 ? 's' : '') });
+    renderBarList('faqBox', db.faq, { label:x=>x.question, value:x=>x.ouvertures, fmt:x=>fr(x.ouvertures) });
+    renderBarList('ventesSourceBox', db.ventes_par_source, { label:x=>x.source, value:x=>x.ventes, fmt:x=>fr(x.ventes) + ' vente' + (x.ventes > 1 ? 's' : '') });
+    const profils = (db.profils || []).filter(p => p.reponses && p.reponses.length);
+    const box = $('profilsBox');
+    if(!profils.length){ box.innerHTML = '<div class="empty">Aucune réponse pour l’instant.</div>'; return; }
+    box.innerHTML = profils.map(p => '<div class="prof"><p class="prof-q">' + esc(p.question) + '</p><div id="prof-' + esc(p.cle) + '"></div></div>').join('');
+    profils.forEach(p => renderBarList('prof-' + p.cle, p.reponses, { label:x=>x.label, value:x=>x.n, fmt:x=>fr(x.n) }));
+  }
+
   function renderDates(dates){
     const box = $('datesBox'); if(!box) return;
     const items = [
@@ -610,7 +683,8 @@
       ['Meilleur jour', dates.meilleur_jour ? fmtDate(dates.meilleur_jour.date) + ' (' + fr(dates.meilleur_jour.visiteurs) + ' visiteurs)' : '-'],
       ['Dernière inscription', dates.derniere_inscription ? fmtDate(dates.derniere_inscription) : '-'],
       ['Première vente', dates.premiere_vente ? fmtDate(dates.premiere_vente) : '-'],
-      ['Dernière vente', dates.derniere_vente ? fmtDate(dates.derniere_vente) : '-'],
+      ['Dernière vente du guide', dates.derniere_vente ? fmtDate(dates.derniere_vente) : '-'],
+      ['Dernier débrief vendu', dates.derniere_vente_debrief ? fmtDate(dates.derniere_vente_debrief) : '-'],
     ];
     box.innerHTML = items.map(([l, v]) =>
       '<div class="m"><div class="label">' + esc(l) + '</div><div class="val" style="font-size:20px;">' + esc(v) + '</div></div>'
@@ -710,9 +784,22 @@
       ventes: t.ventes, ventes_periode_precedente: p.ventes,
       revenu_centimes: t.revenu_cents, devise: t.currency,
       extraits_gratuits_gumroad: t.extraits_gumroad,
+      revenu_total_centimes_guide_et_debrief: t.revenu_total_cents,
       entonnoir_global: d.funnel, entonnoir_extrait: d.funnel_extrait,
       par_source: d.by_source, par_campagne: d.by_campaign, par_appareil: d.by_device,
-      evolution_par_jour: d.by_day
+      evolution_par_jour: d.by_day,
+      // Tunnel du débrief (site 2) : que des agrégats, aucune réponse individuelle.
+      debrief: d.debrief ? {
+        ventes_stripe_lisibles: (d.debrief.stripe || {}).statut === 'ok',
+        entonnoir: d.debrief.funnel,
+        question_par_question: d.debrief.etapes,
+        sorties_honnetes: d.debrief.sorties,
+        boutons_paiement: d.debrief.boutons_paiement,
+        faq_ouvertes: d.debrief.faq,
+        profils: d.debrief.profils,
+        ventes: d.debrief.ventes, options_guide: d.debrief.options_guide,
+        revenu_centimes: d.debrief.revenu_cents, ventes_par_source: d.debrief.ventes_par_source
+      } : null
     };
   }
 

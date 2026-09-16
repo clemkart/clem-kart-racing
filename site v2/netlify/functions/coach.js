@@ -1,5 +1,5 @@
 // =============================================
-// Clem Kart Racing — Coach business dans le dashboard
+// Clem Kart Racing : Coach business dans le dashboard
 // POST { password, persona, periode, metriques } -> analyse structuree en JSON.
 //
 // Le coach ne voit QUE des agregats (visiteurs, inscriptions, ventes, taux).
@@ -38,7 +38,7 @@ function buildHeaders(event) {
 //
 // Ce sont des ECOLES DE PENSEE, pas des personnes reelles. Imiter un coach
 // identifiable poserait un vrai probleme : usurpation, caution implicite, droit
-// a l'image. Et pour le produit c'est meilleur — un archetype se decrit par ce
+// a l'image. Et pour le produit c'est meilleur : un archetype se decrit par ce
 // qu'il regarde en premier, ce qu'il ignore, et ce qu'il conseille quand ca
 // stagne. C'est ca qui rend deux analyses des memes chiffres differentes.
 // ---------------------------------------------------------------------------
@@ -76,7 +76,7 @@ absolu perdu. Ce que tu ignores : les intuitions non mesurables.
 Ta thèse : on n'optimise que l'étape qui perd le plus de monde en valeur absolue, jamais celle qui a
 le pire pourcentage sur trois personnes.
 Ton ton : méthodique. Tu formules chaque recommandation comme une hypothèse avec un résultat attendu
-et de quoi conclure. Tu signales quand un chiffre n'a pas assez de volume pour décider — c'est ton
+et de quoi conclure. Tu signales quand un chiffre n'a pas assez de volume pour décider : c'est ton
 réflexe le plus utile.`,
   },
   operationnel: {
@@ -98,6 +98,10 @@ Vend un guide de pilotage à 16,99 EUR sur Gumroad (produit unique, numérique, 
 Aimants gratuits : un tableur de réglages et un extrait de 10 pages du guide, livrés par email
 contre une adresse. L'appel à l'action Instagram est "commente EXTRAIT", automatisé par ManyChat,
 qui renvoie vers une page de capture email du site.
+Depuis le 14/09/2026 : un débrief onboard personnalisé à 29,99 EUR payé sur Stripe (vidéo commentée
+sous 72 h), vendu sur un second site après un diagnostic en 7 questions, avec une option guide à
+9,99 EUR au paiement. Deux sorties honnêtes refusent la vente (kart de location, pas d'images) et
+renvoient vers le guide. Les métriques "debrief" décrivent ce tunnel ; au lancement il n'a aucune vente.
 Une app "Race Engineer AI" est en préparation, non lancée.
 Ordres de grandeur connus : environ 0,7 vente par jour en organique, 68 ventes cumulées,
 981 USD net sur 8 mois. Une liste email de 189 contacts.`;

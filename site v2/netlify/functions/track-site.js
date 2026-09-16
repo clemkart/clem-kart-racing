@@ -21,13 +21,35 @@ const ALLOWED_TYPES = new Set([
   'app_plan_click',  // clic sur le CTA d'une carte tarif (meta.plan = decouverte|pro|paddock)
   'app_early_access',// envoi du formulaire early access de l'app
   'app_video_play',  // clic sur le poster de la video de presentation
+  // Site 2 (accueil catalogue + tunnel du debrief sur /onboard/)
+  'diag_click',      // clic vers le diagnostic depuis l'accueil du site 2 (meta.cta = top|hero|carte|final)
+  'diag_start',      // clic sur « Commencer le diagnostic »
+  'diag_step',       // question validee (meta.step, meta.key, meta.value)
+  'diag_exit',       // sortie honnete affichee (meta.kind = loc|nocam, meta.step)
+  'diag_result',     // diagnostic affiche (reponses anonymes, aucune donnee personnelle)
+  'stripe_click',    // clic vers le paiement Stripe (meta.cta = diag|prix|final|barre, meta.zone)
+  'faq_open',        // question de la FAQ ouverte (meta.q = 1..7)
 ]);
 
 const MAX_META_CHARS = 2000;
 
+// Le site 2 envoie ses evenements ici, depuis un autre domaine : ils portent meta.site
+// pour ne pas se melanger aux pages du site 1 (qui garde son historique sans etiquette).
+// Les brouillons Netlify et les apercus locaux sont etiquetes a part, le dashboard les ignore.
+const SITE2_HOST = 'comprendre-comment-rouler-plus-vite-2.netlify.app';
+function siteLabel(host) {
+  if (typeof host !== 'string') return null;
+  const h = host.trim().toLowerCase();
+  if (h === SITE2_HOST) return 'site2';
+  if (h.endsWith(`--${SITE2_HOST}`)) return 'site2-brouillon';
+  if (h === 'localhost' || h === '127.0.0.1') return 'local';
+  return null;
+}
+
 const ALLOWED_ORIGINS = [
   process.env.URL,
   process.env.DEPLOY_PRIME_URL,
+  `https://${SITE2_HOST}`,
   'http://localhost:8888',
   'http://localhost:3000',
 ].filter(Boolean);
@@ -118,7 +140,12 @@ exports.handler = async (event) => {
   try {
     if (!SUPABASE_SERVICE_KEY) return { statusCode: 204, headers, body: '' };
 
-    const data = JSON.parse(event.body || '{}');
+    // Le site 2 envoie en text/plain (pas de requete preliminaire CORS) ; Netlify peut
+    // alors transmettre le corps encode en base64.
+    const rawBody = event.isBase64Encoded
+      ? Buffer.from(event.body || '', 'base64').toString('utf8')
+      : event.body;
+    const data = JSON.parse(rawBody || '{}');
 
     const type = data.type;
     if (!ALLOWED_TYPES.has(type)) return { statusCode: 204, headers, body: '' };
@@ -136,7 +163,13 @@ exports.handler = async (event) => {
       if (str.length <= MAX_META_CHARS) meta = data.meta;
     }
 
-    const selfHost = event.headers['host'] || '';
+    // Site d'origine : seulement s'il est connu, jamais une valeur libre venue du navigateur.
+    const site = siteLabel(data.site);
+    if (site) meta = { ...(meta || {}), site };
+
+    // Navigation interne : un referrer du meme site compte comme « direct », que la page
+    // soit sur le site 1 (hote de la fonction) ou sur le site 2 (hote declare et reconnu).
+    const selfHost = site ? data.site.trim().toLowerCase() : (event.headers['host'] || '');
     const source = deriveSource(referrer, utm_source, selfHost);
     const device = deriveDevice(event.headers['user-agent']);
 
