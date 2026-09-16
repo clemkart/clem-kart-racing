@@ -151,6 +151,8 @@ footer a{color:var(--wd);text-decoration:none;}
 .sticky .s2{font-family:var(--fc);font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:var(--wd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
 .sticky .btp{width:auto;flex:none;padding:12px 18px;font-size:.86rem;letter-spacing:.1em;}
 body.diag{padding-bottom:80px;}
+/* 29,99 € allonge les boutons de paiement : sous 380 px ils restent sur une seule ligne */
+@media(max-width:379px){.btw .btp{font-size:.94rem;letter-spacing:.07em;padding-inline:12px;}}
 /* Petits telephones : le bouton prend toute la barre, rien n'est tronque */
 @media(max-width:419px){.sticky .st{display:none;}.sticky .btp{flex:1;}}
 @media(min-width:700px){:root{--pad:32px;}section.blk{padding-block:74px;}.grid.g3{grid-template-columns:repeat(3,1fr);}.btp{width:auto;}.next.big{width:auto;}.by{text-align:left;}}
@@ -358,7 +360,7 @@ body.diag{padding-bottom:80px;}
         <p>Que ton karting te coûte mille euros par an ou dix mille, le constat est le même. Tu as payé la machine, les consommables et les week-ends. Tout, sauf quelqu'un qui te dise ce qui se passe entre tes mains et le bitume.</p>
       </div>
       <div class="pbox">
-        <div class="pnum">30<sup>€</sup></div>
+        <div class="pnum">29,99<sup>€</sup></div>
         <div class="plab">Débrief complet · Livré sous 72&nbsp;h</div>
         <ul class="incl">
           <li>Ta vidéo commentée, tour par tour</li>
@@ -371,7 +373,7 @@ body.diag{padding-bottom:80px;}
           <p>Ajoute le guide <strong>Comprendre comment rouler plus vite</strong> à <strong>9,99&nbsp;€ au lieu de 16,99&nbsp;€</strong>. Il te sert à travailler, entre deux sorties, ce que le débrief va te montrer.</p>
         </div>
         <div class="guar"><div class="ic">✦</div><div><h3 style="margin-bottom:4px;">Satisfait ou remboursé, sans condition</h3><p>Tu as sept jours après réception de ton débrief. Tu m'écris, je te rembourse. Pas de justification, pas de discussion.</p></div></div>
-        <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 30&nbsp;€&nbsp;→</a><div class="btnote">Paiement sécurisé par Stripe</div></div>
+        <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 29,99&nbsp;€&nbsp;→</a><div class="btnote">Paiement sécurisé par Stripe</div></div>
       </div>
     </div>
   </section>
@@ -395,7 +397,7 @@ body.diag{padding-bottom:80px;}
     <div class="wrap" style="position:relative;z-index:2;">
       <h2>Tu peux faire dix sessions<br>de plus en espérant<br>que ça vienne.</h2>
       <p style="max-width:29em;margin:0 auto;">Ou tu envoies une vidéo que tu as déjà, et dans trois jours, tu sais où sont tes dixièmes.</p>
-      <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 30&nbsp;€&nbsp;→</a><div class="btnote" style="text-align:center;">Livré sous 72&nbsp;h · Garantie 7&nbsp;jours · Vidéo privée</div></div>
+      <div class="btw"><a class="btp cta" href="#">Envoyer ma vidéo · 29,99&nbsp;€&nbsp;→</a><div class="btnote" style="text-align:center;">Livré sous 72&nbsp;h · Garantie 7&nbsp;jours · Vidéo privée</div></div>
     </div>
   </section>
 
@@ -413,7 +415,7 @@ body.diag{padding-bottom:80px;}
 
 <script>
 (function(){
-  var BASE='https://buy.stripe.com/14AcN44Wn7krbQw9Vh04801';
+  var BASE='https://buy.stripe.com/aFa14mdsT6gnaMs6J504802';
   var TOTAL=7, cur=0, ans={}, stopped=null, stopAt=0;
   var stage=document.getElementById('stage'), pg=document.getElementById('pg'), qc=document.getElementById('qc');
   var steps=[].slice.call(stage.querySelectorAll('.step'));
