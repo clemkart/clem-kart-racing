@@ -13,11 +13,18 @@
 // =============================================
 
 const crypto = require('crypto');
+const OFFRES = require('../../../config/offres.json');
+// Typographie française (espaces insécables avant : ; ? ! », entre un nombre et €, h, %) :
+// le même module que les pages du site, appliqué aux pages de cette fonction. esbuild l'empaquette avec la fonction.
+const { typographier } = require('../../../scripts/typographie.js');
+
+// Adresse publique du site (sites.actif dans la config) pour le lien de retour.
+const SITE_PUBLIC_URL = OFFRES.sites[OFFRES.sites.actif];
 
 // Dupliqué depuis send-email.js : chaque fonction Netlify est bundlée isolément.
-function unsubscribeToken(email) {
+function unsubscribeToken(email, secret) {
   return crypto
-    .createHmac('sha256', process.env.BREVO_API_KEY || '')
+    .createHmac('sha256', secret || '')
     .update(email.toLowerCase())
     .digest('hex')
     .slice(0, 32);
@@ -29,6 +36,13 @@ function tokenMatches(expected, received) {
   return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(received));
 }
 
+// Deux signatures acceptées pendant la transition (plan V4, section 10) : la nouvelle
+// (UNSUB_SECRET) et l'ancienne (clé Brevo), pour les emails déjà envoyés.
+function jetonValide(email, token) {
+  const secrets = [process.env.UNSUB_SECRET, process.env.BREVO_API_KEY].filter(Boolean);
+  return secrets.some((secret) => tokenMatches(unsubscribeToken(email, secret), token));
+}
+
 function page(title, message, formHtml) {
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -36,7 +50,7 @@ function page(title, message, formHtml) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>${title} | Clem Kart Racing</title>
+<title>${title} | ${OFFRES.marque.nom}</title>
 <style>
   body{background:#070707;color:rgb(242,237,232);font-family:Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;}
   .card{background:#0F0F0F;border:1px solid rgba(242,237,232,0.08);border-top:2px solid #D9171D;padding:40px 36px;max-width:460px;text-align:center;}
@@ -51,7 +65,7 @@ function page(title, message, formHtml) {
     <h1>${title}</h1>
     <p>${message}</p>
     ${formHtml}
-    <a href="https://comprendre-comment-rouler-plus-vite.netlify.app/">Retour au site Clem Kart Racing</a>
+    <a href="${SITE_PUBLIC_URL}/">Retour au site ${OFFRES.marque.nom}</a>
   </div>
 </body>
 </html>`;
@@ -61,7 +75,7 @@ function html(statusCode, body) {
   return {
     statusCode,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
-    body
+    body: typographier(body)
   };
 }
 
@@ -80,7 +94,7 @@ exports.handler = async function(event) {
     return html(500, page('Service indisponible', 'Réessaie dans quelques minutes, ou réponds simplement à un de mes emails et je te retire de la liste à la main.', ''));
   }
 
-  if (!email || !tokenMatches(unsubscribeToken(email), token)) {
+  if (!email || !jetonValide(email, token)) {
     return html(400, page(
       'Lien invalide',
       "Ce lien de désinscription n'est pas valide ou a été tronqué par ta messagerie. Réponds à un de mes emails et je te retire de la liste à la main.",
@@ -93,7 +107,7 @@ exports.handler = async function(event) {
     const action = `${event.path}?e=${encodeURIComponent(email)}&t=${encodeURIComponent(token)}`;
     return html(200, page(
       'Se désinscrire',
-      `Confirme la désinscription de <strong>${email.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</strong>. Tu ne recevras plus aucun email de Clem Kart Racing.`,
+      `Confirme la désinscription de <strong>${email.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</strong>. Tu ne recevras plus aucun email de ${OFFRES.marque.nom}.`,
       `<form method="POST" action="${action}"><button type="submit">Confirmer la désinscription</button></form>`
     ));
   }
@@ -121,7 +135,7 @@ exports.handler = async function(event) {
 
   return html(200, page(
     'C\'est fait',
-    'Tu es désinscrit. Tu ne recevras plus aucun email de Clem Kart Racing. Bonne route et bonnes sessions 🏁',
+    `Tu es désinscrit. Tu ne recevras plus aucun email de ${OFFRES.marque.nom}. Bonnes sessions.`,
     ''
   ));
 };

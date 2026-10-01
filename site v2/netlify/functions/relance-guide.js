@@ -16,13 +16,34 @@
 //    stocké, le run s'arrête avant le premier envoi au lieu de spammer chaque jour.
 // 5. Plafond MAX_SENDS_PER_RUN, contacts blacklistés ignorés, déduplication par email.
 // Les fonctions planifiées Netlify ne sont pas invocables par HTTP public.
+//
+// V4 : le seul bouton renvoie vers la page de vente /guide du site (jamais Stripe en
+// direct, jamais Gumroad). Prix, garantie, chiffre de lecteurs, expéditeur et adresse
+// du site viennent de config/offres.json (seul point de vérité), embarqué avec la
+// fonction par netlify.toml (included_files).
 // =============================================
 
 const crypto = require('crypto');
+const OFFRES = require('../../../config/offres.json');
+// Typographie française (espaces insécables avant : ; ? ! », entre un nombre et €, h, %) :
+// le même module que les pages du site, appliqué au corps HTML seulement (l'objet et la
+// version texte restent tels quels). esbuild l'empaquette avec la fonction.
+const { typographier } = require('../../../scripts/typographie.js');
 
-const SITE_URL = process.env.URL || 'https://comprendre-comment-rouler-plus-vite.netlify.app';
-const GUIDE_URL = 'https://clemkartracing.gumroad.com/l/umjfwx';
-const SENDER = { name: 'Clem Kart Racing', email: 'clemkartracing@gmail.com' };
+// Adresse publique du site (sites.actif dans la config) : c'est elle qui va dans l'email,
+// pour que le bouton mène toujours à la vraie page, jamais à un brouillon.
+const SITE_PUBLIC_URL = OFFRES.sites[OFFRES.sites.actif];
+// Déploiement courant (Netlify) pour le lien de désinscription, comme send-email.js.
+const SITE_URL = process.env.URL || SITE_PUBLIC_URL;
+// Un UTM par email de la séquence : le dashboard lit « email / j7 » sur les visites de /guide.
+const GUIDE_URL = `${SITE_PUBLIC_URL}${OFFRES.routes.guide}?utm_source=email&utm_medium=relance&utm_campaign=j7`;
+const SENDER = { name: OFFRES.marque.nom, email: OFFRES.contact.email };
+// Les réponses arrivent toujours sur l'email de contact de la config (même règle que send-email.js).
+const REPLY_TO = { name: OFFRES.marque.signature, email: OFFRES.contact.email };
+// Le titre vient de la config (faits.titre_court) et suit l'interrupteur faits.afficher_titre.
+const SIGNATURE_LIGNE = OFFRES.faits.afficher_titre && OFFRES.faits.titre_court
+  ? `${OFFRES.marque.nom} · ${OFFRES.faits.titre_court}`
+  : OFFRES.marque.nom;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WINDOW_MIN_DAYS = 7;   // relance au plus tôt 7 jours après la livraison de l'extrait
@@ -38,9 +59,12 @@ const RELANCE_ATTRIBUTE = 'RELANCE_GUIDE';
 const REQUIRED_ATTRIBUTES = [RELANCE_ATTRIBUTE, 'EXTRAIT_ENVOYE', 'TABLEUR_ENVOYE'];
 
 // Dupliqué depuis send-email.js : chaque fonction Netlify est bundlée isolément.
+// Signe avec UNSUB_SECRET (plan V4, section 10) ; repli sur la cle Brevo tant que la variable
+// n'existe pas. desinscription.js accepte les deux signatures : la cle Brevo peut tourner
+// sans casser les liens deja envoyes.
 function unsubscribeToken(email) {
   return crypto
-    .createHmac('sha256', process.env.BREVO_API_KEY || '')
+    .createHmac('sha256', process.env.UNSUB_SECRET || process.env.BREVO_API_KEY || '')
     .update(email.toLowerCase())
     .digest('hex')
     .slice(0, 32);
@@ -58,14 +82,18 @@ const C = {
   red: '#D9171D'
 };
 
+// Prix affiché tel que la config l'écrit (espace insécable avant le symbole), rendu en
+// entité HTML pour que la boîte mail ne casse jamais la ligne entre le nombre et l'euro.
+const PRIX_GUIDE = OFFRES.guide.prix_affiche.replace(/[\u00a0\u202f ]/g, '&nbsp;');
+
 // Accroche propre à chaque parcours : on ne parle que de ce que le contact a vraiment reçu.
 const ACCROCHES = {
   EXTRAIT_ENVOYE: {
     subject: 'Tu as lu l’extrait ? Voilà ce qui vient après',
-    apercu: 'La suite du chapitre sur le freinage dégressif.',
+    apercu: 'Ce qui vient après le freinage dégressif.',
     intro: `Il y a une semaine, tu as reçu l'extrait de mon guide. Si tu as lu le chapitre sur le freinage dégressif,
             tu sais déjà que <strong style="color:${C.text};">la façon dont tu relâches le frein compte plus que la façon dont tu appuies dessus</strong>.`,
-    transition: "L'extrait s'arrête exactement là où ça devient intéressant. Le guide complet, c'est 13 chapitres pour :"
+    transition: `L'extrait s'arrête exactement là où ça devient intéressant. Le guide complet, c'est ${OFFRES.guide.chapitres} chapitres pour :`
   },
   TABLEUR_ENVOYE: {
     subject: 'Ton tableur est rempli ? Il manque la grille de lecture',
@@ -73,7 +101,7 @@ const ACCROCHES = {
     intro: `Il y a une semaine, tu as reçu mon tableur de réglages. Si tu l'as rempli deux ou trois fois,
             tu commences à voir des schémas revenir. Et très vite arrive la vraie question :
             <strong style="color:${C.text};">pourquoi ce réglage marche ici et pas là-bas ?</strong>`,
-    transition: "Noter, c'est la moitié du travail. Comprendre, c'est l'autre moitié. Le guide, c'est 13 chapitres pour :"
+    transition: `Noter, c'est la moitié du travail. Comprendre, c'est l'autre moitié. Le guide, c'est ${OFFRES.guide.chapitres} chapitres pour :`
   }
 };
 
@@ -81,9 +109,10 @@ function relanceHtml(email, attribut) {
   const a = ACCROCHES[attribut];
   const puces = [
     'comprendre le rôle exact du freinage dans la rotation du kart ;',
-    'utiliser ton regard pour anticiper au lieu de subir ;',
-    'découper chaque virage en points de référence, pour te répéter tour après tour ;',
-    'construire une confiance calme, à la place d\'un pilotage nerveux et aléatoire.'
+    'tenir le volant pour lire le kart, pas pour le forcer ;',
+    'remettre les gaz au moment où la rotation est finie, pas avant ;',
+    'suivre le grip du jour, pas le schéma appris ;',
+    'lire ta session toi-même, remonter du symptôme à la cause.'
   ].map((p) => `
                   <tr>
                     <td width="18" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${C.red};">▸</td>
@@ -113,7 +142,7 @@ function relanceHtml(email, attribut) {
         </tr>
         <tr>
           <td style="padding:26px 36px 0;">
-            <h1 style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1.2;color:${C.text};font-weight:bold;">Et maintenant, la suite 🏁</h1>
+            <h1 style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1.2;color:${C.text};font-weight:bold;">Et maintenant, la suite</h1>
           </td>
         </tr>
         <tr>
@@ -133,7 +162,8 @@ function relanceHtml(email, attribut) {
         </tr>
         <tr>
           <td style="padding:22px 36px 0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${C.muted};">
-            16,99&nbsp;€, accès immédiat, <strong style="color:${C.text};">garantie satisfait ou remboursé 7 jours</strong>, sans condition.
+            ${OFFRES.guide.format}, ${OFFRES.guide.pages} pages, ${OFFRES.lecteurs.phrase.charAt(0).toLowerCase() + OFFRES.lecteurs.phrase.slice(1)}.
+            ${PRIX_GUIDE}, accès immédiat, <strong style="color:${C.text};">garantie ${OFFRES.garantie_jours} jours</strong>, en plus de tes droits légaux.
             Ce que tu lis ce soir, tu l'appliques à ta prochaine session.
           </td>
         </tr>
@@ -142,7 +172,7 @@ function relanceHtml(email, attribut) {
             <table role="presentation" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="background:${C.red};">
-                  <a href="${GUIDE_URL}" style="display:inline-block;padding:15px 30px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:${C.text};text-decoration:none;">Découvrir le guide · 16,99&nbsp;€</a>
+                  <a href="${GUIDE_URL}" style="display:inline-block;padding:15px 30px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:${C.text};text-decoration:none;">Découvrir le guide · ${PRIX_GUIDE}</a>
                 </td>
               </tr>
             </table>
@@ -154,9 +184,9 @@ function relanceHtml(email, attribut) {
               <tr>
                 <td style="border-top:1px solid ${C.line};padding-top:22px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.7;color:${C.muted};">
                   Déjà pris le guide ? Ignore cet email, et merci pour ta confiance.<br><br>
-                  Bonnes sessions 🏁<br>
-                  <strong style="color:${C.text};">Clément</strong><br>
-                  <span style="font-size:12px;color:${C.faint};">Clem Kart Racing · Champion Régional 2023</span>
+                  Bonnes sessions,<br>
+                  <strong style="color:${C.text};">${OFFRES.marque.signature}</strong><br>
+                  <span style="font-size:12px;color:${C.faint};">${SIGNATURE_LIGNE}</span>
                 </td>
               </tr>
             </table>
@@ -164,7 +194,7 @@ function relanceHtml(email, attribut) {
         </tr>
         <tr>
           <td style="padding:26px 36px 34px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.7;color:${C.faint};">
-            Tu reçois cet email parce que tu as demandé une ressource gratuite sur clemkartracing.<br>
+            Tu reçois cet email parce que tu as demandé une ressource gratuite sur ${OFFRES.marque.nom}.<br>
             <a href="${unsubscribeUrl(email)}" style="color:${C.faint};text-decoration:underline;">Me désinscrire en un clic</a>
           </td>
         </tr>
@@ -265,9 +295,10 @@ async function sendRelance(key, email, attribut) {
     headers: brevoHeaders(key),
     body: JSON.stringify({
       sender: SENDER,
+      replyTo: REPLY_TO,
       to: [{ email }],
       subject: ACCROCHES[attribut].subject,
-      htmlContent: relanceHtml(email, attribut),
+      htmlContent: typographier(relanceHtml(email, attribut)),
       headers: {
         'List-Unsubscribe': `<${unsubUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'

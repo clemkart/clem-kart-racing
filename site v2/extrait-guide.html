@@ -1,250 +1,204 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="Reçois gratuitement par email l'extrait du guide « Comprendre comment rouler plus vite » : l'introduction complète + le chapitre sur le freinage dégressif, avec le tableur de réglages en cadeau."/>
-<title>Extrait gratuit du guide karting | Clem Kart Racing</title>
-<link rel="canonical" href="https://comprendre-comment-rouler-plus-vite.netlify.app/extrait-guide.html">
-<meta property="og:title" content="Extrait gratuit du guide karting | Clem Kart Racing">
-<meta property="og:description" content="L'introduction complète + le chapitre sur le freinage dégressif, direct dans ta boîte mail. Tableur de réglages inclus en cadeau.">
-<meta property="og:url" content="https://comprendre-comment-rouler-plus-vite.netlify.app/extrait-guide.html">
+{{partial:head}}
+<title>Extrait gratuit du guide karting · Clem Kart Racing</title>
+<meta name="description" content="{{extrait.promesse_courante}}. Gratuit, par email.">
+<link rel="canonical" href="{{sites.url}}/extrait-guide.html">
+<meta property="og:title" content="Extrait gratuit du guide karting · Clem Kart Racing">
+<meta property="og:description" content="{{extrait.promesse_courante}}. Gratuit, par email.">
+<meta property="og:url" content="{{sites.url}}/extrait-guide.html">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://comprendre-comment-rouler-plus-vite.netlify.app/clement-piste.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-<style>
-:root{
-  --red:#D9171D;--red-dark:#A51115;--red-glow:rgba(217,23,29,0.28);
-  --black:#070707;--b2:#0F0F0F;--b3:#161616;--b4:#1C1C1C;
-  --w:rgb(242,237,232);--wd:rgba(242,237,232,0.6);--wf:rgba(242,237,232,0.08);--wf2:rgba(242,237,232,0.04);
-  --gold:#C9A84C;
-  --fd:'Bebas Neue',sans-serif;--fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--black);color:var(--w);font-family:var(--fb);overflow-x:hidden;}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 60px;background:rgba(7,7,7,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--wf);}
-.nlogo{font-family:var(--fd);font-size:1.4rem;letter-spacing:.06em;color:var(--w);text-decoration:none;}
-.nlogo span{color:var(--red);}
-.nback{font-family:var(--fc);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wd);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .2s;}
-.nback:hover{color:var(--w);}
-.nback::before{content:'←';}
-.ncta-nav{font-family:var(--fc);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;background:var(--red);color:var(--w);padding:9px 22px;text-decoration:none;transition:background .2s;}
-.ncta-nav:hover{background:var(--red-dark);}
-
-/* HERO */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 60px 80px;position:relative;overflow:hidden;}
-.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 60% at 50% 40%,rgba(217,23,29,.07) 0%,transparent 65%),var(--black);}
-.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(242,237,232,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(242,237,232,.018) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 0%,transparent 100%);}
-.hero-inner{position:relative;z-index:2;max-width:620px;margin:0 auto;text-align:center;}
-.badge{display:inline-block;font-family:var(--fc);font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:6px 18px;margin-bottom:28px;}
-.hero-inner h1{font-family:var(--fd);font-size:clamp(48px,7vw,96px);line-height:.95;letter-spacing:.02em;margin-bottom:24px;}
-.hero-inner h1 .r{color:var(--red);}
-.hero-inner h1 .sk{color:transparent;-webkit-text-stroke:1px rgba(242,237,232,.3);}
-.hero-sub{font-size:1rem;font-weight:300;line-height:1.78;color:var(--wd);max-width:480px;margin:0 auto 48px;}
-.hero-sub strong{color:var(--w);font-weight:500;}
-
-/* FORM CARD */
-.form-card{background:var(--b2);border:1px solid rgba(201,168,76,.2);padding:44px 48px;max-width:520px;margin:0 auto;position:relative;}
-.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);}
-.form-label{font-family:var(--fc);font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:block;}
-.form-card input[type="email"]{width:100%;background:var(--b3);border:1px solid var(--wf);color:var(--w);font-family:var(--fc);font-size:.95rem;letter-spacing:.08em;padding:15px 18px;outline:none;transition:border-color .2s;margin-bottom:12px;}
-.form-card input[type="email"]:focus{border-color:var(--gold);}
-.form-card input::placeholder{color:var(--wd);}
-.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--fc);font-size:.9rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;background:var(--gold);color:var(--black);padding:15px 32px;border:none;width:100%;cursor:pointer;transition:opacity .2s;position:relative;overflow:hidden;}
-.btn-gold:hover{opacity:.9;}
-.form-note{font-family:var(--fc);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);margin-top:12px;opacity:.6;text-align:center;}
-.form-msg{font-family:var(--fc);font-size:.78rem;letter-spacing:.12em;color:var(--wd);margin-top:10px;min-height:1.4em;text-align:center;}
-
-/* WHAT'S INSIDE */
-.section{padding:100px 60px;}
-.section-inner{max-width:900px;margin:0 auto;}
-.sl-lab{font-family:var(--fc);font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
-.sl-lab::before{content:'';display:inline-block;width:16px;height:1px;background:var(--gold);}
-.sth{font-family:var(--fd);font-size:clamp(32px,4vw,58px);line-height:1;letter-spacing:.02em;margin-bottom:40px;}
-.sth .r{color:var(--red);}
-
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:60px;}
-.feat{background:var(--b2);padding:32px 28px;border:1px solid var(--wf);}
-.feat-n{font-family:var(--fd);font-size:3rem;color:var(--gold);opacity:.3;line-height:1;margin-bottom:10px;}
-.feat h3{font-family:var(--fc);font-size:1rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;color:var(--w);}
-.feat p{font-size:.88rem;line-height:1.72;color:var(--wd);font-weight:300;}
-
-/* REDIRECT CTA */
-.redir{padding:60px 60px;background:var(--black);text-align:center;border-top:1px solid var(--wf);}
-.redir p{font-family:var(--fc);font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:var(--wd);margin-bottom:22px;}
-.redir-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-.btn-outline{display:inline-flex;align-items:center;gap:8px;font-family:var(--fc);font-size:.82rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;background:transparent;color:var(--wd);padding:12px 26px;text-decoration:none;border:1px solid var(--wf);transition:border-color .2s,color .2s;}
-.btn-outline:hover{border-color:rgba(242,237,232,.3);color:var(--w);}
-.btn-red{display:inline-flex;align-items:center;gap:8px;font-family:var(--fc);font-size:.82rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:var(--red);color:var(--w);padding:13px 28px;text-decoration:none;transition:background .2s;}
-.btn-red:hover{background:var(--red-dark);}
-
-/* FOOTER */
-footer{background:var(--b3);padding:28px 60px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--wf);flex-wrap:wrap;gap:12px;}
-.flogo{font-family:var(--fd);font-size:1.1rem;letter-spacing:.06em;color:var(--w);}
-.flogo span{color:var(--red);}
-.fcopy{font-family:var(--fc);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wd);}
-
-@media(max-width:900px){
-  nav{padding:16px 24px;}
-  .nback span{display:none;}
-  .hero{padding:100px 24px 60px;}
-  .form-card{padding:32px 24px;}
-  .section{padding:70px 24px;}
-  .features{grid-template-columns:1fr;}
-  .redir{padding:48px 24px;}
-  .redir-links{flex-direction:column;align-items:center;}
-  .btn-outline,.btn-red{width:100%;max-width:320px;justify-content:center;}
-  footer{flex-direction:column;text-align:center;padding:24px;}
-}
-</style>
+<meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
+<meta name="twitter:image" content="{{sites.url}}/photos/og-image.jpg">
+<link rel="stylesheet" href="/assets/page-extrait.css">
 </head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <a href="index.html" class="nlogo">Clem <span>Kart</span> Racing</a>
-  <a href="index.html" class="nback"><span>Retour au site</span></a>
-  <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="ncta-nav">Le guide · 16,99&nbsp;€</a>
-</nav>
-
-<!-- HERO + FORM -->
-<section class="hero">
-  <div class="hbg"></div>
-  <div class="hgrid"></div>
-  <div class="hero-inner">
-    <span class="badge">Gratuit · Direct dans ta boîte mail</span>
-    <h1>L'EXTRAIT<br>DU <span class="r">GUIDE</span><br><span class="sk">GRATUIT</span></h1>
-    <p class="hero-sub">L'introduction complète de <strong>« Comprendre comment rouler plus vite »</strong> et le chapitre sur le freinage dégressif. Renseigne ton email, l'extrait arrive dans la minute, <strong>avec mon tableur de réglages en cadeau</strong>.</p>
-
-    <div class="form-card">
-      <span class="form-label">Reçois l'extrait gratuitement</span>
-      <form id="lm-form" onsubmit="sendLeadMagnet(event)">
-        <input
-          id="lm-email"
-          type="email"
-          placeholder="Ton email"
-          required
-          autocomplete="email"
-        >
-        <button id="lm-btn" type="submit" class="btn-gold">Recevoir l'extrait gratuitement →</button>
-        <p id="lm-msg" class="form-msg"></p>
-      </form>
-      <p class="form-note">Aucun spam. Désinscription en un clic.</p>
+<body class="page-extrait">
+<!-- Menu reduit des pages de capture : le logo et le retour au site, rien d autre.
+     Aucun prix ni lien vers le guide avant l email : la bande « Le guide complet » plus bas le presente apres la valeur. -->
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header class="nav nav-reduite nav-capture">
+  <div class="conteneur nav-inner">
+    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil">Clem <span>Kart</span> Racing</a>
+    <div class="nav-capture-liens">
+      <a class="nav-capture-retour" href="{{routes.accueil}}">Retour au site</a>
     </div>
   </div>
-</section>
+</header>
 
-<!-- CE QUE CONTIENT L'EXTRAIT -->
-<section class="section" style="background:var(--b2);">
-  <div class="section-inner">
-    <p class="sl-lab">Ce que tu reçois</p>
-    <h2 class="sth">UN VRAI MORCEAU <span class="r">DU GUIDE</span></h2>
-    <div class="features">
-      <div class="feat">
-        <div class="feat-n">01</div>
-        <h3>L'introduction complète</h3>
-        <p>La grille de lecture du guide : pourquoi tu stagnes malgré les heures de roulage, et ce qui produit réellement la vitesse.</p>
+<main id="contenu">
+
+  <!-- Hero : le formulaire est l objet. Colonnes 1 a 6 le texte et le champ, colonnes 8 a 12 les numeros de chapitre. -->
+  <section class="hero" data-hero aria-labelledby="titre-extrait">
+    <div class="conteneur grille">
+      <div class="col-6 hero-texte entree">
+        <p class="mono secondaire">Gratuit, par email</p>
+        <h1 id="titre-extrait" class="extrait-titre">L’extrait du guide, gratuit</h1>
+        <p class="chapo">{{extrait.promesse_courante}}. À tester à ta prochaine session.</p>
+
+        <!-- Sans JavaScript, le formulaire poste vers la fonction, qui renvoie sur #envoye -->
+        <form id="lm-form" class="formulaire extrait-form" action="/.netlify/functions/send-email" method="post">
+          <input type="hidden" name="magnet" value="extrait">
+          <div class="form-champs pile">
+            <div class="champ">
+              <label for="lm-email">Reçois l’extrait par email</label>
+              <input
+                id="lm-email"
+                name="email"
+                type="email"
+                placeholder="Ton email"
+                required
+                autocomplete="email"
+                inputmode="email"
+              >
+            </div>
+            <!-- Piege a robots : jamais visible, doit rester vide (send-email.js repond comme un succes sans rien envoyer) -->
+            <div class="champ-piege" aria-hidden="true">
+              <label for="site_web">Ne remplis pas ce champ</label>
+              <input id="site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <button id="lm-btn" type="submit" class="bouton bouton-principal bouton-large">{{extrait.bouton_courant}}</button>
+            <p class="mono secondaire extrait-form-note">Aucun spam. Désinscription en un clic. Détails dans la <a href="{{routes.confidentialite}}">politique de confidentialité</a>.</p>
+            <p id="lm-msg" class="form-message" aria-live="polite"></p>
+          </div>
+          <div class="form-envoye plaque-bloc" tabindex="-1" role="status">
+            <h2>C’est envoyé</h2>
+            <p>Regarde ta boîte, et les spams.</p>
+            <p>Le tableur est dans le même email.</p>
+            <p><a class="lien-texte" href="{{routes.guide}}#feuilleter" data-cta="extrait-apres">En attendant l’email, feuillette 4 pages du guide</a></p>
+          </div>
+        </form>
       </div>
-      <div class="feat">
-        <div class="feat-n">02</div>
-        <h3>Le freinage dégressif</h3>
-        <p>Un chapitre entier du guide : le rôle exact du freinage dans la rotation du kart, et pourquoi la façon dont tu relâches le frein compte plus que la façon dont tu appuies.</p>
-      </div>
-      <div class="feat">
-        <div class="feat-n">03</div>
-        <h3>Le tableur en cadeau</h3>
-        <p>Dans le même email, tu reçois aussi le tableur Excel que j'utilise après chaque session pour noter mes réglages et progresser.</p>
+
+      <div class="col-5 col-depart-8 hero-objet entree" aria-hidden="true">
+        <div class="extrait-pile">
+          <div class="extrait-pile-ligne">
+            <span class="mono">L’introduction complète</span>
+            <span class="numeral numeral-2">Intro</span>
+          </div>
+          <div class="extrait-pile-ligne extrait-pile-decalee">
+            <span class="mono">Le freinage dégressif</span>
+            <span class="numeral numeral-3">04</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- REDIRECTIONS -->
-<div class="redir">
-  <p>Tu veux directement la méthode complète ?</p>
-  <div class="redir-links">
-    <a href="https://clemkartracing.gumroad.com/l/umjfwx" target="_blank" rel="noopener" class="btn-red">Le guide complet · 16,99&nbsp;€ →</a>
-    <a href="index.html" class="btn-outline">← Retour au site</a>
-    <a href="race-engineer-ai.html" class="btn-outline">Découvrir l'app IA</a>
-  </div>
-</div>
+  <!-- Ce que tu recois : le filet de depart en tete (seul rouge hors bouton), deux blocs alignes en haut
+       (les numeros geants restent l image du hero, pas repris ici), la ligne du tableur, puis la ligne honnete -->
+  <section class="section filet-depart reveal" aria-labelledby="titre-recois">
+    <div class="conteneur">
+      <h2 id="titre-recois">Ce que tu reçois</h2>
+      <div class="grille extrait-blocs">
+        <article class="col-5 extrait-bloc">
+          <div class="filet-apex" aria-hidden="true"></div>
+          <h3 class="extrait-bloc-titre">L’introduction complète</h3>
+          <p>Pourquoi tu stagnes malgré les heures de roulage. Le guide part d’une idée simple : un kart n’a pas besoin d’être forcé, il a besoin d’être compris. L’introduction pose cette grille de lecture.</p>
+        </article>
+        <article class="col-6 extrait-bloc extrait-bloc-droite">
+          <div class="filet-apex" aria-hidden="true"></div>
+          <h3 class="extrait-bloc-titre">Chapitre 04 : le freinage dégressif</h3>
+          <p>Un chapitre entier, tel qu’il est dans le guide. Pourquoi la façon dont tu relâches le frein compte plus que la façon dont tu appuies. Et pourquoi c’est le relâché qui décide si le kart pivote.</p>
+        </article>
+      </div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="flogo">Clem <span>Kart</span> Racing</div>
-  <p class="fcopy">© 2026 Clément Daniel · Tous droits réservés</p>
-</footer>
+      <div class="extrait-tableur">
+        <h3>Le tableur de réglages</h3>
+        <div>
+          <p>Dans le même email. Tu notes ce que tu changes, un seul réglage à la fois, pour arrêter de deviner.</p>
+          <ol class="extrait-onglets mono" aria-label="Les cinq onglets du tableur">
+            <li>Accueil</li>
+            <li>Journal</li>
+            <li>Guide des réglages</li>
+            <li>Diagnostic express</li>
+            <li>Pressions et pluie</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- La ligne honnete, sous le tableur dans le meme conteneur : aucun titre, un filet d apex au-dessus -->
+      <div class="extrait-honnete">
+        <div class="filet-apex" aria-hidden="true"></div>
+        <p>Pas de réglage de carburation, pas de promesse de chrono.</p>
+        <p>Tu reçois un email tout de suite, puis un seul rappel sur le guide.</p>
+        <p>Désinscription à chaque email.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Retour sans JavaScript (#envoye) : visible seulement quand l adresse porte l ancre -->
+  <div class="conteneur">
+    <div id="envoye" class="notice notice-ok extrait-envoye" role="status">
+      <p>Envoyé. Regarde ta boîte mail.</p>
+      <p>Si tu ne vois rien, regarde dans Promotions ou dans les spams.</p>
+      <p><a class="lien-texte" href="{{routes.guide}}#feuilleter" data-cta="extrait-apres">En attendant l’email, feuillette 4 pages du guide</a></p>
+    </div>
+  </div>
+
+  <!-- Le guide complet : la seule bande de la page, le prix arrive ici seulement -->
+  <section class="section-fond-2 filet-haut filet-bas extrait-guide reveal" aria-labelledby="titre-guide-complet">
+    <div class="conteneur grille">
+      <div class="col-2">
+        <a class="planche" href="{{routes.guide}}" data-cta="extrait-planche">
+          <img src="/guide/page-01.png" width="640" height="906" loading="lazy" alt="Première page du guide «&nbsp;{{guide.titre}}&nbsp;» : le sommaire des {{guide.chapitres}} chapitres">
+        </a>
+      </div>
+      <div class="col-6 col-depart-3">
+        <h2 id="titre-guide-complet">Le guide complet</h2>
+        <p class="chapo">Tu veux la méthode entière, les <span class="insecable">{{guide.chapitres}}</span> chapitres, dans l’ordre ?</p>
+      </div>
+      <div class="col-3 col-depart-10 extrait-guide-action">
+        <a class="bouton bouton-fantome bouton-large" href="{{routes.guide}}" data-cta="extrait-guide">Le guide complet <span class="chrono">{{guide.prix_affiche}}</span></a>
+        <span class="bouton-sous">PDF de <span class="insecable">{{guide.pages}} pages</span>. Garantie <span class="insecable">{{garantie_jours}} jours</span> en plus de tes droits légaux.</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{{partial:footer}}
 
 <script>
-// Envoi du lead magnet extrait (fonction Netlify -> Brevo)
-async function sendLeadMagnet(e) {
-  e.preventDefault();
-  const email = document.getElementById('lm-email').value.trim();
-  const btn   = document.getElementById('lm-btn');
-  const msg   = document.getElementById('lm-msg');
-  if (!email) return;
+// Envoi de l extrait (fonction Netlify vers Brevo). Corps : { email, magnet: 'extrait', site_web } (site_web = piege a robots, vide pour un humain).
+// Sans JavaScript, le formulaire poste lui-meme (action) et la fonction renvoie sur #envoye.
+(function () {
+  var form = document.getElementById('lm-form');
+  if (!form) return;
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var champ = document.getElementById('lm-email');
+    var btn = document.getElementById('lm-btn');
+    var msg = document.getElementById('lm-msg');
+    var email = champ.value.trim();
+    if (!email) return;
 
-  const original = btn.textContent;
-  btn.textContent = 'Envoi en cours…';
-  btn.disabled = true;
-  msg.style.color = 'var(--wd)';
-  msg.textContent = '';
+    var original = btn.textContent;
+    btn.textContent = 'Envoi en cours';
+    btn.disabled = true;
+    msg.className = 'form-message';
+    msg.textContent = '';
 
-  try {
-    const res = await fetch('/.netlify/functions/send-email', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ email, magnet: 'extrait' })
-    });
-
-    if (res.ok) {
+    try {
+      var res = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email: email, magnet: 'extrait', site_web: form.site_web ? form.site_web.value : '' })
+      });
+      if (!res.ok) throw new Error('API error');
       if (window.__ckrTrack) window.__ckrTrack('extrait_signup');
-      btn.textContent = '✓ Envoyé ! Vérifie ta boîte mail';
-      btn.style.background = 'rgba(201,168,76,.7)';
-      msg.style.color = 'var(--gold)';
-      msg.textContent = 'Pense à regarder dans Promotions / Spam si tu ne le vois pas dans 2 minutes.';
-      document.getElementById('lm-email').value = '';
-    } else {
-      throw new Error('API error');
+      /* Meme hauteur avant et apres : la page ne saute pas quand la plaque remplace les champs */
+      form.style.minHeight = form.offsetHeight + 'px';
+      form.classList.add('est-envoye');
+      var envoye = form.querySelector('.form-envoye');
+      if (envoye) envoye.focus();
+    } catch (err) {
+      btn.textContent = original;
+      btn.disabled = false;
+      msg.className = 'form-message est-erreur';
+      msg.textContent = 'L’envoi n’a pas marché. Réessaie, ou écris-moi à {{contact.email}}.';
     }
-  } catch(err) {
-    btn.textContent = original;
-    btn.disabled = false;
-    msg.style.color = 'var(--red)';
-    msg.textContent = "Erreur d'envoi. Réessaie ou contacte-moi sur Instagram.";
-  }
-}
-</script>
-
-<!-- Analytics maison (anonyme, sans cookie) -->
-<script>
-(function(){
-  var FN='/.netlify/functions/track-site';
-  var sid;
-  try{ sid=sessionStorage.getItem('ckr_sid'); if(!sid){ sid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2); sessionStorage.setItem('ckr_sid',sid);} }catch(e){ sid=null; }
-  function send(type,meta){
-    try{
-      var u=new URLSearchParams(location.search);
-      var body=JSON.stringify({type:type,path:location.pathname,referrer:document.referrer||'',utm_source:u.get('utm_source'),utm_medium:u.get('utm_medium'),utm_campaign:u.get('utm_campaign'),session_id:sid,meta:meta||null});
-      if(navigator.sendBeacon){ navigator.sendBeacon(FN,new Blob([body],{type:'application/json'})); }
-      else{ fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true}); }
-    }catch(e){}
-  }
-  window.__ckrTrack = send;
-  send('pageview');
-  document.addEventListener('click',function(e){
-    var a=e.target.closest?e.target.closest('a[href]'):null; if(!a) return;
-    var h=a.getAttribute('href')||'';
-    if(h.indexOf('/l/umjfwx')>-1) send('gumroad_click',{cta:a.className||''});
-    else if(h.indexOf('extrait-guide')>-1) send('extract_click',{cta:a.className||''});
-    else if(h.indexOf('tableur-reglages')>-1) send('tableur_click',{cta:a.className||''});
-  },true);
+  });
 })();
 </script>
 

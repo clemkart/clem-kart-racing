@@ -57,6 +57,12 @@ let ip = 0;
   r = await envoi({ type: 'pageview', site: `6aaa67e132e52cb3305791ad--${SITE2}`, path: '/', session_id: 's3' });
   check('adresse de brouillon Netlify = site2-brouillon', r.ligne && r.ligne.meta && r.ligne.meta.site === 'site2-brouillon', JSON.stringify(r.ligne && r.ligne.meta));
 
+  r = await envoi({ type: 'pageview', site: `abc--${SITE1}`, path: '/guide/', session_id: 's3b' });
+  check('brouillon Netlify du site 1 = site1-brouillon (jamais compte comme production)', r.ligne && r.ligne.meta && r.ligne.meta.site === 'site1-brouillon', JSON.stringify(r.ligne && r.ligne.meta));
+
+  r = await envoi({ type: 'stripe_click', site: SITE1, path: '/guide/', session_id: 's3c', meta: { cta: 'guide' } });
+  check('site 1 en production : aucune etiquette (historique inchange)', r.ligne && r.ligne.meta && !r.ligne.meta.site, JSON.stringify(r.ligne && r.ligne.meta));
+
   r = await envoi({ type: 'pageview', site: '127.0.0.1', path: '/onboard/', session_id: 's4' });
   check('apercu local = local', r.ligne && r.ligne.meta && r.ligne.meta.site === 'local', JSON.stringify(r.ligne && r.ligne.meta));
 
@@ -69,6 +75,25 @@ let ip = 0;
   section('site 1 inchange');
   r = await envoi({ type: 'gumroad_click', path: '/extrait-guide.html', session_id: 's7', meta: { cta: 'btn-red' } });
   check('evenement du site 1 sans etiquette de site', r.ligne && r.ligne.meta && !r.ligne.meta.site && r.ligne.meta.cta === 'btn-red', JSON.stringify(r.ligne && r.ligne.meta));
+
+  section('V4 : page de liens (/liens) et portes /aller/* du site 1');
+  r = await envoi({ type: 'bio_click', path: '/liens', session_id: 's9', utm_source: 'instagram', utm_medium: 'bio',
+    meta: { bouton: 'guide', position: 1, plateforme: 'instagram', cible: '/guide' } });
+  check('bio_click accepte', r.ligne && r.ligne.type === 'bio_click');
+  check('bio_click garde bouton, position, plateforme, cible', r.ligne && r.ligne.meta && r.ligne.meta.bouton === 'guide' && r.ligne.meta.position === 1 && r.ligne.meta.plateforme === 'instagram' && r.ligne.meta.cible === '/guide', JSON.stringify(r.ligne && r.ligne.meta));
+  check('bio_click du site 1 : pas d etiquette de site, source = instagram (UTM)', r.ligne && !r.ligne.meta.site && r.ligne.source === 'instagram', r.ligne && r.ligne.source);
+
+  r = await envoi({ type: 'stripe_click', path: '/guide', session_id: 's9', meta: { cta: 'haut', zone: 'prix', route: '/aller/guide', cible: 'guide' } });
+  check('stripe_click du site 1 accepte (porte /aller/guide)', r.ligne && r.ligne.type === 'stripe_click' && r.ligne.path === '/guide');
+  check('stripe_click garde cta, zone, route, cible', r.ligne && r.ligne.meta && r.ligne.meta.cta === 'haut' && r.ligne.meta.zone === 'prix' && r.ligne.meta.route === '/aller/guide' && r.ligne.meta.cible === 'guide', JSON.stringify(r.ligne && r.ligne.meta));
+  check('stripe_click du site 1 : pas d etiquette de site', r.ligne && !r.ligne.meta.site);
+
+  r = await envoi({ type: 'bio_click', path: '/liens', session_id: 's10', meta: { bouton: 'x'.repeat(500), position: '3', plateforme: { hack: true }, cible: null, note: 12.7 } });
+  check('bio_click : chaine trop longue tronquee a 120', r.ligne && r.ligne.meta && r.ligne.meta.bouton.length === 120, r.ligne && r.ligne.meta && r.ligne.meta.bouton.length);
+  check('bio_click : objet, null jetes ; position texte gardee telle quelle ; nombre tronque en entier', r.ligne && r.ligne.meta && !('plateforme' in r.ligne.meta) && !('cible' in r.ligne.meta) && r.ligne.meta.position === '3' && r.ligne.meta.note === 12, JSON.stringify(r.ligne && r.ligne.meta));
+
+  r = await envoi({ type: 'bio_click', path: '/liens', session_id: 's11', meta: { bouton: 'guide', position: 1 }, referrer: 'https://l.instagram.com/' });
+  check('bio_click sans UTM : source depuis le referrer', r.ligne && r.ligne.source === 'instagram', r.ligne && r.ligne.source);
 
   section('format du corps');
   r = await envoi({ type: 'diag_start', site: SITE2, path: '/onboard/', session_id: 's8' }, { base64: true });

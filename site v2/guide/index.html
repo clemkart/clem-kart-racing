@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Comprendre comment rouler plus vite : le guide de pilotage karting | {{marque.nom}}</title>
+<meta name="description" content="Un guide PDF de {{guide.pages}} pages pour comprendre pourquoi tes bons tours sont bons, et les refaire. Par {{marque.auteur}}. {{faits.ligne}} {{textes.garantie_courte}}.">
+<link rel="canonical" href="{{sites.url}}{{routes.guide}}">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Comprendre comment rouler plus vite : le guide de pilotage karting">
+<meta property="og:description" content="Un guide PDF de {{guide.pages}} pages pour comprendre pourquoi tes bons tours sont bons, et les refaire. {{textes.garantie_courte}}.">
+<meta property="og:url" content="{{sites.url}}{{routes.guide}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-guide.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Clément Daniel en pleine courbe dans son kart rouge numéro 95, à côté de la couverture du guide Comprendre comment rouler plus vite">
+<meta name="twitter:image" content="{{sites.url}}/photos/og-guide.jpg">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 900px)" imagesrcset="/guide/couverture-640.webp 640w, /guide/couverture-1280.webp 1280w" imagesizes="420px" fetchpriority="high">
+<link rel="stylesheet" href="/assets/page-guide.css">
+</head>
+<body class="page-guide" data-page="guide">
+{{partial:nav}}
+
+<main id="contenu" class="sous-nav">
+
+  <!-- Hero : la promesse, le prix deja connu du visiteur, la vraie couverture du PDF posee a droite
+       (guide/couverture-640 et -1280, page 1 du PDF exportee en WebP et PNG). -->
+  <section class="hero hero-guide" data-hero>
+    <div class="conteneur">
+      <div class="grille hero-grille">
+        <div class="hero-texte entree">
+          <p class="mono hero-surtitre">Guide de pilotage karting, en PDF</p>
+          <h1><span class="plaque-titre">Comprendre comment</span><span class="titre-ligne">rouler plus vite</span></h1>
+          <p class="chapo">Tu sais faire un bon tour.<br>Tu ne sais pas encore pourquoi il était bon.<br>Ce guide te l’explique, pour que tu le refasses.</p>
+          <p class="chrono hero-resume">{{guide.format}}, {{guide.pages}} pages, {{guide.chapitres}} chapitres, accès immédiat</p>
+          <div class="hero-actions">
+            <div class="hero-achat">
+              <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="hero" data-zone="hero">Obtenir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+              <p class="hero-sous hero-garantie">Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</p>
+              <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+            </div>
+            <a class="lien-texte" href="#feuilleter">Feuilleter quelques pages</a>
+          </div>
+          <p class="chrono hero-lecteurs">{{lecteurs.phrase}}</p>
+        </div>
+        <div class="hero-objet entree entree-suivante">
+          <a class="planche planche-couverture" href="/guide/couverture-1280.png" data-planche>
+            <picture>
+              <source type="image/webp" srcset="/guide/couverture-640.webp 640w, /guide/couverture-1280.webp 1280w" sizes="(min-width: 900px) 420px, 60vw">
+              <img src="/guide/couverture-640.png" srcset="/guide/couverture-640.png 640w, /guide/couverture-1280.png 1280w" sizes="(min-width: 900px) 420px, 60vw" width="640" height="906" fetchpriority="high" decoding="async" alt="Couverture du guide {{guide.titre}}, par {{marque.auteur}} : {{guide.chapitres}} chapitres, {{guide.chapitres}} virages, un circuit">
+            </picture>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2 : feuilleter. Le debut de l introduction en vrai texte, puis un renvoi vers l extrait gratuit. -->
+  <section class="section filet-depart feuilleter" id="feuilleter">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-7 feuilleter-texte reveal">
+          <div class="entete-section">
+            <h2>Feuilleter avant d’acheter</h2>
+            <p class="chapo">Le début de l’introduction, tel qu’il est dans le PDF, et quatre pages des premiers chapitres. Sans email.</p>
+          </div>
+          <article class="intro-guide">
+            <h3>Avant d’apprendre à aller vite</h3>
+            <p>Le karting est l’une des formes de pilotage les plus pures. Pas d’assistance, pas de suspension, pas de différentiel, peu d’inertie. Rien pour masquer les erreurs, rien pour compenser les excès. Dans un kart, chaque geste compte. Chaque pression, chaque angle, chaque mouvement. Le pilote n’est jamais éloigné de la mécanique : il en fait partie.</p>
+            <p>C’est précisément cette simplicité qui rend la discipline exigeante. Pour aller vite, il ne suffit pas d’être courageux ou volontaire. Il faut comprendre ce que la machine demande, comment elle réagit, pourquoi elle accepte ou refuse une action. Le kart est une mécanique vivante. Il glisse, il crisse, il se charge, il se déleste. Il impose sa logique, et le pilote qui tente de la dominer finit toujours par perdre du temps.</p>
+            <p>La vérité, c’est que la plupart des pilotes roulent sans jamais apprendre la structure réelle d’un virage. Ils freinent comme ils peuvent, tournent quand ils pensent que c’est le bon moment, réaccélèrent quand la piste les y oblige. Ils cherchent la vitesse dans l’agressivité, alors qu’elle réside dans la maîtrise.</p>
+            <p>Ce livre a été conçu pour une autre approche.</p>
+            <p class="intro-suite">La suite de l’introduction et le chapitre du freinage dégressif en entier sont dans l’extrait gratuit. <a href="{{routes.extrait}}" data-cta="feuilleter-extrait">{{extrait.appel_courant}}</a></p>
+          </article>
+        </div>
+
+        <!-- Colonnes 9 a 12 : quatre vraies pages du PDF, collantes sous la nav. Le clic ouvre la page en grand ; sans JavaScript, le lien ouvre l image. -->
+        <div class="col-4 feuilleter-planches reveal reveal-decale-1">
+          <ul class="planche-rail">
+            <li><a class="planche" href="/guide/page-02.png" data-planche><picture><source type="image/webp" srcset="/guide/page-02.webp"><img src="/guide/page-02.png" width="640" height="906" loading="lazy" decoding="async" alt="Page 7 du guide : le vrai rôle du pilote, texte du chapitre 01"></picture></a></li>
+            <li><a class="planche" href="/guide/page-03.png" data-planche><picture><source type="image/webp" srcset="/guide/page-03.webp"><img src="/guide/page-03.png" width="640" height="906" loading="lazy" decoding="async" alt="Page 11 du guide : le transfert de masse au freinage et au relâché, schéma du chapitre 02"></picture></a></li>
+            <li><a class="planche" href="/guide/page-04.png" data-planche><picture><source type="image/webp" srcset="/guide/page-04.webp"><img src="/guide/page-04.png" width="640" height="906" loading="lazy" decoding="async" alt="Page 17 du guide : ouverture du chapitre 04, le freinage dégressif"></picture></a></li>
+            <li><a class="planche" href="/guide/page-05.png" data-planche><picture><source type="image/webp" srcset="/guide/page-05.webp"><img src="/guide/page-05.png" width="640" height="906" loading="lazy" decoding="async" alt="Page 19 du guide : le freinage dégressif, schéma de la pression de frein et de la fenêtre de rotation"></picture></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Dosage : seulement le debut de l introduction et quatre pages des chapitres 01 a 04 (le freinage degressif
+           est deja offert dans l extrait gratuit). Les chapitres 05 a 13 restent dans le guide. -->
+      <div class="grille feuilleter-rangee">
+        <div class="col-12 reveal">
+          <div class="feuilleter-suite">
+            <a class="bouton bouton-fantome" href="{{guide.aller}}" data-cta="feuilleter" data-zone="feuilleter">Obtenir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+            <span class="bouton-sous">Accès immédiat après le paiement. Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</span>
+            <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3 : pour qui, pas pour qui. Deux colonnes 6/6 separees par un filet vertical ; sur telephone, un filet horizontal. -->
+  <section class="section pourqui reveal">
+    <div class="conteneur">
+      <h2 class="visuellement-cache">Pour qui, pas pour qui</h2>
+      <div class="grille pourqui-grille">
+        <div class="col-6 pourqui-colonne">
+          <h3>Prends-le si</h3>
+          <p>Tu roules avec ton kart et tu plafonnes.<br>Tu sors parfois un tour qui te surprend, sans savoir d’où il vient.<br>Tu débutes en compétition, ou tu roules depuis des années et le chrono ne bouge plus.</p>
+        </div>
+        <div class="col-6 pourqui-colonne pourqui-non">
+          <h3>Passe ton chemin si</h3>
+          <p>Tu ne roules qu’en location : le kart change à chaque session. Commence par <a href="{{routes.extrait}}" data-cta="pourqui-extrait">l’extrait gratuit</a>.<br>Tu cherches un réglage de carbu : il n’y en a pas dedans.<br>Tu veux un chiffre promis sur ton chrono : personne d’honnête ne peut le faire.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4 : le sommaire, reproduit comme la page 2 du PDF (cinq parties, numeros de page reels).
+       La mention « dans l extrait » suit extrait.version : 2 = chapitre 04 seul, 3 = chapitres 03, 04 et 05. -->
+  <section class="section filet-haut sommaire-section reveal" data-extrait-version="{{extrait.version}}">
+    <div class="conteneur">
+      <div class="entete-section">
+        <h2>Ce que tu vas comprendre</h2>
+        <p class="chapo"><span class="chrono">{{guide.chapitres}} chapitres</span>. Chacun règle une chose. Dans l’ordre où elle se joue dans le virage.</p>
+      </div>
+      <div class="grille sommaire">
+        <div class="col-6">
+          <div class="sommaire-partie">
+            <p class="libelle">Partie I : Comprendre la machine</p>
+            <ol class="sommaire-liste">
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">01</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Le vrai rôle du pilote</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 6</span></div>
+                  <p class="sommaire-ligne">Pourquoi attaquer plus fort te fait perdre du temps.</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">02</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Comment fonctionne vraiment un kart</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 9</span></div>
+                  <p class="sommaire-ligne">Pas de différentiel, pas de suspension, et ce que ça change dans tes mains.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+          <div class="sommaire-partie">
+            <p class="libelle">Partie II : La technique pure</p>
+            <ol class="sommaire-liste">
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">03</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Les mains du pilote</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 14</span></div>
+                  <p class="sommaire-ligne">Tenir le volant pour lire le kart, pas pour le forcer.</p>
+                  <p class="mono sommaire-extrait" data-des="3">Dans l’extrait gratuit</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">04</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Le freinage dégressif</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 17</span></div>
+                  <p class="sommaire-ligne">Relâcher le frein au bon rythme pour que le kart accepte de tourner.</p>
+                  <p class="mono sommaire-extrait" data-des="2">Dans l’extrait gratuit</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">05</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">La rotation</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 21</span></div>
+                  <p class="sommaire-ligne">Faire pivoter le kart sans le brusquer, en délestant la roue arrière intérieure.</p>
+                  <p class="mono sommaire-extrait" data-des="3">Dans l’extrait gratuit</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">06</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Le point d’accélération</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 25</span></div>
+                  <p class="sommaire-ligne">Remettre les gaz au moment où la rotation est finie, pas avant.</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">07</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">La trajectoire réelle</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 29</span></div>
+                  <p class="sommaire-ligne">Suivre le grip du jour, pas le schéma appris.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="sommaire-partie">
+            <p class="libelle">Partie III : Lire la piste</p>
+            <ol class="sommaire-liste">
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">08</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Le grip</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 34</span></div>
+                  <p class="sommaire-ligne">Chaud, froid, sale, humide, et comment tu adaptes ton pilotage en deux tours.</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">09</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Rouler vite longtemps</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 39</span></div>
+                  <p class="sommaire-ligne">Constance, rythme, propreté, sans t’effondrer en fin de manche.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+          <div class="sommaire-partie">
+            <p class="libelle">Partie IV : Construire le pilote</p>
+            <ol class="sommaire-liste">
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">10</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Le mental</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 43</span></div>
+                  <p class="sommaire-ligne">Calme, ego, pression, lucidité, ce qui se passe dans ta tête à l’entrée du virage.</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">11</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">L’analyse post-session</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 46</span></div>
+                  <p class="sommaire-ligne">Lire ta session toi-même, remonter du symptôme à la cause.</p>
+                </div>
+              </li>
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">12</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">L’entraînement</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 49</span></div>
+                  <p class="sommaire-ligne">6 exercices à faire sur n’importe quelle journée de roulage, seul ou en équipe.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+          <div class="sommaire-partie">
+            <p class="libelle">Partie V : Synthèse et maîtrise</p>
+            <ol class="sommaire-liste">
+              <li class="sommaire-chapitre">
+                <span class="chrono chrono-bloc">13</span>
+                <div class="sommaire-corps">
+                  <div class="sommaire-tete"><span class="sommaire-titre">Les 10 fondements du pilotage karting</span><span class="sommaire-conduite" aria-hidden="true"></span><span class="mono sommaire-page">p. 55</span></div>
+                  <p class="sommaire-ligne">Le socle, sur une page, à relire avant chaque session.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <p class="sommaire-fin">Aucun réglage de carburation. Aucune promesse de chrono. Du pilotage.</p>
+    </div>
+  </section>
+
+  <!-- Section 5 : les trois croyances et le virage. Le seul dessin du site : geometrique, un seul trait rouge, aucun compteur. -->
+  <section class="section croyances reveal">
+    <div class="conteneur">
+      <div class="entete-section">
+        <h2>Trois choses que tu crois, et qui te ralentissent</h2>
+      </div>
+      <div class="grille">
+        <div class="col-5 virage">
+          <svg viewBox="0 0 560 420" role="img" aria-labelledby="virage-titre virage-desc" class="virage-schema">
+            <title id="virage-titre">Schéma d’un virage : zone de freinage dégressif, rotation, point d’accélération</title>
+            <desc id="virage-desc">Un virage à droite vu de dessus. En tirets, la trajectoire apprise vise la corde géométrique. En trait plein rouge, la trajectoire du grip : freinage dégressif dans la zone hachurée, rotation à la corde, remise des gaz une fois la rotation finie.</desc>
+            <defs>
+              <pattern id="virage-hachures" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="7" class="virage-hachure"></line>
+              </pattern>
+            </defs>
+            <!-- zone de freinage degressif, sur la ligne droite d entree -->
+            <rect x="31" y="280" width="98" height="140" fill="url(#virage-hachures)"></rect>
+            <!-- bords de piste -->
+            <path class="virage-bord" d="M 30 420 V 230 A 170 170 0 0 1 200 60 H 560"></path>
+            <path class="virage-bord" d="M 130 420 V 230 A 70 70 0 0 1 200 160 H 560"></path>
+            <!-- sens de la piste -->
+            <path class="virage-sens" d="M 470 110 H 520 M 512 104 L 520 110 L 512 116"></path>
+            <!-- trajectoire apprise : un seul arc de cercle, tangent au bord exterieur a l entree et a la sortie,
+                 qui touche la corde geometrique a 45 degres (centre du virage 200,230 ; bord interieur rayon 70) -->
+            <path class="virage-apprise" d="M 40.2 420 A 362.8 362.8 0 0 1 402.8 70 H 560"></path>
+            <!-- trajectoire du grip : droite a l exterieur pendant le freinage, entree en virage (rayon 80) pendant
+                 que le frein se relache, ligne vers la corde, rotation sur un arc rond qui touche la corde a 55 degres
+                 (rayon 120, 42 degres de rotation), puis sortie droite qui rejoint le bord exterieur (rayon 220).
+                 Toutes les jonctions sont tangentes (cap d entree -58 degres, cap de sortie -16 degres). -->
+            <path class="virage-grip" d="M 40 420 V 357.2 A 80 80 0 0 1 52.2 314.8 L 122.9 201.6 A 120 120 0 0 1 191.6 149.9 L 440.4 78.5 A 220 220 0 0 1 501.1 70 H 560"></path>
+            <!-- point de corde (rotation) et point d acceleration (fin de la rotation) -->
+            <rect class="virage-point" x="153" y="164" width="6" height="6"></rect>
+            <rect class="virage-point virage-point-gaz" x="189" y="147" width="6" height="6"></rect>
+            <!-- libelles, dans l interieur du virage -->
+            <text class="virage-texte virage-texte-titre" x="214" y="178">Point d’accélération</text>
+            <text class="virage-texte" x="214" y="196">une fois la rotation finie</text>
+            <text class="virage-texte virage-texte-titre" x="150" y="234">Rotation</text>
+            <text class="virage-texte" x="150" y="252">la roue arrière intérieure</text>
+            <text class="virage-texte" x="150" y="270">se déleste</text>
+            <text class="virage-texte virage-texte-titre" x="146" y="322">Freinage dégressif</text>
+            <text class="virage-texte" x="146" y="340">le frein se relâche,</text>
+            <text class="virage-texte" x="146" y="358">le kart accepte de tourner</text>
+            <!-- legende -->
+            <path class="virage-apprise" d="M 330 391 H 358"></path>
+            <text class="virage-texte" x="366" y="396">Trajectoire apprise</text>
+            <path class="virage-grip" d="M 330 411 H 358"></path>
+            <text class="virage-texte" x="366" y="416">Trajectoire du grip</text>
+          </svg>
+        </div>
+        <div class="col-6 croyances-liste">
+          <div class="croyance">
+            <p class="mono croyance-libelle">Ce que tu crois</p>
+            <p class="croyance-phrase"><s>« Je dois freiner plus tard. »</s></p>
+            <p class="croyance-reponse">Freiner plus tard décale ton relâché. La roue arrière intérieure ne se décharge plus, le kart refuse de pivoter. Tu perds dans le virage ce que tu croyais gagner au freinage.</p>
+          </div>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <div class="croyance">
+            <p class="mono croyance-libelle">Ce que tu crois</p>
+            <p class="croyance-phrase"><s>« Je dois braquer plus fort. »</s></p>
+            <p class="croyance-reponse">Le volant est un capteur, pas une commande. Plus tu serres et plus tu braques, plus tu satures le châssis. Il ne respire plus, et il tourne moins.</p>
+          </div>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <div class="croyance">
+            <p class="mono croyance-libelle">Ce que tu crois</p>
+            <p class="croyance-phrase"><s>« Je dois suivre la trajectoire idéale. »</s></p>
+            <p class="croyance-reponse">Elle n’existe pas. C’est le grip qui dicte la trajectoire, et il change à chaque session. La rigidité scolaire est une cause de lenteur, pas une solution.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6 : preuves. Trois messages recus, tels quels, sans etoiles, sans prenom.
+       Meme mise en page que l accueil : trois colonnes des 900 px (base.css, .quotes-trois). -->
+  <section class="section filet-haut preuves reveal">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-12 preuves-colonne">
+          <div class="entete-section">
+            <h2>Messages reçus de lecteurs, reproduits tels quels</h2>
+          </div>
+          <div class="quotes quotes-trois">
+            <blockquote class="quote-colonne">
+              <p>« J’ai appris beaucoup et comme je suis visuel, ça fonctionne très bien. Je me suis vraiment amélioré en compétition, un podium le week-end dernier. Merci de tes conseils. »</p>
+              <footer>Pilote en compétition</footer>
+            </blockquote>
+            <blockquote class="quote-colonne">
+              <p>« Franchement, c’est hyper bien fait. Bravo. Et je pense encore lire les exos, c’est une super idée. »</p>
+              <footer>Lecteur du guide</footer>
+            </blockquote>
+            <blockquote class="quote-colonne">
+              <p>« Vraiment neuf, ça fait du bien à lire. Les concepts sont bien expliqués et c’est applicable rapidement. »</p>
+              <footer>Lecteur du guide</footer>
+            </blockquote>
+          </div>
+          <p class="mention quotes-mention">Sans étoiles, sans note. Prénoms retirés tant que je n’ai pas leur accord écrit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7 : l auteur. Photo petite a gauche, texte a droite, aucun bouton. -->
+  <section class="section auteur reveal">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="auteur-photo">
+          <figure class="photo photo-portrait">
+            <picture>
+              <source type="image/webp" srcset="/photos/clement-trophee-640.webp 640w" sizes="280px">
+              <img src="/photos/clement-trophee-640.jpg" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel, auteur du guide, tout sourire avec un trophée d’Ancenis dans une main et son casque dans l’autre">
+            </picture>
+          </figure>
+        </div>
+        <div class="auteur-texte">
+          <h2>Qui l’a écrit</h2>
+          <p>Je m’appelle Clément Daniel. Pas de mécano, pas de team : j’ai tout appris seul.<br>J’ai passé des années à ne pas comprendre pourquoi le tour d’avant était meilleur.<br>Ce guide, c’est ce que j’aurais voulu lire au début. Sans jargon, sans théorie creuse.</p>
+          <p class="chrono chrono-ligne">{{faits.anciennete}} · {{faits.titre_court}} · NSK et Rotax Max</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8 : ce qui est livre, prix et garantie. La seule bande de prix du site. La barre collante se cache devant ce bloc. -->
+  <section class="section bloc-prix section-fond-1 filet-haut filet-bas reveal" id="prix">
+    <div class="conteneur">
+      <div class="entete-section">
+        <h2>Ce que tu reçois</h2>
+      </div>
+      <div class="grille">
+        <div class="col-5 prix-colonne">
+          <p class="chrono-grand"><strong>{{guide.prix_affiche}}</strong></p>
+          <ul class="prix-lignes">
+            <li class="mono">Paiement unique</li>
+            <li class="mono">Accès immédiat</li>
+            <li class="mono">{{guide.format}}, {{guide.pages}} pages</li>
+          </ul>
+        </div>
+        <div class="col-6 prix-detail">
+          <ul class="liste">
+            <li>Le guide en PDF, {{guide.pages}} pages, {{guide.chapitres}} chapitres, lisible sur téléphone, tablette et ordinateur.</li>
+            <li>Les schémas et les 6 exercices du chapitre 12.</li>
+            <li>Mon tableur de réglages, version acheteurs : tu notes ce que tu changes, le guide t’explique pourquoi ça marche.</li>
+            <li>L’accès tout de suite après le paiement, sur la page qui suit.</li>
+          </ul>
+          <div class="prix-action">
+            <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="prix" data-zone="prix">Obtenir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+            <span class="bouton-sous">Paiement sécurisé par Stripe, accès immédiat après le paiement.</span>
+            <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+          </div>
+          <p class="prix-garantie">Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.<br>Tu lis. Si ça ne t’apporte rien, un email dans les <span class="chrono">{{garantie_jours}} jours</span> et je te rembourse.<br>Sans justification, sans formulaire.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 9 : FAQ, sept questions, details natifs. -->
+  <section class="section faq-section reveal">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-8">
+          <div class="entete-section">
+            <h2>Avant de te décider</h2>
+          </div>
+          <div class="faq">
+            <details>
+              <summary>Je débute. C’est trop technique pour moi ?</summary>
+              <p>Non. Le guide part de zéro : comment un kart tourne, ce que tes mains font, ce que ton pied fait.<br>Chaque idée est expliquée avant d’être utilisée.<br>Si tu sais déjà faire un tour propre, tu as le niveau pour le lire.</p>
+            </details>
+            <details>
+              <summary>C’est des exercices ou de la théorie ?</summary>
+              <p>Les deux, dans cet ordre.<br>Les chapitres 1 à 10 t’expliquent ce qui se passe dans le kart.<br>Les chapitres 11 et 12 te donnent la méthode et 6 exercices à faire dès ta prochaine session.</p>
+            </details>
+            <details>
+              <summary>Je roule en location. Ça marche pour moi ?</summary>
+              <p>Le pilotage, oui. La lecture du kart, moins.<br>En location, le châssis, le moteur et les pneus changent à chaque session. Tu ne peux pas tester un réglage d’une fois sur l’autre.<br>Si tu ne roules qu’en location, commence par <a href="{{routes.extrait}}">l’extrait gratuit</a> et garde ton argent.</p>
+            </details>
+            <details>
+              <summary>Je reçois quoi, et quand ?</summary>
+              <p>Juste après le paiement, une page te donne le PDF et le tableur de réglages.<br>Tu télécharges tout de suite. Tu reçois aussi le reçu Stripe par email.<br>Si tu perds le lien, tu m’écris à <a href="mailto:{{contact.email}}">{{contact.email}}</a> et je te le renvoie sous <span class="chrono">{{delais.renvoi_lien_h}} h</span>.</p>
+            </details>
+            <details>
+              <summary>Et si ça ne m’apporte rien ?</summary>
+              <p>Tu m’écris dans les <span class="chrono">{{garantie_jours}} jours</span>, et je te rembourse.<br>Sans justification, sans formulaire.<br>C’est ma garantie. Elle s’ajoute à tes droits légaux, elle ne les remplace pas.</p>
+            </details>
+            <details>
+              <summary>C’est différent de tes vidéos ?</summary>
+              <p>Mes vidéos montrent une idée à la fois, en une minute.<br>Le guide les met dans l’ordre, du premier virage au dernier, et explique pourquoi elles marchent ensemble.<br>Ce que tu as vu en vidéo, tu comprends enfin d’où ça vient.</p>
+            </details>
+            <details>
+              <summary>Et mon droit de rétractation de 14 jours ?</summary>
+              <p>Le guide est un contenu numérique livré tout de suite.<br>Au paiement, tu coches une case : tu demandes à accéder au guide dès le paiement, et tu reconnais perdre ton droit de rétractation dès cet accès (article L221-28 13° du Code de la consommation).<br>Ma garantie <span class="chrono">{{garantie_jours}} jours</span> s’ajoute à tes droits légaux : si ça ne t’apporte rien, un email et je te rembourse.<br>Tout est détaillé dans les <a href="{{routes.cgv}}">CGV</a>.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 10 : dernier bouton, la photo en piste a gauche (colonnes 1 a 5). La barre collante se cache devant ce bloc. -->
+  <section class="section filet-haut final reveal" id="final">
+    <div class="conteneur">
+      <div class="grille">
+        <figure class="photo final-photo">
+          <picture>
+            <source type="image/webp" srcset="/photos/piste-95-virage-960.webp 960w, /photos/piste-95-virage-1600.webp 1600w" sizes="(min-width: 900px) 40vw, calc(100vw - 32px)">
+            <img src="/photos/piste-95-virage-960.jpg" srcset="/photos/piste-95-virage-960.jpg 960w, /photos/piste-95-virage-1600.jpg 1600w" sizes="(min-width: 900px) 40vw, calc(100vw - 32px)" width="960" height="640" loading="lazy" decoding="async" alt="Clément Daniel en pleine courbe au volant de son kart rouge numéro 95, roue intérieure sur le vibreur">
+          </picture>
+        </figure>
+        <div class="col-7 final-colonne">
+          <h2 class="final-titre">Tu peux faire dix sessions de plus en espérant que ça vienne.</h2>
+          <p class="chapo">Ou tu lis ce soir, et à ta prochaine session tu sais quoi tester.<br>Une chose à la fois. Le guide te dit laquelle.</p>
+          <div class="final-action">
+            <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="final" data-zone="final">Je prends le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+            <span class="bouton-sous">Accès immédiat après le paiement. Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</span>
+            <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Barre collante : apparait quand le hero est sorti de l ecran, se cache devant le prix et le bouton final. -->
+<div class="barre" role="region" aria-label="Obtenir le guide">
+  <div class="conteneur barre-inner">
+    <p class="barre-texte">Le guide <span class="chrono">{{guide.prix_affiche}}</span></p>
+    <div class="barre-achat">
+      <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="barre" data-zone="barre">Obtenir le guide</a>
+      <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Feuilletage : dialog natif, ferme par Echap. Sans JavaScript, les liens ouvrent l image. -->
+<dialog class="dialog-planche" id="dialog-planche" aria-label="Page du guide en grand">
+  <button class="bouton bouton-fantome bouton-petit dialog-fermer" type="button">Fermer</button>
+  <img width="640" height="906" alt="">
+</dialog>
+
+{{partial:footer}}
+
+<script>
+(function () {
+  'use strict';
+  var doc = document;
+
+  /* Feuilletage : la page cliquee s ouvre dans le dialog */
+  var dialog = doc.getElementById('dialog-planche');
+  if (dialog && typeof dialog.showModal === 'function') {
+    var image = dialog.querySelector('img');
+    var fermer = dialog.querySelector('.dialog-fermer');
+    doc.addEventListener('click', function (e) {
+      var lien = e.target && e.target.closest ? e.target.closest('a[data-planche]') : null;
+      if (!lien) return;
+      var source = lien.querySelector('img');
+      if (!source) return;
+      e.preventDefault();
+      image.src = source.currentSrc || source.src;
+      image.alt = source.alt;
+      dialog.showModal();
+    });
+    fermer.addEventListener('click', function () { dialog.close(); });
+    dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', function () { image.removeAttribute('src'); image.alt = ''; });
+  }
+
+  /* Barre collante : cachee devant le bloc prix et le bouton final (un seul bouton rouge par ecran) */
+  var barre = doc.querySelector('.barre');
+  var cibles = [doc.getElementById('prix'), doc.getElementById('final')].filter(Boolean);
+  if (barre && cibles.length && 'IntersectionObserver' in window) {
+    var visibles = {};
+    var obs = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (en) { visibles[en.target.id] = en.isIntersecting; });
+      var cacher = Object.keys(visibles).some(function (k) { return visibles[k]; });
+      barre.classList.toggle('est-cachee', cacher);
+    }, { threshold: 0.15 });
+    cibles.forEach(function (c) { obs.observe(c); });
+  }
+})();
+</script>
+</body>
+</html>

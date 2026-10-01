@@ -1,0 +1,214 @@
+/* ============================================================
+   Clem Kart Racing : page-accueil.css
+   Regles propres a l accueil (/). Chargee apres base.css, uniquement
+   par cette page (body.page-accueil).
+   Les composants partages (.chrono, .plaque-titre, .filet-depart, .registre,
+   .numeral, .planche, .quote-colonne) sont dans base.css, section 22.
+   Ici : tailles et placements propres a la page seulement.
+   Rayons 0, aucune ombre, aucun degrade, un seul rouge, transform et opacity seulement.
+   ============================================================ */
+
+/* ---------- 1. Hero : texte colonnes 1 a 5, photo colonnes 6 a 12 collee au bord droit ---------- */
+body.page-accueil .hero {
+  align-items: stretch;
+  min-height: min(88vh, 900px);
+  padding-block: var(--nav-h) 0;
+  /* La photo file jusqu au bord de l ecran : 100vw compte la barre de defilement, on coupe ce qui depasse */
+  overflow-x: clip;
+}
+body.page-accueil .hero-grille { align-items: center; row-gap: 0; }
+body.page-accueil .hero-texte { gap: var(--e-5); padding-block: var(--e-7); }
+body.page-accueil .hero-texte h1 { max-width: none; }
+
+/* Le titre : trois phrases, chacune commence sa ligne. COMPOSITION 5.1 demande clamp(44px, 6.5vw, 96px),
+   mais une phrase de 38 signes ne tient pas sur 5 colonnes a 96 px : la taille reste dans cette fourchette
+   et chaque phrase passe au plus sur deux lignes, pour que le bouton reste dans le premier ecran. */
+body.page-accueil .hero-titre { font-size: clamp(44px, 4.4vw, 96px); line-height: var(--interligne-titre); }
+body.page-accueil .hero-ligne { display: block; }
+body.page-accueil .hero-chapo { max-width: var(--mesure); }
+body.page-accueil .hero-sous { max-width: var(--mesure); }
+body.page-accueil .hero-sous .lien-texte { text-transform: none; letter-spacing: 0; font-family: var(--police-texte); font-weight: var(--graisse-normal); font-size: var(--t--1); line-height: 1.6; text-wrap: balance; }
+/* Le lien est souligne par une bordure : en bloc, pour que la seconde ligne ne laisse pas un mot seul souligne */
+body.page-accueil .hero-sous .lien-texte { display: inline-block; max-width: 44ch; }
+
+/* La plaque : la derniere ligne du titre ne se coupe pas */
+body.page-accueil .plaque-titre { white-space: nowrap; }
+
+/* La photo : pleine hauteur du hero, jusqu au bord droit de l ecran, aucun voile */
+body.page-accueil .hero-photo-bord {
+  position: relative;
+  align-self: stretch;
+  min-height: 42vh;
+  background: var(--fond-2);
+}
+body.page-accueil .hero-photo-bord picture { position: absolute; inset: 0; }
+body.page-accueil .hero-photo-bord img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Le pilote et le numero 695 restent dans le cadre, quelle que soit la largeur */
+  object-position: 60% 60%;
+}
+@media (min-width: 900px) {
+  body.page-accueil .hero-photo-bord {
+    grid-column: 6 / -1;
+    margin-right: calc(-1 * ((100vw - min(100vw, var(--conteneur))) / 2 + var(--gouttiere-large)));
+  }
+  /* Sur ordinateur la plaque porte la derniere ligne du titre ET mord sur la photo : elle est calee a droite
+     de la colonne de texte puis poussee au-dela de la gouttiere, d environ 17 % de la largeur de la photo
+     (la photo fait environ 7/5 de la colonne de texte, 100 % * 0.25 ~ 7/5 * 0.17). Le texte de la plaque
+     passe donc vraiment sur la photo : jamais d aplat noir vide. */
+  body.page-accueil .plaque-titre {
+    display: block;
+    width: max-content;
+    max-width: none;
+    margin-left: auto;
+    margin-right: calc(-1 * (var(--grille-ecart) + 100% * 0.25));
+    padding: var(--e-2) var(--e-5);
+  }
+}
+/* Telephone : photo en haut (casque et volant), titre dessous, le bloc de texte chevauche le bas de la photo.
+   Le bouton principal reste visible sans defiler a 375 x 667. */
+@media (max-width: 899px) {
+  body.page-accueil .hero { padding-top: var(--nav-h); min-height: 0; }
+  body.page-accueil .hero-photo-bord {
+    order: -1;
+    height: 34vh;
+    min-height: 0;
+    margin-inline: calc(-1 * var(--gouttiere-large));
+  }
+  body.page-accueil .hero-photo-bord img { object-position: 55% 62%; }
+  body.page-accueil .hero-texte {
+    position: relative;
+    z-index: 2;
+    gap: var(--e-4);
+    margin-top: calc(-1 * var(--e-6));
+    padding-block: var(--e-3) var(--e-7);
+    background: var(--fond-0);
+  }
+  body.page-accueil .hero-titre { font-size: clamp(34px, 10vw, 48px); }
+  body.page-accueil .hero-chapo { font-size: var(--t-0); }
+  body.page-accueil .hero-chapo br { display: none; }
+  /* Les deux premieres phrases coulent ensemble, la troisieme garde sa ligne */
+  body.page-accueil .hero-ligne:not(:last-child) { display: inline; }
+  body.page-accueil .plaque-titre { white-space: normal; margin-left: 0; padding: 0; background: transparent; }
+}
+
+/* Entree : les trois lignes montent en decalage, la photo 100 ms apres le titre */
+html.a-js body.page-accueil .entree-2 { animation-delay: 80ms; }
+html.a-js body.page-accueil .entree-3 { animation-delay: 160ms; }
+html.a-js body.page-accueil .entree-photo { animation-delay: 100ms; }
+
+/* ---------- 2. Ligne de preuves : quatre faits sources, separes par des filets verticaux ---------- */
+body.page-accueil .faits {
+  min-height: var(--e-8);
+  display: flex;
+  align-items: center;
+  border-bottom: var(--bordure);
+}
+body.page-accueil .preuves-ligne {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-4) var(--e-5);
+  padding-block: var(--e-5);
+}
+body.page-accueil .preuves-ligne li { max-width: none; display: grid; gap: var(--e-1); align-content: start; }
+body.page-accueil .preuve-chiffre {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  color: var(--texte);
+}
+body.page-accueil .preuve-detail { font-size: var(--t--1); line-height: 1.45; color: var(--texte-2); }
+@media (min-width: 900px) {
+  body.page-accueil .preuves-ligne { grid-template-columns: 1fr 1fr 1.6fr 1fr; gap: 0; }
+  body.page-accueil .preuves-ligne li { padding-inline: var(--e-5); border-left: var(--bordure); }
+  body.page-accueil .preuves-ligne li:first-child { padding-left: 0; border-left: 0; }
+}
+
+/* ---------- 3. Les trois offres : registre de trois lignes ---------- */
+body.page-accueil .offres-titre { margin-bottom: var(--e-6); }
+body.page-accueil .registre-texte h3 { font-size: var(--t-2); }
+body.page-accueil .registre-faits li { color: var(--texte-2); font-size: var(--t--1); }
+/* Les trois faits ont le meme traitement : Barlow gris, chiffres tabulaires (le chrono en ligne n a ni mono ni couleur a part) */
+body.page-accueil .registre-faits li .chrono { white-space: normal; }
+/* Le bouton de l offre : le libelle tient sur une ligne, le prix passe dessous si la colonne est etroite */
+body.page-accueil .registre-action .bouton { row-gap: var(--e-1); padding-block: var(--e-2); }
+/* Le visuel de chaque ligne (base.css, .visuel-registre) : meme cadre 3:2 et meme largeur sur les trois lignes.
+   Telephone : pleine largeur jusqu a 420 px ; ordinateur : les deux premieres colonnes. */
+body.page-accueil .registre-objet .visuel-registre { width: min(100%, 420px); }
+@media (min-width: 900px) { body.page-accueil .registre-objet .visuel-registre { width: 100%; } }
+body.page-accueil .registre-ligne:hover .visuel-registre { border-color: var(--filet-fort); }
+/* Le numeral (bande gratuite) : chiffre en Bebas, nom en mono dessous */
+body.page-accueil .numeral { display: grid; gap: var(--e-2); align-content: start; }
+body.page-accueil .numeral-chiffre { white-space: nowrap; }
+body.page-accueil .numeral .mono { color: var(--texte-2); }
+
+/* ---------- 4. Messages recus : trois colonnes des 900 px (base.css, .quotes-trois) ---------- */
+body.page-accueil .messages-recus h2 { margin-bottom: var(--e-6); }
+body.page-accueil .quotes-mention { margin-top: var(--e-6); }
+
+/* ---------- 5. Qui je suis : photo petite a gauche, texte a droite ---------- */
+body.page-accueil .qui-grille { align-items: center; }
+body.page-accueil .qui-photo { max-width: 400px; border: var(--bordure); }
+body.page-accueil .qui-photo img { object-position: 50% 35%; }
+body.page-accueil .qui-texte { display: grid; gap: var(--e-5); align-content: center; }
+body.page-accueil .qui-lignes { font-size: var(--t-1); line-height: 1.45; max-width: none; }
+@media (min-width: 900px) { body.page-accueil .qui-texte { grid-column: 6 / 12; } }
+body.page-accueil .qui-reseaux { display: flex; flex-wrap: wrap; gap: var(--e-3) var(--e-5); }
+
+/* ---------- 6. Gratuit : bande fond-2, libelle, numeros de chapitre a droite ---------- */
+body.page-accueil .gratuit { padding-block: var(--e-9); border-top: var(--bordure); border-bottom: var(--bordure); }
+body.page-accueil .gratuit-grille { align-items: center; }
+body.page-accueil .gratuit-texte { display: grid; gap: var(--e-4); align-content: center; }
+body.page-accueil .gratuit-texte h2 { margin-top: var(--e-2); }
+body.page-accueil .gratuit-texte .bouton { margin-top: var(--e-2); }
+body.page-accueil .gratuit-promesse { font-size: var(--t-1); line-height: 1.45; color: var(--texte); }
+body.page-accueil .gratuit-numeraux { display: grid; align-content: center; }
+body.page-accueil .numeraux { display: flex; flex-wrap: wrap; gap: var(--e-6); align-items: end; }
+/* Deux chapitres, deux numeraux : un filet vertical les separe, sinon « Intro 04 » se lit d un seul bloc */
+body.page-accueil .numeraux .numeral + .numeral { border-left: var(--bordure); padding-left: var(--e-6); }
+/* Une seule version affichee, selon extrait.version dans la config */
+body.page-accueil .gratuit-numeraux[data-extrait-version="2"] [data-si-version="3"],
+body.page-accueil .gratuit-numeraux[data-extrait-version="3"] [data-si-version="2"] { display: none; }
+@media (min-width: 900px) {
+  body.page-accueil .gratuit-numeraux { grid-column: 7 / -1; }
+  body.page-accueil .numeraux { justify-content: flex-end; }
+}
+/* Telephone : le libelle et le titre ouvrent la bande, les numeros de chapitre suivent le bouton */
+@media (max-width: 899px) {
+  body.page-accueil .gratuit { padding-block: var(--e-8); }
+  body.page-accueil .numeraux { gap: var(--e-5); }
+}
+
+/* ---------- 7. Et ensuite : quatre portes pleine largeur, filets, fleche mono ---------- */
+body.page-accueil .ensuite h2 { margin-bottom: var(--e-6); }
+body.page-accueil .portes { display: grid; border-top: var(--bordure); }
+body.page-accueil .portes li { max-width: none; border-bottom: var(--bordure); }
+/* La fleche suit le libelle (et bouge avec lui au survol) : a 1 000 px du texte, elle se lisait comme un point parasite */
+body.page-accueil .portes a {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--e-4);
+  padding-block: var(--e-5);
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  text-decoration: none;
+  color: var(--texte);
+}
+body.page-accueil .portes a > span { transition: transform var(--duree-vite) var(--courbe); }
+body.page-accueil .portes a:hover > span { transform: translateX(4px); }
+body.page-accueil .portes a .mono { font-size: var(--t-0); color: var(--texte); }
+
+/* ---------- 8. Reduced motion : les delais tombent a zero (le survol est coupe dans base.css) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html.a-js body.page-accueil .entree-2,
+  html.a-js body.page-accueil .entree-3,
+  html.a-js body.page-accueil .entree-photo { animation-delay: 0ms; }
+}

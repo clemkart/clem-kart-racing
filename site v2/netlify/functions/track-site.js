@@ -6,17 +6,26 @@
 // Analytics = jamais bloquant : non-config ou erreur -> 204 silencieux.
 // =============================================
 
+// IP du visiteur : x-nf-client-connection-ip (pose par Netlify) en priorite, comme retractation.js.
+const { ipClient } = require('../lib/http.js');
+
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hkpknrrymgbnjmbewlyc.supabase.co';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Allowlist stricte des types (table dediee), tout le reste est jete.
 const ALLOWED_TYPES = new Set([
   'pageview',
-  'gumroad_click',
+  'gumroad_click',   // historique (avant la V4, le guide se vendait sur Gumroad) : garde pour lire l'ancien tunnel
   'extract_click',
+  // V4, site 1 : la page de liens /liens et les portes /aller/* vers Stripe (assets/site.js)
+  'bio_click',       // clic sur un bouton de /liens (meta.bouton, meta.position, meta.plateforme, meta.cible)
+  'stripe_click',    // clic sur une porte /aller/* vers Stripe (site 1 : meta.cta, meta.zone, meta.route, meta.cible ;
+                     // site 2 : meta.cta = diag|prix|final|barre, meta.zone). Toujours AVANT le paiement.
   'tableur_click',   // clic vers la page tableur (interet, pas encore une inscription)
   'tableur_signup',  // email reellement envoye avec succes (evenement reel de conversion)
   'extrait_signup',  // extrait du guide reellement envoye par email (page extrait-guide.html)
+  'demande_signup',  // formulaire /consulting ou /marques reellement envoye (meta.form, meta.parcours, meta.formule)
+  'marques_parcours',// clic sur un parcours de /marques (meta.parcours = saison|reseaux|deux, meta.zone, meta.formule)
   'app_page_click',  // clic vers la page Race Engineer AI depuis le site
   'app_plan_click',  // clic sur le CTA d'une carte tarif (meta.plan = decouverte|pro|paddock)
   'app_early_access',// envoi du formulaire early access de l'app
@@ -27,21 +36,49 @@ const ALLOWED_TYPES = new Set([
   'diag_step',       // question validee (meta.step, meta.key, meta.value)
   'diag_exit',       // sortie honnete affichee (meta.kind = loc|nocam, meta.step)
   'diag_result',     // diagnostic affiche (reponses anonymes, aucune donnee personnelle)
-  'stripe_click',    // clic vers le paiement Stripe (meta.cta = diag|prix|final|barre, meta.zone)
   'faq_open',        // question de la FAQ ouverte (meta.q = 1..7)
 ]);
+
+// Clefs de meta connues pour les evenements de la V4. Les autres clefs sont gardees telles
+// quelles (le dashboard ignore ce qu'il ne connait pas), seules les valeurs sont bornees :
+// une chaine est tronquee, une position devient un entier, le reste est jete.
+const META_MAX_CHARS = 120;
+function borner(valeur) {
+  if (typeof valeur === 'string') return clip(valeur, META_MAX_CHARS);
+  if (typeof valeur === 'number' && Number.isFinite(valeur)) return Math.trunc(valeur);
+  if (typeof valeur === 'boolean') return valeur;
+  return null;
+}
+function nettoyerMeta(type, meta) {
+  if (type !== 'bio_click' && type !== 'stripe_click') return meta;
+  const propre = {};
+  for (const [clef, valeur] of Object.entries(meta)) {
+    const v = borner(valeur);
+    if (v !== null) propre[clef] = v;
+  }
+  return Object.keys(propre).length ? propre : null;
+}
 
 const MAX_META_CHARS = 2000;
 
 // Le site 2 envoie ses evenements ici, depuis un autre domaine : ils portent meta.site
 // pour ne pas se melanger aux pages du site 1 (qui garde son historique sans etiquette).
-// Les brouillons Netlify et les apercus locaux sont etiquetes a part, le dashboard les ignore.
-const SITE2_HOST = 'comprendre-comment-rouler-plus-vite-2.netlify.app';
+// Les brouillons Netlify (des deux sites) et les apercus locaux sont etiquetes a part : le
+// dashboard les ignore, sinon chaque verification avant publication (netlify-cli : brouillon,
+// verification, publication) compterait comme une vraie visite ou un vrai clic.
+// Les adresses viennent de config/offres.json (sites.site1, sites.site2).
+const OFFRES = require('../../../config/offres.json');
+function hoteDe(url) {
+  try { return new URL(String(url)).hostname.toLowerCase(); } catch { return ''; }
+}
+const SITE1_HOST = hoteDe(OFFRES.sites && OFFRES.sites.site1);
+const SITE2_HOST = hoteDe(OFFRES.sites && OFFRES.sites.site2);
 function siteLabel(host) {
   if (typeof host !== 'string') return null;
   const h = host.trim().toLowerCase();
-  if (h === SITE2_HOST) return 'site2';
-  if (h.endsWith(`--${SITE2_HOST}`)) return 'site2-brouillon';
+  if (SITE2_HOST && h === SITE2_HOST) return 'site2';
+  if (SITE2_HOST && h.endsWith(`--${SITE2_HOST}`)) return 'site2-brouillon';
+  if (SITE1_HOST && h.endsWith(`--${SITE1_HOST}`)) return 'site1-brouillon';
   if (h === 'localhost' || h === '127.0.0.1') return 'local';
   return null;
 }
@@ -133,7 +170,7 @@ exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: '' };
 
-  const ip = event.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+  const ip = ipClient(event);
   if (!checkRateLimit(ip)) return { statusCode: 204, headers, body: '' };
 
   // Jamais bloquant : toute erreur ci-dessous -> 204 silencieux.
@@ -160,7 +197,7 @@ exports.handler = async (event) => {
     let meta = null;
     if (data.meta && typeof data.meta === 'object' && !Array.isArray(data.meta)) {
       const str = JSON.stringify(data.meta);
-      if (str.length <= MAX_META_CHARS) meta = data.meta;
+      if (str.length <= MAX_META_CHARS) meta = nettoyerMeta(type, data.meta);
     }
 
     // Site d'origine : seulement s'il est connu, jamais une valeur libre venue du navigateur.

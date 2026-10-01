@@ -1,13 +1,18 @@
 # ============================================================
-# Configuration Netlify : site vitrine Clem Kart Racing
-# Le site vit dans le sous-dossier "site v2/".
-# SANS ce fichier, Netlify ne déployait PAS les fonctions
-# (site v2/netlify/functions) → /.netlify/functions/* en 404
-# → l'envoi du tableur (send-email) échouait à chaque fois.
+# Configuration Netlify : site vitrine Clem Kart Racing (site 1)
+# Les sources vivent dans "site v2/". Le dossier publie est "dist/",
+# ecrit par scripts/build.js (injection de config/offres.json, _redirects).
+# La commande de build lance les tests qui bloquent : un test rouge
+# fait echouer le build, donc rien ne se publie. Aucun module npm : Node 20
+# suffit (npm install n a rien a installer). Les chemins avec « site v2 »
+# restent entre guillemets.
+# SANS la ligne functions, Netlify ne deployait PAS les fonctions
+# (site v2/netlify/functions) : /.netlify/functions/* en 404.
 # ============================================================
 
 [build]
-  publish = "site v2"
+  publish = "dist"
+  command = "node scripts/build.js && npm run test:prix && npm run test:gratuit && npm run test:fonts && npm run test:demande && npm run test:track && npm run test:dashboard && npm run test:typo && npm run test:coach && npm run test:schemas && npm run test:retractation"
   functions = "site v2/netlify/functions"
 
 [build.environment]
@@ -17,10 +22,82 @@
   # la vraie cle SUPABASE_SERVICE_ROLE_KEY, elle, n'est jamais dans le code).
   SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL"
 
+# Les fonctions lisent config/offres.json a l'execution (prix, garantie, delais dans les emails).
+# esbuild empaquete tout require() relatif (config/offres.json, scripts/typographie.js,
+# "site v2/netlify/lib/" pour retractation.js). included_files ajoute en plus les fichiers
+# lus autrement qu'avec require() : la config, et tout ce que "site v2/netlify/lib/" contient.
+# Le dossier lib est a cote de functions, jamais dedans : Netlify n'en fait pas une fonction.
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["config/offres.json", "site v2/netlify/lib/**"]
+
 # Relance J+7 vers le guide complet : tous les jours a 9h UTC (11h Paris l'ete).
 # La fonction ne relance que les contacts inscrits il y a 7 a 9 jours, une seule fois.
 [functions."relance-guide"]
   schedule = "0 9 * * *"
+
+# Les portes /aller/* vers Stripe, /onboard/ (site 2), /clement et les anciennes adresses
+# (/merci.html, /guide.html, pages Race Engineer AI) sont ecrites par scripts/build.js dans
+# dist/_redirects, lu par Netlify avant ce fichier. /cgv et /confidentialite sont de vraies
+# pages (cgv.html, confidentialite.html) : aucune redirection.
+
+# Pages de confirmation d'achat et page de retractation : jamais indexees, et l'adresse
+# (qui peut porter un session_id Stripe) ne part jamais vers un autre site dans le Referer.
+# Deux motifs par page : avec et sans barre finale.
+[[headers]]
+  for = "/merci-guide*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/merci-guide/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/merci-guide-lecteur*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/merci-guide-lecteur/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/merci-onboard*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/merci-onboard/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/retractation"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/retractation/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+# Tableau de bord prive : jamais indexe.
+[[headers]]
+  for = "/dashboard.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
 
 # URL courte pour ManyChat / bio Instagram -> page de capture de l'extrait.
 [[redirects]]
@@ -58,10 +135,10 @@
   to = "/extrait-guide.html"
   status = 301
 
-# Le dossier des fonctions est un sous-dossier de "site v2" : sans cette regle, Netlify
-# sert leur code source en statique (verifie : GET /netlify/functions/send-email.js
-# renvoyait 200 avec le JS complet). Les fonctions elles-memes restent appelees via
-# /.netlify/functions/* et ne sont pas concernees par ce blocage.
+# Le dossier des fonctions etait un sous-dossier de "site v2" : sans cette regle, Netlify
+# servait leur code source en statique (verifie : GET /netlify/functions/send-email.js
+# renvoyait 200 avec le JS complet). build.js ne copie plus netlify/ dans dist, la regle
+# reste par securite. Les fonctions elles-memes restent appelees via /.netlify/functions/*.
 [[redirects]]
   from = "/netlify/*"
   to = "/index.html"

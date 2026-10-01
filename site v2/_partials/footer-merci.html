@@ -1,0 +1,16 @@
+<!-- Partial footer-merci : pages apres paiement. Editeur, textes legaux, email, retour au site. Aucune offre, aucun prix. -->
+<footer class="pied pied-reduit">
+  <div class="conteneur">
+    <div class="pied-bas">
+      <p>{{legal.editeur}}, {{legal.tva}}</p>
+      <ul class="pied-legal">
+        <li><a href="{{routes.mentions}}">Mentions légales</a></li>
+        <li><a href="{{routes.cgv}}">CGV</a></li>
+        <li><a href="{{routes.confidentialite}}">Confidentialité</a></li>
+        <li><a href="{{routes.retractation}}">Renoncer au contrat ici</a></li>
+      </ul>
+      <p><a href="mailto:{{contact.email}}">{{contact.email}}</a></p>
+      <p><a href="{{routes.accueil}}">Retour au site</a></p>
+    </div>
+  </div>
+</footer>

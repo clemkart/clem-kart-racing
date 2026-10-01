@@ -1,12 +1,17 @@
 User-agent: *
 Allow: /
 
-# Pages privees ou sans interet pour la recherche
+# Pages privees : tableau de bord, portes de paiement, fonctions
 Disallow: /dashboard.html
-Disallow: /merci.html
-Disallow: /merci-fondateur.html
-Disallow: /app-preview.html
+Disallow: /aller/
 Disallow: /netlify/
 Disallow: /.netlify/
 
-Sitemap: https://comprendre-comment-rouler-plus-vite.netlify.app/sitemap.xml
+# Pages de confirmation d achat et page de retractation : reservees aux acheteurs.
+# Elles portent aussi noindex (balise et en-tete X-Robots-Tag, netlify.toml).
+Disallow: {{routes.merci_guide}}
+Disallow: {{routes.merci_guide_lecteur}}
+Disallow: {{routes.merci_onboard}}
+Disallow: {{routes.retractation}}
+
+Sitemap: {{sites.url}}/sitemap.xml

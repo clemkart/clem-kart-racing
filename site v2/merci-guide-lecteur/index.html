@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Merci, ton guide est à toi · {{marque.nom}}</title>
+<meta name="description" content="Merci pour ton achat. Ton guide se télécharge depuis la page de confirmation, juste après le paiement. Ton débrief suit son cours.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="canonical" href="{{sites.url}}{{routes.merci_guide_lecteur}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Merci, ton guide est à toi · {{marque.nom}}">
+<meta property="og:description" content="Merci pour ton achat. Ton guide se télécharge depuis la page de confirmation, juste après le paiement. Ton débrief suit son cours.">
+<meta property="og:url" content="{{sites.url}}{{routes.merci_guide_lecteur}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
+<link rel="stylesheet" href="/assets/page-merci.css">
+</head>
+<body class="page-merci" data-page="merci-guide-lecteur">
+{{partial:nav-merci}}
+
+<main id="contenu">
+
+  <!-- Hero : le merci et l endroit ou se trouve le PDF. Client du debrief qui ajoute le guide.
+       Cette page ne livre aucun fichier (page de confirmation Stripe) et ne vend rien. -->
+  <section class="merci" data-hero>
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-8">
+          <div class="merci-en-tete entree">
+            <p class="mono">Paiement reçu</p>
+            <h1>Merci. Ton guide est à toi.</h1>
+            <p class="chapo">Ton guide se télécharge depuis la page de confirmation qui s’affiche juste après le paiement. Enregistre le PDF tout de suite, sur ton téléphone ou ton ordinateur : c’est ton exemplaire.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filet de depart, puis le bon de livraison : la cellule debrief remplace toute offre -->
+  <section class="filet-depart section-merci">
+    <div class="conteneur">
+      <div class="bon-livraison reveal">
+        <div>
+          <p class="mention">Ton guide</p>
+          <p class="chrono">{{guide.format}}, {{guide.pages}} pages</p>
+        </div>
+        <div>
+          <p class="mention">Ton débrief</p>
+          <p class="chrono">Sous {{delais.debrief_h}} h</p>
+          <p class="mention">Après réception de ta vidéo</p>
+        </div>
+        <div>
+          <p class="mention">Garantie du guide</p>
+          <p class="chrono">{{garantie_jours}} jours</p>
+          <p class="mention">En plus de tes droits légaux</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Le PDF introuvable : le seul bloc encadre de la page -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-7">
+          <div class="plaque-bloc merci-retrouver reveal">
+            <h2>Tu ne retrouves pas ton PDF ?</h2>
+            <p>Le lien est sur la page de confirmation, juste après le paiement. L’email de Stripe contient ton reçu et ta facture, pas le guide.</p>
+            <p>Tu as fermé la page sans enregistrer le PDF ? Écris-moi à <a href="mailto:{{contact.email}}">{{contact.email}}</a> avec l’adresse email de ton achat. Je te renvoie ton lien sous <span class="chrono">{{delais.renvoi_lien_h}} h</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Le debrief en cours : le gros chiffre a gauche (le meme que sur /merci-onboard), la lecture a droite -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille merci-scinde">
+        <div class="col-4 reveal">
+          <p class="chrono-grand">
+            <strong>{{delais.debrief_h}}&nbsp;h</strong>
+            <span class="mono">délai de ton débrief</span>
+          </p>
+        </div>
+        <div class="col-7 col-depart-6 reveal reveal-decale-1">
+          <h2>Ton débrief suit son cours</h2>
+          <p class="chapo mt-4">Tu reçois ta vidéo commentée par email, sous <span class="chrono">{{delais.debrief_h}} h</span> après réception de ta vidéo. D’ici là, lis le guide dans cet ordre :</p>
+          <ol class="merci-etapes merci-etapes-serrees">
+            <li><div class="etape"><span class="etape-titre">Ce soir, le chapitre <span class="chrono">04</span>.</span><span class="etape-detail">Le freinage dégressif : relâcher le frein au bon rythme, pour que le kart accepte de tourner.</span></div></li>
+            <li><div class="etape"><span class="etape-titre">Puis les chapitres <span class="chrono">03</span> et <span class="chrono">05</span>.</span><span class="etape-detail">Les mains, puis la rotation : toute l’entrée de virage.</span></div></li>
+            <li><div class="etape"><span class="etape-titre">Puis ton débrief arrive.</span><span class="etape-detail">Tu as déjà les mots pour comprendre ce que je te montre.</span></div></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact et garantie : une seule section de lecture -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-7 merci-lecture reveal">
+          <h2>Si quelque chose cloche</h2>
+          <p>Garantie <span class="chrono">{{garantie_jours}} jours</span> sur le guide, en plus de tes droits légaux : s’il ne t’apporte rien, un email et je te rembourse.</p>
+          <p>Une question, un fichier qui ne s’ouvre pas, un lien de vidéo à corriger : <a href="mailto:{{contact.email}}">{{contact.email}}</a>. Je réponds sous <span class="chrono">{{delais.reponse_email_h}} h</span> les jours ouvrés.</p>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <p class="merci-ligne merci-reseaux">Les prochaines vidéos sortent ici : <a href="{{reseaux.instagram}}" target="_blank" rel="noopener">Instagram</a> et <a href="{{reseaux.youtube}}" target="_blank" rel="noopener">YouTube</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{{partial:footer-merci}}
+</body>
+</html>

@@ -1,5 +1,6 @@
-// Harnais de test de l'agregation du dashboard : Supabase est remplace par un faux
-// fetch qui renvoie des evenements et des ventes fabriques. Aucune donnee reelle lue.
+// Harnais de test de l'agregation du dashboard : Supabase et Stripe sont remplaces par un
+// faux fetch qui renvoie des evenements, des ventes et des sessions fabriques. Aucune donnee
+// reelle lue. Les liens Stripe (plink_) et les portes /aller/* viennent de config/offres.json.
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
 process.env.DASHBOARD_PASSWORD = 'secret';
 
@@ -56,6 +57,13 @@ const ev = (o) => Object.assign({
   section('acces');
   let r = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'faux' }) });
   check('mauvais mot de passe -> 401', r.statusCode === 401);
+  for (let i = 0; i < 10; i++) {
+    await dash.handler({ httpMethod: 'POST', headers: { 'x-forwarded-for': '9.9.9.9' }, body: JSON.stringify({ password: 'essai' + i }) });
+  }
+  r = await dash.handler({ httpMethod: 'POST', headers: { 'x-forwarded-for': '9.9.9.9' }, body: JSON.stringify({ password: 'secret' }) });
+  check('10 essais rates -> 429, meme avec le bon mot de passe', r.statusCode === 429);
+  r = await dash.handler({ httpMethod: 'POST', headers: { 'x-forwarded-for': '9.9.9.9' }, body: JSON.stringify({}) });
+  check('mot de passe absent -> refuse sans planter', r.statusCode === 429 || r.statusCode === 401);
 
   section('entonnoir et inscriptions');
   events = [
@@ -169,7 +177,7 @@ const ev = (o) => Object.assign({
   const urlEvents = urlsAppelees.find(u => u.includes('/site_events')) || '';
   check('la requete demande utm_source, utm_medium et utm_campaign', /utm_source/.test(urlEvents) && /utm_medium/.test(urlEvents) && /utm_campaign/.test(urlEvents), urlEvents);
 
-  section('site 2 : pages nommees, brouillons ignores');
+  section('site 2 : pages nommees, brouillons des deux sites ignores');
   const s2 = (o) => ev(Object.assign({ meta: { site: 'site2' } }, o));
   events = [
     s2({ session_id: 'h1', path: '/' }),
@@ -178,11 +186,12 @@ const ev = (o) => Object.assign({
     s2({ session_id: 'o1', path: '/onboard/' }),
     ev({ session_id: 'b1', path: '/onboard/', meta: { site: 'site2-brouillon' } }),
     ev({ session_id: 'l1', path: '/', meta: { site: 'local' } }),
+    ev({ session_id: 'd1', path: '/guide/', meta: { site: 'site1-brouillon' } }),
     ev({ session_id: 'p1', path: '/' }),
   ];
   ({ data } = await appel(30));
   check('brouillons et apercus locaux exclus des visiteurs', data.totals.visiteurs === 4, data.totals.visiteurs);
-  check('evenements de test comptes a part', data.tests_ignores === 2, data.tests_ignores);
+  check('evenements de test comptes a part (brouillons des deux sites, apercu local)', data.tests_ignores === 3, data.tests_ignores);
   const accueil2 = data.by_page.find(p => p.nom === 'Site 2 · Accueil catalogue');
   check("l'accueil du site 2 a son nom et regroupe / et /index.html", accueil2 && accueil2.pageviews === 2, JSON.stringify(data.by_page));
   check("l'accueil du site 1 reste separe", data.by_page.some(p => p.nom === 'Accueil' && p.pageviews === 1), JSON.stringify(data.by_page));
@@ -287,6 +296,120 @@ const ev = (o) => Object.assign({
   delete process.env.STRIPE_READ_KEY;
   stripe = { status: 200, sessions: [] };
 
+  section('clics vers Stripe et page de liens (site 1)');
+  // Les portes /aller/* et les identifiants plink_ viennent de la config : jamais en dur ici.
+  const OFFRES = require(path.join(__dirname, '..', 'config', 'offres.json'));
+  delete process.env.STRIPE_READ_KEY;
+  // Les clics de cette section datent de 6 h : ils doivent aussi apparaitre dans les deltas 24 h.
+  const recent = iso(0, 6);
+  const bio = (sid, bouton, position, plateforme, chemin) => ev({
+    created_at: recent, session_id: sid, type: 'bio_click', path: chemin || '/liens',
+    utm_source: plateforme === 'direct' ? null : plateforme, utm_medium: plateforme === 'direct' ? null : 'bio',
+    meta: { bouton, position, plateforme }
+  });
+  events = [
+    // 3 visiteurs sur la page de liens, ecrite de 3 facons : une seule page
+    ev({ session_id: 'l1', path: '/liens', utm_source: 'instagram', utm_medium: 'bio' }),
+    ev({ session_id: 'l2', path: '/liens/', utm_source: 'tiktok', utm_medium: 'bio' }),
+    ev({ session_id: 'l3', path: '/liens/index.html' }),
+    bio('l1', 'guide', 1, 'instagram'),
+    bio('l1', 'onboard', 2, 'instagram'),
+    bio('l2', 'guide', 1, 'tiktok', '/liens/'),
+    // l1 arrive sur /guide depuis la bio et clique deux boutons vers Stripe
+    ev({ session_id: 'l1', path: '/guide/', utm_source: 'instagram', utm_medium: 'bio', utm_campaign: 'guide' }),
+    ev({ created_at: recent, session_id: 'l1', type: 'stripe_click', path: '/guide/', utm_source: 'instagram', utm_medium: 'bio', utm_campaign: 'guide', meta: { cta: 'hero', route: OFFRES.guide.aller } }),
+    ev({ created_at: recent, session_id: 'l1', type: 'stripe_click', path: '/guide/', meta: { cta: 'prix', route: OFFRES.guide.aller } }),
+    // l2 prend le debrief au prix lecteur depuis la page merci
+    ev({ created_at: recent, session_id: 'l2', type: 'stripe_click', path: '/merci-guide', meta: { cta: 'merci-guide-suite', route: OFFRES.equitable.debrief_lecteur.aller } }),
+    // l3 : clic vers l'extrait depuis la page de liens (pas un clic d'achat)
+    ev({ created_at: recent, session_id: 'l3', type: 'extract_click', path: '/liens/index.html', meta: { cta: 'liens-extrait' } }),
+    // l4 : un ancien clic Gumroad (historique), toujours compte a part
+    ev({ session_id: 'l4', path: '/extrait-guide.html' }),
+    ev({ session_id: 'l4', type: 'gumroad_click', path: '/extrait-guide.html', meta: { cta: 'btn-red' } }),
+  ];
+  sales = [];
+  ({ data } = await appel(30));
+  check('clics vers Stripe = 3', data.totals.stripe_clicks === 3, data.totals.stripe_clicks);
+  check('dont 2 vers le guide et 1 vers le debrief', data.totals.stripe_clicks_guide === 2 && data.totals.stripe_clicks_debrief === 1, JSON.stringify([data.totals.stripe_clicks_guide, data.totals.stripe_clicks_debrief]));
+  check('l ancien clic Gumroad reste compte a part', data.totals.gumroad_clicks === 1 && data.totals.clics_achat === 4, data.totals.clics_achat);
+  check('entonnoir : « Clics vers Stripe (guide) » = 2 Stripe + 1 Gumroad', data.funnel[3].etape === 'Clics vers Stripe (guide)' && data.funnel[3].valeur === 3, JSON.stringify(data.funnel[3]));
+  check('taux de clic = cliqueurs uniques / visiteurs (3 sur 4 = 75%)', data.totals.ctr === 75, data.totals.ctr);
+  check('courbe : clics Stripe et clics achat par jour (Gumroad la veille)', data.by_day.some(j => j.stripe_clicks === 3 && j.clics_achat === 3) && data.by_day.some(j => j.gumroad_clicks === 1 && j.clics_achat === 1), JSON.stringify(data.by_day.filter(j => j.clics_achat)));
+  check('deltas 24h : clics Stripe et clics bio', data.deltas24h.stripe_clicks === 3 && data.deltas24h.bio_clicks === 3, JSON.stringify(data.deltas24h));
+  const li = data.liens || {};
+  check('page de liens : 3 visiteurs, 3 clics, 2 cliqueurs', li.visiteurs === 3 && li.clics === 3 && li.cliqueurs === 2, JSON.stringify(li));
+  check('taux de clic de la page de liens = 66,7%', li.taux_clic === 66.7, li.taux_clic);
+  const bGuide = (li.par_bouton || []).find(b => b.bouton === 'guide');
+  check('bouton guide : 2 clics, 2 visiteurs, nomme, en position 1', bGuide && bGuide.clics === 2 && bGuide.visiteurs === 2 && bGuide.label === 'Le guide' && bGuide.position === 1, JSON.stringify(bGuide));
+  check('boutons dans l ordre de la page', (li.par_bouton || []).map(b => b.bouton).join(',') === 'guide,onboard', JSON.stringify(li.par_bouton));
+  const pInsta = (li.par_plateforme || []).find(p => p.plateforme === 'instagram');
+  check('instagram : 1 visiteur, 2 clics, 100% de cliqueurs', pInsta && pInsta.visiteurs === 1 && pInsta.clics === 2 && pInsta.taux_clic === 100, JSON.stringify(pInsta));
+  check('sans UTM : plateforme « direct »', (li.par_plateforme || []).some(p => p.plateforme === 'direct' && p.visiteurs === 1), JSON.stringify(li.par_plateforme));
+  const pageLiens = data.by_page.find(p => p.nom === 'Page de liens (bio)');
+  check('les 3 ecritures de /liens sont une seule page nommee', pageLiens && pageLiens.pageviews === 3 && pageLiens.path === '/liens', JSON.stringify(data.by_page));
+  check('/guide/ est nomme et sans barre finale', data.by_page.some(p => p.path === '/guide' && p.nom === 'Page de vente du guide'), JSON.stringify(data.by_page));
+  const ctaHero = data.by_cta.find(c => c.cta === 'Bouton haut de page (guide)');
+  check('boutons Stripe nommes avec leur porte', ctaHero && ctaHero.stripe === 1 && ctaHero.total === 1, JSON.stringify(data.by_cta));
+  check('porte du prix lecteur nommee', data.by_cta.some(c => c.cta === 'Merci guide, débrief au prix lecteur (débrief, prix lecteur)'), JSON.stringify(data.by_cta));
+  const ctaExtrait = data.by_cta.find(c => c.cta === "Page de liens, lien de l'extrait");
+  check('clic extrait de /liens : nomme, compte en extrait, jamais en achat', ctaExtrait && ctaExtrait.extract === 1 && ctaExtrait.stripe === 0 && data.totals.extract_clicks === 1 && data.totals.stripe_clicks === 3, JSON.stringify(ctaExtrait));
+  check('aucun nom de bouton V4 brut (Stripe ou extrait)', data.by_cta.filter(c => c.stripe || c.extract).every(c => !/^[a-z-]+$/.test(c.cta)), JSON.stringify(data.by_cta.map(c => c.cta)));
+  const campBio = data.by_campaign.find(c => c.campagne === 'instagram · bio · guide');
+  check('campagne bio : clics vers l achat comptes', campBio && campBio.clics_achat === 1, JSON.stringify(data.by_campaign));
+  check('conversion par source lit les clics Stripe et Gumroad', data.conv_by_source.some(s => s.source === 'direct' && s.clics_achat === 3 && s.rate === 75), JSON.stringify(data.conv_by_source));
+  check('cle Stripe absente : dite en clair, pas un zero muet', data.stripe && data.stripe.cle_absente === true && /STRIPE_READ_KEY/.test(data.stripe.detail || ''), JSON.stringify(data.stripe));
+  check('sans cle : les ventes Stripe sont a zero mais Gumroad reste lu', data.totals.ventes_guide_stripe === 0 && data.remboursements && data.remboursements.total === 0, JSON.stringify(data.remboursements));
+
+  section('ventes Stripe : guide et debrief separes par plink_, remboursements');
+  process.env.STRIPE_READ_KEY = 'rk_test_lecture';
+  const pl = (o) => o.stripe.plink;
+  const ligneGuide = { object: 'list', data: [{ description: 'Comprendre comment rouler plus vite (PDF)', amount_total: 1699, quantity: 1 }] };
+  const secondes = (dAgo) => Math.floor((Date.now() - dAgo * DAY) / 1000);
+  events = [ev({ session_id: 'g1', path: '/guide' })];
+  sales = [
+    { created_at: iso(1), price_cents: 1699, quantity: 1, currency: 'EUR', product_name: 'Guide' },
+    { created_at: iso(2), price_cents: 1699, quantity: 1, currency: 'EUR', product_name: 'Guide', is_refund: true },
+  ];
+  stripe = { status: 200, sessions: [
+    sessionStripe({ payment_link: pl(OFFRES.guide), amount_total: 1699, line_items: ligneGuide }),
+    sessionStripe({ payment_link: pl(OFFRES.guide), amount_total: 1699, line_items: ligneGuide, created: secondes(3) }),
+    sessionStripe({ payment_link: pl(OFFRES.equitable.guide_lecteur), amount_total: 999, line_items: ligneGuide }),
+    sessionStripe({ payment_link: pl(OFFRES.guide), amount_total: 1699, line_items: ligneGuide,
+      payment_intent: { id: 'pi_r', latest_charge: { id: 'ch_r', refunded: true, amount_refunded: 1699 } } }),
+    sessionStripe({ payment_link: pl(OFFRES.debrief) }),
+    sessionStripe({ payment_link: pl(OFFRES.equitable.debrief_lecteur), amount_total: 2299 }),
+    // Lien inconnu : le panier decide. Un guide cree a la main dans Stripe reste un guide.
+    sessionStripe({ payment_link: 'plink_inconnu', amount_total: 1699, line_items: ligneGuide }),
+    // Produit inconnu : ni guide ni debrief, jamais compte.
+    sessionStripe({ payment_link: 'plink_inconnu', amount_total: 2500, line_items: { object: 'list', data: [{ description: 'Casquette', amount_total: 2500, quantity: 1 }] } }),
+    // Periode precedente : sert a la comparaison, pas aux totaux.
+    sessionStripe({ payment_link: pl(OFFRES.guide), amount_total: 1699, line_items: ligneGuide, created: secondes(45) }),
+  ] };
+  ({ data } = await appel(30));
+  check('statut Stripe ok, cle presente', data.stripe.statut === 'ok' && data.stripe.cle_absente === false, JSON.stringify(data.stripe));
+  check('guide Stripe : 4 ventes payees (le rembourse sort, le lien inconnu entre)', data.stripe.guide.ventes === 4, data.stripe.guide.ventes);
+  check('dont 1 au prix lecteur', data.stripe.guide.ventes_lecteur === 1, data.stripe.guide.ventes_lecteur);
+  check('debrief Stripe : 2 ventes, dont 1 au prix lecteur', data.stripe.debrief.ventes === 2 && data.stripe.debrief.ventes_lecteur === 1 && data.debrief.ventes === 2, JSON.stringify(data.stripe.debrief));
+  check('ventes du guide = Gumroad + Stripe (1 + 4)', data.totals.ventes === 5 && data.totals.ventes_guide_stripe === 4 && data.totals.ventes_guide_gumroad === 1, JSON.stringify([data.totals.ventes, data.totals.ventes_guide_stripe, data.totals.ventes_guide_gumroad]));
+  check('CA du guide = Gumroad + 3 guides + 1 prix lecteur', data.totals.revenu_cents === 1699 * 4 + 999, data.totals.revenu_cents);
+  check('CA debrief = plein tarif + prix lecteur', data.debrief.revenu_cents === 2999 + 2299, data.debrief.revenu_cents);
+  check('CA total = guide + debrief', data.totals.revenu_total_cents === 1699 * 4 + 999 + 2999 + 2299, data.totals.revenu_total_cents);
+  check('la casquette n est nulle part', data.totals.revenu_total_cents < 1699 * 4 + 999 + 2999 + 2299 + 2500);
+  check('periode precedente : la vente Stripe d il y a 45 jours', data.previous.ventes === 1, data.previous.ventes);
+  const rb = data.remboursements || {};
+  check('remboursements : 1 Stripe + 1 Gumroad, tous sur le guide', rb.total === 2 && rb.guide === 2 && rb.debrief === 0 && rb.gumroad === 1, JSON.stringify(rb));
+  check('taux de remboursement = 2 sur (7 payees + 2) = 22,2%', rb.ventes_payees === 7 && rb.taux === 22.2, JSON.stringify(rb));
+  check('derniere vente du guide = la plus recente entre Gumroad et Stripe', data.dates.derniere_vente === iso(1).slice(0, 10), data.dates.derniere_vente);
+  check('premiere vente du guide remonte a la session Stripe la plus ancienne', data.dates.premiere_vente === iso(45).slice(0, 10), data.dates.premiere_vente);
+  check('entonnoir : derniere etape = ventes du guide (5)', data.funnel[4].etape === 'Ventes du guide' && data.funnel[4].valeur === 5, JSON.stringify(data.funnel[4]));
+  const jourVentes = data.by_day.find(j => j.date === iso(1).slice(0, 10));
+  check('courbe : 6 ventes hier (3 guides Stripe, 2 debriefs, 1 Gumroad)', jourVentes && jourVentes.ventes === 6, JSON.stringify(jourVentes));
+  check('aucune donnee client renvoyee', !JSON.stringify(data).includes('pilote@example.com') && !JSON.stringify(data).includes('Jean Pilote'));
+  const urlVentes = urlsAppelees.filter(u => u.includes('/sales')).pop() || '';
+  check('les remboursements Gumroad sont lus (plus de filtre is_refund)', /is_test=eq\.false/.test(urlVentes) && !/is_refund=eq\.false/.test(urlVentes), urlVentes);
+  delete process.env.STRIPE_READ_KEY;
+  stripe = { status: 200, sessions: [] };
+
   section('robustesse');
   events = []; sales = [];
   ({ data } = await appel(7));
@@ -295,6 +418,8 @@ const ev = (o) => Object.assign({
   check('aucune donnee -> pas de division par zero', data.funnel.every(s => s.taux === null || s.taux === 0));
   check('aucune donnee -> dates nulles', data.dates.premiere_vente === null && data.dates.meilleur_jour === null);
   check('aucune donnee -> campagnes vides', data.by_campaign.length === 0);
+  check('aucune donnee -> page de liens a zero sans planter', data.liens && data.liens.visiteurs === 0 && data.liens.taux_clic === 0 && data.liens.par_bouton.length === 0);
+  check('aucune donnee -> taux de remboursement a zero', data.remboursements && data.remboursements.taux === 0);
 
   console.log(`\n${pass} tests OK, ${fail} echecs`);
   process.exit(fail ? 1 : 0);

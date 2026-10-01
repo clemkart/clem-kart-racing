@@ -1,0 +1,279 @@
+/* ============================================================
+   Clem Kart Racing : page-guide.css
+   Regles propres a la page de vente du livre (/guide).
+   Chargee apres base.css, uniquement par cette page (body.page-guide).
+   Aucune valeur brute hors des clamp() de titres et des tailles de planche :
+   tout vient de tokens.css. Rayons 0, aucune ombre, aucun degrade, un seul rouge.
+
+   Les composants partages (.chrono, .chrono-grand, .plaque-titre, .filet-apex,
+   .filet-depart, .planche, .quote-colonne) sont dans base.css, section 22.
+   Ici : tailles et placements propres a la page seulement.
+   ============================================================ */
+
+/* ---------- 0. Colonnes de depart propres a la page ----------
+   base.css ecrit .col-6 (grid-column: span 6) puis .col-depart-7 (grid-column-start: 7) :
+   la fin retombe sur auto et la colonne ne fait plus qu une piste. On pose ici debut et largeur ensemble. */
+@media (min-width: 900px) {
+  body.page-guide .feuilleter-planches { grid-column: 9 / span 4; }
+  body.page-guide .croyances-liste { grid-column: 7 / span 6; }
+  body.page-guide .preuves-colonne { grid-column: 1 / -1; }
+  body.page-guide .prix-detail { grid-column: 7 / span 6; }
+  body.page-guide .final-colonne { grid-column: 6 / span 7; }
+}
+
+/* ---------- 1. Signatures propres a la page ---------- */
+/* La plaque du titre : une ligne du h1, sans marge verticale en plus */
+body.page-guide .plaque-titre { padding-block: 0; }
+/* Entre deux croyances ou deux blocs de lecture, le filet d apex separe aussi par le haut */
+body.page-guide .filet-apex { margin-block: var(--e-6); }
+/* Le filet de depart passe devant le bas de la couverture */
+body.page-guide .filet-depart { position: relative; z-index: 1; background: var(--fond-0); }
+
+/* ---------- 4. Hero : texte a gauche, la couverture debout a droite ---------- */
+body.page-guide .hero-guide { padding-block: var(--e-7) 0; min-height: 0; align-items: stretch; }
+body.page-guide .hero-grille { row-gap: var(--e-6); align-items: start; }
+body.page-guide .hero-surtitre { color: var(--texte-2); }
+body.page-guide .hero-guide h1 {
+  max-width: none;
+  font-size: clamp(56px, 7.5vw, 112px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+body.page-guide .hero-guide h1 .titre-ligne { display: block; }
+body.page-guide .hero-guide .chapo { max-width: 38ch; }
+body.page-guide .hero-guide .hero-sous { margin-top: calc(var(--e-2) * -1); }
+/* La garantie colle au bouton : le doute se leve au moment du clic */
+body.page-guide .hero-guide .hero-garantie { margin-top: var(--e-2); max-width: none; }
+body.page-guide .hero-guide .hero-lecteurs { margin-top: calc(var(--e-4) * -1); color: var(--texte-2); }
+/* Le bouton d achat et sa mention CGV restent groupes ; le lien Feuilleter se cale sur le bouton */
+body.page-guide .hero-actions { align-items: flex-start; }
+body.page-guide .hero-achat { display: flex; flex-direction: column; align-items: flex-start; }
+body.page-guide .hero-actions .lien-texte { margin-top: calc((var(--bouton-h) - 1.6em) / 2); }
+body.page-guide .hero-objet { display: flex; justify-content: flex-end; align-items: flex-start; }
+body.page-guide .planche-couverture { width: 60%; max-width: 420px; }
+body.page-guide .planche-couverture picture, body.page-guide .planche-rail picture { display: block; }
+/* Deuxieme temps de la seule animation d entree : la couverture, 100 ms apres le titre */
+html.a-js body.page-guide .entree-suivante { animation-delay: 100ms; }
+
+@media (min-width: 900px) {
+  body.page-guide .hero-guide { padding-block: var(--e-8) 0; }
+  body.page-guide .hero-grille { align-items: stretch; }
+  /* Le texte passe au-dessus de la couverture : la plaque du titre mord sur son bord gauche */
+  body.page-guide .hero-texte { grid-column: 1 / span 6; padding-bottom: var(--e-7); position: relative; z-index: 2; }
+  body.page-guide .plaque-titre { white-space: nowrap; }
+  /* La couverture est posee sur la ligne de base du hero */
+  body.page-guide .hero-objet { grid-column: 8 / -1; position: relative; z-index: 1; align-items: flex-end; }
+  /* Le livre rentre dans la page : ses 40 derniers pixels passent sous le filet de depart */
+  body.page-guide .planche-couverture { width: 420px; margin-bottom: -40px; }
+}
+
+/* ---------- 5. Feuilleter : l introduction en vrai texte, les planches collantes a droite ---------- */
+body.page-guide .intro-guide h3 { margin-bottom: var(--e-5); }
+body.page-guide .intro-guide p { max-width: var(--mesure); }
+body.page-guide .intro-guide .intro-suite { border-top: var(--bordure); margin-top: var(--e-6); padding-top: var(--e-5); color: var(--texte-2); }
+body.page-guide .intro-guide .intro-suite a { color: var(--texte); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+body.page-guide .planche-rail {
+  display: grid;
+  grid-template-columns: repeat(2, 180px);
+  gap: var(--e-3);
+  justify-content: end;
+}
+body.page-guide .planche-rangee {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--e-4);
+  margin-top: var(--e-6);
+}
+/* Grille a part pour la rangee : la zone de collage des planches s arrete a la fin de l introduction */
+body.page-guide .feuilleter-rangee { margin-top: 0; }
+body.page-guide .feuilleter-suite { margin-top: var(--e-7); display: flex; flex-direction: column; align-items: flex-start; }
+
+@media (min-width: 900px) {
+  body.page-guide .feuilleter-planches {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--e-5));
+    align-self: start;
+  }
+}
+@media (max-width: 899px) {
+  /* Telephone : le titre de la section, puis les quatre planches en rangee horizontale (200 px chacune), puis l introduction.
+     La colonne de texte s efface (display: contents) pour que ses deux enfants se rangent autour des planches. */
+  body.page-guide .feuilleter-texte { display: contents; }
+  /* Devenus enfants de la grille, ils prennent toute la largeur comme les autres (.grille > * ne les voit pas) */
+  body.page-guide .feuilleter .entete-section,
+  body.page-guide .intro-guide { grid-column: 1 / -1; }
+  body.page-guide .feuilleter .entete-section { order: 1; margin-bottom: 0; }
+  body.page-guide .feuilleter-planches { order: 2; margin-inline: calc(var(--gouttiere-large) * -1); }
+  body.page-guide .intro-guide { order: 3; }
+  /* La rangee des trois pages vit dans sa propre grille, apres l introduction : aucun order a poser */
+  body.page-guide .planche-rail,
+  body.page-guide .planche-rangee {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--e-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-inline: var(--gouttiere);
+    padding-bottom: var(--e-2);
+    -webkit-overflow-scrolling: touch;
+  }
+  body.page-guide .planche-rail li { flex: 0 0 200px; scroll-snap-align: start; }
+  body.page-guide .planche-rangee { margin-inline: calc(var(--gouttiere-large) * -1); padding-inline: var(--gouttiere-large); }
+  body.page-guide .planche-rail { padding-inline: var(--gouttiere-large); scroll-padding-inline: var(--gouttiere-large); }
+  body.page-guide .planche-rangee { scroll-padding-inline: var(--gouttiere-large); }
+  body.page-guide .planche-rangee li { flex: 0 0 70%; scroll-snap-align: start; }
+}
+
+/* ---------- 6. Pour qui, pas pour qui : deux colonnes 6/6, un seul filet vertical sur toute leur hauteur ---------- */
+body.page-guide .pourqui-grille { row-gap: 0; }
+body.page-guide .pourqui-colonne h3 { font-size: var(--t-3); margin-bottom: var(--e-5); }
+body.page-guide .pourqui-colonne p { max-width: var(--mesure); }
+body.page-guide .pourqui-non { border-top: var(--bordure); margin-top: var(--e-6); padding-top: var(--e-6); }
+@media (min-width: 900px) {
+  body.page-guide .pourqui-non { border-top: 0; margin-top: 0; padding-top: 0; border-left: var(--bordure); padding-left: var(--e-6); }
+}
+
+/* ---------- 7. Le sommaire : cinq parties, numeros de page reels, filet pointille de conduite ---------- */
+body.page-guide .sommaire-partie + .sommaire-partie { border-top: var(--bordure); margin-top: var(--e-6); padding-top: var(--e-6); }
+body.page-guide .sommaire-partie .libelle { margin-bottom: var(--e-4); }
+body.page-guide .sommaire-liste { display: grid; gap: var(--e-4); }
+body.page-guide .sommaire-chapitre {
+  display: grid;
+  grid-template-columns: 4ch minmax(0, 1fr);
+  gap: var(--e-3);
+  align-items: start;
+  max-width: none;
+}
+body.page-guide .sommaire-chapitre > .chrono { margin-top: 0.35em; }
+body.page-guide .sommaire-tete { display: flex; align-items: baseline; gap: var(--e-2); }
+body.page-guide .sommaire-titre {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+}
+body.page-guide .sommaire-conduite {
+  flex: 1 1 var(--e-5);
+  min-width: var(--e-5);
+  border-bottom: 1px dotted var(--filet-fort);
+  transform: translateY(-0.35em);
+}
+body.page-guide .sommaire-page { color: var(--texte-2); white-space: nowrap; }
+body.page-guide .sommaire-ligne { font-size: var(--t--1); color: var(--texte-2); max-width: 52ch; margin-top: var(--e-1); }
+body.page-guide .sommaire-fin { margin-top: var(--e-7); font-size: var(--t-1); }
+/* Mention « dans l extrait » : chapitre 04 des la version 2, chapitres 03 et 05 a partir de la version 3 */
+body.page-guide .sommaire-extrait { display: none; color: var(--texte-2); margin-top: var(--e-1); }
+body.page-guide [data-extrait-version="2"] .sommaire-extrait[data-des="2"],
+body.page-guide [data-extrait-version="3"] .sommaire-extrait[data-des="2"],
+body.page-guide [data-extrait-version="3"] .sommaire-extrait[data-des="3"] { display: block; }
+
+/* ---------- 8. Les croyances et le virage : le seul dessin du site ---------- */
+body.page-guide .virage-schema { width: 100%; height: auto; max-width: 560px; }
+body.page-guide .virage-hachure { stroke: var(--texte-3); stroke-width: 1; }
+body.page-guide .virage-bord { fill: none; stroke: var(--texte); stroke-width: 1; }
+body.page-guide .virage-sens { fill: none; stroke: var(--texte-3); stroke-width: 1; }
+body.page-guide .virage-apprise { fill: none; stroke: var(--texte-2); stroke-width: 1.5; stroke-dasharray: 6 5; }
+body.page-guide .virage-grip { fill: none; stroke: var(--rouge); stroke-width: 2; stroke-linecap: butt; }
+body.page-guide .virage-point { fill: var(--texte); }
+body.page-guide .virage-point-gaz { fill: var(--rouge); }
+body.page-guide .virage-texte {
+  font-family: var(--police-mono);
+  font-size: 15px;
+  fill: var(--texte-2);
+}
+body.page-guide .virage-texte-titre { fill: var(--texte); }
+body.page-guide .croyance-libelle { color: var(--texte-2); margin-bottom: var(--e-2); }
+body.page-guide .croyance-phrase {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  color: var(--texte-2);
+  margin-bottom: var(--e-3);
+}
+body.page-guide .croyance-phrase s { text-decoration-thickness: 1px; }
+body.page-guide .croyance-reponse { max-width: 48ch; }
+@media (max-width: 899px) {
+  body.page-guide .virage { margin-bottom: var(--e-4); }
+}
+
+/* ---------- 9. Preuves : trois messages cote a cote des 900 px (.quotes-trois de base.css), comme sur l accueil ---------- */
+body.page-guide .quotes-mention { margin-top: var(--e-6); }
+
+/* ---------- 10. L auteur : photo petite a gauche, texte a droite ---------- */
+body.page-guide .auteur .grille { align-items: start; }
+body.page-guide .auteur-photo .photo { max-width: 280px; }
+body.page-guide .auteur-texte h2 { font-size: var(--t-3); margin-bottom: var(--e-5); }
+body.page-guide .auteur-texte p { max-width: 52ch; }
+body.page-guide .auteur-texte .chrono-ligne { margin-top: var(--e-5); }
+@media (min-width: 900px) {
+  body.page-guide .auteur-photo { grid-column: 1 / span 3; }
+  body.page-guide .auteur-texte { grid-column: 4 / span 6; }
+}
+
+/* ---------- 11. Prix et garantie : la seule bande de prix du site ---------- */
+body.page-guide .bloc-prix { padding-block: var(--e-9); }
+body.page-guide .prix-lignes { display: grid; gap: var(--e-2); margin-top: var(--e-5); }
+body.page-guide .prix-lignes li { max-width: none; }
+body.page-guide .prix-detail .liste { margin-bottom: var(--e-6); }
+body.page-guide .prix-action { display: grid; gap: 0; }
+body.page-guide .prix-action .bouton-sous { margin-top: var(--e-3); }
+body.page-guide .prix-action .bouton-cgv { margin-top: var(--e-1); }
+body.page-guide .prix-garantie { margin-top: var(--e-6); font-size: var(--t-1); line-height: 1.45; max-width: none; }
+
+/* ---------- 12. FAQ : marqueur en blanc casse, le rouge reste sur ce qui se clique ---------- */
+body.page-guide .faq summary { font-weight: var(--graisse-libelle-fort); }
+body.page-guide .faq details > p { max-width: var(--mesure); }
+body.page-guide .faq a { color: var(--texte); }
+
+/* ---------- 13. Dernier bouton ---------- */
+body.page-guide .final-titre { font-size: var(--t-4); margin-bottom: var(--e-5); }
+body.page-guide .final-action { margin-top: var(--e-6); display: flex; flex-direction: column; align-items: flex-start; }
+/* La photo en piste : colonnes 1 a 5 sur ordinateur, au-dessus du titre sur telephone */
+body.page-guide .final .grille { align-items: center; }
+body.page-guide .final-photo { aspect-ratio: 3 / 2; border: var(--bordure); }
+body.page-guide .final-photo img { object-position: 60% 50%; }
+@media (min-width: 900px) { body.page-guide .final-photo { grid-column: 1 / span 5; grid-row: 1; } body.page-guide .final-colonne { grid-row: 1; } }
+
+/* ---------- 14. Barre collante : filet de depart repris, cachee devant le prix et le bouton final ---------- */
+body.page-guide .barre { border-top: 2px solid var(--rouge); padding-bottom: env(safe-area-inset-bottom, 0); }
+body.page-guide .barre-texte { display: flex; align-items: center; gap: var(--e-2); white-space: nowrap; }
+/* Le bouton et sa mention CGV restent groupes ; la barre grandit d une ligne, le bas de page compense */
+body.page-guide .barre { padding-top: var(--e-2); padding-bottom: calc(var(--e-2) + env(safe-area-inset-bottom, 0px)); }
+body.page-guide .barre-achat { display: flex; flex-direction: column; align-items: stretch; flex: 1 1 auto; }
+body.page-guide .barre-achat .bouton-cgv { margin-top: 2px; text-align: center; }
+body.page-guide.a-barre { padding-bottom: calc(var(--barre-h) + var(--e-6)); }
+@media (min-width: 600px) {
+  body.page-guide .barre-achat { flex: 0 0 auto; }
+}
+body.page-guide .barre.est-cachee { transform: translateY(100%); }
+
+/* ---------- 15. Feuilletage : dialog natif, page en 640 x 906 centree ---------- */
+body.page-guide .dialog-planche {
+  border: 0;
+  padding: 0;
+  margin: auto;
+  max-width: min(100vw, 640px);
+  max-height: 100vh;
+  background: transparent;
+  overflow: visible;
+}
+body.page-guide .dialog-planche::backdrop { background: rgba(7, 7, 7, 0.95); }
+body.page-guide .dialog-planche img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - var(--e-8));
+  object-fit: contain;
+  border: var(--bordure);
+}
+body.page-guide .dialog-fermer {
+  position: fixed;
+  top: var(--e-4);
+  right: var(--e-4);
+  background: var(--fond-0);
+}
+
+/* ---------- 16. Navigation : sur sa propre page, le bouton « Le guide » de la barre telephone ferait doublon ---------- */
+body.page-guide .nav-guide-court { display: none; }

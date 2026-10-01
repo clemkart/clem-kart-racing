@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Politique de confidentialité · {{marque.nom}}</title>
+<meta name="description" content="Politique de confidentialité de Clem Kart Racing : données collectées, durées, prestataires et droits.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{sites.url}}{{routes.confidentialite}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Politique de confidentialité · {{marque.nom}}">
+<meta property="og:description" content="Politique de confidentialité de Clem Kart Racing : données collectées, durées, prestataires et droits.">
+<meta property="og:url" content="{{sites.url}}{{routes.confidentialite}}">
+<meta property="og:image" content="{{sites.url}}/clement-piste.jpg">
+<link rel="stylesheet" href="/assets/page-legal.css">
+</head>
+<body class="page-legal" data-page="confidentialite">
+{{partial:nav}}
+
+<main id="contenu" class="sous-nav legal">
+
+  <!-- Texte juridique verifie le 24/09/2026 (Digital product/POUR-LE-DEPOT-GITHUB/pages-legales/src/confidentialite.contenu.html),
+       repris mot pour mot : ne rien reformuler ici sans nouvelle verification. Identite, email et adresses lus dans
+       config/offres.json. -->
+  <header class="legal-hero conteneur">
+    <div class="grille">
+      <div class="legal-titre entree">
+        <p class="libelle">Informations légales</p>
+        <h1>Politique de confidentialité</h1>
+        <p class="legal-date">Mise à jour le 24 septembre 2026.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="conteneur">
+    <div class="grille">
+
+      <!-- Sommaire : colle a gauche sur ordinateur, en tete de page sur telephone. Le lien du titre lu porte le filet
+           rouge (script en bas de page) ; sans JavaScript, les ancres marchent. -->
+      <nav class="legal-nav sous-nav-legale" aria-label="Sommaire">
+        <p class="legal-nav-titre">Sommaire</p>
+        <ol class="legal-nav-liste">
+          <li><a href="#responsable">Qui est responsable</a></li>
+          <li><a href="#collecte">Ce que je collecte et pourquoi</a></li>
+          <li><a href="#destinataires">Qui reçoit tes données</a></li>
+          <li><a href="#transferts">Transferts hors de l'Union européenne</a></li>
+          <li><a href="#droits">Tes droits</a></li>
+          <li><a href="#cookies">Cookies et traceurs</a></li>
+          <li><a href="#securite">Sécurité</a></li>
+        </ol>
+      </nav>
+
+      <article class="legal-corps">
+        <p class="legal-intro">Ici, tu sais exactement ce que je collecte, pourquoi, combien de temps je le garde et qui y a accès. Pas de publicité ciblée, pas de revente de données, pas de cookies publicitaires.</p>
+
+        <h2 id="responsable"><span class="legal-num">1.</span>Qui est responsable</h2>
+        <p>Clément Daniel, entrepreneur individuel (EI), Clem Kart Racing, {{legal.adresse}}. Contact pour toute question sur tes données : <a href="mailto:{{contact.email}}">{{contact.email}}</a>.</p>
+
+        <h2 id="collecte"><span class="legal-num">2.</span>Ce que je collecte et pourquoi</h2>
+
+        <h3>Quand tu commandes sur ce site</h3>
+        <dl class="legal-dl">
+          <dt>Données</dt><dd>Email, nom (pour le débrief), pays, produits achetés, montant, date. Le paiement est traité par Stripe : je ne vois que le type de carte et ses 4 derniers chiffres.</dd>
+          <dt>Pourquoi</dt><dd>Livrer ta commande, t'envoyer ta facture, répondre à tes questions, traiter une garantie, une rétractation ou un remboursement.</dd>
+          <dt>Base légale</dt><dd>L'exécution du contrat, et l'obligation légale de facturation et de comptabilité.</dd>
+          <dt>Durée</dt><dd>Le temps de la relation, puis 3 ans pour te proposer des produits proches (tu peux t'y opposer à tout moment). Les factures et pièces comptables sont conservées 10 ans.</dd>
+        </dl>
+
+        <h3>Quand tu commandes un débrief</h3>
+        <dl class="legal-dl">
+          <dt>Données</dt><dd>Le lien et le contenu de ta vidéo onboard (tes images, ta voix éventuelle), ton circuit et ton kart, ton choix sur l'utilisation d'un extrait.</dd>
+          <dt>Pourquoi</dt><dd>Réaliser ton débrief. Un extrait ne sert à du contenu que si tu l'as accepté au paiement, dans la limite de ton choix.</dd>
+          <dt>Base légale</dt><dd>L'exécution du contrat. Pour un extrait publié : ton consentement, que tu peux retirer à tout moment par email.</dd>
+          <dt>Durée</dt><dd>Les copies de ta vidéo sont supprimées au plus tard 6 mois après la livraison du débrief. Un extrait autorisé reste publié jusqu'au retrait de ton accord.</dd>
+        </dl>
+
+        <h3>Quand tu demandes un fichier gratuit (tableau de réglages, extrait du guide)</h3>
+        <dl class="legal-dl">
+          <dt>Données</dt><dd>Ton email.</dd>
+          <dt>Pourquoi</dt><dd>T'envoyer le fichier demandé, puis quelques emails sur le guide.</dd>
+          <dt>Base légale</dt><dd>Ton consentement, donné à l'inscription. Chaque email contient un lien de désinscription en un clic.</dd>
+          <dt>Durée</dt><dd>3 ans après ton inscription ou ton dernier contact avec moi.</dd>
+        </dl>
+
+        <h3>Quand tu commentes « GUIDE » ou que tu m'écris sur Instagram</h3>
+        <dl class="legal-dl">
+          <dt>Données</dt><dd>Ton pseudo Instagram, tes messages et leur date.</dd>
+          <dt>Pourquoi</dt><dd>T'envoyer automatiquement le lien que tu as demandé et répondre à tes messages.</dd>
+          <dt>Base légale</dt><dd>Mon intérêt légitime à répondre à ta demande : c'est toi qui déclenches l'envoi.</dd>
+          <dt>Durée</dt><dd>3 ans après notre dernier échange.</dd>
+        </dl>
+
+        <h3>Quand tu visites le site</h3>
+        <dl class="legal-dl">
+          <dt>Données</dt><dd>Pages vues, site ou réseau social d'origine, campagne, type d'appareil, et un identifiant de visite aléatoire gardé dans l'onglet et effacé à sa fermeture. Ni adresse IP stockée, ni cookie, ni suivi d'un site à l'autre.</dd>
+          <dt>Pourquoi</dt><dd>Des statistiques anonymes : savoir quelles pages et quelles vidéos amènent des visiteurs.</dd>
+          <dt>Base légale</dt><dd>Mon intérêt légitime à mesurer l'audience de mon site.</dd>
+          <dt>Durée</dt><dd>25 mois.</dd>
+        </dl>
+
+        <h3>Quand tu te rétractes ou que tu exerces tes droits</h3>
+        <dl class="legal-dl">
+          <dt>Données</dt><dd>Nom, email, référence de commande, contenu de ta demande, date et heure.</dd>
+          <dt>Pourquoi</dt><dd>Traiter ta demande et pouvoir prouver qu'elle a été traitée.</dd>
+          <dt>Base légale</dt><dd>L'obligation légale.</dd>
+          <dt>Durée</dt><dd>5 ans.</dd>
+        </dl>
+
+        <p>Ton email est indispensable pour commander ou recevoir un fichier gratuit : sans lui, je ne peux rien te livrer. Aucune décision automatisée ni aucun profilage ne sont réalisés à partir de tes données.</p>
+
+        <h2 id="destinataires"><span class="legal-num">3.</span>Qui reçoit tes données</h2>
+        <p>Seulement moi et les prestataires qui m'aident à faire tourner le site, chacun pour sa mission. Je ne vends et ne loue jamais tes données.</p>
+        <ul>
+          <li><strong>Stripe</strong> : paiement sécurisé des commandes passées sur ce site ;</li>
+          <li><strong>Netlify</strong> : hébergement du site ;</li>
+          <li><strong>Supabase</strong> : base de données du site (statistiques anonymes, suivi des commandes, sans email) ;</li>
+          <li><strong>Brevo</strong> (France) : envoi des emails ;</li>
+          <li><strong>ManyChat</strong> : envoi automatique des messages Instagram ;</li>
+          <li><strong>Google</strong> : les polices de caractères du site sont chargées depuis Google Fonts, ce qui transmet ton adresse IP à Google ;</li>
+          <li><strong>Gumroad</strong> : si tu achètes le guide sur Gumroad, Gumroad est le vendeur de la transaction et traite tes données selon sa propre politique.</li>
+        </ul>
+
+        <h2 id="transferts"><span class="legal-num">4.</span>Transferts hors de l'Union européenne</h2>
+        <p>Certains prestataires sont établis hors de l'Union européenne. Les transferts vers Stripe, Netlify, ManyChat et Google, sociétés américaines certifiées, reposent sur la décision d'adéquation de la Commission européenne du 10 juillet 2023 (EU-U.S. Data Privacy Framework). Les transferts vers Gumroad (États-Unis) et Supabase (Singapour) sont encadrés par les clauses contractuelles types de la Commission européenne (décision 2021/914). Tu peux obtenir une copie de ces garanties en m'écrivant.</p>
+
+        <h2 id="droits"><span class="legal-num">5.</span>Tes droits</h2>
+        <p>Tu peux à tout moment accéder à tes données, les faire corriger ou effacer, limiter leur utilisation, t'opposer à leur traitement (et en particulier à tout email commercial), récupérer celles que tu m'as fournies dans un format lisible, retirer ton consentement, et définir ce que deviennent tes données après ton décès.</p>
+        <p>Écris à <a href="mailto:{{contact.email}}">{{contact.email}}</a> : je réponds sous un mois au plus. Si tu estimes que tes droits ne sont pas respectés, tu peux saisir la CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>
+
+        <h2 id="cookies"><span class="legal-num">6.</span>Cookies et traceurs</h2>
+        <p>Ce site n'utilise aucun cookie, aucun pixel publicitaire et aucun outil de suivi d'un site à l'autre. La mesure d'audience décrite plus haut repose sur un identifiant de visite anonyme, gardé dans l'onglet et effacé à sa fermeture, utilisé seulement pour des statistiques de ce site : il ne nécessite pas de consentement.</p>
+
+        <h2 id="securite"><span class="legal-num">7.</span>Sécurité</h2>
+        <p>Le site est servi en HTTPS. Les paiements passent par Stripe, certifié selon la norme de sécurité des cartes bancaires (PCI DSS) : aucun numéro de carte ne transite par mes outils. Je ne garde que les données nécessaires : la base de statistiques ne contient ni email ni nom.</p>
+      </article>
+
+    </div>
+  </div>
+</main>
+
+{{partial:footer}}
+
+<script>
+/* Sommaire : le lien du dernier titre passe dans le tiers haut de l ecran porte le filet rouge (aria-current).
+   Recalcule seulement quand un titre franchit ce tiers (aucun ecouteur de defilement) ;
+   sans JavaScript, le sommaire reste une liste d ancres. */
+(function () {
+  'use strict';
+  var liens = document.querySelectorAll('.sous-nav-legale a[href^="#"]');
+  var titres = document.querySelectorAll('.legal-corps h2[id]');
+  if (!liens.length || !titres.length || !('IntersectionObserver' in window)) return;
+  function marquer() {
+    var limite = window.innerHeight * 0.3;
+    var id = '';
+    for (var i = 0; i < titres.length; i++) if (titres[i].getBoundingClientRect().top <= limite) id = titres[i].id;
+    for (var j = 0; j < liens.length; j++) {
+      if (id && liens[j].getAttribute('href') === '#' + id) liens[j].setAttribute('aria-current', 'true');
+      else liens[j].removeAttribute('aria-current');
+    }
+  }
+  var obs = new IntersectionObserver(marquer, { rootMargin: '0px 0px -70% 0px', threshold: 0 });
+  for (var k = 0; k < titres.length; k++) obs.observe(titres[k]);
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,25 @@
 # Documents business privés : ne jamais committer (repo public)
 _business/
 
-# PDF payant du guide : ce dépôt est public, le fichier ne vit que dans le dossier déposé sur Netlify
+# Fichiers payants (PDF du guide, tableau acheteurs) : ce dépôt est public. Ni les fichiers ni
+# leurs noms n'y entrent : scripts/build.js --site2 les lit dans un dossier local, avec leur
+# nom publié dans fichiers-payants.json (local lui aussi). Motifs génériques seulement.
 site-catalogue/*.pdf
+site-catalogue/*.xlsx
+/*.pdf
+/*.xlsx
+**/fichiers-payants*.json
+
+# Dossiers generes par scripts/build.js : jamais commites, reconstruits a chaque build
+dist/
+site-catalogue-dist/
+# Worktrees et réglages locaux de Claude (chemins absolus vers des dossiers privés) : jamais commités,
+# à la racine comme dans « site v2/.claude/ ». Au rebase sur le main local (commit 8ed8e13),
+# fusionner les deux versions de ce fichier au lieu d'en choisir une.
+**/.claude/worktrees/
+**/.claude/settings.local.json
+**/.claude/launch.json
+*.tmp
+
+# Etat local de netlify-cli (deploiements de brouillon)
+.netlify/

@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Marques et partenaires · {{marque.nom}}</title>
+<meta name="description" content="Pilote de karting et créateur de vidéos. Votre logo sur ma saison {{sponsoring.saison}}, ou vos produits dans mes vidéos : choisissez votre parcours, je vous réponds sous {{delais.reponse_marques_h}} h.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{sites.url}}{{routes.marques}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Marques et partenaires · {{marque.nom}}">
+<meta property="og:description" content="Pilote de karting et créateur de vidéos. Votre logo sur ma saison {{sponsoring.saison}}, ou vos produits dans mes vidéos : choisissez votre parcours, je vous réponds sous {{delais.reponse_marques_h}} h.">
+<meta property="og:url" content="{{sites.url}}{{routes.marques}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/piste-795-vibreur-640.webp 640w, /photos/piste-795-vibreur-1280.webp 1280w" imagesizes="(min-width: 900px) 46vw, 100vw">
+<link rel="stylesheet" href="/assets/page-marques.css">
+</head>
+<body class="page-marques" data-page="marques">
+{{partial:nav}}
+
+<main id="contenu">
+
+  <!-- 1. En-tete et aiguillage (COPY-PAGE-MARQUES.md, section 2). En moins de 5 secondes, la marque
+       sait qui je suis, qu il y a deux chemins, et lequel est le sien. Vouvoiement partout.
+       Telephone : texte, puis les deux parcours, puis la photo (ordre CSS). -->
+  <section class="marques-hero" data-hero aria-labelledby="marques-titre">
+    <div class="conteneur">
+      <div class="grille marques-hero-grille">
+
+        <div class="col-6 marques-hero-texte entree">
+          <h1 id="marques-titre">Mettez votre marque en piste.</h1>
+          <p class="chapo">Je suis Clément Daniel, pilote de karting en compétition et créateur de vidéos de pilotage. Il y a deux façons de travailler avec moi. Choisissez la vôtre.</p>
+          <p class="chrono chrono-ligne">{{audience.vues_affiche}} vues sur {{audience.reels}} Reels Instagram {{audience.periode}} · vidéo médiane : {{audience.mediane_affiche}} vues</p>
+        </div>
+
+        <div class="col-6 marques-hero-photo entree entree-suivante">
+          <picture>
+            <source type="image/webp" srcset="/photos/piste-795-vibreur-640.webp 640w, /photos/piste-795-vibreur-1280.webp 1280w" sizes="(min-width: 900px) 46vw, 100vw">
+            <img src="/photos/piste-795-vibreur-1280.jpg" srcset="/photos/piste-795-vibreur-640.jpg 640w, /photos/piste-795-vibreur-1280.jpg 1280w" sizes="(min-width: 900px) 46vw, 100vw" width="1280" height="853" alt="Kart numéro 795 de Clément Daniel qui longe un vibreur rouge et jaune, casque Arai et combinaison bleue bien visibles" fetchpriority="high" decoding="async">
+          </picture>
+        </div>
+
+        <!-- Les deux cartes d aiguillage : toute la carte est cliquable. Le filet de depart, une fois par page. -->
+        <nav class="col-12 marques-choix filet-depart" aria-label="Choisissez votre parcours">
+          <a class="choix" href="#saison" data-parcours="saison" data-zone="aiguillage">
+            <span class="choix-index chrono chrono-bloc">01 · Parrainage de saison</span>
+            <span class="choix-titre">Vous voulez votre logo sur ma saison</span>
+            <span class="choix-texte">Votre marque sur ma saison {{sponsoring.saison}}, de votre nom sur le kart jusqu’au logo principal sur le kart, le casque et la combinaison, selon la formule. Pour les entreprises qui veulent une image locale et des moments à partager avec leurs clients.</span>
+            <span class="choix-pied">Avec {{sponsoring.association.nom_affiche}} · à partir de <span class="chrono">{{sponsoring.formules.supporter.prix_affiche}}</span> la saison</span>
+            <span class="choix-action">Voir les formules de saison</span>
+          </a>
+          <a class="choix" href="#reseaux" data-parcours="reseaux" data-zone="aiguillage">
+            <span class="choix-index chrono chrono-bloc">02 · Collaboration réseaux</span>
+            <span class="choix-titre">Vous voulez des vidéos sur mes réseaux</span>
+            <span class="choix-texte">Votre produit testé en piste, filmé en onboard, publié sur Instagram et TikTok ou livré pour vos propres comptes. Pour les marques qui veulent se montrer dans l’univers du karting.</span>
+            <span class="choix-pied">Avec {{marques.structure_reseaux}} · à partir de <span class="chrono">{{marques.collab.video_dediee.prix_affiche}}</span> la vidéo</span>
+            <span class="choix-action">Voir les formats vidéo</span>
+          </a>
+          <p class="choix-hesite"><a class="lien-texte" href="#contact" data-parcours="deux" data-zone="aiguillage" data-demande>Vous hésitez, ou vous voulez les deux ? Écrivez-moi, on trie ensemble.</a></p>
+        </nav>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Les preuves (section 3 de la copie). Deux chiffres verifies (bloc audience de la config),
+       le total et la mediane cote a cote. Le partenaire de 2024 n est pas cite sans son accord. -->
+  <section class="section filet-haut marques-preuves reveal" aria-labelledby="preuves-titre">
+    <div class="conteneur">
+      <div class="grille">
+        <figure class="col-4 marques-preuves-photo">
+          <div class="photo photo-portrait">
+            <picture>
+              <source type="image/webp" srcset="/photos/clement-trophee-640.webp 640w" sizes="(min-width: 900px) 30vw, 70vw">
+              <img src="/photos/clement-trophee-640.jpg" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel tout sourire, un trophée d’Ancenis dans une main et son casque dans l’autre">
+            </picture>
+          </div>
+        </figure>
+        <div class="col-7 marques-preuves-texte">
+          <h2 id="preuves-titre">Des vidéos qui sont vues</h2>
+          <div class="preuve">
+            <p class="preuve-chiffre">{{audience.vues_affiche}}</p>
+            <p>vues sur mes {{audience.reels}} Reels Instagram, {{audience.periode}}.</p>
+          </div>
+          <div class="preuve">
+            <p class="preuve-chiffre">{{audience.mediane_affiche}}</p>
+            <p>vues pour ma vidéo médiane sur la même période. Je vous donne les deux chiffres, pas seulement le meilleur.</p>
+          </div>
+          <p class="mention">Source : {{audience.source}}.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Parcours A : parrainage de saison, via l association (section 4 de la copie). La bande
+       « argent » de la page. Lignes neutres tant que Clement n a pas confirme le nom de l association,
+       le budget detaille, la date limite et les zones vues par la camera. -->
+  <section class="section section-fond-1 filet-haut filet-bas marques-saison" id="saison" aria-labelledby="saison-titre">
+    <div class="conteneur">
+      <div class="entete-section marques-entete reveal">
+        <p class="libelle">Parrainage de saison · {{sponsoring.association.nom_affiche}}</p>
+        <h2 id="saison-titre">Votre logo sur ma saison {{sponsoring.saison}}.</h2>
+        <p class="chapo">Pendant toute la saison, votre marque roule avec moi : sur le kart, le casque ou la combinaison selon la formule, et à l’écran dans mes vidéos de course. À partir de la formule {{sponsoring.formules.officiel.titre}}, vous la faites vivre auprès de vos clients avec le kart exposé chez vous, des photos de course et une vidéo tournée dans votre entreprise.</p>
+      </div>
+
+      <!-- 3.1 L objectif de la saison -->
+      <div class="grille marques-objectif reveal">
+        <div class="col-5">
+          <p class="chrono-grand marques-objectif-chiffre"><strong>{{sponsoring.objectif_affiche}}</strong><span class="mono">pour rouler la saison {{sponsoring.saison}}</span></p>
+        </div>
+        <div class="col-6 marques-objectif-texte">
+          <h3>Ce que je cherche, et pourquoi</h3>
+          <p>Pour rouler la saison {{sponsoring.saison}} dans de bonnes conditions, il me faut entre {{sponsoring.objectif_min_affiche}} et {{sponsoring.objectif_max_affiche}}. Je dois racheter un kart, et une saison complète, c’est aussi les pneus, les engagements, l’entretien du moteur et les déplacements.</p>
+          <p>Ce n’est pas un budget de luxe. C’est ce qu’il faut aujourd’hui pour être au départ avec un matériel correct.</p>
+          <p class="marques-confiance">Tout passe par {{sponsoring.association.nom_affiche}} : une convention, une facture, et l’argent sert à la saison.</p>
+        </div>
+      </div>
+
+      <!-- 3.2 Ou va votre logo, et ce qui est inclus dans toutes les formules -->
+      <div class="grille marques-logo reveal">
+        <figure class="col-4 marques-logo-photo">
+          <div class="photo photo-portrait">
+            <picture>
+              <source type="image/webp" srcset="/photos/marques-combinaison-kart-640.webp 640w, /photos/marques-combinaison-kart-1280.webp 1280w" sizes="(min-width: 900px) 30vw, 70vw">
+              <img src="/photos/marques-combinaison-kart-640.jpg" srcset="/photos/marques-combinaison-kart-640.jpg 640w, /photos/marques-combinaison-kart-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, 70vw" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel debout dans son kart numéro 795, casque, combinaison et kart visibles en entier">
+            </picture>
+          </div>
+          <figcaption class="photo-legende">Le kart, le casque, la combinaison : les trois endroits où votre logo roule.</figcaption>
+        </figure>
+        <div class="col-6 marques-logo-texte">
+          <h3>Inclus dans toutes les formules</h3>
+          <ul class="liste">
+            <li>Une convention de parrainage d’une page, signée avant tout versement.</li>
+            <li>Une facture de {{sponsoring.association.nom_affiche}}.</li>
+            <li>Un compte rendu sous <span class="chrono">{{sponsoring.compte_rendu_course_h}} h</span> après chaque course : résultat, photos, liens des contenus où votre marque apparaît.</li>
+            <li>Un bilan de fin de saison d’une page.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3.3 Les formules : un registre de quatre lignes, pas quatre cartes. Prix et places lus dans la config.
+           Chaque « Choisir » mene au formulaire avec le parcours et la formule deja choisis. -->
+      <div class="marques-formules" id="formules">
+        <h3 class="marques-formules-titre">Les formules</h3>
+        <div class="registre">
+
+          <div class="registre-ligne formule reveal">
+            <div class="registre-prix">
+              <p class="formule-nom">{{sponsoring.formules.supporter.titre}}</p>
+              <p class="mono formule-apartir">à partir de</p>
+              <p class="prix">{{sponsoring.formules.supporter.prix_affiche}}</p>
+              <p class="mono formule-apartir">la saison</p>
+            </div>
+            <div class="registre-texte">
+              <p class="formule-pourqui">Pour les commerces et les artisans qui veulent en être.</p>
+              <ul class="liste">
+                <li>Votre nom sur le panneau des supporters du kart.</li>
+                <li>Votre logo et un lien vers votre site sur la page partenaires.</li>
+                <li>Une story d’annonce sur mon compte.</li>
+                <li>Le bilan de fin de saison.</li>
+              </ul>
+            </div>
+            <ul class="registre-faits">
+              <li class="chrono">{{sponsoring.formules.supporter.places_affiche}}</li>
+            </ul>
+            <div class="registre-action">
+              <a class="bouton bouton-fantome" href="#contact" data-parcours="saison" data-formule="supporter" data-zone="formules" data-demande>Choisir {{sponsoring.formules.supporter.titre}}</a>
+            </div>
+          </div>
+
+          <div class="registre-ligne formule reveal">
+            <div class="registre-prix">
+              <p class="formule-nom">{{sponsoring.formules.partenaire.titre}}</p>
+              <p class="mono formule-apartir">à partir de</p>
+              <p class="prix">{{sponsoring.formules.partenaire.prix_affiche}}</p>
+              <p class="mono formule-apartir">la saison</p>
+            </div>
+            <div class="registre-texte">
+              <p class="formule-pourqui">Pour les entreprises qui veulent leur logo sur le kart.</p>
+              <ul class="liste">
+                <li>Un petit logo sur le kart ou le casque.</li>
+                <li>L’annonce du partenariat en story et en publication.</li>
+                <li>Votre compte identifié dans une story à chaque course.</li>
+                <li>Votre logo et un lien sur la page partenaires.</li>
+                <li>Un compte rendu après chaque course et le bilan de fin de saison.</li>
+              </ul>
+            </div>
+            <ul class="registre-faits">
+              <li class="chrono">{{sponsoring.formules.partenaire.places_affiche}}</li>
+            </ul>
+            <div class="registre-action">
+              <a class="bouton bouton-fantome" href="#contact" data-parcours="saison" data-formule="partenaire" data-zone="formules" data-demande>Choisir {{sponsoring.formules.partenaire.titre}}</a>
+            </div>
+          </div>
+
+          <div class="registre-ligne formule formule-avant reveal">
+            <div class="registre-prix">
+              <p class="formule-nom">{{sponsoring.formules.officiel.titre}}</p>
+              <p class="mono formule-apartir">à partir de</p>
+              <p class="prix">{{sponsoring.formules.officiel.prix_affiche}}</p>
+              <p class="mono formule-apartir">la saison</p>
+            </div>
+            <div class="registre-texte">
+              <p class="formule-pourqui">Pour les entreprises qui veulent faire vivre le partenariat avec leurs clients.</p>
+              <ul class="liste">
+                <li>Un logo moyen sur le ponton du kart, ou sur la poitrine ou le dos de la combinaison.</li>
+                <li>Une vidéo d’annonce tournée chez vous.</li>
+                <li>Des stories à chaque course.</li>
+                <li>10 photos de course pour vos réseaux.</li>
+                <li>Le kart exposé une fois chez vous ou sur votre stand.</li>
+                <li>Un accueil au paddock pour 2 personnes sur une course, avec présentation du kart (selon les règles de l’organisateur).</li>
+                <li>Les comptes rendus et le bilan de fin de saison.</li>
+              </ul>
+            </div>
+            <ul class="registre-faits">
+              <li class="formule-etiquette">Le meilleur rapport visibilité et prix</li>
+              <li class="chrono">{{sponsoring.formules.officiel.places_affiche}}</li>
+            </ul>
+            <div class="registre-action">
+              <a class="bouton bouton-fantome" href="#contact" data-parcours="saison" data-formule="officiel" data-zone="formules" data-demande>Choisir {{sponsoring.formules.officiel.titre}}</a>
+            </div>
+          </div>
+
+          <div class="registre-ligne formule reveal">
+            <div class="registre-prix">
+              <p class="formule-nom">{{sponsoring.formules.principal.titre}}</p>
+              <p class="mono formule-apartir">à partir de</p>
+              <p class="prix">{{sponsoring.formules.principal.prix_affiche}}</p>
+              <p class="mono formule-apartir">la saison</p>
+            </div>
+            <div class="registre-texte">
+              <p class="formule-pourqui">Pour l’entreprise qui veut donner son nom à la saison.</p>
+              <ul class="liste">
+                <li>Le nom de la saison : « {{marque.nom}} avec [votre marque] ».</li>
+                <li>L’emplacement le plus visible du kart, plus un emplacement moyen.</li>
+                <li>L’exclusivité dans votre secteur, écrite au contrat.</li>
+                <li>Une vidéo d’annonce tournée chez vous.</li>
+                <li>Des stories à chaque course.</li>
+                <li>20 photos de course pour vos réseaux.</li>
+                <li>Le kart exposé deux fois chez vous.</li>
+                <li>Un accueil au paddock pour 4 personnes, avec présentation du kart (selon les règles de l’organisateur).</li>
+                <li>Les comptes rendus, le bilan, et la priorité pour la saison suivante.</li>
+              </ul>
+            </div>
+            <ul class="registre-faits">
+              <li class="chrono">{{sponsoring.formules.principal.places_affiche}}</li>
+            </ul>
+            <div class="registre-action">
+              <a class="bouton bouton-fantome" href="#contact" data-parcours="saison" data-formule="principal" data-zone="formules" data-demande>Choisir {{sponsoring.formules.principal.titre}}</a>
+            </div>
+          </div>
+
+        </div>
+        <ul class="marques-apres-formules">
+          <li>Vous préférez fournir du matériel (pneus, pièces, équipement) ? C’est possible : il est compté au prix du marché dans la formule.</li>
+          <li>Vous voulez en plus des vidéos dédiées à vos produits ? C’est la <a href="#reseaux" data-parcours="reseaux" data-zone="saison">collaboration réseaux</a>, cumulable avec la saison.</li>
+        </ul>
+      </div>
+
+      <!-- 3.4 Comment ca se passe, 3.5 la ligne pour votre comptable, puis le bouton du parcours -->
+      <div class="grille marques-deroule reveal">
+        <div class="col-6">
+          <h3>Comment ça se passe</h3>
+          <ol class="liste-numeros marques-etapes">
+            <li><span>Vous remplissez le formulaire, ou vous me demandez de passer vous voir.</span></li>
+            <li><span>On choisit ensemble la formule et l’emplacement de votre logo, photo du kart à l’appui.</span></li>
+            <li><span>On signe la convention, et vous recevez la facture de {{sponsoring.association.nom_affiche}}.</span></li>
+            <li><span>Votre logo part sur le kart avant la première course. Après chaque course, vous recevez votre compte rendu.</span></li>
+          </ol>
+          <p class="marques-note">La déco du kart se fait une seule fois, avant la saison, et les places sont limitées.</p>
+        </div>
+        <div class="col-5 marques-deroule-droite">
+          <figure class="photo-cadre">
+            <div class="photo marques-photo-large">
+              <picture>
+                <source type="image/webp" srcset="/photos/marques-cockpit-logos-640.webp 640w, /photos/marques-cockpit-logos-1280.webp 1280w" sizes="(min-width: 900px) 38vw, 100vw">
+                <img src="/photos/marques-cockpit-logos-640.jpg" srcset="/photos/marques-cockpit-logos-640.jpg 640w, /photos/marques-cockpit-logos-1280.jpg 1280w" sizes="(min-width: 900px) 38vw, 100vw" width="640" height="427" loading="lazy" decoding="async" alt="Clément Daniel s’installe dans son kart Redspeed numéro 95, logos de partenaires visibles sur la combinaison et le ponton">
+              </picture>
+            </div>
+            <figcaption class="photo-legende">Des logos de partenaires sur la combinaison et sur le ponton du kart.</figcaption>
+          </figure>
+          <div class="marques-comptable">
+            <h3>La ligne pour votre comptable</h3>
+            <p>C’est du parrainage, pas du mécénat : une convention, une facture et des contreparties réelles. Une dépense de parrainage est en général déductible en charges par l’entreprise qui la paie (article 39, 1, 7° du Code général des impôts) : à confirmer avec votre expert-comptable. Aucun reçu fiscal n’est délivré.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="marques-cta reveal">
+        <a class="bouton bouton-principal" href="#contact" data-parcours="saison" data-zone="saison" data-demande>Recevoir une proposition pour la saison</a>
+        <a class="lien-texte" href="#contact" data-parcours="saison" data-rappel data-zone="saison" data-demande>Je préfère être rappelé</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Parcours B : collaboration reseaux, l activite professionnelle de Clement (section 5 de la copie). -->
+  <section class="section marques-reseaux" id="reseaux" aria-labelledby="reseaux-titre">
+    <div class="conteneur">
+      <div class="entete-section marques-entete reveal">
+        <p class="libelle">Collaboration réseaux · {{marques.structure_reseaux}}</p>
+        <h2 id="reseaux-titre">Vos produits dans mes vidéos.</h2>
+        <p class="chapo">Je teste, j’explique et je montre en piste. Votre produit est utilisé pour de vrai, filmé en onboard, et présenté par quelqu’un qui sait ce qu’il fait sur un kart.</p>
+      </div>
+
+      <div class="grille marques-videos reveal">
+        <figure class="col-4 marques-videos-photo">
+          <div class="photo photo-portrait">
+            <picture>
+              <source type="image/webp" srcset="/photos/paddock-gants-640.webp 640w, /photos/paddock-gants-1280.webp 1280w" sizes="(min-width: 900px) 30vw, 70vw">
+              <img src="/photos/paddock-gants-640.jpg" srcset="/photos/paddock-gants-640.jpg 640w, /photos/paddock-gants-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, 70vw" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel casqué enfile ses gants avant de rouler, ciel bleu derrière lui">
+            </picture>
+          </div>
+        </figure>
+        <div class="col-6 marques-videos-texte">
+          <h3>Ce que mes vidéos font</h3>
+          <ul class="liste">
+            <li><span class="chrono">{{audience.vues_affiche}}</span> vues sur {{audience.reels}} Reels Instagram, {{audience.periode}}.</li>
+            <li>Vidéo médiane : <span class="chrono">{{audience.mediane_affiche}}</span> vues sur la même période.</li>
+            <li>Où les voir : <a href="{{reseaux.instagram}}" target="_blank" rel="noopener">Instagram</a> · <a href="{{reseaux.tiktok}}" target="_blank" rel="noopener">TikTok</a> · <a href="{{reseaux.youtube}}" target="_blank" rel="noopener">YouTube</a></li>
+          </ul>
+          <p class="secondaire">Mes chiffres d’audience détaillés vous sont envoyés avec ma réponse.</p>
+        </div>
+      </div>
+
+      <!-- 4.2 Les formats : six lignes separees par des filets, prix « a partir de » lus dans la config -->
+      <div class="marques-formats reveal">
+        <h3 class="marques-formules-titre">Les formats</h3>
+        <ul class="formats">
+          <li>
+            <p class="format-nom">Vidéo dédiée</p>
+            <p class="format-texte">Une vidéo verticale de 30 à 60 secondes sur votre produit, publiée sur Instagram et TikTok. Code promo en légende, lien en story.</p>
+            <p class="format-prix"><span class="mono">à partir de</span> <span class="chrono">{{marques.collab.video_dediee.prix_affiche}}</span></p>
+          </li>
+          <li>
+            <p class="format-nom">Produit testé en piste</p>
+            <p class="format-texte">La même vidéo, tournée en roulage réel et filmée en onboard. Je dis ce que j’en pense.</p>
+            <p class="format-prix"><span class="mono">à partir de</span> <span class="chrono">{{marques.collab.test_piste.prix_affiche}}</span> <span class="mono">+ frais de piste</span></p>
+          </li>
+          <li>
+            <p class="format-nom">Vidéo pour vos comptes</p>
+            <p class="format-texte">Je tourne, vous publiez. Une vidéo livrée en fichier, avec les droits d’usage sur vos réseaux pendant <span class="chrono">{{marques.droits_ugc_mois}} mois</span>.</p>
+            <p class="format-prix"><span class="mono">à partir de</span> <span class="chrono">{{marques.collab.ugc.prix_affiche}}</span></p>
+          </li>
+          <li>
+            <p class="format-nom">Pack de 3 stories</p>
+            <p class="format-texte">Trois stories le même jour, avec votre lien ou votre code.</p>
+            <p class="format-prix"><span class="mono">à partir de</span> <span class="chrono">{{marques.collab.stories.prix_affiche}}</span></p>
+          </li>
+          <li>
+            <p class="format-nom">Partenariat mensuel</p>
+            <p class="format-texte">Une vidéo dédiée et 3 stories chaque mois.</p>
+            <p class="format-prix"><span class="mono">à partir de</span> <span class="chrono">{{marques.collab.mensuel.prix_affiche}}</span> <span class="mono">par mois</span></p>
+          </li>
+          <li>
+            <p class="format-nom">Ambassadeur de saison</p>
+            <p class="format-texte"><span class="chrono">{{marques.collab.ambassadeur.mois}} mois</span> de partenariat mensuel, l’exclusivité en option et un bilan de fin de saison.</p>
+            <p class="format-prix"><span class="mono">à partir de</span> <span class="chrono">{{marques.collab.ambassadeur.prix_affiche}}</span></p>
+          </li>
+        </ul>
+        <p class="marques-note">Sur devis : la diffusion de la vidéo en publicité par votre marque, l’exclusivité dans votre secteur, les vidéos YouTube. Prix nets, {{legal.tva}}.</p>
+      </div>
+
+      <!-- 4.3 Comment ca se passe, 4.4 mes engagements -->
+      <div class="grille marques-deroule reveal">
+        <div class="col-6">
+          <h3>Comment ça se passe</h3>
+          <ol class="liste-numeros marques-etapes">
+            <li><span>Vous me décrivez votre produit et votre objectif dans le formulaire.</span></li>
+            <li><span>Je vous réponds sous <span class="chrono">{{delais.reponse_marques_h}} h</span> avec mes chiffres d’audience détaillés et une proposition chiffrée.</span></li>
+            <li><span>On signe un contrat d’une page : contenus, dates, droits d’usage, prix.</span></li>
+            <li><span>Je tourne, vous validez (un aller-retour), je publie avec la mention « Collaboration commerciale ».</span></li>
+            <li><span>Sous <span class="chrono">{{marques.bilan_collab_jours}} jours</span>, vous recevez un bilan chiffré : vues, comptes touchés, interactions, et les ventes de votre code promo si vous en fournissez un.</span></li>
+          </ol>
+        </div>
+        <div class="col-5 marques-deroule-droite">
+          <div>
+          <h3>Mes engagements</h3>
+          <ul class="liste">
+            <li>Chaque contenu payé porte la mention « Collaboration commerciale », comme le demande la loi du 9 juin 2023.</li>
+            <li>Un contrat écrit pour chaque collaboration, quel que soit le montant.</li>
+            <li>Je ne présente que des produits que j’utiliserais moi-même. Pas de promesse miracle, pas de faux avis.</li>
+            <li>Je ne travaille pas avec l’alcool, le tabac, le vapotage, les paris et pronostics sportifs, ni les cryptomonnaies.</li>
+          </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="marques-cta reveal">
+        <a class="bouton bouton-principal" href="#contact" data-parcours="reseaux" data-zone="reseaux" data-demande>Proposer une collaboration</a>
+        <a class="lien-texte" href="#contact" data-parcours="reseaux" data-kit data-zone="reseaux" data-demande>Recevoir d’abord mes chiffres d’audience</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Qui je suis (section 6 de la copie) : portrait couleur, faits de la config. -->
+  <section class="section filet-haut marques-qui reveal" aria-labelledby="qui-titre">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-4 marques-qui-photo">
+          <div class="photo photo-portrait">
+            <picture>
+              <source type="image/webp" srcset="/photos/clement-portrait-640.webp 640w, /photos/clement-portrait-1280.webp 1280w" sizes="(min-width: 900px) 30vw, 70vw">
+              <img src="/photos/clement-portrait-640.jpg" srcset="/photos/clement-portrait-640.jpg 640w, /photos/clement-portrait-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, 70vw" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel, pilote de karting, de face en veste d’équipe grise, regard droit vers l’objectif, au bord d’une piste">
+            </picture>
+          </div>
+        </div>
+        <div class="col-7 marques-qui-texte">
+          <h2 id="qui-titre">Clément Daniel, pilote et créateur</h2>
+          <p>{{faits.anciennete}}, en NSK et en Rotax Max. Je vis à Questembert, dans le Morbihan.</p>
+          <p>Je filme mes séances pour expliquer le pilotage : c’est devenu mes vidéos. J’ai aussi écrit un guide de pilotage et j’analyse les vidéos embarquées d’autres pilotes.</p>
+          <p class="chrono chrono-ligne">{{faits.titre_court}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. En resume (section 7 de la copie) : la separation en un coup d oeil. -->
+  <section class="section filet-haut marques-resume reveal" aria-labelledby="resume-titre">
+    <div class="conteneur">
+      <div class="entete-section">
+        <h2 id="resume-titre">Saison ou réseaux : la différence en un coup d’œil</h2>
+      </div>
+      <table class="resume">
+        <thead>
+          <tr>
+            <td></td>
+            <th scope="col">Parrainage de saison</th>
+            <th scope="col">Collaboration réseaux</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Ce que vous obtenez</th>
+            <td data-col="Parrainage de saison">Votre marque sur le kart, le casque ou la combinaison selon la formule, toute la saison</td>
+            <td data-col="Collaboration réseaux">Des vidéos sur votre produit, publiées chez moi ou livrées pour vos comptes</td>
+          </tr>
+          <tr>
+            <th scope="row">Pour qui</th>
+            <td data-col="Parrainage de saison">Les entreprises qui veulent une image locale et des moments avec leurs clients</td>
+            <td data-col="Collaboration réseaux">Les marques qui veulent montrer un produit</td>
+          </tr>
+          <tr>
+            <th scope="row">Avec qui vous signez</th>
+            <td data-col="Parrainage de saison">Avec {{sponsoring.association.nom_affiche}}</td>
+            <td data-col="Collaboration réseaux">Avec {{marques.structure_reseaux}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Le document</th>
+            <td data-col="Parrainage de saison">Une convention de parrainage d’une page</td>
+            <td data-col="Collaboration réseaux">Un contrat de collaboration d’une page</td>
+          </tr>
+          <tr>
+            <th scope="row">La durée</th>
+            <td data-col="Parrainage de saison">La saison {{sponsoring.saison}}</td>
+            <td data-col="Collaboration réseaux">Une vidéo, un mois ou une saison</td>
+          </tr>
+          <tr>
+            <th scope="row">À partir de</th>
+            <td data-col="Parrainage de saison"><span class="chrono">{{sponsoring.formules.supporter.prix_affiche}}</span> la saison</td>
+            <td data-col="Collaboration réseaux"><span class="chrono">{{marques.collab.video_dediee.prix_affiche}}</span> la vidéo</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="marques-note">Les deux sont cumulables. Deux documents, deux factures.</p>
+    </div>
+  </section>
+
+  <!-- 7. Questions frequentes (section 8 de la copie), trois groupes. -->
+  <section class="section filet-haut faq-section reveal" aria-labelledby="faq-titre">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-8">
+          <div class="entete-section">
+            <h2 id="faq-titre">Vos questions</h2>
+          </div>
+
+          <h3 class="faq-groupe">Parrainage de saison</h3>
+          <div class="faq">
+            <details>
+              <summary>Qui encaisse l’argent ?</summary>
+              <p>C’est {{sponsoring.association.nom_affiche}}, qui finance ma saison. Elle vous envoie une facture après la signature de la convention.</p>
+            </details>
+            <details>
+              <summary>Est-ce déductible pour mon entreprise ?</summary>
+              <p>Une dépense de parrainage est en général déductible en charges (article 39, 1, 7° du Code général des impôts), à condition que les contreparties soient réelles. C’est pour cela que je vous envoie un compte rendu avec photos et liens après chaque course. À confirmer avec votre expert-comptable.</p>
+            </details>
+            <details>
+              <summary>Pourquoi pas de reçu fiscal ni de réduction d’impôt ?</summary>
+              <p>Parce que ce n’est pas du mécénat. Vous recevez une vraie visibilité en échange de votre versement, et l’association finance la saison d’un seul pilote. La réduction d’impôt du mécénat ne s’applique pas dans ce cas. Je préfère vous le dire tout de suite plutôt que de vous mettre en difficulté.</p>
+            </details>
+            <details>
+              <summary>Que se passe-t-il si la saison s’arrête (blessure, casse, course annulée) ?</summary>
+              <p>On l’écrit dans la convention avant de signer : vous savez dès le départ ce que deviennent les contreparties qui n’auraient pas pu être livrées.</p>
+            </details>
+            <details>
+              <summary>Puis-je payer en matériel ?</summary>
+              <p>Oui. Pneus, pièces, carburant, équipement : le matériel est compté au prix du marché dans la formule, avec une convention comme pour un versement.</p>
+            </details>
+            <details>
+              <summary>Quand faut-il se décider ?</summary>
+              <p>Avant la déco du kart, qui se fait une seule fois avant la saison. Les places sur le kart sont limitées : plus tôt vous signez, plus vous avez le choix de l’emplacement.</p>
+            </details>
+            <details>
+              <summary>Je suis une petite entreprise. Est-ce que ça vaut le coup ?</summary>
+              <p>La formule {{sponsoring.formules.supporter.titre}} est faite pour ça : votre nom sur le kart, votre logo sur le site et le bilan de fin de saison, à partir de <span class="chrono">{{sponsoring.formules.supporter.prix_affiche}}</span>.</p>
+            </details>
+            <details>
+              <summary>Peut-on se rencontrer ?</summary>
+              <p>Oui, et c’est ce que je préfère. Laissez votre numéro dans le formulaire, je vous appelle et je passe vous voir avec une photo du kart.</p>
+            </details>
+          </div>
+
+          <h3 class="faq-groupe">Collaboration réseaux</h3>
+          <div class="faq">
+            <details>
+              <summary>Pourquoi me montrer la vidéo médiane ?</summary>
+              <p>Parce qu’une marque doit savoir ce que fait une vidéo typique, pas seulement la meilleure. Sur la même période, ma vidéo médiane a fait <span class="chrono">{{audience.mediane_affiche}}</span> vues.</p>
+            </details>
+            <details>
+              <summary>Y a-t-il un contrat ?</summary>
+              <p>Toujours, quel que soit le montant. Il fixe les contenus, les dates, les droits d’usage et le prix.</p>
+            </details>
+            <details>
+              <summary>Qui possède les vidéos ?</summary>
+              <p>Je reste propriétaire des vidéos. Le contrat précise, droit par droit, ce que vous pouvez en faire, sur quelles plateformes, dans quels pays et pendant combien de temps. La diffusion en publicité payante est une option à part.</p>
+            </details>
+            <details>
+              <summary>Dans quels délais ?</summary>
+              <p>Je vous réponds sous <span class="chrono">{{delais.reponse_marques_h}} h</span>. Le calendrier de tournage dépend de la météo et des créneaux de piste : il est écrit dans le contrat.</p>
+            </details>
+            <details>
+              <summary>Comment est-ce facturé ?</summary>
+              <p>Par une facture de {{legal.editeur}}, SIREN {{legal.siren}}, avec la mention « {{legal.tva}} ».</p>
+            </details>
+          </div>
+
+          <h3 class="faq-groupe">Les deux</h3>
+          <div class="faq">
+            <details>
+              <summary>Puis-je être partenaire de la saison et acheter des vidéos ?</summary>
+              <p>Oui. Ce sont deux accords séparés : une convention avec l’association pour la saison, un contrat avec moi pour les vidéos. Deux documents, deux factures.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Le formulaire (section 9 de la copie). Quatre champs obligatoires et le projet ; le reste se
+       precise si on veut. Poste vers la fonction demande (type marques) : copie a Clement, accuse
+       de reception au vouvoiement selon le parcours. Sans JavaScript, il poste quand meme. -->
+  <section class="section-contact filet-haut" id="contact" aria-labelledby="contact-titre">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-5 contact-texte reveal">
+          <h2 id="contact-titre">Parlons de votre projet</h2>
+          <p class="contact-chapo">Une minute suffit. Je lis chaque demande moi-même et je vous réponds sous <span class="chrono">{{delais.reponse_marques_h}} h</span>.</p>
+          <ol class="liste-numeros marques-etapes">
+            <li><span>Vous choisissez votre projet et vous laissez votre contact.</span></li>
+            <li><span>Je vous réponds avec une proposition adaptée et mes chiffres d’audience détaillés.</span></li>
+            <li><span>On en parle, au téléphone ou chez vous. Rien n’est signé avant.</span></li>
+          </ol>
+          <p class="contact-email">Vous préférez l’email ? <a href="mailto:{{contact.email}}">{{contact.email}}</a></p>
+          <p class="mention contact-legal">Collaborations réseaux : {{legal.editeur}}, SIREN {{legal.siren}}, {{legal.tva}}.</p>
+        </div>
+
+        <div class="col-6 contact-form reveal reveal-decale-1">
+          <div class="bloc-formulaire">
+            <h2 class="visuellement-cache">Formulaire de contact des marques</h2>
+            <form class="formulaire formulaire-large" id="form-demande" action="/.netlify/functions/demande" method="post" data-type="marques">
+              <input type="hidden" name="type" value="marques">
+
+              <div class="form-champs">
+                <fieldset class="champ champ-plein champ-projet" aria-describedby="profil-erreur">
+                  <legend>Votre projet</legend>
+                  <div class="projets">
+                    <label class="projet">
+                      <input type="radio" name="profil" value="sponsor" required>
+                      <span class="projet-titre">Mon logo sur votre saison</span>
+                      <span class="projet-sous">Parrainage de saison, avec {{sponsoring.association.nom_affiche}}</span>
+                    </label>
+                    <label class="projet">
+                      <input type="radio" name="profil" value="marque">
+                      <span class="projet-titre">Des vidéos sur vos réseaux</span>
+                      <span class="projet-sous">Collaboration, avec {{marques.structure_reseaux}}</span>
+                    </label>
+                    <label class="projet">
+                      <input type="radio" name="profil" value="autre">
+                      <span class="projet-titre">Les deux, ou je ne sais pas encore</span>
+                      <span class="projet-sous">On trie ensemble</span>
+                    </label>
+                  </div>
+                  <p class="champ-erreur" id="profil-erreur">Choisissez votre projet, la suite en dépend.</p>
+                </fieldset>
+
+                <!-- Sans JavaScript, la formule reste visible ; avec, seulement pour la saison (ou les deux) -->
+                <div class="champ champ-plein" id="champ-formule">
+                  <label for="formule">La formule qui vous intéresse</label>
+                  <select id="formule" name="formule">
+                    <option value="">Je verrai avec vous</option>
+                    <option value="supporter">{{sponsoring.formules.supporter.titre}} · à partir de {{sponsoring.formules.supporter.prix_affiche}}</option>
+                    <option value="partenaire">{{sponsoring.formules.partenaire.titre}} · à partir de {{sponsoring.formules.partenaire.prix_affiche}}</option>
+                    <option value="officiel">{{sponsoring.formules.officiel.titre}} · à partir de {{sponsoring.formules.officiel.prix_affiche}}</option>
+                    <option value="principal">{{sponsoring.formules.principal.titre}} · à partir de {{sponsoring.formules.principal.prix_affiche}}</option>
+                  </select>
+                </div>
+
+                <div class="champ">
+                  <label for="societe">Votre entreprise ou votre marque</label>
+                  <input id="societe" name="societe" type="text" autocomplete="organization" maxlength="120" required aria-describedby="societe-erreur">
+                  <p class="champ-erreur" id="societe-erreur">Le nom de votre entreprise ou de votre marque.</p>
+                </div>
+
+                <div class="champ">
+                  <label for="prenom">Votre prénom</label>
+                  <input id="prenom" name="prenom" type="text" autocomplete="given-name" maxlength="60" required aria-describedby="prenom-erreur">
+                  <p class="champ-erreur" id="prenom-erreur">Votre prénom, pour savoir à qui je réponds.</p>
+                </div>
+
+                <div class="champ champ-plein">
+                  <label for="email">Votre email professionnel</label>
+                  <input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required aria-describedby="email-erreur">
+                  <p class="champ-erreur" id="email-erreur">Il me faut un email valide pour vous répondre.</p>
+                </div>
+
+                <div class="champ champ-plein">
+                  <label for="message">Un mot sur votre projet (facultatif)</label>
+                  <textarea id="message" name="message" rows="4" maxlength="2000" placeholder="Votre produit, votre objectif, votre secteur"></textarea>
+                </div>
+
+                <!-- Facultatif, replie : telephone, budget, site. Ouvert d office par « Je prefere etre rappele ». -->
+                <details class="champ-plein preciser" id="preciser">
+                  <summary>Préciser (facultatif) : téléphone, budget, site</summary>
+                  <div class="preciser-champs">
+                    <div class="champ">
+                      <label for="telephone">Votre téléphone, si vous préférez être rappelé</label>
+                      <input id="telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel" maxlength="25" aria-describedby="telephone-erreur">
+                      <p class="champ-erreur" id="telephone-erreur">Ce numéro ne semble pas valide. Vous pouvez aussi laisser vide.</p>
+                    </div>
+                    <div class="champ">
+                      <label for="budget">Votre budget</label>
+                      <!-- Tranches de reponse, pas des prix de vente (listes fermees de demande.js). Avec JavaScript,
+                           seul le groupe du parcours choisi reste dans la liste. -->
+                      <select id="budget" name="budget">
+                        <option value="">Pas encore décidé</option>
+                        <optgroup label="Parrainage de saison" data-parcours="saison">
+                          <option value="moins-1000">Moins de 1 000 €</option>
+                          <option value="1000-3000">1 000 à 3 000 €</option>
+                          <option value="3000-6000">3 000 à 6 000 €</option>
+                          <option value="plus-6000">Plus de 6 000 €</option>
+                        </optgroup>
+                        <optgroup label="Collaboration réseaux" data-parcours="reseaux">
+                          <option value="moins-300">Moins de 300 €</option>
+                          <option value="300-1000">300 à 1 000 €</option>
+                          <option value="plus-1000">Plus de 1 000 €</option>
+                        </optgroup>
+                      </select>
+                    </div>
+                    <div class="champ champ-plein">
+                      <label for="site">Votre site ou votre compte Instagram</label>
+                      <input id="site" name="site" type="text" autocomplete="url" maxlength="200">
+                    </div>
+                  </div>
+                </details>
+
+                <div class="champ champ-case champ-plein">
+                  <input id="rgpd" name="rgpd" type="checkbox" value="oui" required aria-describedby="rgpd-erreur">
+                  <label for="rgpd">J’accepte que Clément Daniel garde ces informations pour répondre à ma demande. Conservation {{delais.conservation_demandes_ans}} ans après le dernier échange. Détails dans la <a href="{{routes.confidentialite}}">politique de confidentialité</a>.</label>
+                  <p class="champ-erreur" id="rgpd-erreur">J’ai besoin de votre accord pour garder votre demande.</p>
+                </div>
+
+                <!-- Piege a robots : jamais visible, doit rester vide -->
+                <div class="champ-piege" aria-hidden="true">
+                  <label for="site_web">Ne remplissez pas ce champ</label>
+                  <input id="site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="champ-plein">
+                  <button class="bouton bouton-principal bouton-large" type="submit">Envoyer ma demande</button>
+                  <p class="bouton-sous">Réponse de ma part sous <span class="chrono">{{delais.reponse_marques_h}} h</span>. Aucun engagement : on en parle d’abord.</p>
+                  <p class="form-message" role="status" aria-live="polite"></p>
+                </div>
+              </div>
+
+              <!-- Etat envoye : remplace les champs, a la meme hauteur. Le texte suit le parcours (script). -->
+              <div class="form-envoye plaque-bloc" tabindex="-1">
+                <p class="envoye-titre">Merci.</p>
+                <p class="envoye-texte">Je vous réponds sous <span class="chrono">{{delais.reponse_marques_h}} h</span>.</p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{{partial:footer}}
+
+<script>
+/* Page /marques.
+   1. Aiguillage : chaque bouton vers #contact preremplit le projet (saison, reseaux, les deux), la
+      formule (« Choisir ... »), ouvre le telephone (« Je prefere etre rappele ») ou le message (kit media),
+      puis place le curseur dans le premier champ vide. ?parcours=saison&formule=officiel fait de meme
+      a l ouverture (liens de prospection).
+   2. Le formulaire s adapte au projet : formule pour la saison, tranches de budget du parcours.
+   3. Etats : envoi, envoye (texte selon le parcours, prenom en texte brut), erreur.
+   Sans JavaScript : ancres, formule et budgets complets, envoi direct vers la fonction demande. */
+(function () {
+  'use strict';
+  var doc = document;
+  var form = doc.getElementById('form-demande');
+  if (!form) return;
+
+  var PARCOURS = { sponsor: 'saison', marque: 'reseaux', autre: 'deux' };
+  var PROFIL_DE = { saison: 'sponsor', reseaux: 'marque', deux: 'autre' };
+  var FORMULES = ['supporter', 'partenaire', 'officiel', 'principal'];
+  var DELAI = '{{delais.reponse_marques_h}}';
+  var SAISON = '{{sponsoring.saison}}';
+  var MESSAGE_KIT = 'Je souhaite recevoir vos chiffres d’audience détaillés.';
+  var TEXTE_ERREUR = 'L’envoi n’a pas marché. Réessayez, ou écrivez-moi à {{contact.email}}.';
+  var TEXTE_MANQUE = 'Il manque une information. Regardez le champ signalé.';
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var TELEPHONE = /^[0-9+(). -]{6,25}$/;
+
+  var radios = form.querySelectorAll('input[name="profil"]');
+  var champFormule = doc.getElementById('champ-formule');
+  var formule = doc.getElementById('formule');
+  var budget = doc.getElementById('budget');
+  var preciser = doc.getElementById('preciser');
+  var groupes = budget ? Array.prototype.slice.call(budget.querySelectorAll('optgroup')) : [];
+
+  function suivre(type, meta) { if (window.ckrTrack) window.ckrTrack(type, meta); }
+
+  function parcoursChoisi() {
+    for (var i = 0; i < radios.length; i++) if (radios[i].checked) return PARCOURS[radios[i].value] || '';
+    return '';
+  }
+
+  /* Le formulaire suit le projet : formule visible pour la saison ou les deux, budgets du parcours */
+  function adapter() {
+    var p = parcoursChoisi();
+    if (champFormule) {
+      var sansFormule = p === 'reseaux';
+      champFormule.hidden = sansFormule;
+      formule.disabled = sansFormule;
+    }
+    if (budget && groupes.length) {
+      var garde = budget.value;
+      groupes.forEach(function (g) { if (g.parentNode) g.parentNode.removeChild(g); });
+      groupes.forEach(function (g) {
+        var cible = g.getAttribute('data-parcours');
+        if (!p || p === 'deux' || p === cible) budget.appendChild(g);
+      });
+      budget.value = garde;
+      if (budget.value !== garde) budget.value = '';
+    }
+  }
+  for (var r = 0; r < radios.length; r++) radios[r].addEventListener('change', adapter);
+
+  function choisir(parcours, options) {
+    options = options || {};
+    var profil = PROFIL_DE[parcours];
+    for (var i = 0; i < radios.length; i++) radios[i].checked = radios[i].value === profil;
+    adapter();
+    if (options.formule && formule && FORMULES.indexOf(options.formule) > -1) formule.value = options.formule;
+    if (options.rappel && preciser) preciser.open = true;
+    var message = form.elements.message;
+    if (options.kit && message && !message.value.trim()) message.value = MESSAGE_KIT;
+    var groupe = form.querySelector('.champ-projet');
+    if (groupe) groupe.classList.remove('est-invalide');
+  }
+
+  function premierChampVide(options) {
+    if (options && options.rappel) return doc.getElementById('telephone');
+    var ordre = ['societe', 'prenom', 'email'];
+    for (var i = 0; i < ordre.length; i++) {
+      var c = form.elements[ordre[i]];
+      if (c && !c.value.trim()) return c;
+    }
+    return form.elements.message;
+  }
+
+  /* Clic sur un parcours : suivi, puis preremplissage si le lien mene au formulaire */
+  doc.addEventListener('click', function (e) {
+    var lien = e.target && e.target.closest ? e.target.closest('a[data-parcours]') : null;
+    if (!lien) return;
+    var parcours = lien.getAttribute('data-parcours');
+    suivre('marques_parcours', { parcours: parcours, zone: lien.getAttribute('data-zone') || '', formule: lien.getAttribute('data-formule') || '' });
+    if (!lien.hasAttribute('data-demande') || form.classList.contains('est-envoye')) return;
+    var options = { formule: lien.getAttribute('data-formule'), rappel: lien.hasAttribute('data-rappel'), kit: lien.hasAttribute('data-kit') };
+    choisir(parcours, options);
+    var champ = premierChampVide(options);
+    if (champ) {
+      window.setTimeout(function () {
+        try { champ.focus({ preventScroll: true }); } catch (err) { champ.focus(); }
+      }, 450);
+    }
+  });
+
+  /* Liens de prospection : /marques?parcours=saison&formule=officiel#contact */
+  try {
+    var q = new URLSearchParams(location.search);
+    var p0 = q.get('parcours');
+    if (PROFIL_DE[p0]) choisir(p0, { formule: q.get('formule'), rappel: q.get('rappel') === '1' });
+  } catch (err) { /* lien sans parametre */ }
+  adapter();
+
+  if (!window.fetch || !window.FormData) return;
+  /* Le script prend la main sur la validation : messages sous chaque champ, pas de bulle du navigateur */
+  form.noValidate = true;
+  var bloc = form.closest('.bloc-formulaire') || form.parentNode;
+  var message = form.querySelector('.form-message');
+  var bouton = form.querySelector('button[type="submit"]');
+
+  function marquer(champ, invalide) {
+    var conteneur = champ.closest('.champ');
+    if (conteneur) conteneur.classList.toggle('est-invalide', invalide);
+    if (champ.type !== 'radio') champ.setAttribute('aria-invalid', invalide ? 'true' : 'false');
+  }
+
+  function telephoneInvalide(valeur) {
+    if (!valeur) return false;
+    return !TELEPHONE.test(valeur) || valeur.replace(/[^0-9]/g, '').length < 6;
+  }
+
+  function valider() {
+    var premier = null;
+    var projet = parcoursChoisi();
+    if (radios.length) {
+      marquer(radios[0], !projet);
+      if (!projet) premier = radios[0];
+    }
+    var requis = form.querySelectorAll('[required]');
+    for (var i = 0; i < requis.length; i++) {
+      var champ = requis[i];
+      if (champ.disabled || champ.type === 'radio') continue;
+      var valeur = champ.type === 'checkbox' ? champ.checked : champ.value.trim();
+      var invalide = !valeur || (champ.type === 'email' && !EMAIL.test(champ.value.trim()));
+      marquer(champ, invalide);
+      if (invalide && !premier) premier = champ;
+    }
+    var tel = form.elements.telephone;
+    if (tel) {
+      var telFaux = telephoneInvalide(tel.value.trim());
+      marquer(tel, telFaux);
+      if (telFaux) {
+        if (preciser) preciser.open = true;
+        if (!premier) premier = tel;
+      }
+    }
+    if (premier) premier.focus();
+    return !premier;
+  }
+
+  function afficher(texte, classe) {
+    message.textContent = texte;
+    message.className = 'form-message' + (classe ? ' ' + classe : '');
+  }
+
+  function corps() {
+    var objet = {};
+    new FormData(form).forEach(function (valeur, cle) { objet[cle] = valeur; });
+    objet.type = form.getAttribute('data-type');
+    objet.rgpd = !!(form.rgpd && form.rgpd.checked);
+    return objet;
+  }
+
+  /* Confirmation selon le parcours ; le prenom est pose en texte, jamais en HTML */
+  function confirmer(parcours) {
+    var titre = form.querySelector('.envoye-titre');
+    var texte = form.querySelector('.envoye-texte');
+    var prenom = form.elements.prenom ? form.elements.prenom.value.trim() : '';
+    if (titre) titre.textContent = prenom ? 'Merci ' + prenom + '.' : 'Merci.';
+    if (!texte) return;
+    var suite = ' et on trie ensemble ce qui vous convient.';
+    if (parcours === 'saison') suite = ' avec une proposition pour la saison ' + SAISON + '. Si vous avez laissé votre numéro, je vous appelle.';
+    if (parcours === 'reseaux') suite = ' avec mes chiffres d’audience détaillés et une première proposition.';
+    texte.textContent = 'Je vous réponds sous ' + DELAI + ' h' + suite;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!valider()) { afficher(TEXTE_MANQUE, 'est-erreur'); return; }
+    var parcours = parcoursChoisi();
+    bouton.disabled = true;
+    afficher('Envoi en cours.');
+    fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corps()) })
+      .then(function (reponse) {
+        return reponse.json().catch(function () { return {}; }).then(function (json) {
+          return { ok: reponse.ok, statut: reponse.status, json: json };
+        });
+      })
+      .then(function (resultat) {
+        if (!resultat.ok) {
+          var champs = resultat.json && resultat.json.champs;
+          var marques = false;
+          if (champs && typeof champs === 'object') {
+            Object.keys(champs).forEach(function (nom) {
+              var champ = form.elements[nom];
+              if (champ && champ.length && champ[0] && champ[0].type === 'radio') champ = champ[0];
+              if (champ && champ.nodeType === 1) { marquer(champ, true); marques = true; }
+              if (nom === 'telephone' && preciser) preciser.open = true;
+            });
+          }
+          var erreur = new Error(marques ? TEXTE_MANQUE : (resultat.statut < 500 && resultat.json && resultat.json.error ? resultat.json.error : ''));
+          erreur.serveur = true;
+          throw erreur;
+        }
+        bloc.style.minHeight = bloc.offsetHeight + 'px';
+        confirmer(parcours);
+        form.classList.add('est-envoye');
+        afficher('');
+        var confirmation = form.querySelector('.form-envoye');
+        if (confirmation) confirmation.focus();
+        suivre('demande_signup', { form: form.getAttribute('data-type'), parcours: parcours, formule: formule && !formule.disabled ? formule.value : '' });
+      })
+      .catch(function (erreur) {
+        afficher(erreur && erreur.serveur && erreur.message ? erreur.message : TEXTE_ERREUR, 'est-erreur');
+        bouton.disabled = false;
+      });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+/* ============================================================
+   Clem Kart Racing : tokens.css
+   Le seul fichier qui decide des couleurs, polices, tailles,
+   espacements, durees et courbes. base.css et les pages ne
+   contiennent aucune valeur brute : elles lisent ces variables.
+   Section 9 du plan V4 (23/09/2026).
+   ============================================================ */
+
+:root {
+  /* ---------- Fonds : quatre noirs, jamais de noir pur en aplat ---------- */
+  --fond-0: #070707;
+  --fond-1: #0F0F0F;
+  --fond-2: #161616;
+  --fond-3: #1C1C1C;
+
+  /* ---------- Texte : blanc casse, jamais gris pour du texte utile ---------- */
+  --texte: #F2EDE8;
+  --texte-rgb: 242, 237, 232;
+  --texte-2: rgba(var(--texte-rgb), 0.62);   /* secondaire, 62 % */
+  --texte-3: rgba(var(--texte-rgb), 0.40);   /* legendes, mentions */
+  --filet: rgba(var(--texte-rgb), 0.10);      /* filets 1 px */
+  --filet-fort: rgba(var(--texte-rgb), 0.22);
+
+  /* ---------- Un seul accent : le rouge ---------- */
+  --rouge: #D9171D;          /* grands titres, filets, chiffres */
+  --rouge-bouton: #C4141A;   /* fond des boutons */
+  --rouge-survol: #A51115;   /* survol */
+  --rouge-rgb: 217, 23, 29;
+
+  /* Vert reserve aux coches du quiz et a l etat « envoye », jamais decoratif */
+  --ok: #3FA35B;
+  --erreur: #D9171D;
+
+  /* ---------- Polices : 5 graisses, pas une de plus ----------
+     Bebas Neue 400, Barlow Condensed 600 et 700, Barlow 400, JetBrains Mono 400 */
+  --police-titre: 'Bebas Neue', 'Barlow Condensed', Impact, sans-serif;
+  --police-libelle: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --police-texte: 'Barlow', system-ui, sans-serif;
+  --police-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+
+  --graisse-normal: 400;
+  --graisse-libelle: 600;
+  --graisse-libelle-fort: 700;
+
+  /* ---------- Echelle de texte fluide (Utopia, base 4 px, 360 px -> 1280 px) ---------- */
+  --t--2: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);       /* 12 -> 13 : mono, mentions */
+  --t--1: clamp(0.8125rem, 0.78rem + 0.22vw, 0.9375rem);     /* 13 -> 15 : libelles, nav, boutons */
+  --t-0: clamp(1.0625rem, 1.04rem + 0.11vw, 1.125rem);       /* 17 -> 18 : texte courant */
+  --t-1: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);           /* 20 -> 24 : chapo */
+  --t-2: clamp(1.625rem, 1.35rem + 1.2vw, 2.25rem);          /* 26 -> 36 : titre de bloc */
+  --t-3: clamp(2.25rem, 1.75rem + 2.2vw, 3.5rem);            /* 36 -> 56 : titre de section */
+  --t-4: clamp(3rem, 2.2rem + 3.6vw, 5rem);                  /* 48 -> 80 : grand titre */
+  --t-hero: clamp(3.5rem, 9vw, 8rem);                        /* 56 -> 128 : hero */
+
+  /* Interlignes et espacements de lettres */
+  --interligne-titre: 0.92;
+  --interligne-serre: 1.1;
+  --interligne-texte: 1.6;
+  --espacement-libelle: 0.08em;
+  --espacement-libelle-fort: 0.12em;
+  --mesure: 62ch;   /* largeur max d un paragraphe */
+
+  /* ---------- Espacements : base 4 px ---------- */
+  --e-1: 0.25rem;   /* 4 */
+  --e-2: 0.5rem;    /* 8 */
+  --e-3: 0.75rem;   /* 12 */
+  --e-4: 1rem;      /* 16 */
+  --e-5: 1.5rem;    /* 24 */
+  --e-6: 2rem;      /* 32 */
+  --e-7: 3rem;      /* 48 */
+  --e-8: 4rem;      /* 64 */
+  --e-9: 6rem;      /* 96 */
+  --e-10: 8rem;     /* 128 */
+  --section-y: clamp(var(--e-8), 4rem + 4vw, var(--e-10));
+  --gouttiere: 16px;                 /* marge mobile */
+  --gouttiere-large: clamp(16px, 4vw, 60px);
+
+  /* ---------- Grille ---------- */
+  --conteneur: 1280px;
+  --conteneur-lecture: 720px;
+  --conteneur-liens: 420px;
+  --colonnes: 12;
+  --grille-ecart: clamp(16px, 2vw, 32px);
+
+  /* ---------- Formes : racing = aretes vives ---------- */
+  --rayon: 0;
+  --bordure: 1px solid var(--filet);
+  --bouton-h: 56px;
+  --bouton-h-petit: 44px;
+  --nav-h: 64px;
+  --barre-h: 64px;
+
+  /* ---------- Mouvement : budget strict, transform et opacity seulement ---------- */
+  --duree-vite: 160ms;
+  --duree: 320ms;
+  --duree-entree: 700ms;
+  --courbe: cubic-bezier(0.16, 1, 0.3, 1);   /* depart rapide, fin douce */
+  --courbe-sortie: cubic-bezier(0.4, 0, 1, 1);
+  --decalage-reveal: 24px;
+
+  /* ---------- Plans ---------- */
+  --z-nav: 100;
+  --z-barre: 90;
+  --z-menu: 110;
+
+  /* ---------- Focus visible ---------- */
+  --focus: 2px solid var(--texte);
+  --focus-decalage: 3px;
+
+  color-scheme: dark;
+}
+
+/* Reduced motion : les durees tombent a zero, base.css coupe le reste */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duree-vite: 0ms;
+    --duree: 0ms;
+    --duree-entree: 0ms;
+    --decalage-reveal: 0px;
+  }
+}

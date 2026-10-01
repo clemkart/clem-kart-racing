@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Reçu, ton débrief est lancé · {{marque.nom}}</title>
+<meta name="description" content="Paiement reçu, le lien de ta vidéo est arrivé avec. Ton débrief arrive par email sous {{delais.debrief_h}} h après réception de ta vidéo. Voilà ce qui se passe de mon côté.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="canonical" href="{{sites.url}}{{routes.merci_onboard}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Reçu, ton débrief est lancé · {{marque.nom}}">
+<meta property="og:description" content="Paiement reçu, le lien de ta vidéo est arrivé avec. Ton débrief arrive par email sous {{delais.debrief_h}} h après réception de ta vidéo. Voilà ce qui se passe de mon côté.">
+<meta property="og:url" content="{{sites.url}}{{routes.merci_onboard}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
+<link rel="stylesheet" href="/assets/page-merci.css">
+</head>
+<body class="page-merci" data-page="merci-onboard">
+{{partial:nav-merci}}
+
+<main id="contenu">
+
+  <!-- Hero : le gros chiffre a gauche, le titre a droite. Aucun bouton sur toute la page.
+       Le chiffre geant est decoratif (aria-hidden) : le h1 porte la phrase complete pour les lecteurs d ecran.
+       Le lien de la video arrive avec le paiement (champ obligatoire de la page Stripe du debrief). -->
+  <section class="merci" data-hero>
+    <div class="conteneur">
+      <div class="grille merci-scinde">
+        <div class="col-5">
+          <p class="chrono-grand chrono-grand-hero entree" aria-hidden="true">
+            <strong>{{delais.debrief_h}}&nbsp;h</strong>
+            <span class="mono">le chrono démarre quand j’ai ta vidéo</span>
+          </p>
+        </div>
+        <div class="col-6 col-depart-7">
+          <div class="merci-en-tete entree entree-suivante">
+            <h1>Reçu.<span class="visuellement-cache"> Ton débrief arrive sous {{delais.debrief_h}} h.</span></h1>
+            <p class="chapo">Merci pour ta confiance. Le lien de ta vidéo est arrivé avec ton paiement : tu n’as rien d’autre à m’envoyer. Voilà ce qui se passe de mon côté.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filet de depart, puis ce qui se passe : trois lignes indexees comme des tours -->
+  <section class="filet-depart section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-8 reveal">
+          <h2>Ce qui se passe</h2>
+          <ol class="merci-etapes">
+            <li><div class="etape"><span class="etape-titre">J’ouvre le lien que tu as collé au paiement.</span><span class="etape-detail">S’il ne s’ouvre pas (vidéo privée, accès refusé), je te l’écris sous <span class="chrono">{{delais.signalement_video_h}} h</span>, et les <span class="chrono">{{delais.debrief_h}} h</span> partent du moment où j’ai accès à ta vidéo.</span></div></li>
+            <li><div class="etape"><span class="etape-titre">Je regarde ta vidéo en entier.</span><span class="etape-detail">Tour par tour, chrono à l’appui.</span></div></li>
+            <li><div class="etape"><span class="etape-titre">Je t’envoie ton débrief par email.</span><span class="etape-detail">À l’adresse donnée au paiement : une vidéo commentée sur tes images, tes <span class="chrono">3</span> priorités et un seul objectif pour ta prochaine sortie.</span></div></li>
+          </ol>
+          <p class="merci-etapes-fin">Tu reçois tout sous <span class="chrono">{{delais.debrief_h}} h</span> après réception de ta vidéo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video inexploitable : le seul bloc encadre de la page -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-7">
+          <div class="plaque-bloc reveal">
+            <p>Si ta vidéo ne montre pas ton pilotage, je te le dis avant de commencer et je te rembourse intégralement.</p>
+            <p>Une caméra sur la poitrine, par exemple, ne montre que le bitume. Si tu préfères, tu m’envoies plutôt par email une autre vidéo, qui montre tes mains et la piste.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Le guide en option, ta video, le contact : une seule section de lecture, des filets d apex entre les parties.
+       Aucun bouton, aucun prix, aucun lien de rattrapage. Aucun email automatique : l option guide part a la main. -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-7 merci-lecture reveal">
+          <h2>Tu as ajouté le guide ?</h2>
+          <p>Je te l’envoie moi-même par email, sous <span class="chrono">{{delais.option_guide_h}} h</span> après ton paiement. Tu n’as rien à faire.</p>
+          <p>Tu ne l’as pas pris et tu le veux plus tard ? Ton prix réduit sur le guide, réservé aux clients de l’analyse, est indiqué sur ta page de confirmation.</p>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <p class="merci-ligne">Ta vidéo sert à ton débrief. Un extrait ne sort dans un de mes contenus que si tu l’as accepté au paiement, et seulement comme tu l’as choisi. Tu changes d’avis ? Un email suffit. Tout est détaillé dans la <a href="{{routes.confidentialite}}">politique de confidentialité</a>.</p>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <h2>Si quelque chose cloche</h2>
+          <p>Garantie <span class="chrono">{{garantie_jours}} jours</span> après réception de ton débrief, en plus de tes droits légaux : si ça ne t’apporte rien, un email et je te rembourse.</p>
+          <p>Une question, un lien de vidéo à corriger : <a href="mailto:{{contact.email}}">{{contact.email}}</a>. Je réponds sous <span class="chrono">{{delais.reponse_email_h}} h</span> les jours ouvrés.</p>
+          <p>Ton reçu et ta facture arrivent par email, envoyés par Stripe.</p>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <p class="merci-ligne merci-reseaux">Les prochaines vidéos sortent ici : <a href="{{reseaux.instagram}}" target="_blank" rel="noopener">Instagram</a> et <a href="{{reseaux.youtube}}" target="_blank" rel="noopener">YouTube</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{{partial:footer-merci}}
+</body>
+</html>

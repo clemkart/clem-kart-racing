@@ -1,0 +1,190 @@
+/* ============================================================
+   Clem Kart Racing : page-extrait.css
+   Regles propres aux deux aimants : /extrait (extrait-guide.html, .page-extrait)
+   et /tableur-reglages.html (.page-tableur, en fin de fichier). Chargees apres base.css.
+   Tout est prefixe .page-extrait ou .page-tableur : rien ne deborde sur les autres pages.
+   Les composants partages (chrono, numeral, filet-apex, filet-depart, planche,
+   plaque-bloc, etats du formulaire) sont dans base.css, section 22.
+   Rayons 0, aucune ombre, aucun degrade, transform et opacity seulement.
+   ============================================================ */
+
+/* ---------- Colonnes supplementaires (grille 12, a partir de 900 px) ----------
+   Le raccourci grid-column: span N de base.css remet la fin a auto : une classe
+   col-depart-* seule ferait tenir l element sur une colonne. On ecrit donc le
+   depart et la largeur ensemble, pour chaque paire utilisee sur la page. */
+@media (min-width: 900px) {
+  .page-extrait .col-2 { grid-column: span 2; }
+  .page-extrait .col-3 { grid-column: span 3; }
+  .page-extrait .col-5.col-depart-8 { grid-column: 8 / span 5; }
+  .page-extrait .col-6.col-depart-3 { grid-column: 3 / span 6; }
+  .page-extrait .col-3.col-depart-10 { grid-column: 10 / span 3; }
+  /* Le second bloc de « Ce que tu recois » part de la colonne 7, aligne en haut sur le premier :
+     meme filet, meme ligne de titre, une colonne vide entre les deux */
+  .page-extrait .extrait-bloc-droite { grid-column: 7 / span 6; }
+}
+
+/* ---------- Hero : texte et formulaire a gauche, numeros a droite ---------- */
+.page-extrait .hero { min-height: min(88vh, 900px); }
+.page-extrait .hero > .conteneur { width: 100%; }
+/* Equilibre : jamais un mot seul sur sa ligne (« GUIDE, » isole avec un retour force) */
+.page-extrait .extrait-titre { font-size: clamp(2.75rem, 6vw, 5.5rem); max-width: 12ch; text-wrap: balance; }
+
+/* L objet de droite entre 100 ms apres le texte (une seule animation d entree par page) */
+html.a-js .page-extrait .hero-objet.entree { animation-delay: 100ms; }
+
+.page-extrait .hero-objet {
+  display: flex; flex-direction: column;
+  align-items: flex-end; justify-content: center;
+}
+.page-extrait .extrait-pile { display: grid; gap: var(--e-4); justify-items: end; max-width: 100%; }
+/* Le numero geant (base.css) et son nom tiennent dans les colonnes 8 a 12 */
+.page-extrait .extrait-pile-ligne { display: flex; align-items: baseline; gap: var(--e-4); max-width: 100%; }
+.page-extrait .extrait-pile-ligne .mono { color: var(--texte-2); max-width: 12ch; text-align: right; }
+@media (min-width: 900px) {
+  /* Le second numero est decale de 32 px vers la gauche pour casser la pile */
+  .page-extrait .extrait-pile-decalee { margin-right: var(--e-6); }
+}
+@media (max-width: 899px) {
+  /* Telephone : titre, formulaire, puis les numeros reduits sur une ligne */
+  .page-extrait .hero-objet { align-items: flex-start; }
+  .page-extrait .extrait-pile { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: start; gap: var(--e-6); width: 100%; }
+  .page-extrait .extrait-pile-ligne { flex-direction: column-reverse; align-items: flex-start; gap: var(--e-2); min-width: 0; }
+  .page-extrait .extrait-pile-ligne .mono { text-align: left; }
+}
+
+/* ---------- Formulaire a un champ ---------- */
+.page-extrait .extrait-form { width: 100%; max-width: 520px; }
+.page-extrait .extrait-form .champ input { background: var(--fond-1); border: 1px solid var(--filet-fort); }
+.page-extrait .extrait-form-note { margin-top: var(--e-2); }
+/* Le lien vers la politique de confidentialite, la ou l email est collecte : souligne, jamais rouge */
+.page-extrait .extrait-form-note a,
+.page-tableur .tableur-form-note a { color: var(--texte); text-decoration: underline; text-underline-offset: 0.18em; }
+.page-extrait .extrait-form-note a:hover,
+.page-tableur .tableur-form-note a:hover { text-decoration-thickness: 2px; }
+
+.page-extrait .form-message:empty { display: none; }
+
+/* Envoye : le bloc des champs est remplace par la plaque, filet vert d etat a gauche */
+.page-extrait .form-envoye { border-left: 2px solid var(--ok); }
+.page-extrait .form-envoye h2 { font-size: var(--t-3); margin-bottom: var(--e-4); }
+.page-extrait .form-envoye p { font-size: var(--t-0); }
+.page-extrait .form-envoye:focus { outline: none; }
+
+/* ---------- Ce que tu recois ---------- */
+.page-extrait .extrait-blocs { margin-top: var(--e-6); row-gap: var(--e-7); }
+.page-extrait .extrait-bloc-titre {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  letter-spacing: 0;
+  text-transform: none;
+  margin: var(--e-3) 0 var(--e-2);
+}
+
+/* Le tableur : rangee pleine largeur, titre a gauche, onglets en mono a droite */
+.page-extrait .extrait-tableur {
+  margin-top: var(--e-7); padding-top: var(--e-6); border-top: var(--bordure);
+  display: grid; gap: var(--e-5);
+}
+@media (min-width: 900px) {
+  .page-extrait .extrait-tableur { grid-template-columns: 5fr 7fr; column-gap: var(--grille-ecart); align-items: start; }
+}
+/* Les cinq onglets du fichier envoye, dans l ordre du classeur : une ligne chacun, filets entre eux */
+.page-extrait .extrait-onglets { display: grid; margin-top: var(--e-4); color: var(--texte); counter-reset: onglet; }
+.page-extrait .extrait-onglets li {
+  max-width: none;
+  display: flex; gap: var(--e-4);
+  padding-block: var(--e-2);
+  border-top: var(--bordure);
+  counter-increment: onglet;
+}
+.page-extrait .extrait-onglets li:last-child { border-bottom: var(--bordure); }
+.page-extrait .extrait-onglets li::before { content: '0' counter(onglet); color: var(--texte-3); font-variant-numeric: tabular-nums; }
+
+/* ---------- La ligne honnete : sous le tableur, un filet d apex au-dessus, une ligne par idee ---------- */
+.page-extrait .extrait-honnete { margin-top: var(--e-7); }
+.page-extrait .extrait-honnete .filet-apex { margin-bottom: var(--e-4); }
+.page-extrait .extrait-honnete p { color: var(--texte-2); }
+.page-extrait .extrait-honnete p + p { margin-top: var(--e-2); }
+
+/* ---------- Retour sans JavaScript : le bloc n apparait que sur #envoye ---------- */
+.page-extrait .extrait-envoye { display: none; margin-bottom: var(--e-7); }
+.page-extrait .extrait-envoye:target { display: block; }
+
+/* ---------- Le guide complet : la seule bande de la page ---------- */
+.page-extrait .extrait-guide { padding-block: var(--e-8); }
+.page-extrait .extrait-guide .grille { align-items: center; }
+.page-extrait .extrait-guide h2 + .chapo { margin-top: var(--e-4); }
+.page-extrait .planche { max-width: 160px; }
+.page-extrait .extrait-guide-action .bouton-sous { max-width: none; }
+
+/* ---------- Reduced motion : rien ne bouge (le survol est coupe dans base.css) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html.a-js .page-extrait .hero-objet.entree { animation: none; }
+}
+
+/* ---------- Telephone : le bouton d envoi tient dans le premier ecran ---------- */
+@media (max-width: 899px) {
+  .page-extrait .hero { min-height: 0; padding-top: calc(var(--nav-h) + var(--e-5)); }
+  .page-extrait .hero-texte { gap: var(--e-4); }
+  .page-extrait .extrait-titre { font-size: clamp(2.5rem, 11vw, 3.5rem); }
+  .page-extrait .chapo { font-size: var(--t-0); }
+}
+
+/* ============================================================
+   /tableur-reglages.html (body.page-tableur) : l autre aimant, meme formulaire a un champ.
+   Chargee par cette page seulement pour ces regles ; tout est prefixe .page-tableur.
+   ============================================================ */
+.page-tableur .hero { min-height: min(80vh, 820px); }
+.page-tableur .tableur-form { width: 100%; max-width: 520px; }
+.page-tableur .tableur-form .champ input { background: var(--fond-1); border: 1px solid var(--filet-fort); }
+.page-tableur .tableur-form-note { margin-top: var(--e-2); }
+.page-tableur .form-message:empty { display: none; }
+
+/* Envoye : le bloc des champs est remplace par la plaque, filet vert d etat a gauche */
+.page-tableur .form-envoye { border-left: 2px solid var(--ok); }
+.page-tableur .form-envoye h2 { font-size: var(--t-3); margin-bottom: var(--e-4); }
+.page-tableur .form-envoye p { font-size: var(--t-0); }
+.page-tableur .form-envoye:focus { outline: none; }
+
+/* Retour sans JavaScript : le bloc n apparait que sur #envoye */
+.page-tableur .tableur-envoye { display: none; margin-block: var(--e-6); }
+.page-tableur .tableur-envoye:target { display: block; }
+
+.page-tableur .tableur-onglets .secondaire { max-width: 62ch; }
+.page-tableur .tableur-honnete { margin-top: var(--e-7); }
+.page-tableur .tableur-honnete .filet-apex { margin-bottom: var(--e-4); }
+.page-tableur .tableur-honnete p { color: var(--texte-2); }
+.page-tableur .tableur-honnete p + p { margin-top: var(--e-2); }
+.page-tableur .tableur-guide { align-items: center; }
+.page-tableur .tableur-guide .bouton-sous { max-width: none; }
+
+@media (max-width: 899px) {
+  .page-tableur .hero { min-height: 0; padding-top: calc(var(--nav-h) + var(--e-5)); padding-bottom: var(--e-7); }
+  .page-tableur .hero-texte { gap: var(--e-4); }
+  .page-tableur .titre-hero { font-size: clamp(2.5rem, 11vw, 3.5rem); }
+  .page-tableur .chapo { font-size: var(--t-0); }
+}
+
+/* Un chiffre et son unite ne se separent jamais en fin de ligne (texte courant, sans tiret de chrono) */
+.page-extrait .insecable, .page-tableur .insecable { white-space: nowrap; }
+
+/* ============================================================
+   Menu reduit des deux pages de capture (/extrait et /tableur-reglages.html) :
+   le logo et « Retour au site ». Ni prix ni lien vers le guide avant l email.
+   ============================================================ */
+.nav-capture .nav-capture-liens { display: flex; align-items: center; gap: var(--e-5); }
+.nav-capture .nav-capture-retour {
+  display: inline-flex; align-items: center; min-height: var(--bouton-h-petit);
+  font-family: var(--police-libelle); font-weight: var(--graisse-libelle);
+  font-size: var(--t--1); letter-spacing: var(--espacement-libelle); text-transform: uppercase;
+  color: var(--texte-2); text-decoration: none; white-space: nowrap;
+}
+.nav-capture .nav-capture-retour:hover { color: var(--texte); }
+
+/* Apres l envoi : le lien vers les pages du guide, souligne, jamais rouge */
+.page-extrait .form-envoye .lien-texte,
+.page-tableur .form-envoye .lien-texte { font-size: var(--t-0); }
+.page-extrait .extrait-envoye p + p,
+.page-tableur .tableur-envoye p + p { margin-top: var(--e-2); }

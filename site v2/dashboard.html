@@ -7,7 +7,7 @@
 <title>Dashboard | Clem Kart Racing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Barlow&family=JetBrains+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
   :root{
@@ -55,7 +55,7 @@
     content:''; position:absolute; top:0; left:0; right:0; height:1px;
     background:linear-gradient(90deg, transparent, var(--red), transparent);
   }
-  .login-card h1{ font-family:var(--fd); font-size:38px; letter-spacing:2px; text-shadow:0 0 24px var(--red-glow); }
+  .login-card p.login-titre{ margin:0; color:var(--w); line-height:1.1; font-family:var(--fd); font-size:38px; letter-spacing:2px; text-shadow:0 0 24px var(--red-glow); }
   .login-card p{ color:var(--wd); font-size:14px; margin:6px 0 22px; }
   input[type=password]{ width:100%; padding:13px 14px; background:var(--b4); border:1px solid var(--wf); border-radius:9px; color:var(--w); font-family:var(--fb); font-size:15px; outline:none; transition:border-color .18s, box-shadow .18s; }
   input[type=password]:focus{ border-color:var(--red); box-shadow:0 0 0 3px rgba(217,23,29,.16); }
@@ -227,7 +227,7 @@
 <!-- ============ LOGIN ============ -->
 <div id="login">
   <div class="login-card">
-    <h1>ANALYTICS</h1>
+    <p class="login-titre" role="heading" aria-level="1">ANALYTICS</p>
     <p>Tableau de bord privé de Clem Kart Racing</p>
     <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="current-password">
     <button class="btn" id="loginBtn">Entrer</button>
@@ -257,6 +257,7 @@
   <div class="note" id="emptyNote" style="display:none">
     <b>Pas encore de données.</b> Le suivi se remplit dès qu'il y a des visites sur le site. Tout est en place côté technique.
   </div>
+  <div class="note" id="stripeKeyNote" style="display:none"></div>
 
   <!-- KPI -->
   <div class="grid-kpi">
@@ -271,14 +272,14 @@
       <div class="hint"><span class="cmp" id="cPv"></span> total</div>
     </div>
     <div class="kpi">
-      <div class="label">Clics Gumroad</div>
+      <div class="label">Clics vers Stripe</div>
       <div class="val"><span id="kClk">-</span><span class="delta" id="dClk"></span></div>
-      <div class="hint"><span class="cmp" id="cClk"></span> vers l'achat</div>
+      <div class="hint"><span class="cmp" id="cClk"></span> <span id="kClkHint">vers l'achat</span></div>
     </div>
     <div class="kpi accent">
       <div class="label">Taux de clic</div>
       <div class="val"><span id="kCtr">-</span></div>
-      <div class="hint"><span class="cmp" id="cCtr"></span> visiteurs → clic achat</div>
+      <div class="hint"><span class="cmp" id="cCtr"></span> visiteurs → clic vers Stripe</div>
     </div>
     <div class="kpi accent">
       <div class="label">Emails récoltés</div>
@@ -289,6 +290,11 @@
       <div class="label">Chiffre d'affaires</div>
       <div class="val"><span id="kCa">-</span></div>
       <div class="hint"><span class="cmp" id="cCa"></span> <span id="kVentesHint">ventes réelles</span></div>
+    </div>
+    <div class="kpi">
+      <div class="label">Remboursements</div>
+      <div class="val"><span id="kRemb">-</span></div>
+      <div class="hint"><span id="kRembHint">taux sur les ventes</span></div>
     </div>
   </div>
   <p style="color:var(--wd);font-size:12px;margin:-6px 0 22px;">
@@ -314,6 +320,20 @@
     </p>
   </div>
 
+  <!-- PAGE DE LIENS (bio) -->
+  <div class="panel">
+    <h2>Page de liens <small>/liens : les 5 boutons des bios Instagram, TikTok et Facebook</small></h2>
+    <div class="mini" id="liensMini"></div>
+    <div class="grid-2" style="margin-top:20px;">
+      <div><h3 class="sub">Clics par bouton <small>(dans l'ordre de la page)</small></h3><div id="liensBoutonsBox"></div></div>
+      <div><h3 class="sub">Par plateforme <small>(visiteurs de la page, puis clics)</small></h3><div id="liensPlateformesBox"></div></div>
+    </div>
+    <p style="color:var(--wd);font-size:11px;margin-top:12px;">
+      La plateforme vient du lien de la bio : <code>/liens?utm_source=instagram&amp;utm_medium=bio</code> (pareil avec tiktok et facebook).
+      Sans ce paramètre, la visite tombe en « direct ».
+    </p>
+  </div>
+
   <!-- ENTONNOIR EXTRAIT -->
   <div class="panel">
     <h2>Parcours extrait <small>« commente EXTRAIT » → DM → page → email</small></h2>
@@ -321,7 +341,7 @@
     <p style="color:var(--wd);font-size:11px;margin-top:10px;">
       Le nombre de commentaires vit dans ManyChat, le dashboard prend la suite à l'arrivée sur le site.
       Pour voir combien viennent du DM, le bouton ManyChat doit pointer vers
-      <code>…/extrait-guide.html?utm_source=manychat&amp;utm_campaign=extrait</code> :
+      <code>…/extrait?utm_source=manychat&amp;utm_campaign=extrait</code> :
       la source apparaît alors dans « D'où viennent les visiteurs ».
     </p>
   </div>
@@ -352,7 +372,7 @@
 
   <!-- FUNNEL -->
   <div class="panel">
-    <h2>Entonnoir <small>du trafic à la vente, en passant par l'email</small></h2>
+    <h2>Entonnoir du guide <small>du trafic à la vente, en passant par l'email</small></h2>
     <div id="funnelBox"></div>
     <p style="color:var(--wd);font-size:11px;margin-top:10px;">
       Le pourcentage compare chaque étape à <b>celle juste au-dessus</b> : c'est là qu'on voit exactement où ça fuit.
@@ -406,7 +426,7 @@
 
   <!-- CONVERSION PAR SOURCE -->
   <div class="panel">
-    <h2>Conversion par source <small>% de visiteurs qui cliquent Gumroad</small></h2>
+    <h2>Conversion par source <small>% de visiteurs qui cliquent vers Stripe</small></h2>
     <div id="convBox"></div>
   </div>
 
@@ -418,8 +438,9 @@
       <div class="m"><div class="label">Clics vers le tableur</div><div class="val"><span id="kTabClk">-</span><span class="delta" id="dTabClk"></span></div></div>
       <div class="m"><div class="label">Inscriptions tableur</div><div class="val"><span id="kTab">-</span><span class="delta" id="dTab"></span></div></div>
       <div class="m"><div class="label">Inscriptions extrait</div><div class="val"><span id="kExtSign">-</span><span class="delta" id="dExtSign"></span></div></div>
+      <div class="m"><div class="label">Clics Gumroad (historique)</div><div class="val"><span id="kGum">-</span><span class="delta" id="dGum"></span></div></div>
     </div>
-    <p style="color:var(--wd);font-size:11px;margin-top:8px;">« Inscriptions » = email réellement envoyé avec succès. « Clics » = simple intérêt, pas encore une inscription confirmée.</p>
+    <p style="color:var(--wd);font-size:11px;margin-top:8px;">« Inscriptions » = email réellement envoyé avec succès. « Clics » = simple intérêt, pas encore une inscription confirmée. Les clics Gumroad datent d'avant la bascule vers Stripe : ils restent lisibles sur l'historique, ils ne devraient plus bouger.</p>
   </div>
 </div>
 
@@ -570,30 +591,40 @@
 
     countUp('kVis', t.visiteurs);
     countUp('kPv', t.pageviews);
-    countUp('kClk', t.gumroad_clicks);
+    // Clics vers Stripe : depuis le 7 octobre, l'achat passe par Stripe. Les anciens clics
+    // Gumroad restent visibles dans « Autres actions » pour lire l'historique.
+    countUp('kClk', t.stripe_clicks ?? 0);
+    $('kClkHint').textContent = fr(t.stripe_clicks_guide ?? 0) + ' guide · ' + fr(t.stripe_clicks_debrief ?? 0) + ' débrief';
     $('kCtr').textContent = (t.ctr ?? 0).toLocaleString('fr-FR') + ' %';
     countUp('kExt', t.extract_clicks);
     countUp('kTabClk', t.tableur_clicks);
     countUp('kTab', t.tableur_signups);
     countUp('kExtSign', t.extrait_signups ?? 0);
+    countUp('kGum', t.gumroad_clicks ?? 0);
     const insc = t.inscriptions ?? ((t.tableur_signups || 0) + (t.extrait_signups || 0));
     countUp('kInsc', insc);
     $('kInscHint').textContent = fr(t.extrait_signups ?? 0) + ' extrait · ' + fr(t.tableur_signups ?? 0) + ' tableur';
-    // Chiffre d'affaires total : guide (Gumroad) + débrief (Stripe), détaillé dessous.
+    // Chiffre d'affaires total : guide (Gumroad + Stripe) + débrief (Stripe), détaillé dessous.
     const db = d.debrief || null;
+    const st = d.stripe || {};
+    const cleAbsente = st.statut === 'non_configure';
     const nbDebriefs = db ? (db.ventes || 0) : 0;
     $('kCa').textContent = fmtMoney(t.revenu_total_cents ?? t.revenu_cents, t.currency || (db && db.currency) || 'EUR');
-    $('kVentesHint').textContent = fr(t.ventes) + ' guide' + (t.ventes > 1 ? 's' : '') + ' · ' + fr(nbDebriefs) + ' débrief' + (nbDebriefs > 1 ? 's' : '');
+    $('kVentesHint').textContent = cleAbsente
+      ? 'clé Stripe absente · ' + fr(t.ventes) + ' guide' + (t.ventes > 1 ? 's' : '') + ' Gumroad'
+      : fr(t.ventes) + ' guide' + (t.ventes > 1 ? 's' : '') + ' · ' + fr(nbDebriefs) + ' débrief' + (nbDebriefs > 1 ? 's' : '');
+    renderStripeKey(st);
+    renderRemboursements(d.remboursements || {}, cleAbsente);
 
-    setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.gumroad_clicks);
+    setDelta('dVis', dl.visiteurs); setDelta('dPv', dl.pageviews); setDelta('dClk', dl.stripe_clicks);
     setDelta('dExt', dl.extract_clicks); setDelta('dTabClk', dl.tableur_clicks); setDelta('dTab', dl.tableur_signups);
-    setDelta('dExtSign', dl.extrait_signups ?? 0);
+    setDelta('dExtSign', dl.extrait_signups ?? 0); setDelta('dGum', dl.gumroad_clicks ?? 0);
     setDelta('dInsc', dl.inscriptions ?? 0);
 
     const partial = !!d.previous_partial;
     setCmp('cVis', t.visiteurs, prev.visiteurs, showCmp, partial);
     setCmp('cPv', t.pageviews, prev.pageviews, showCmp, partial);
-    setCmp('cClk', t.gumroad_clicks, prev.gumroad_clicks, showCmp, partial);
+    setCmp('cClk', t.stripe_clicks, prev.stripe_clicks, showCmp, partial);
     setCmp('cCtr', t.ctr, prev.ctr, showCmp, partial);
     setCmp('cCa', t.ventes, prev.ventes, showCmp, partial);
     setCmp('cInsc', insc, prev.inscriptions ?? 0, showCmp, partial);
@@ -604,6 +635,7 @@
 
     renderFunnel(d.funnel || [], t);
     renderFunnel(d.funnel_extrait || [], t, 'funnelExtraitBox');
+    renderLiens(d.liens || {});
     renderDebrief(d.debrief);
     dernieresMetriques = metriquesPourCoach(d);
     renderDates(d.dates || {});
@@ -618,10 +650,64 @@
     renderBarList('campBox', d.by_campaign, {
       label:x=>x.campagne,
       value:x=>x.visiteurs,
-      fmt:x=>fr(x.visiteurs)+' visiteurs · '+fr(x.inscriptions)+' email'+(x.inscriptions>1?'s':'')+' ('+x.taux_inscription+'%)'
+      fmt:x=>fr(x.visiteurs)+' visiteurs · '+fr(x.inscriptions)+' email'+(x.inscriptions>1?'s':'')+' ('+x.taux_inscription+'%) · '+fr(x.clics_achat)+' clic'+(x.clics_achat>1?'s':'')+' Stripe'
     });
-    renderBarList('ctaBox', d.by_cta, { label:x=>x.cta, value:x=>x.total, fmt:x=>fr(x.gumroad)+' achat'+(x.extract?(' · '+fr(x.extract)+' extrait'):'') });
-    renderBarList('convBox', d.conv_by_source, { label:x=>x.source, value:x=>x.rate, fmt:x=>x.rate+'% ('+fr(x.gumroad_clicks)+'/'+fr(x.visiteurs)+')' });
+    renderBarList('ctaBox', d.by_cta, { label:x=>x.cta, value:x=>x.total, fmt:x=>fmtClicsBouton(x) });
+    renderBarList('convBox', d.conv_by_source, { label:x=>x.source, value:x=>x.rate, fmt:x=>x.rate+'% ('+fr(x.clics_achat)+'/'+fr(x.visiteurs)+')' });
+  }
+
+  // Un bouton = des clics Stripe, ou d'anciens clics Gumroad, ou des clics vers l'extrait.
+  function fmtClicsBouton(x){
+    const parts = [];
+    if(x.stripe) parts.push(fr(x.stripe) + ' Stripe');
+    if(x.gumroad) parts.push(fr(x.gumroad) + ' Gumroad');
+    if(x.extract) parts.push(fr(x.extract) + ' extrait');
+    return parts.join(' · ') || '0';
+  }
+
+  // Clé Stripe absente : on le dit en clair, un zéro muet ferait croire à zéro vente.
+  function renderStripeKey(st){
+    const note = $('stripeKeyNote'); if(!note) return;
+    if(st.statut === 'non_configure'){
+      note.style.display = 'block';
+      note.innerHTML = '<b>Clé Stripe absente.</b> Les ventes Stripe (guide et débrief) ne sont pas lues : le chiffre d\'affaires ci-dessous ne contient que l\'historique Gumroad. ' +
+        'Ajoute la clé de lecture <code>STRIPE_READ_KEY</code> dans Netlify (site 1), puis redéploie.';
+    } else if(st.statut === 'erreur'){
+      note.style.display = 'block';
+      note.innerHTML = '<b>Stripe ne répond pas.</b> Les ventes Stripe ne sont pas à jour (' + esc(st.detail || 'erreur') + '). Vérifie les droits de la clé de lecture.';
+    } else {
+      note.style.display = 'none';
+    }
+  }
+
+  // Taux de remboursement : chaque remboursement coûte les frais Stripe de la vente d'origine.
+  function renderRemboursements(rb, cleAbsente){
+    const k = $('kRemb'), h = $('kRembHint'); if(!k || !h) return;
+    if(cleAbsente && !rb.gumroad){ k.textContent = '-'; h.textContent = 'clé Stripe absente'; return; }
+    k.textContent = (rb.taux ?? 0).toLocaleString('fr-FR') + ' %';
+    const total = rb.total || 0, payees = rb.ventes_payees || 0;
+    h.textContent = fr(total) + ' rembours' + (total > 1 ? 'és' : 'é') + ' sur ' + fr(payees + total) + ' vente' + (payees + total > 1 ? 's' : '') +
+      (rb.partiels ? ' · ' + fr(rb.partiels) + ' partiel' + (rb.partiels > 1 ? 's' : '') : '');
+  }
+
+  // Page de liens : vues, clics, taux, puis le détail par bouton et par plateforme.
+  function renderLiens(li){
+    const mini = $('liensMini'); if(!mini) return;
+    mini.innerHTML = [
+      ['Visiteurs de /liens', fr(li.visiteurs)],
+      ['Clics sur un bouton', fr(li.clics)],
+      ['Visiteurs qui cliquent', fr(li.cliqueurs) + ' (' + (li.taux_clic ?? 0).toLocaleString('fr-FR') + ' %)'],
+    ].map(([l, v]) => '<div class="m"><div class="label">' + esc(l) + '</div><div class="val">' + esc(v) + '</div></div>').join('');
+    renderBarList('liensBoutonsBox', li.par_bouton, {
+      label:x=>(x.position ? x.position + ' · ' : '') + x.label,
+      value:x=>x.clics,
+      fmt:x=>fr(x.clics) + ' clic' + (x.clics > 1 ? 's' : '') + ' · ' + fr(x.visiteurs) + ' visiteur' + (x.visiteurs > 1 ? 's' : '')
+    });
+    renderBarList('liensPlateformesBox', li.par_plateforme, {
+      label:x=>x.plateforme,
+      value:x=>x.visiteurs,
+      fmt:x=>fr(x.visiteurs) + ' visiteur' + (x.visiteurs > 1 ? 's' : '') + ' · ' + fr(x.clics) + ' clic' + (x.clics > 1 ? 's' : '') + ' (' + (x.taux_clic ?? 0).toLocaleString('fr-FR') + ' %)'
+    });
   }
 
   // Entonnoir : une barre par etape, largeur proportionnelle a la 1re etape,
@@ -653,7 +739,7 @@
     else {
       note.style.display = 'block';
       note.innerHTML = st.statut === 'non_configure'
-        ? '<b>Ventes Stripe non affichées.</b> Ajoute la clé de lecture <code>STRIPE_READ_KEY</code> dans Netlify (site 1), puis redéploie. Le reste du tunnel est déjà mesuré.'
+        ? '<b>Clé Stripe absente.</b> Les débriefs payés ne sont pas lus : la dernière étape reste à zéro tant que <code>STRIPE_READ_KEY</code> manque dans Netlify (site 1). Le reste du tunnel est déjà mesuré.'
         : '<b>Stripe ne répond pas.</b> Les ventes du débrief ne sont pas à jour (' + esc(st.detail || 'erreur') + '). Vérifie les droits de la clé de lecture.';
     }
     renderFunnel(db.funnel || [], { revenu_cents: db.revenu_cents, currency: db.currency }, 'funnelDebriefBox');
@@ -663,6 +749,7 @@
       ['Sorties « location »', fr(s.location)],
       ['Sorties « pas d’images »', fr(s.sans_images)],
       ['Options guide prises', fr(db.options_guide)],
+      ['Débriefs au prix lecteur', fr(db.ventes_lecteur)],
       ['Accueil → diagnostic', fr(ca.diagnostic)],
     ].map(([l, v]) => '<div class="m"><div class="label">' + esc(l) + '</div><div class="val">' + esc(v) + '</div></div>').join('');
     renderBarList('etapesBox', db.etapes, { label:x=>'Q' + x.step + ' · ' + x.question, value:x=>x.sessions, fmt:x=>fr(x.sessions) + ' (' + (x.taux_depuis_depart || 0).toLocaleString('fr-FR') + ' %)' });
@@ -682,7 +769,7 @@
       ['Suivi depuis', dates.suivi_depuis ? fmtDate(dates.suivi_depuis) : '-'],
       ['Meilleur jour', dates.meilleur_jour ? fmtDate(dates.meilleur_jour.date) + ' (' + fr(dates.meilleur_jour.visiteurs) + ' visiteurs)' : '-'],
       ['Dernière inscription', dates.derniere_inscription ? fmtDate(dates.derniere_inscription) : '-'],
-      ['Première vente', dates.premiere_vente ? fmtDate(dates.premiere_vente) : '-'],
+      ['Première vente du guide', dates.premiere_vente ? fmtDate(dates.premiere_vente) : '-'],
       ['Dernière vente du guide', dates.derniere_vente ? fmtDate(dates.derniere_vente) : '-'],
       ['Dernier débrief vendu', dates.derniere_vente_debrief ? fmtDate(dates.derniere_vente_debrief) : '-'],
     ];
@@ -700,7 +787,7 @@
         datasets:[
           { label:'Visiteurs', data:byDay.map(x=>x.visiteurs), borderColor:C.red, backgroundColor:'rgba(217,23,29,0.15)', fill:true, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 },
           { label:'Emails récoltés', data:byDay.map(x=>x.inscriptions||0), borderColor:C.gold, backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4 },
-          { label:'Clics Gumroad', data:byDay.map(x=>x.gumroad_clicks), borderColor:'#7a7570', backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, borderDash:[4,3], pointRadius:0, pointHoverRadius:4 },
+          { label:'Clics vers Stripe', data:byDay.map(x=>x.clics_achat ?? ((x.stripe_clicks||0)+(x.gumroad_clicks||0))), borderColor:'#7a7570', backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, borderDash:[4,3], pointRadius:0, pointHoverRadius:4 },
           { label:'Ventes', data:byDay.map(x=>x.ventes||0), borderColor:'#46d17a', backgroundColor:'transparent', fill:false, tension:.35, borderWidth:2, pointRadius:0, pointHoverRadius:4, yAxisID:'y' }
         ]
       },
@@ -780,13 +867,21 @@
       vues_page_extrait: t.vues_page_extrait, vues_page_tableur: t.vues_page_tableur,
       inscriptions_email: t.inscriptions, inscriptions_extrait: t.extrait_signups,
       inscriptions_tableur: t.tableur_signups,
-      clics_vers_gumroad: t.gumroad_clicks, taux_de_clic_pct: t.ctr,
-      ventes: t.ventes, ventes_periode_precedente: p.ventes,
-      revenu_centimes: t.revenu_cents, devise: t.currency,
+      clics_vers_stripe: t.stripe_clicks, clics_vers_stripe_guide: t.stripe_clicks_guide,
+      clics_vers_stripe_debrief: t.stripe_clicks_debrief,
+      clics_vers_gumroad_historique: t.gumroad_clicks, taux_de_clic_pct: t.ctr,
+      ventes_guide: t.ventes, ventes_guide_stripe: t.ventes_guide_stripe, ventes_guide_gumroad: t.ventes_guide_gumroad,
+      ventes_guide_periode_precedente: p.ventes,
+      revenu_guide_centimes: t.revenu_cents, devise: t.currency,
       extraits_gratuits_gumroad: t.extraits_gumroad,
       revenu_total_centimes_guide_et_debrief: t.revenu_total_cents,
+      // Sans clé Stripe, les ventes Stripe ne sont pas lues : le coach doit le savoir avant de conclure.
+      cle_stripe_absente: !!(d.stripe && d.stripe.cle_absente),
+      remboursements: d.remboursements,
+      page_de_liens: d.liens,
       entonnoir_global: d.funnel, entonnoir_extrait: d.funnel_extrait,
       par_source: d.by_source, par_campagne: d.by_campaign, par_appareil: d.by_device,
+      boutons: d.by_cta,
       evolution_par_jour: d.by_day,
       // Tunnel du débrief (site 2) : que des agrégats, aucune réponse individuelle.
       debrief: d.debrief ? {

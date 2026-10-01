@@ -1,0 +1,131 @@
+/* ============================================================
+   Clem Kart Racing : page-merci.css
+   Regles propres aux trois pages apres paiement :
+   /merci-guide, /merci-guide-lecteur, /merci-onboard (et l ancienne /merci.html).
+   Chargee apres base.css, uniquement par ces pages (body.page-merci).
+   Aucune valeur brute hors des clamp() de titres : tout vient de tokens.css.
+   Rayons 0, aucune ombre, aucun degrade, aucun bouton : le rouge ne sert qu au filet de depart
+   et aux tirets du chrono.
+
+   Ces pages ne livrent aucun fichier : la livraison passe par la page de confirmation Stripe.
+   Les composants partages (.chrono, .chrono-grand, .bon-livraison, .plaque-bloc,
+   .filet-apex, .filet-depart) sont dans base.css, section 22.
+   La nav et le pied sont les partials reduits nav-merci et footer-merci.
+   ============================================================ */
+
+/* ---------- 1. Hero : texte seul, colonnes 1 a 8 ---------- */
+body.page-merci .merci { padding-block: calc(var(--nav-h) + var(--e-8)) var(--e-8); }
+body.page-merci .merci h1 {
+  font-size: clamp(48px, 7vw, 96px);
+  margin-bottom: 0;
+}
+body.page-merci .merci-en-tete { display: grid; gap: var(--e-4); }
+body.page-merci .merci-en-tete .chapo { color: var(--texte); }
+body.page-merci .merci-en-tete .chapo a { text-decoration-color: var(--filet-fort); }
+
+/* Hero du debrief : gros chiffre a gauche, titre a droite */
+body.page-merci .chrono-grand-hero strong { font-size: clamp(120px, 16vw, 220px); }
+body.page-merci .merci-scinde { align-items: end; }
+body.page-merci .merci-scinde h1 { font-size: var(--t-4); }
+
+/* Entree : le titre, puis l objet 100 ms apres */
+html.a-js body.page-merci .entree-suivante { animation-delay: 100ms; }
+
+/* ---------- 2. Bon de livraison (base.css) : les valeurs passent a la ligne ----------
+   A 768 px, trois cellules d environ 230 px : un .chrono en nowrap debordait de sa cellule. */
+body.page-merci .bon-livraison > div { min-width: 0; align-content: start; }
+body.page-merci .bon-livraison p { max-width: none; margin-top: 0; overflow-wrap: anywhere; }
+body.page-merci .bon-livraison .chrono,
+body.page-merci .bon-livraison .mono { white-space: normal; }
+
+/* ---------- 3. Titres de section ---------- */
+body.page-merci .section-merci h2 { font-size: var(--t-2); margin-bottom: var(--e-5); }
+
+/* ---------- 4. Le PDF introuvable : le seul bloc encadre ---------- */
+body.page-merci .merci-retrouver strong { font-family: var(--police-libelle); font-weight: var(--graisse-libelle); color: var(--texte); }
+body.page-merci .plaque-bloc a,
+body.page-merci .merci-lecture a { text-decoration-color: var(--filet-fort); }
+body.page-merci .plaque-bloc a:hover,
+body.page-merci .merci-lecture a:hover { text-decoration-color: var(--texte); }
+
+/* ---------- 5. Registre vertical indexe comme des tours (conseils de lecture, etapes du debrief) ---------- */
+body.page-merci .merci-etapes { display: grid; gap: 0; counter-reset: etape; }
+body.page-merci .merci-etapes li {
+  counter-increment: etape;
+  position: relative;
+  display: grid;
+  grid-template-columns: 4ch minmax(0, 1fr);
+  gap: var(--e-5);
+  align-items: baseline;
+  padding-block: var(--e-5);
+  max-width: none;
+}
+/* Chaque ligne : une premiere proposition courte en Barlow Condensed, la suite en texte courant dessous.
+   Trois titres empiles en gras serre etaient lourds a lire sur telephone. */
+body.page-merci .merci-etapes .etape { display: grid; gap: var(--e-2); min-width: 0; }
+body.page-merci .merci-etapes .etape-titre {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  color: var(--texte);
+}
+body.page-merci .merci-etapes .etape-detail {
+  font-size: var(--t-0);
+  line-height: var(--interligne-texte);
+  color: var(--texte-2);
+}
+body.page-merci .merci-etapes li + li { border-top: var(--bordure); }
+body.page-merci .merci-etapes li::before {
+  content: counter(etape, decimal-leading-zero);
+  position: relative;
+  padding-left: var(--e-3);
+  font-family: var(--police-mono);
+  font-size: var(--t--2);
+  font-weight: var(--graisse-normal);
+  color: var(--texte);
+}
+body.page-merci .merci-etapes li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(var(--e-5) + 0.35em);
+  width: 2px;
+  height: 12px;
+  background: var(--rouge);
+}
+/* Dans une phrase, le chiffre reste en mono sans tiret : la ligne porte deja le sien */
+body.page-merci .merci-etapes li .chrono { font-size: 0.8em; }
+body.page-merci .merci-etapes-fin { margin-top: var(--e-5); }
+/* Version serree, sous un chapo (merci-guide-lecteur) */
+body.page-merci .merci-etapes-serrees { margin-top: var(--e-5); }
+body.page-merci .merci-etapes-serrees li { padding-block: var(--e-4); }
+body.page-merci .merci-etapes-serrees .etape-titre { font-size: var(--t-0); }
+body.page-merci .merci-etapes-serrees li::after { top: calc(var(--e-4) + 0.3em); }
+
+/* ---------- 6. Lecture : suite, video, contact, garantie ---------- */
+body.page-merci .merci-lecture .filet-apex { margin-block: var(--e-6); }
+body.page-merci .merci-lecture h2 + p { margin-top: 0; }
+body.page-merci .merci-ligne { font-size: var(--t-0); color: var(--texte); }
+
+/* ---------- 7. Colonnes decalees (72 h a gauche, texte a droite) ----------
+   Dans base.css, .col-depart-7 ne pose que la colonne de depart : combine a .col-6
+   (grid-column: span 6), la fin retombe sur « auto » et le bloc ne prend qu une colonne.
+   On pose ici depart et etendue ensemble. */
+@media (min-width: 900px) {
+  body.page-merci .col-7.col-depart-6 { grid-column: 6 / span 7; }
+  body.page-merci .col-6.col-depart-7 { grid-column: 7 / span 6; }
+}
+
+/* ---------- 8. Sections : rythme vertical propre a ces pages courtes ---------- */
+body.page-merci .section-merci { padding-block: var(--e-7); }
+@media (min-width: 900px) { body.page-merci .section-merci { padding-block: var(--e-8); } }
+
+/* Reduced motion : rien de plus que base.css, les delais tombent a zero */
+@media (prefers-reduced-motion: reduce) {
+  html.a-js body.page-merci .entree-suivante { animation-delay: 0ms; }
+}
+
+/* ---------- 9. Pied reduit : les liens legaux sur une ligne ----------
+   Dans base.css, « .pied ul » (grille) passe devant « .pied-legal » (flex) : on retablit la ligne ici. */
+body.page-merci .pied-bas .pied-legal { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-4); }

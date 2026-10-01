@@ -1,0 +1,23 @@
+<!-- Partial nav : quatre destinations (le guide, l analyse d onboard, le consulting en piste, les marques).
+     Le guide est un bouton contour, jamais rouge : le seul bouton rouge d un ecran est celui de la page.
+     Sous 1024 px : le bouton « Le guide » reste visible a cote de « Menu » (des 360 px), et le menu plein ecran
+     donne a chaque destination une ligne qui dit ce que c est. L extrait gratuit n apparait que dans ce menu
+     (sur ordinateur il est dans le hero de l accueil, la page du guide et le pied de page). -->
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header class="nav">
+  <div class="conteneur nav-inner">
+    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil">Clem <span>Kart</span> Racing</a>
+    <div class="nav-outils">
+      <a class="bouton bouton-fantome bouton-petit nav-guide-court" href="{{routes.guide}}" data-cta="nav-mobile">Le guide</a>
+      <button class="nav-menu-bouton" type="button" aria-expanded="false" aria-controls="nav-liens">Menu</button>
+    </div>
+    <nav class="nav-liens" id="nav-liens" aria-label="Navigation principale">
+      <a class="nav-lien nav-lien-guide" href="{{routes.guide}}" data-cta="nav-menu"><span class="nav-lien-titre">Le guide</span><span class="nav-lien-sous">{{guide.format}}, {{guide.pages}} pages · {{guide.prix_affiche}}</span></a>
+      <a class="nav-lien" href="{{routes.onboard_offre}}"><span class="nav-lien-titre">Analyse d’onboard</span><span class="nav-lien-sous">Ta vidéo commentée · {{debrief.prix_affiche}}</span></a>
+      <a class="nav-lien" href="{{routes.journee}}"><span class="nav-lien-titre">{{journee.titre}}</span><span class="nav-lien-sous">Une journée avec moi · {{journee.prix_affiche}}</span></a>
+      <a class="nav-lien nav-lien-extrait" href="{{routes.extrait}}" data-cta="nav-menu"><span class="nav-lien-titre">Extrait gratuit</span><span class="nav-lien-sous">Par email, sans rien payer</span></a>
+      <a class="nav-lien" href="{{routes.marques}}"><span class="nav-lien-titre">Marques et sponsors</span><span class="nav-lien-sous">Partenariats et sponsoring de saison</span></a>
+      <a class="bouton bouton-fantome nav-guide" href="{{routes.guide}}" data-cta="nav">Le guide</a>
+    </nav>
+  </div>
+</header>

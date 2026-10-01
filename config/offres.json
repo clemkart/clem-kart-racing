@@ -1,0 +1,306 @@
+{
+  "_lire_moi": [
+    "Seul point de verite des prix, liens Stripe, garanties, delais, chiffres et adresses du site.",
+    "Les pages ne contiennent jamais ces valeurs en dur : elles ecrivent {{guide.prix_affiche}} et scripts/build.js remplace.",
+    "Chaque prix a un champ numerique (prix) et un champ deja formate (prix_affiche, espace insecable avant le symbole).",
+    "tests/run-prix.js fait echouer la mise en ligne si un prix, un lien Stripe, un lien Gumroad ou gmail.com traine ailleurs qu ici."
+  ],
+  "version": 1,
+  "mis_a_jour": "2026-09-30",
+  "marque": {
+    "nom": "Clem Kart Racing",
+    "auteur": "Clément Daniel",
+    "signature": "Clément"
+  },
+  "guide": {
+    "titre": "Comprendre comment rouler plus vite",
+    "format": "PDF",
+    "pages": 59,
+    "chapitres": 13,
+    "prix": 16.99,
+    "prix_affiche": "16,99 €",
+    "stripe": {
+      "url": "https://buy.stripe.com/fZu6oG74v8ovdYE2sP04803",
+      "plink": "plink_1UInLQBcT0bl6GNXevSIoxUF"
+    },
+    "aller": "/aller/guide",
+    "merci": "/merci-guide",
+    "resume_ligne": "PDF · 59 pages · 13 chapitres · Accès immédiat"
+  },
+  "debrief": {
+    "titre": "Analyse de ton onboard",
+    "resume_ligne": "Ta vidéo commentée + 3 priorités, sous 72 h",
+    "prix": 29.99,
+    "prix_affiche": "29,99 €",
+    "stripe": {
+      "url": "https://buy.stripe.com/aFa14mdsT6gnaMs6J504802",
+      "plink": "plink_1UGFJXBcT0bl6GNXU12t9yUF"
+    },
+    "option_guide": {
+      "prix": 9.99,
+      "prix_affiche": "9,99 €",
+      "note": "Option cochee dans Stripe au paiement du debrief, meme prix que equitable.guide_lecteur"
+    },
+    "aller": "/aller/onboard",
+    "merci": "/merci-onboard",
+    "prix_chiffres": "29,99"
+  },
+  "equitable": {
+    "principe": "Chaque chemin vers les deux produits coute le meme total",
+    "total": 39.98,
+    "total_affiche": "39,98 €",
+    "debrief_lecteur": {
+      "titre": "Analyse de ton onboard, prix lecteur du guide",
+      "prix": 22.99,
+      "prix_affiche": "22,99 €",
+      "stripe": {
+        "url": "https://buy.stripe.com/28EfZg60rfQX8Ek0kH04804",
+        "plink": "plink_1UIp4dBcT0bl6GNXhxpph5zp"
+      },
+      "aller": "/aller/onboard-lecteur",
+      "merci": "/merci-onboard",
+      "aller_alias": "/aller/debrief-lecteur"
+    },
+    "guide_lecteur": {
+      "titre": "Le guide, prix client du debrief",
+      "prix": 9.99,
+      "prix_affiche": "9,99 €",
+      "stripe": {
+        "url": "https://buy.stripe.com/fZu5kCfB10W35s87N904805",
+        "plink": "plink_1UIp4mBcT0bl6GNXO4XD3d64"
+      },
+      "aller": "/aller/guide-lecteur",
+      "merci": "/merci-guide-lecteur"
+    }
+  },
+  "journee": {
+    "titre": "Consulting en piste",
+    "prix": 150,
+    "prix_affiche": "150 €",
+    "unite": "la journée, hors frais de déplacement",
+    "statut": "ouverte",
+    "statuts_possibles": [
+      "liste_attente",
+      "ouverte"
+    ],
+    "note": "Offre ouverte le 01/10/2026 sur décision de Clément, qui connaît et assume le risque juridique (Digital product/consulting-en-piste/CADRE-LEGAL.md). Prix affiché depuis cette config, aucun paiement en ligne : demande de date sur la page, puis devis (modèle : Digital product/consulting-en-piste/DEVIS-MODELE.html). Les titres coach, coaching, entraîneur, moniteur, éducateur et professeur ne décrivent jamais Clément (tests/run-demande.js). statut = liste_attente remet la sous-ligne de liste d’attente sur /liens et l’accueil.",
+    "sous_ligne_liste_attente": "Liste d’attente, pas encore ouverte",
+    "sous_ligne_ouverte": "Une journée avec moi sur ton circuit · pilotage et kart",
+    "sous_titre": "Une journée avec moi sur ton circuit. Je regarde, je filme, je lis tes chronos. Entre chaque session, on travaille ton pilotage et ton kart.",
+    "reponse_h": 24,
+    "anciennes_routes": [
+      "/journee-piste",
+      "/consulting-technique"
+    ],
+    "note_route": "routes.journee est l adresse de la page (/consulting). Chaque adresse de anciennes_routes y mene en 301, ecrite par scripts/build.js dans _redirects : liens deja donnes en bio, en message ou en story."
+  },
+  "lecteurs": {
+    "nombre": 79,
+    "date": "2026-09-23",
+    "source": "ventes Gumroad",
+    "affiche": "environ 80",
+    "depuis": "janvier 2026",
+    "phrase": "Environ 80 lecteurs entre janvier et septembre 2026"
+  },
+  "garantie_jours": 7,
+  "delai_h": 72,
+  "delais": {
+    "debrief_h": 72,
+    "reponse_email_h": 24,
+    "renvoi_lien_h": 24,
+    "suppression_video_jours": 30,
+    "reponse_marques_h": 48,
+    "option_guide_h": 24,
+    "signalement_video_h": 24,
+    "conservation_liste_attente_mois": 12,
+    "conservation_demandes_ans": 3
+  },
+  "textes": {
+    "garantie_courte": "Garantie 7 jours, en plus de tes droits légaux",
+    "garantie_longue": "Garantie 7 jours, en plus de tes droits légaux. Tu lis. Si ça ne t’apporte rien, un email dans les 7 jours et je te rembourse. Sans justification, sans formulaire.",
+    "sous_bouton_guide": "Téléchargement immédiat · PDF · Garantie 7 jours",
+    "confiance": "Paiement sécurisé par Stripe · Garantie 7 jours en plus de tes droits légaux · Débrief livré sous 72 h"
+  },
+  "contact": {
+    "email": "clemkartracing@gmail.com",
+    "email_cible": "contact@clemkartracing.fr",
+    "note": "email_cible remplace email quand le domaine et Brevo sont authentifies (lot 2)"
+  },
+  "faits": {
+    "afficher_titre": true,
+    "avec_titre": "8 ans de compétition, champion régional 2023, NSK et Rotax Max. Je t’aide à rouler plus vite, sans promesse miracle.",
+    "sans_titre": "8 ans de compétition en karting, NSK et Rotax Max. Je t’aide à rouler plus vite, sans promesse miracle.",
+    "titre_court": "Champion régional 2023",
+    "date": "2026-09",
+    "anciennete": "8 ans de compétition"
+  },
+  "livraison": {
+    "email_auto": false,
+    "canal": "page de confirmation Stripe",
+    "note": "email_auto passe a true au lot 3 (webhook Stripe, page /telechargement/). Le PDF n est jamais dans le depot, et l adresse des fichiers payants non plus : le depot est public."
+  },
+  "extrait": {
+    "version": 2,
+    "promesse": "L’introduction et le chapitre du freinage dégressif, plus mon tableur de réglages",
+    "promesse_v3": "L’entrée de virage complète : les mains, le freinage dégressif, la rotation. Plus mon tableur de réglages",
+    "appel": "Lis l’extrait gratuit",
+    "appel_v3": "Lis 3 chapitres gratuits",
+    "bouton": "Recevoir l’extrait",
+    "bouton_v3": "Recevoir les 3 chapitres",
+    "chapitres_v3": [
+      "03 Les mains du pilote",
+      "04 Le freinage dégressif",
+      "05 La rotation"
+    ]
+  },
+  "sites": {
+    "site1": "https://comprendre-comment-rouler-plus-vite.netlify.app",
+    "site2": "https://comprendre-comment-rouler-plus-vite-2.netlify.app",
+    "domaine": "https://clemkartracing.fr",
+    "actif": "site1",
+    "note": "build.js calcule sites.url = sites[sites.actif] : canonical, og:url et sitemap lisent {{sites.url}}. Passer actif a domaine le jour de la bascule."
+  },
+  "routes": {
+    "accueil": "/",
+    "liens": "/liens",
+    "guide": "/guide",
+    "onboard": "/onboard/",
+    "extrait": "/extrait",
+    "extrait_page": "/extrait-guide.html",
+    "merci_guide": "/merci-guide",
+    "merci_guide_lecteur": "/merci-guide-lecteur",
+    "merci_onboard": "/merci-onboard",
+    "clement": "/clement",
+    "journee": "/consulting",
+    "marques": "/marques",
+    "sponsors": "/sponsors",
+    "kit_media": "/kit-media",
+    "mentions": "/mentions-legales",
+    "cgv": "/cgv",
+    "donnees": "/confidentialite",
+    "confidentialite": "/confidentialite",
+    "cgv_pdf": "/cgv.pdf",
+    "retractation": "/retractation/",
+    "onboard_offre": "/onboard/#prix",
+    "marques_reseaux": "/marques#reseaux",
+    "marques_saison": "/marques#saison"
+  },
+  "reseaux": {
+    "instagram": "https://www.instagram.com/clem_kart_racing",
+    "tiktok": "https://www.tiktok.com/@clem_kart_racing",
+    "youtube": "https://youtube.com/@clemkartracing2073",
+    "facebook": ""
+  },
+  "legal": {
+    "editeur": "Clément Daniel EI, Clem Kart Racing",
+    "statut": "Entrepreneur individuel (EI)",
+    "tva": "TVA non applicable, art. 293 B du CGI",
+    "siren": "130 489 198",
+    "registre": "Registre national des entreprises",
+    "mediateur": "",
+    "assureur": "",
+    "hebergeur": "Netlify, Inc.",
+    "seuil_contrat_ecrit_verifie_le": "",
+    "adresse": "5 rue des Amandiers, 56230 Questembert, France",
+    "telephone": "+33 6 44 91 35 13",
+    "telephone_lien": "+33644913513",
+    "source": "Identite reprise des pages legales verifiees le 24/09/2026 (Digital product/POUR-LE-DEPOT-GITHUB/pages-legales, bloc IDENTITE de construire.py). Mediateur vide : decision de Clement du 24/09, aucun mediateur n est cite."
+  },
+  "audience": {
+    "vues": 912570,
+    "vues_affiche": "912 570",
+    "reels": 66,
+    "periode": "du 26 mai au 23 août 2026",
+    "mediane_affiche": "4 322",
+    "source": "export Meta, Reels Instagram",
+    "note": "Chiffres verifies : 912 570 vues sur 66 Reels Instagram publies du 26/05 au 23/08/2026, video mediane 4 322 vues (export Meta). Ne rien afficher d autre sans source."
+  },
+  "sponsoring": {
+    "_note": "Parrainage de saison : l argent va a l association loi 1901 de Clement (decision du 01/10/2026), jamais a la micro-entreprise. Prix « a partir de » et places proposes dans Digital product/sponsoring/MARQUES-PERSONAS.md (section 5.2), a valider par Clement. association.nom, rna, siege : vides tant que Clement ne les a pas donnes ; la page /marques ecrit alors association.nom_affiche (« mon association loi 1901 »). Aucun recu fiscal, jamais.",
+    "saison": "2027",
+    "objectif_min": 20000,
+    "objectif_min_affiche": "20 000 €",
+    "objectif_max": 30000,
+    "objectif_max_affiche": "30 000 €",
+    "objectif_affiche": "20 000 à 30 000 €",
+    "objectif_note": "Objectif de Clement (01/10/2026) : 20 000 a 30 000 euros pour une bonne saison, kart a racheter compris.",
+    "afficher_reuni": false,
+    "reuni": 0,
+    "reuni_affiche": "0 €",
+    "reuni_date_affiche": "",
+    "date_limite_affiche": "",
+    "compte_rendu_course_h": 48,
+    "association": {
+      "nom": "Clem Kart Racing",
+      "rna": "",
+      "siret": "",
+      "siege": "",
+      "objet": "",
+      "nom_affiche": "l’association Clem Kart Racing (loi 1901)",
+      "nom_affiche_note": "Ecrit dans les phrases « avec X », « par X », « de X ». Nom donne par Clement le 01/10/2026 ; RNA, SIRET et siege a completer (papiers chez sa mere)."
+    },
+    "formules": {
+      "supporter": {
+        "titre": "Supporter",
+        "prix": 300,
+        "prix_affiche": "300 €",
+        "places": null,
+        "places_affiche": "Sans limite"
+      },
+      "partenaire": {
+        "titre": "Partenaire",
+        "prix": 1000,
+        "prix_affiche": "1 000 €",
+        "places": 8,
+        "places_affiche": "8 places"
+      },
+      "officiel": {
+        "titre": "Partenaire officiel",
+        "prix": 2500,
+        "prix_affiche": "2 500 €",
+        "places": 4,
+        "places_affiche": "4 places"
+      },
+      "principal": {
+        "titre": "Partenaire principal",
+        "prix": 6000,
+        "prix_affiche": "6 000 €",
+        "places": 1,
+        "places_affiche": "Une seule place"
+      }
+    }
+  },
+  "marques": {
+    "_note": "Collaborations reseaux sociaux : activite professionnelle de Clement (micro-entreprise, legal.editeur). Prix « a partir de » repris de PLAN-SPONSORING.md (section 3.2) via MARQUES-PERSONAS.md (section 5.4), a valider par Clement. Chiffres d audience : bloc audience (verifie).",
+    "structure_reseaux": "Clément Daniel EI",
+    "bilan_collab_jours": 7,
+    "droits_ugc_mois": 12,
+    "collab": {
+      "video_dediee": {
+        "prix": 150,
+        "prix_affiche": "150 €"
+      },
+      "test_piste": {
+        "prix": 150,
+        "prix_affiche": "150 €"
+      },
+      "ugc": {
+        "prix": 150,
+        "prix_affiche": "150 €"
+      },
+      "stories": {
+        "prix": 40,
+        "prix_affiche": "40 €"
+      },
+      "mensuel": {
+        "prix": 190,
+        "prix_affiche": "190 €"
+      },
+      "ambassadeur": {
+        "prix": 1520,
+        "prix_affiche": "1 520 €",
+        "mois": 8
+      }
+    }
+  }
+}

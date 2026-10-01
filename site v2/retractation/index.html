@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Rétractation · {{marque.nom}}</title>
+<meta name="description" content="Renoncer au contrat : te rétracter d'un achat Clem Kart Racing en ligne, avec un accusé de réception par email.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<script>document.documentElement.classList.add('avec-js');</script>
+<link rel="stylesheet" href="/assets/page-legal.css">
+</head>
+<body class="page-legal page-retractation" data-page="retractation">
+{{partial:nav}}
+
+<!-- Fonction de rétractation en ligne (article D221-5 du Code de la consommation, en vigueur depuis le 19/06/2026),
+     reprise du paquet livraison-phase2 : libellés réglementaires inchangés, même envoi JSON vers
+     /.netlify/functions/retractation. Page privée : noindex, aucun Referer transmis. -->
+<main id="contenu" class="sous-nav legal retractation">
+
+  <header class="legal-hero conteneur" id="introduction">
+    <div class="grille">
+      <div class="legal-titre entree">
+        <p class="libelle">Droit de rétractation</p>
+        <h1 id="titre-page">Rétractation</h1>
+        <ul class="liste retractation-explication">
+          <li>Cette page sert à te rétracter d'un achat Clem Kart Racing (débrief ou guide).</li>
+          <li>Tu remplis le formulaire et tu confirmes : ta demande est horodatée dès sa réception.</li>
+          <li>Un accusé de réception part aussitôt par email, puis ta demande est traitée sous 14&nbsp;jours.</li>
+        </ul>
+        <noscript>
+          <p class="retractation-sans-js">Ce formulaire a besoin de JavaScript. Tu peux aussi envoyer ta demande de rétractation par email à <a href="mailto:{{contact.email}}">{{contact.email}}</a>.</p>
+        </noscript>
+        <!-- Libellé défini dans la constante LIBELLE_BOUTON_RETRACTATION du script en bas de page. -->
+        <button type="button" id="bouton-ouvrir" class="bouton bouton-principal js-seulement" aria-controls="formulaire" aria-expanded="false">Renoncer au contrat ici</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="conteneur">
+    <div class="grille">
+      <div class="legal-corps">
+
+        <form id="formulaire" class="retractation-formulaire" novalidate hidden>
+          <h2>Ta demande</h2>
+          <p class="retractation-erreur-generale" id="erreur-generale" role="alert" hidden></p>
+
+          <div class="champ">
+            <label for="nom">Nom et prénom</label>
+            <input id="nom" name="nom" type="text" autocomplete="name" maxlength="100" required aria-describedby="erreur-nom">
+            <p class="retractation-erreur" id="erreur-nom" hidden></p>
+          </div>
+
+          <div class="champ">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required aria-describedby="aide-email erreur-email">
+            <p class="form-aide" id="aide-email">L'accusé de réception part à cette adresse.</p>
+            <p class="retractation-erreur" id="erreur-email" hidden></p>
+          </div>
+
+          <div class="champ">
+            <label for="reference">Référence de commande</label>
+            <input id="reference" name="reference" type="text" maxlength="200" required aria-describedby="aide-reference erreur-reference">
+            <p class="form-aide" id="aide-reference">Numéro de facture ou email utilisé au paiement. Ajoute la date d'achat dans le message si tu l'as.</p>
+            <p class="retractation-erreur" id="erreur-reference" hidden></p>
+          </div>
+
+          <fieldset class="retractation-choix" id="champ-produit" aria-describedby="erreur-produit">
+            <legend>Produit concerné</legend>
+            <label class="choix"><input type="radio" name="produit" value="debrief"> Le débrief</label>
+            <label class="choix"><input type="radio" name="produit" value="guide"> Le guide</label>
+            <label class="choix"><input type="radio" name="produit" value="les_deux"> Les deux</label>
+            <p class="retractation-erreur" id="erreur-produit" hidden></p>
+          </fieldset>
+
+          <div class="champ">
+            <label for="message">Message <span class="retractation-facultatif">(facultatif)</span></label>
+            <textarea id="message" name="message" rows="4" maxlength="2000" placeholder="Date d'achat, précisions sur ta commande..." aria-describedby="erreur-message"></textarea>
+            <p class="retractation-erreur" id="erreur-message" hidden></p>
+          </div>
+
+          <!-- Pot de miel : invisible pour un humain, rempli par les robots. -->
+          <div class="champ-piege" aria-hidden="true">
+            <label for="site_web">Site web</label>
+            <input id="site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <!-- Libellé défini dans la constante LIBELLE_BOUTON_CONFIRMATION du script en bas de page. -->
+          <div><button type="submit" id="bouton-confirmer" class="bouton bouton-principal">Confirmer la rétractation</button></div>
+        </form>
+
+        <section id="confirmation" class="retractation-confirmation" tabindex="-1" aria-labelledby="titre-confirmation" hidden>
+          <p class="libelle">Droit de rétractation</p>
+          <h2 id="titre-confirmation">Demande reçue</h2>
+          <p>Ta demande de rétractation est bien reçue.</p>
+          <p>Reçue le <strong id="recu-le"></strong> (heure de Paris).</p>
+          <p>Un accusé de réception vient de partir par email.</p>
+          <p class="secondaire">Tu ne le vois pas ? Regarde dans tes spams, ou écris à <a href="mailto:{{contact.email}}">{{contact.email}}</a>.</p>
+        </section>
+
+        <p class="retractation-renvoi">Les conditions de la rétractation sont décrites à l'article 8 des <a href="{{routes.cgv}}#retractation">conditions générales de vente</a>.</p>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+{{partial:footer}}
+
+<script>
+(function () {
+  'use strict';
+
+  // Libellés réglementaires des deux boutons de la fonction de rétractation (article D221-5 du Code de la
+  // consommation, en vigueur depuis le 19/06/2026) : à modifier ici uniquement.
+  var LIBELLE_BOUTON_RETRACTATION = 'Renoncer au contrat ici';
+  var LIBELLE_BOUTON_CONFIRMATION = 'Confirmer la rétractation';
+
+  var ENDPOINT = '/.netlify/functions/retractation';
+  var CONTACT = '{{contact.email}}';
+  var LONGUEURS = { nom: 100, email: 254, reference: 200, message: 2000 };
+  var FORMAT_EMAIL = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]{2,}$/;
+  var CHAMPS = ['nom', 'email', 'reference', 'produit', 'message'];
+
+  function el(id) { return document.getElementById(id); }
+
+  var boutonOuvrir = el('bouton-ouvrir');
+  var boutonConfirmer = el('bouton-confirmer');
+  var formulaire = el('formulaire');
+  boutonOuvrir.textContent = LIBELLE_BOUTON_RETRACTATION;
+  boutonConfirmer.textContent = LIBELLE_BOUTON_CONFIRMATION;
+
+  boutonOuvrir.addEventListener('click', function () {
+    formulaire.hidden = false;
+    boutonOuvrir.setAttribute('aria-expanded', 'true');
+    boutonOuvrir.hidden = true;
+    el('nom').focus();
+  });
+
+  function valeur(nom) {
+    var champ = formulaire.elements[nom];
+    return champ && typeof champ.value === 'string' ? champ.value : '';
+  }
+
+  function produitChoisi() {
+    var coche = formulaire.querySelector('input[name="produit"]:checked');
+    return coche ? coche.value : '';
+  }
+
+  function cibleChamp(nom) {
+    return nom === 'produit' ? el('champ-produit') : el(nom);
+  }
+
+  function effacerErreurs() {
+    CHAMPS.forEach(function (nom) {
+      var message = el('erreur-' + nom);
+      message.hidden = true;
+      message.textContent = '';
+      var cible = cibleChamp(nom);
+      if (cible) cible.removeAttribute('aria-invalid');
+    });
+    el('erreur-generale').hidden = true;
+  }
+
+  function afficherErreurs(erreurs) {
+    var premier = null;
+    CHAMPS.forEach(function (nom) {
+      if (!erreurs[nom]) return;
+      var message = el('erreur-' + nom);
+      message.textContent = erreurs[nom];
+      message.hidden = false;
+      var cible = cibleChamp(nom);
+      if (cible) cible.setAttribute('aria-invalid', 'true');
+      if (!premier) premier = nom === 'produit' ? formulaire.querySelector('input[name="produit"]') : cible;
+    });
+    if (premier) premier.focus();
+  }
+
+  function erreurGenerale(texte) {
+    var bloc = el('erreur-generale');
+    bloc.textContent = texte;
+    bloc.hidden = false;
+    bloc.scrollIntoView({ block: 'center' });
+  }
+
+  function validerLocalement(d) {
+    var erreurs = {};
+    if (!d.nom) erreurs.nom = 'Indique ton nom.';
+    else if (d.nom.length > LONGUEURS.nom) erreurs.nom = LONGUEURS.nom + ' caractères maximum.';
+    if (!d.email) erreurs.email = 'Indique ton email.';
+    else if (d.email.length > LONGUEURS.email || !FORMAT_EMAIL.test(d.email)) erreurs.email = "Cet email n'est pas valide.";
+    if (!d.reference) erreurs.reference = 'Indique ta référence de commande : numéro de facture ou email utilisé au paiement.';
+    else if (d.reference.length > LONGUEURS.reference) erreurs.reference = LONGUEURS.reference + ' caractères maximum.';
+    if (!d.produit) erreurs.produit = 'Choisis le produit concerné.';
+    if (d.message.length > LONGUEURS.message) erreurs.message = LONGUEURS.message + ' caractères maximum.';
+    return erreurs;
+  }
+
+  function confirmer(recuLe) {
+    el('recu-le').textContent = recuLe || '';
+    formulaire.hidden = true;
+    var confirmation = el('confirmation');
+    confirmation.hidden = false;
+    confirmation.focus();
+    confirmation.scrollIntoView({ block: 'start' });
+  }
+
+  function envoyer(d) {
+    boutonConfirmer.disabled = true;
+    boutonConfirmer.textContent = 'Envoi en cours...';
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(d),
+      credentials: 'same-origin'
+    })
+      .then(function (reponse) {
+        return reponse.json()
+          .catch(function () { return {}; })
+          .then(function (corps) { return { statut: reponse.status, corps: corps || {} }; });
+      })
+      .then(function (r) {
+        if (r.statut === 200 && r.corps.ok) { confirmer(r.corps.recu_le); return; }
+        if (r.statut === 400 && r.corps.champs) { afficherErreurs(r.corps.champs); return; }
+        if (r.statut === 429 && r.corps.erreur === 'demande_deja_recue') {
+          erreurGenerale("Ta demande avec cet email est déjà bien reçue aujourd'hui : l'accusé de réception est dans tes emails (regarde aussi les spams). Pour ajouter une précision, écris à " + CONTACT + '.');
+          return;
+        }
+        if (r.statut === 429) {
+          erreurGenerale('Trop de demandes depuis ta connexion. Réessaie dans une heure, ou écris à ' + CONTACT + '.');
+          return;
+        }
+        erreurGenerale("L'envoi n'a pas marché. Réessaie, ou envoie ta demande par email à " + CONTACT + '.');
+      })
+      .catch(function () {
+        erreurGenerale('Connexion impossible. Réessaie, ou envoie ta demande par email à ' + CONTACT + '.');
+      })
+      .then(function () {
+        boutonConfirmer.disabled = false;
+        boutonConfirmer.textContent = LIBELLE_BOUTON_CONFIRMATION;
+      });
+  }
+
+  formulaire.addEventListener('submit', function (e) {
+    e.preventDefault();
+    effacerErreurs();
+    var d = {
+      nom: valeur('nom').trim(),
+      email: valeur('email').trim(),
+      reference: valeur('reference').trim(),
+      produit: produitChoisi(),
+      message: valeur('message').trim(),
+      site_web: valeur('site_web')
+    };
+    var erreurs = validerLocalement(d);
+    if (Object.keys(erreurs).length) {
+      afficherErreurs(erreurs);
+      return;
+    }
+    envoyer(d);
+  });
+})();
+</script>
+</body>
+</html>

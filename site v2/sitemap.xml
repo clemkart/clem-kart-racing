@@ -1,32 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Pages publiques V4 seulement. Les pages merci et la page de retractation sont en noindex
+     et n y figurent pas. /extrait est une adresse courte (301 dans netlify.toml) : le sitemap
+     donne l adresse finale, /extrait-guide.html, qui est aussi son canonical.
+     L adresse de base vient de sites.url (config/offres.json), la date de mis_a_jour.
+     Le consulting en piste vit a routes.journee : ses anciennes adresses
+     (journee.anciennes_routes) sont des 301 et n y figurent pas. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://comprendre-comment-rouler-plus-vite.netlify.app/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <loc>{{sites.url}}{{routes.accueil}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://comprendre-comment-rouler-plus-vite.netlify.app/extrait-guide.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <loc>{{sites.url}}{{routes.guide}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://comprendre-comment-rouler-plus-vite.netlify.app/tableur-reglages.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <loc>{{sites.url}}{{routes.liens}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://comprendre-comment-rouler-plus-vite.netlify.app/race-engineer-ai.html</loc>
-    <lastmod>2026-08-31</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>{{sites.url}}/extrait-guide.html</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://comprendre-comment-rouler-plus-vite.netlify.app/mentions-legales.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <loc>{{sites.url}}{{routes.journee}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>{{sites.url}}{{routes.marques}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>{{sites.url}}{{routes.mentions}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
+  </url>
+  <url>
+    <loc>{{sites.url}}{{routes.cgv}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
+  </url>
+  <url>
+    <loc>{{sites.url}}{{routes.confidentialite}}</loc>
+    <lastmod>{{mis_a_jour}}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.1</priority>
   </url>

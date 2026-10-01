@@ -8,7 +8,14 @@
 //
 // Style maison : appel REST direct, sans SDK ni dependance npm, comme les autres
 // fonctions du site.
+//
+// V4 : le contexte donne au modele est ecrit depuis config/offres.json (prix, pages,
+// garantie, lecteurs, adresses des pages). Aucune valeur en dur ici.
 // =============================================
+
+const crypto = require('crypto');
+const OFFRES = require('../../../config/offres.json');
+const { ipClient, creerLimiteur } = require('../lib/http.js');
 
 const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || '';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
@@ -92,19 +99,53 @@ explicitement ce qu'il faut arrêter pour la tenir.`,
   },
 };
 
+// Le contexte est construit depuis config/offres.json : aucun prix, aucun chiffre de
+// lecteurs, aucune adresse de page en dur ici. Quand la config change, le coach suit.
+const O = OFFRES;
+const journeeOuverte = O.journee.statut === 'ouverte';
+// Même règle que scripts/build.js : la version 3 de l'extrait change la promesse.
+const promesseExtrait = Number(O.extrait.version) >= 3 ? O.extrait.promesse_v3 : O.extrait.promesse;
 const CONTEXTE = `CONTEXTE DU BUSINESS
-Clem Kart Racing, solopreneur français. Crée du contenu karting sur Instagram et TikTok.
-Vend un guide de pilotage à 16,99 EUR sur Gumroad (produit unique, numérique, marge ~82,5 % net).
-Aimants gratuits : un tableur de réglages et un extrait de 10 pages du guide, livrés par email
-contre une adresse. L'appel à l'action Instagram est "commente EXTRAIT", automatisé par ManyChat,
-qui renvoie vers une page de capture email du site.
-Depuis le 14/09/2026 : un débrief onboard personnalisé à 29,99 EUR payé sur Stripe (vidéo commentée
-sous 72 h), vendu sur un second site après un diagnostic en 7 questions, avec une option guide à
-9,99 EUR au paiement. Deux sorties honnêtes refusent la vente (kart de location, pas d'images) et
-renvoient vers le guide. Les métriques "debrief" décrivent ce tunnel ; au lancement il n'a aucune vente.
-Une app "Race Engineer AI" est en préparation, non lancée.
-Ordres de grandeur connus : environ 0,7 vente par jour en organique, 68 ventes cumulées,
-981 USD net sur 8 mois. Une liste email de 189 contacts.`;
+${O.marque.nom}, solopreneur français, statut : ${O.legal.statut}. Crée du contenu karting sur Instagram,
+TikTok, Facebook et YouTube. Une page de liens maison (${O.routes.liens}) sert de bio sur Instagram,
+TikTok et Facebook (un utm_source par plateforme). 5 boutons, dans cet ordre : le guide (seul bouton
+plein), l'analyse d'onboard, la journée sur piste, marques et partenaires (${O.routes.marques}), le site
+(${O.routes.accueil}). Sous les boutons, un lien texte vers l'extrait gratuit (${O.routes.extrait}).
+Chaque clic sur un bouton envoie l'événement bio_click (meta.bouton, meta.position, meta.plateforme,
+meta.cible). Tout ce qui sort (bios, DM, emails, PDF, tableur) pointe vers le site. Seul le site
+pointe vers Stripe.
+
+PRODUITS (tout se paie sur Stripe, plus rien ne se vend sur Gumroad)
+1. Le guide « ${O.guide.titre} » : ${O.guide.format}, ${O.guide.pages} pages, ${O.guide.chapitres} chapitres,
+   ${O.guide.prix_affiche}, garantie ${O.garantie_jours} jours en plus des droits légaux. Vendu sur la page
+   ${O.routes.guide} du site ; le bouton d'achat passe par une porte interne (${O.guide.aller}) qui redirige
+   vers Stripe, d'où l'événement stripe_click AVANT le paiement. Avant la V4 il se vendait sur Gumroad :
+   ${O.lecteurs.nombre} ventes au ${O.lecteurs.date} (source : ${O.lecteurs.source}), ${O.lecteurs.phrase.toLowerCase()}.
+   Les événements gumroad_click sont l'ancien tunnel, à lire comme de l'historique.
+2. L'analyse d'onboard (débrief personnalisé) : ${O.debrief.prix_affiche}, ${O.debrief.resume_ligne.toLowerCase()}.
+   Vendue sur ${O.routes.onboard} après un diagnostic en 7 questions, avec le guide en option à
+   ${O.debrief.option_guide.prix_affiche} au paiement. Deux sorties honnêtes refusent la vente (kart de location,
+   pas d'images) et renvoient vers ${O.routes.guide}. Les métriques "debrief" décrivent ce tunnel.
+3. Prix équitables : ${O.equitable.principe.toLowerCase()} (${O.equitable.total_affiche}). Un lecteur du guide paie
+   l'analyse ${O.equitable.debrief_lecteur.prix_affiche} ; un client de l'analyse paie le guide
+   ${O.equitable.guide_lecteur.prix_affiche}. Proposé sur les pages « merci » après paiement.
+4. La journée sur piste (${O.routes.journee}) : ${journeeOuverte
+    ? `ouverte, ${O.journee.unite}, sur devis.`
+    : 'liste d\'attente seulement. Aucun prix affiché, aucun paiement, aucun devis tant que le cadre légal n\'est pas réglé (Code du sport, L212-1). Ne recommande jamais de la vendre ni d\'en afficher le prix. Les inscriptions sur la liste d\'attente mesurent l\'intérêt, pas des ventes.'}
+   Ne décris jamais Clément comme coach, moniteur ou entraîneur, et ne propose jamais le mot « coaching ».
+5. Marques et partenaires (${O.routes.marques}) : formulaire de demande, jamais de paiement en ligne.
+
+AIMANT GRATUIT ET EMAILS
+${promesseExtrait}, livrés par email contre une adresse sur la page
+${O.routes.extrait}. L'appel à l'action Instagram est « commente EXTRAIT », automatisé par ManyChat, qui
+renvoie vers cette page. L'email de livraison se termine par un P.S. vers ${O.routes.guide}
+(utm_campaign=j0-extrait ou j0-tableur) ; une relance unique à J+7 renvoie vers ${O.routes.guide} (utm_campaign=j7). Aucun
+email ne pointe vers Stripe en direct.
+Le délai de réponse annoncé par email est de ${O.delais.reponse_email_h} h.
+
+CE QUI N'EXISTE PAS
+Aucune app, aucun abonnement, aucun autre produit. Ne parle que des lignes ci-dessus.
+Les frais Stripe sont prélevés par transaction ; la marge nette n'est pas dans les métriques, ne l'estime pas.`;
 
 const CONSIGNES = `RÈGLES ABSOLUES
 1. Ne parle QUE des chiffres qui te sont donnés. N'invente aucune donnée, aucun benchmark chiffré.
@@ -167,6 +208,21 @@ function normaliser(o) {
   };
 }
 
+// Mot de passe : meme verification que dashboard-data.js (empreintes sha256 de meme longueur,
+// comparaison a duree constante). Au plus COACH_ESSAIS_MAX appels par heure et par IP
+// (memoire de l instance chaude), essais rates comme reussis.
+const COACH_ESSAIS_MAX = 10;
+const COACH_FENETRE_MS = 60 * 60 * 1000;
+const limiteur = creerLimiteur({ max: COACH_ESSAIS_MAX, fenetreMs: COACH_FENETRE_MS });
+
+function empreinte(t) {
+  return crypto.createHash('sha256').update(String(t)).digest();
+}
+function motDePasseValide(recu) {
+  if (typeof recu !== 'string' || !recu) return false;
+  return crypto.timingSafeEqual(empreinte(recu), empreinte(DASHBOARD_PASSWORD));
+}
+
 exports.handler = async (event) => {
   const headers = buildHeaders(event);
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
@@ -178,9 +234,20 @@ exports.handler = async (event) => {
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'Dashboard non configure.' }) };
   }
 
+  // Limite par IP AVANT le mot de passe : sans elle, on pouvait deviner le mot de passe du
+  // dashboard ici a volonte (dashboard-data.js, lui, le protege), et chaque appel reussi coute.
+  const limite = limiteur.autoriser(ipClient(event));
+  if (!limite.autorise) {
+    return {
+      statusCode: 429,
+      headers: { ...headers, 'Retry-After': String(limite.reessayerDansSec) },
+      body: JSON.stringify({ error: 'Trop d essais. Reessaie plus tard.' }),
+    };
+  }
+
   let body;
   try { body = JSON.parse(event.body || '{}'); } catch { body = {}; }
-  if (body.password !== DASHBOARD_PASSWORD) {
+  if (!motDePasseValide(body.password)) {
     return { statusCode: 401, headers, body: JSON.stringify({ error: 'Mot de passe invalide.' }) };
   }
 
@@ -269,3 +336,6 @@ exports.handler = async (event) => {
 
 // Expose la liste des archetypes pour que le front n'ait pas a les redefinir.
 exports.PERSONAS = PERSONAS;
+
+// Pour les tests : remettre la limite a zero entre deux scenarios.
+exports._limiteur = limiteur;

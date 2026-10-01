@@ -1,0 +1,292 @@
+/* ============================================================
+   Clem Kart Racing : page-legal.css
+   Pages legales (body.page-legal) : /mentions-legales, /cgv, /confidentialite, et la fonction
+   de retractation (body.page-retractation). Chargee apres base.css.
+   Aucune valeur brute hors impression : tout vient de tokens.css.
+   Rayons 0 (sauf le disque des choix radio, convention du controle), un seul rouge par ecran : le filet du sommaire sur les pages de texte,
+   le bouton principal sur /retractation/. Aucun degrade, aucune ombre portee.
+   ============================================================ */
+
+/* ---------- 1. En-tete : titre sur les colonnes 4 a 11, une seule entree animee ---------- */
+body.page-legal .legal-hero { padding-block: var(--e-8) var(--e-6); }
+body.page-legal .legal-titre { display: grid; gap: var(--e-4); justify-items: start; }
+body.page-legal .legal-hero h1 { font-size: var(--t-4); max-width: 16ch; }
+body.page-legal .legal-date { font-size: var(--t--1); color: var(--texte-2); }
+
+@media (min-width: 900px) {
+  body.page-legal .legal-titre { grid-column: 4 / span 8; }
+  body.page-legal .legal-nav { grid-column: 1 / span 3; }
+  body.page-legal .legal-corps { grid-column: 4 / span 8; }
+}
+
+/* ---------- 2. Sommaire : liste d ancres sous le titre sur telephone, collant a gauche sur ordinateur ---------- */
+body.page-legal .legal-nav {
+  padding-block: var(--e-4);
+  border-block: var(--bordure);
+}
+body.page-legal .legal-nav-titre {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t--2);
+  color: var(--texte-3);
+  margin-bottom: var(--e-3);
+}
+body.page-legal .legal-nav-liste { counter-reset: article; display: grid; gap: var(--e-1); }
+body.page-legal .legal-nav-liste li { counter-increment: article; max-width: none; }
+body.page-legal .legal-nav-liste a {
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr);
+  gap: var(--e-2);
+  padding: var(--e-1) 0 var(--e-1) var(--e-3);
+  border-left: 2px solid transparent;
+  font-size: var(--t--1);
+  line-height: var(--interligne-serre);
+  color: var(--texte-2);
+  text-decoration: none;
+  transition: color var(--duree-vite) var(--courbe), border-color var(--duree-vite) var(--courbe);
+}
+body.page-legal .legal-nav-liste a::before {
+  content: counter(article) '.';
+  font-family: var(--police-mono);
+  font-size: var(--t--2);
+  font-variant-numeric: tabular-nums;
+  color: var(--texte-3);
+}
+body.page-legal .legal-nav-liste a:hover { color: var(--texte); }
+/* Le filet rouge du titre lu : seul rouge de la page, il tient lieu de filet de depart */
+body.page-legal .legal-nav-liste a[aria-current="true"] { color: var(--texte); border-left-color: var(--rouge); }
+
+@media (min-width: 900px) {
+  body.page-legal .legal-nav {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--e-5));
+    align-self: start;
+    max-height: calc(100vh - var(--nav-h) - var(--e-6));
+    overflow-y: auto;
+    padding-top: 0;
+    border-block: 0;
+  }
+}
+
+/* ---------- 3. Colonne de lecture : flux regulier, titres d article espaces ---------- */
+body.page-legal .legal-corps { padding-bottom: var(--e-9); min-width: 0; }
+body.page-legal .legal-corps > * + * { margin-top: var(--e-4); }
+body.page-legal .legal-corps p,
+body.page-legal .legal-corps li,
+body.page-legal .legal-corps dd { line-height: var(--interligne-texte); }
+body.page-legal .legal-corps a { color: var(--texte); text-decoration-color: var(--filet-fort); }
+body.page-legal .legal-corps a:hover { text-decoration-color: var(--texte); }
+body.page-legal .legal-corps a.bouton { text-decoration: none; }
+body.page-legal .legal-corps .bouton { margin-top: var(--e-2); }
+
+body.page-legal .legal-intro { font-size: var(--t-1); line-height: 1.45; }
+
+body.page-legal .legal-corps h2 {
+  font-size: var(--t-2);
+  line-height: var(--interligne-serre);
+  padding-top: var(--e-5);
+  border-top: var(--bordure);
+  scroll-margin-top: calc(var(--nav-h) + var(--e-4));
+}
+body.page-legal .legal-corps > h2,
+body.page-legal .legal-corps > * + h2 { margin-top: var(--e-8); }
+body.page-legal .legal-corps > h2:first-child { margin-top: 0; }
+/* Un seul filet entre deux blocs : le titre qui suit une fiche reprend son filet de bas */
+body.page-legal .legal-dl:has(+ h2) { border-bottom: 0; }
+/* Telephone : le sommaire ferme deja sur un filet, le premier titre ne l ouvre pas une seconde fois */
+@media (max-width: 899px) {
+  body.page-legal .legal-corps > h2:first-child { border-top: 0; padding-top: 0; }
+}
+body.page-legal .legal-num { color: var(--texte-3); margin-right: 0.3em; }
+
+body.page-legal .legal-corps h3 {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  letter-spacing: 0;
+  text-transform: none;
+}
+body.page-legal .legal-corps > * + h3 { margin-top: var(--e-6); }
+body.page-legal .legal-corps > h2 + h3 { margin-top: var(--e-5); }
+
+/* Listes du texte juridique (sans classe) : puces et numeros dans la colonne, jamais dans la marge */
+body.page-legal .legal-corps ul:not([class]),
+body.page-legal .legal-corps ol:not([class]) { padding-left: 1.25em; display: grid; gap: var(--e-2); }
+body.page-legal .legal-corps li::marker { color: var(--texte-2); }
+
+/* Un numero, un telephone, un SIREN ne se coupent jamais en fin de ligne */
+.insecable { white-space: nowrap; }
+
+/* ---------- 4. Fiches (vendeur, editeur, garantie commerciale, donnees) : terme a gauche, valeur a droite ---------- */
+body.page-legal .legal-dl { display: grid; border-bottom: var(--bordure); }
+body.page-legal .legal-dl dt {
+  padding-top: var(--e-3);
+  border-top: var(--bordure);
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t--1);
+  color: var(--texte-2); /* 62 % : environ 7:1 sur le fond */
+}
+body.page-legal .legal-dl dd { padding-block: var(--e-1) var(--e-3); max-width: var(--mesure); overflow-wrap: anywhere; }
+@media (min-width: 600px) {
+  /* Pas d ecart de colonne : le filet de chaque ligne court sans trou du terme a la valeur */
+  body.page-legal .legal-dl { grid-template-columns: minmax(10ch, 14rem) minmax(0, 1fr); column-gap: 0; }
+  body.page-legal .legal-dl dt,
+  body.page-legal .legal-dl dd { border-top: var(--bordure); padding-block: var(--e-3); }
+  body.page-legal .legal-dl dt { padding-right: var(--e-5); }
+}
+
+/* ---------- 5. Encadre legal de garantie (annexe de l article D211-3) : un seul cadre, fond 1, filet fort ---------- */
+body.page-legal .legal-encadre {
+  max-width: calc(var(--mesure) + 2 * var(--e-5));
+  padding: var(--e-5);
+  border: 1px solid var(--filet-fort);
+  background: var(--fond-1);
+  font-size: var(--t-0);
+}
+body.page-legal .legal-encadre p + p { margin-top: var(--e-3); }
+body.page-legal .legal-encadre-titre {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+}
+body.page-legal .legal-encadre p.legal-encadre-titre + p { margin-top: var(--e-4); }
+
+/* ---------- 6. Formulaire type de retractation : police des chiffres, lignes a remplir ---------- */
+body.page-legal .legal-formulaire {
+  padding: var(--e-5);
+  border: 1px solid var(--filet-fort);
+  font-family: var(--police-mono);
+  font-size: var(--t--1);
+  line-height: 1.7;
+}
+body.page-legal .legal-formulaire p { max-width: none; }
+body.page-legal .legal-formulaire p + p { margin-top: var(--e-3); }
+body.page-legal .legal-formulaire strong { letter-spacing: var(--espacement-libelle); }
+body.page-legal .legal-formulaire .a-remplir::after {
+  content: '';
+  display: block;
+  height: var(--e-5);
+  border-bottom: 1px dotted var(--filet-fort);
+}
+
+/* ---------- 7. Fonction de retractation (/retractation/) ---------- */
+body.page-retractation [hidden] { display: none !important; }
+html:not(.avec-js) body.page-retractation .js-seulement { display: none !important; }
+body.page-retractation .retractation-explication { margin-top: var(--e-2); }
+body.page-retractation .retractation-explication li { max-width: var(--mesure); }
+body.page-retractation .retractation-sans-js { padding-left: var(--e-3); border-left: 2px solid var(--filet-fort); }
+body.page-retractation .legal-titre .bouton { margin-top: var(--e-4); }
+
+body.page-retractation .retractation-formulaire {
+  display: grid;
+  gap: var(--e-5);
+  max-width: 560px;
+  padding-top: var(--e-6);
+  border-top: var(--bordure);
+}
+body.page-retractation .retractation-formulaire h2,
+body.page-retractation .retractation-confirmation h2 { font-size: var(--t-3); }
+body.page-retractation .legal-corps .retractation-formulaire h2,
+body.page-retractation .legal-corps .retractation-confirmation h2 { padding-top: 0; border-top: 0; }
+body.page-retractation .champ .form-aide { margin-top: 0; }
+body.page-retractation .retractation-facultatif { text-transform: none; letter-spacing: 0; color: var(--texte-3); }
+body.page-retractation .champ textarea[aria-invalid="true"] { border-color: var(--erreur); }
+
+/* Choix du produit : trois lignes pleine largeur, la case suit le texte */
+body.page-retractation .retractation-choix { border: 0; min-width: 0; display: grid; gap: var(--e-2); }
+body.page-retractation .retractation-choix legend {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t--1);
+  letter-spacing: var(--espacement-libelle);
+  text-transform: uppercase;
+  color: var(--texte-2);
+  margin-bottom: var(--e-2);
+}
+body.page-retractation .choix {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  min-height: var(--bouton-h-petit);
+  padding: var(--e-2) var(--e-4);
+  background: var(--fond-2);
+  border: 1px solid var(--filet-fort);
+  cursor: pointer;
+  transition: border-color var(--duree-vite) var(--courbe);
+}
+body.page-retractation .choix:hover,
+body.page-retractation .choix:has(input:checked) { border-color: var(--texte); }
+/* Disque redessine : 20 px comme les cases de /journee-piste et /marques, point plein a l etat choisi */
+body.page-retractation .choix input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid var(--filet-fort);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--duree-vite) var(--courbe), border-color var(--duree-vite) var(--courbe);
+}
+body.page-retractation .choix input[type="radio"]:checked {
+  border-color: var(--texte);
+  background: var(--texte);
+  box-shadow: inset 0 0 0 5px var(--fond-2);
+}
+body.page-retractation .choix input[type="radio"]:focus-visible { outline: 2px solid var(--texte); outline-offset: 3px; }
+body.page-retractation .retractation-choix[aria-invalid="true"] .choix { border-color: var(--erreur); }
+
+/* Erreurs : texte blanc casse, le rouge porte par un filet de 2 px (jamais de texte rouge) */
+body.page-retractation .retractation-erreur,
+body.page-retractation .retractation-erreur-generale {
+  padding-left: var(--e-3);
+  border-left: 2px solid var(--erreur);
+  font-size: var(--t--1);
+  color: var(--texte);
+}
+body.page-retractation .retractation-erreur-generale { padding-block: var(--e-3); background: var(--fond-1); }
+
+/* Demande recue : filet vert d etat, la seule couleur autre que le rouge du site */
+body.page-retractation .retractation-confirmation {
+  display: grid;
+  gap: var(--e-3);
+  justify-items: start;
+  padding: var(--e-6) var(--e-5);
+  background: var(--fond-1);
+  border-left: 2px solid var(--ok);
+  scroll-margin-top: calc(var(--nav-h) + var(--e-4));
+}
+body.page-retractation .retractation-confirmation:focus { outline: none; }
+body.page-retractation .retractation-confirmation p + p { margin-top: 0; }
+body.page-retractation .retractation-renvoi { margin-top: var(--e-7); font-size: var(--t--1); color: var(--texte-2); }
+
+/* ---------- 8. Impression : texte noir sur blanc, sommaire masque, cadres gris ---------- */
+@media print {
+  body.page-legal .legal-nav { display: none !important; }
+  body.page-legal .legal-titre,
+  body.page-legal .legal-corps { grid-column: 1 / -1; }
+  body.page-legal .legal-hero { padding-block: 0 12pt; }
+  body.page-legal .legal-hero .libelle { display: none; }
+  body.page-legal .legal-corps { padding-bottom: 0; }
+  body.page-legal .legal,
+  body.page-legal .legal * { color: #000 !important; background: #fff !important; }
+  body.page-legal .legal-corps h2,
+  body.page-legal .legal-dl,
+  body.page-legal .legal-dl dt,
+  body.page-legal .legal-dl dd,
+  body.page-legal .legal-encadre,
+  body.page-legal .legal-formulaire,
+  body.page-legal .legal-formulaire .a-remplir::after { border-color: #999 !important; }
+  body.page-legal .legal-corps h2 { margin-top: 18pt; break-after: avoid; }
+  body.page-legal .legal-corps h3 { break-after: avoid; }
+  body.page-legal .legal-encadre,
+  body.page-legal .legal-formulaire { break-inside: avoid; }
+  body.page-legal .legal-corps .bouton,
+  body.page-retractation .bouton,
+  body.page-retractation .retractation-formulaire { display: none !important; }
+}

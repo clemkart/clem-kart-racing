@@ -1,0 +1,24 @@
+{
+  "name": "clem-kart-racing-site",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Site Clem Kart Racing : HTML, CSS et JS purs, un seul fichier de configuration (config/offres.json), build sans dependance.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build:site2": "node scripts/build.js --site2",
+    "test:prix": "node tests/run-prix.js",
+    "test:fonts": "node tests/run-fonts.js",
+    "test:gratuit": "node tests/run-emails.js",
+    "test:dashboard": "node tests/run-dashboard.js",
+    "test:track": "node tests/run-track-site.js",
+    "test:demande": "node tests/run-demande.js",
+    "test:typo": "node tests/run-typographie.js",
+    "test:coach": "node tests/run-coach.js",
+    "test:schemas": "node tests/run-schemas.js",
+    "test:retractation": "node --test tests/livraison/",
+    "test": "npm run test:prix && npm run test:fonts && npm run test:gratuit && npm run test:dashboard && npm run test:track && npm run test:demande && npm run test:typo && npm run test:coach && npm run test:schemas && npm run test:retractation"
+  }
+}

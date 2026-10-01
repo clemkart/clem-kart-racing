@@ -1,0 +1,51 @@
+<!-- Partial footer : pied de page commun. Email en clair, aucun prix, aucun script de masquage.
+     Ni tu ni vous : le meme pied sert aux pilotes et aux marques. La ligne de faits (faits.ligne) n y est plus,
+     sinon elle se lisait deux fois sur /guide et /consulting.
+     Trois colonnes de destinations : les pilotes (Rouler plus vite), les marques (deux besoins distincts), les reseaux.
+     Les quatre liens legaux restent en bas, sur toutes les pages. -->
+<footer class="pied">
+  <div class="conteneur">
+    <div class="pied-grille">
+      <div>
+        <p class="pied-marque">Clem <span>Kart</span> Racing</p>
+        <p class="mt-4">Pilote de karting en compétition et créateur de contenu.</p>
+        <p class="mt-4"><a class="pied-email" href="mailto:{{contact.email}}">{{contact.email}}</a></p>
+      </div>
+      <div>
+        <h2>Rouler plus vite</h2>
+        <ul>
+          <li><a href="{{routes.guide}}">Le guide</a></li>
+          <li><a href="{{routes.onboard_offre}}">Analyse d’onboard</a></li>
+          <li><a href="{{routes.journee}}">{{journee.titre}}</a></li>
+          <li><a href="{{routes.extrait}}">{{extrait.appel_courant}}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Marques</h2>
+        <ul>
+          <li><a href="{{routes.marques_reseaux}}">Partenariat réseaux sociaux</a></li>
+          <li><a href="{{routes.marques_saison}}">Sponsoriser ma saison</a></li>
+          <li><a href="{{routes.liens}}">Tous mes liens</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Réseaux</h2>
+        <ul>
+          <li><a href="{{reseaux.instagram}}" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="{{reseaux.tiktok}}" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="{{reseaux.youtube}}" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="pied-bas">
+      <ul class="pied-legal">
+        <li><a href="{{routes.mentions}}">Mentions légales</a></li>
+        <li><a href="{{routes.cgv}}">CGV</a></li>
+        <li><a href="{{routes.confidentialite}}">Confidentialité</a></li>
+        <li><a href="{{routes.retractation}}">Renoncer au contrat ici</a></li>
+      </ul>
+      <p>{{legal.editeur}}, {{legal.tva}}</p>
+      <p>Paiement sécurisé par Stripe. Garantie <span class="chrono">{{garantie_jours}} jours</span> sur le guide et l’analyse d’onboard, en plus des droits légaux.</p>
+    </div>
+  </div>
+</footer>

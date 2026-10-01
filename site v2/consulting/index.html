@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>{{journee.titre}} · Une journée avec moi sur ton circuit · {{marque.nom}}</title>
+<meta name="description" content="{{journee.sous_titre}} {{journee.prix_affiche}} {{journee.unite}}, sur devis. Demande ta date en deux minutes.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{sites.url}}{{routes.journee}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{journee.titre}} · {{marque.nom}}">
+<meta property="og:description" content="{{journee.sous_titre}} {{journee.prix_affiche}} {{journee.unite}}, sur devis.">
+<meta property="og:url" content="{{sites.url}}{{routes.journee}}">
+<meta property="og:image" content="{{sites.url}}/photos/piste-795-public-1600.jpg">
+<meta name="twitter:image" content="{{sites.url}}/photos/piste-795-public-1600.jpg">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/piste-795-public-960.webp 960w, /photos/piste-795-public-1600.webp 1600w, /photos/piste-795-public-2400.webp 2400w" imagesizes="100vw">
+<link rel="stylesheet" href="/assets/page-demande.css">
+</head>
+<body class="page-demande page-consulting" data-page="consulting">
+{{partial:nav}}
+
+<main id="contenu">
+
+  <!-- Hero en bande : la photo couleur file d un bord a l autre, la plaque de titre deborde sous elle.
+       Photo partagee : photos/piste-795-public (registre photos/PHOTOS.md). -->
+  <section class="hero-bande" data-hero>
+    <div class="hero-bande-photo">
+      <picture>
+        <source type="image/webp" srcset="/photos/piste-795-public-960.webp 960w, /photos/piste-795-public-1600.webp 1600w, /photos/piste-795-public-2400.webp 2400w" sizes="100vw">
+        <img src="/photos/piste-795-public-1600.jpg" srcset="/photos/piste-795-public-960.jpg 960w, /photos/piste-795-public-1600.jpg 1600w, /photos/piste-795-public-2400.jpg 2400w" sizes="100vw" width="1600" height="1067" alt="Clément Daniel en course dans son kart bleu et blanc numéro 795, devant une tribune pleine de spectateurs" fetchpriority="high" decoding="async">
+      </picture>
+    </div>
+    <div class="conteneur">
+      <div class="hero-bande-plaque plaque-titre entree">
+        <h1>{{journee.titre}}</h1>
+      </div>
+      <div class="consulting-accroche entree entree-suivante">
+        <p class="chapo">{{journee.sous_titre}}</p>
+        <div class="consulting-action">
+          <a class="bouton bouton-principal" href="#demande" data-cta="hero" data-zone="hero" data-demande>Demander une date</a>
+          <p class="consulting-prix-ligne"><span class="chrono">{{journee.prix_affiche}}</span> {{journee.unite}}. Rien à payer en ligne : tu reçois le devis avant de dire oui.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2 : pour qui, pas pour qui. Le filet de depart, une fois par page. -->
+  <section class="section filet-depart reveal">
+    <div class="conteneur">
+      <div class="entete-section">
+        <h2>C’est pour toi ?</h2>
+      </div>
+      <div class="grille consulting-pourqui">
+        <div class="col-6">
+          <h3>Oui, si</h3>
+          <ul class="liste">
+            <li>Tu roules en compétition, ou en loisir régulier avec ton propre kart.</li>
+            <li>Tu tournes au même chrono depuis des semaines et tu ne sais pas où tu perds.</li>
+            <li>Tu changes des réglages au hasard, ou tu n’oses plus y toucher.</li>
+            <li>Tu veux un regard de quelqu’un qui roule encore, pas une théorie.</li>
+          </ul>
+        </div>
+        <div class="col-6 consulting-pourqui-non">
+          <h3>Non, si</h3>
+          <ul class="liste">
+            <li>Tu roules en kart de location : il change à chaque session, on ne peut rien régler.</li>
+            <li>Tu attends une promesse de chrono ou de podium. Je n’en fais pas.</li>
+            <li>Tu veux qu’on roule à ta place : c’est toi au volant, toute la journée.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3 : la journee en trois temps, indexes comme des tours de chronometrage. -->
+  <section class="section filet-haut reveal" id="journee">
+    <div class="conteneur">
+      <div class="entete-section">
+        <h2>Comment se passe la journée</h2>
+        <p class="chapo">Trois temps. Le plus important se joue entre les sessions.</p>
+      </div>
+      <ol class="consulting-temps">
+        <li>
+          <p class="chrono chrono-bloc consulting-temps-index">01 · Avant</p>
+          <div class="consulting-temps-corps">
+            <h3>On prépare</h3>
+            <p>On s’appelle ou on s’écrit. Tu me dis ton kart, ton circuit, ton niveau et ce qui te bloque. Tu m’envoies ce que tu as : chronos, onboards, données d’acquisition.</p>
+            <p>J’arrive en sachant quoi regarder.</p>
+          </div>
+        </li>
+        <li>
+          <p class="chrono chrono-bloc consulting-temps-index">02 · Sur place</p>
+          <div class="consulting-temps-corps">
+            <h3>On roule, on regarde, on règle</h3>
+            <ul class="liste">
+              <li>Je te regarde rouler au bord de la piste, là où le temps se perd.</li>
+              <li>Je filme ton onboard, pour que tu voies ce que je vois.</li>
+              <li>Je lis tes chronos et tes données, tour par tour.</li>
+              <li>On travaille les réglages et les pressions ensemble : pneus, voies, transmission.</li>
+              <li>Entre chaque session, un débrief : ce que tu fais au volant, ce que fait le kart, et la chose à changer pour la session d’après.</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <p class="chrono chrono-bloc consulting-temps-index">03 · Après</p>
+          <div class="consulting-temps-corps">
+            <h3>Tu repars avec un écrit</h3>
+            <p>Je t’envoie un résumé écrit : ce qu’on a vu, les réglages de la journée, ce que tu travailles ensuite.</p>
+            <p>Tu n’as rien à retenir de tête.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Section 4 : ce que ca change. Une phrase forte, trois lignes, aucune promesse de chrono. -->
+  <section class="section section-fond-1 filet-haut filet-bas reveal">
+    <div class="conteneur">
+      <div class="grille consulting-change-grille">
+        <div class="col-6 consulting-change">
+          <h2>Tu ne repars pas avec vingt conseils. Tu repars avec un plan.</h2>
+          <p class="chapo">Où tu perds du temps. Pourquoi. Par quoi commencer.</p>
+          <p>Et un kart réglé pour ta façon de rouler, pas pour celle du voisin de paddock.</p>
+          <p>À ta prochaine sortie, tu sais quoi tester. Une chose à la fois.</p>
+        </div>
+        <!-- Photo couleur de grille (photos/paddock-echange-pilote) : deux pilotes casqués, aucun visage reconnaissable -->
+        <figure class="col-5 photo consulting-change-photo">
+          <picture>
+            <source type="image/webp" srcset="/photos/paddock-echange-pilote-640.webp 640w, /photos/paddock-echange-pilote-1280.webp 1280w" sizes="(min-width: 900px) 40vw, calc(100vw - 32px)">
+            <img src="/photos/paddock-echange-pilote-640.jpg" srcset="/photos/paddock-echange-pilote-640.jpg 640w, /photos/paddock-echange-pilote-1280.jpg 1280w" sizes="(min-width: 900px) 40vw, calc(100vw - 32px)" width="640" height="427" loading="lazy" decoding="async" alt="{{marque.auteur}}, casque sur la tête, serre la main d’un autre pilote sur la grille après une manche">
+          </picture>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5 : pourquoi moi. Photo couleur (disque Elements, 2025/KARTING/Photo Kart/IMG_4351), recadree 4:5, en 640 et 800 px, webp et jpg. -->
+  <section class="section reveal">
+    <div class="conteneur">
+      <div class="grille consulting-auteur">
+        <div class="col-4 consulting-auteur-photo">
+          <figure class="photo photo-portrait">
+            <picture>
+              <source type="image/webp" srcset="/consulting/clement-640.webp 640w, /consulting/clement-800.webp 800w" sizes="(min-width: 900px) 420px, 70vw">
+              <img src="/consulting/clement-800.jpg" srcset="/consulting/clement-640.jpg 640w, /consulting/clement-800.jpg 800w" sizes="(min-width: 900px) 420px, 70vw" width="800" height="1000" loading="lazy" decoding="async" alt="{{marque.auteur}} au paddock, protège-côtes sur les épaules, entre deux sessions">
+            </picture>
+          </figure>
+        </div>
+        <div class="col-7 consulting-auteur-texte">
+          <h2>Pourquoi moi</h2>
+          <p>Je roule encore. Je connais la pression d’une grille, les pneus qui ne montent pas en température et le kart qui refuse de tourner.</p>
+          <p>Pas de mécano, pas de team : j’ai appris le pilotage et les réglages seul, en me trompant beaucoup. Ce que j’ai mis des années à comprendre, je te le montre en une journée.</p>
+          <p>J’ai aussi écrit le guide « {{guide.titre}} ». {{lecteurs.phrase}}.</p>
+          <p class="chrono chrono-ligne">{{faits.ligne}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6 : prix, ce qui est compris, frais de deplacement. Prix et unite lus dans la config. -->
+  <section class="section bloc-prix section-fond-1 filet-haut filet-bas reveal" id="prix">
+    <div class="conteneur">
+      <div class="entete-section">
+        <h2>Le prix</h2>
+      </div>
+      <div class="grille">
+        <div class="col-5 consulting-prix">
+          <p class="chrono-grand"><strong>{{journee.prix_affiche}}</strong><span class="mono">{{journee.unite}}</span></p>
+          <p class="consulting-prix-note">Les frais de déplacement sont calculés sur devis, selon la distance depuis le Morbihan : kilomètres, péages, et une nuit sur place si le circuit est loin. Tu connais le total avant de dire oui.</p>
+        </div>
+        <div class="col-6 consulting-prix-detail">
+          <h3>Ce qui est compris</h3>
+          <ul class="liste">
+            <li>La préparation : un échange avant la journée et la lecture de tes chronos, onboards et données.</li>
+            <li>La journée entière avec toi, au bord de la piste et au stand.</li>
+            <li>Ton onboard filmé.</li>
+            <li>La lecture de tes chronos et de tes données.</li>
+            <li>Les réglages et les pressions, choisis ensemble.</li>
+            <li>Un débrief après chaque session, pilotage et kart.</li>
+            <li>Le résumé écrit, envoyé après la journée.</li>
+          </ul>
+          <h3>Ce qui n’est pas compris</h3>
+          <ul class="liste">
+            <li>Ton kart, tes pneus, ton essence et ton équipement.</li>
+            <li>Le droit de piste du circuit.</li>
+            <li>Ta licence ou ton titre de participation, et ton assurance.</li>
+          </ul>
+          <div class="consulting-prix-action">
+            <a class="bouton bouton-principal" href="#demande" data-cta="prix" data-zone="prix" data-demande>Demander une date</a>
+            <span class="bouton-sous">Sans engagement. Devis avant toute réservation, aucun paiement en ligne.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7 : le parcours en quatre etapes, a gauche ; le formulaire court, a droite.
+       Le formulaire poste vers la fonction demande (type journee) : copie a Clement, accuse de reception. -->
+  <section class="section-demande" id="demande">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-6 demande-texte reveal">
+          <h2>Demander une date</h2>
+          <p class="demande-chapo">Deux minutes. Je lis chaque demande moi-même.</p>
+          <ol class="liste-numeros consulting-etapes">
+            <li><span>Tu remplis le formulaire : ton circuit, ta date, ton kart.</span></li>
+            <li><span>Je te réponds sous <span class="chrono">{{journee.reponse_h}} h</span> avec un devis : la journée, les frais de déplacement, le total.</span></li>
+            <li><span>Tu valides le devis. On fixe la date et on prépare la journée.</span></li>
+            <li><span>On roule.</span></li>
+          </ol>
+          <p>Une question avant ? Écris-moi à <a href="mailto:{{contact.email}}">{{contact.email}}</a>.</p>
+        </div>
+
+        <div class="col-5 col-depart-8 reveal reveal-decale-1">
+          <div class="bloc-formulaire">
+            <h2 class="visuellement-cache">Formulaire de demande de date</h2>
+            <form class="formulaire" id="form-demande" action="/.netlify/functions/demande" method="post" data-type="journee">
+              <input type="hidden" name="type" value="journee">
+
+              <div class="form-champs pile">
+                <div class="champ">
+                  <label for="prenom">Ton prénom</label>
+                  <input id="prenom" name="prenom" type="text" autocomplete="given-name" maxlength="60" required aria-describedby="prenom-erreur">
+                  <p class="champ-erreur" id="prenom-erreur">Dis-moi comment tu t’appelles.</p>
+                </div>
+
+                <div class="champ">
+                  <label for="email">Ton email</label>
+                  <input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required aria-describedby="email-erreur">
+                  <p class="champ-erreur" id="email-erreur">Il faut un email valide pour t’envoyer le devis.</p>
+                </div>
+
+                <div class="champ">
+                  <label for="telephone">Ton téléphone (facultatif)</label>
+                  <input id="telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel" maxlength="25" aria-describedby="telephone-erreur">
+                  <p class="champ-erreur" id="telephone-erreur">Ce numéro ne semble pas valide. Tu peux aussi laisser vide.</p>
+                </div>
+
+                <div class="champ">
+                  <label for="circuit">Le circuit</label>
+                  <input id="circuit" name="circuit" type="text" maxlength="120" placeholder="Ex. Lohéac, Ancenis, Laval" required aria-describedby="circuit-erreur">
+                  <p class="champ-erreur" id="circuit-erreur">Dis-moi où tu veux rouler, même en gros.</p>
+                </div>
+
+                <div class="champ">
+                  <label for="periode">La date ou la période</label>
+                  <input id="periode" name="periode" type="text" maxlength="120" placeholder="Ex. un samedi de novembre" required aria-describedby="periode-erreur">
+                  <p class="champ-erreur" id="periode-erreur">Une date ou une période, même approximative.</p>
+                </div>
+
+                <div class="champ">
+                  <label for="kart">Ta catégorie et ton kart</label>
+                  <input id="kart" name="kart" type="text" maxlength="160" placeholder="Ex. Rotax Max, châssis Tony Kart" required aria-describedby="kart-erreur">
+                  <p class="champ-erreur" id="kart-erreur">Ta catégorie et ton châssis, pour préparer la journée.</p>
+                </div>
+
+                <div class="champ">
+                  <label for="travail">Ce que tu veux travailler</label>
+                  <textarea id="travail" name="travail" rows="3" maxlength="1000" placeholder="Ex. je perds du temps dans les virages lents, le kart sous-vire" required aria-describedby="travail-erreur"></textarea>
+                  <p class="champ-erreur" id="travail-erreur">Une phrase suffit.</p>
+                </div>
+
+                <div class="champ champ-case">
+                  <input id="rgpd" name="rgpd" type="checkbox" value="oui" required aria-describedby="rgpd-erreur">
+                  <label for="rgpd">J’accepte que Clément Daniel garde ces informations pour répondre à ma demande et préparer mon devis. Rien d’autre. Suppression au bout de {{delais.conservation_demandes_ans}} ans sans suite. Détails dans la <a href="{{routes.confidentialite}}">politique de confidentialité</a>.</label>
+                  <p class="champ-erreur" id="rgpd-erreur">Il me faut ton accord pour garder ta demande.</p>
+                </div>
+
+                <!-- Piege a robots : jamais visible, doit rester vide -->
+                <div class="champ-piege" aria-hidden="true">
+                  <label for="site_web">Ne remplis pas ce champ</label>
+                  <input id="site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
+                </div>
+
+                <button class="bouton bouton-principal bouton-large" type="submit">Demander une date</button>
+                <p class="bouton-sous">Sans engagement. Réponse et devis sous <span class="chrono">{{journee.reponse_h}} h</span>, aucun paiement en ligne.</p>
+                <p class="form-message" role="status" aria-live="polite"></p>
+              </div>
+
+              <!-- Etat envoye : remplace les champs, a la meme hauteur -->
+              <div class="form-envoye plaque-bloc" tabindex="-1">
+                <p>Bien reçu, merci.</p>
+                <p>Je te réponds sous <span class="chrono">{{journee.reponse_h}} h</span> avec un devis. Un email de confirmation arrive dans quelques minutes : s’il n’est pas là, regarde dans tes spams.</p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8 : FAQ, details natifs. -->
+  <section class="section filet-haut faq-section reveal">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-8">
+          <div class="entete-section">
+            <h2>Avant de demander</h2>
+          </div>
+          <div class="faq">
+            <details>
+              <summary>Sur quels circuits ?</summary>
+              <p>Sur le circuit de ton choix. Je pars du Morbihan : plus le circuit est loin, plus les frais de déplacement montent.<br>Tu les vois dans le devis, avant de t’engager.</p>
+            </details>
+            <details>
+              <summary>Et s’il pleut ?</summary>
+              <p>On roule. Une piste mouillée, c’est d’autres réglages à trouver et d’autres repères à prendre : la journée reste utile.<br>Si le circuit ferme ou si la météo rend la piste dangereuse, on reporte à une autre date. C’est écrit dans le devis.</p>
+            </details>
+            <details>
+              <summary>Et si je dois annuler ?</summary>
+              <p>Préviens-moi dès que tu le sais.<br>Les conditions d’annulation sont écrites dans le devis, noir sur blanc, avant que tu le signes. Rien de caché.</p>
+            </details>
+            <details>
+              <summary>Je viens avec quoi ?</summary>
+              <p>Ton kart prêt à rouler, tes pneus, ton essence et ton équipement.<br>Si tu as un système d’acquisition (chrono, compte-tours, GPS), garde-le branché : on lit tout.<br>Pour l’onboard, je m’occupe de la caméra.</p>
+            </details>
+            <details>
+              <summary>Licence et assurance ?</summary>
+              <p>Tu roules sous ta licence, ou sous le titre de participation que demande le circuit, et avec ton assurance. Vérifie-les avant la journée.<br>Le droit de piste et le règlement du circuit restent les tiens.</p>
+            </details>
+            <details>
+              <summary>Combien de sessions dans la journée ?</summary>
+              <p>Ça dépend du circuit et de son planning de roulage.<br>L’idée : assez de sessions pour tester, comprendre, puis confirmer. On cale le nombre ensemble avant la journée.</p>
+            </details>
+            <details>
+              <summary>Je roule en loisir. C’est pour moi ?</summary>
+              <p>Oui, si tu roules souvent avec ton propre kart.<br>Le chrono compte autant pour toi que pour un pilote en course : c’est la même méthode, à ton rythme.</p>
+            </details>
+            <details>
+              <summary>Pourquoi pas de paiement en ligne ?</summary>
+              <p>Parce que chaque journée est différente : le circuit, la distance, la date.<br>Tu reçois un devis clair, tu valides, et seulement après on bloque la date.</p>
+            </details>
+          </div>
+          <div class="consulting-fin">
+            <a class="bouton bouton-fantome" href="#demande" data-cta="faq" data-zone="faq" data-demande>Demander une date</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Barre collante : apparait quand le hero est sorti de l ecran, se cache devant le prix et le formulaire. -->
+<div class="barre" role="region" aria-label="Demander une date">
+  <div class="conteneur barre-inner">
+    <p class="barre-texte">{{journee.titre}} <span class="chrono">{{journee.prix_affiche}}</span></p>
+    <a class="bouton bouton-principal" href="#demande" data-cta="barre" data-zone="barre" data-demande>Demander une date</a>
+  </div>
+</div>
+
+{{partial:footer}}
+
+<script>
+/* 1. Boutons « Demander une date » : le formulaire arrive, le curseur est dans le premier champ.
+   2. Barre collante cachee devant le prix et le formulaire (un seul bouton rouge par ecran).
+   3. Etats du formulaire : envoi, envoye, erreur. Sans JavaScript, les ancres menent au formulaire
+      et le formulaire poste directement vers la fonction demande, qui repond par une page HTML. */
+(function () {
+  'use strict';
+  var doc = document;
+  var form = doc.getElementById('form-demande');
+  var premierChamp = doc.getElementById('prenom');
+
+  doc.addEventListener('click', function (e) {
+    var lien = e.target && e.target.closest ? e.target.closest('a[data-demande]') : null;
+    if (!lien || !premierChamp || (form && form.classList.contains('est-envoye'))) return;
+    window.setTimeout(function () {
+      try { premierChamp.focus({ preventScroll: true }); } catch (err) { premierChamp.focus(); }
+    }, 450);
+  });
+
+  var barre = doc.querySelector('.barre');
+  var cibles = [doc.getElementById('prix'), doc.getElementById('demande')].filter(Boolean);
+  if (barre && cibles.length && 'IntersectionObserver' in window) {
+    var visibles = {};
+    var obs = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (en) { visibles[en.target.id] = en.isIntersecting; });
+      var cacher = Object.keys(visibles).some(function (k) { return visibles[k]; });
+      barre.classList.toggle('est-cachee', cacher);
+    }, { threshold: 0.15 });
+    cibles.forEach(function (c) { obs.observe(c); });
+  }
+
+  if (!form || !window.fetch || !window.FormData) return;
+  /* Le script prend la main sur la validation : messages sous chaque champ, pas de bulle du navigateur */
+  form.noValidate = true;
+  var bloc = form.closest('.bloc-formulaire') || form.parentNode;
+  var message = form.querySelector('.form-message');
+  var bouton = form.querySelector('button[type="submit"]');
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var TELEPHONE = /^[0-9+(). -]{6,25}$/;
+  var TEXTE_ERREUR = "L’envoi n’a pas marché. Réessaie, ou écris-moi à {{contact.email}}.";
+
+  function marquer(champ, invalide) {
+    var conteneur = champ.closest('.champ');
+    if (conteneur) conteneur.classList.toggle('est-invalide', invalide);
+    champ.setAttribute('aria-invalid', invalide ? 'true' : 'false');
+  }
+
+  function telephoneInvalide(valeur) {
+    if (!valeur) return false;
+    return !TELEPHONE.test(valeur) || valeur.replace(/[^0-9]/g, '').length < 6;
+  }
+
+  function valider() {
+    var requis = form.querySelectorAll('[required]');
+    var premier = null;
+    for (var i = 0; i < requis.length; i++) {
+      var champ = requis[i];
+      if (champ.disabled) continue;
+      var valeur = champ.type === 'checkbox' ? champ.checked : champ.value.trim();
+      var invalide = !valeur || (champ.type === 'email' && !EMAIL.test(champ.value.trim()));
+      marquer(champ, invalide);
+      if (invalide && !premier) premier = champ;
+    }
+    var tel = form.elements.telephone;
+    if (tel) {
+      var telFaux = telephoneInvalide(tel.value.trim());
+      marquer(tel, telFaux);
+      if (telFaux && !premier) premier = tel;
+    }
+    if (premier) premier.focus();
+    return !premier;
+  }
+
+  function afficher(texte, classe) {
+    message.textContent = texte;
+    message.className = 'form-message' + (classe ? ' ' + classe : '');
+  }
+
+  function corps() {
+    var objet = {};
+    new FormData(form).forEach(function (valeur, cle) { objet[cle] = valeur; });
+    objet.type = form.getAttribute('data-type');
+    objet.rgpd = !!(form.rgpd && form.rgpd.checked);
+    return objet;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!valider()) { afficher('Il manque une information. Regarde le champ signalé.', 'est-erreur'); return; }
+    bouton.disabled = true;
+    afficher('Envoi en cours.');
+    fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corps()) })
+      .then(function (reponse) {
+        return reponse.json().catch(function () { return {}; }).then(function (json) {
+          return { ok: reponse.ok, statut: reponse.status, json: json };
+        });
+      })
+      .then(function (resultat) {
+        if (!resultat.ok) {
+          var champs = resultat.json && resultat.json.champs;
+          if (champs && typeof champs === 'object') {
+            Object.keys(champs).forEach(function (nom) {
+              var champ = form.elements[nom];
+              if (champ && champ.nodeType === 1) marquer(champ, true);
+            });
+          }
+          var erreur = new Error(resultat.statut < 500 && resultat.json && resultat.json.error ? resultat.json.error : '');
+          erreur.serveur = true;
+          throw erreur;
+        }
+        bloc.style.minHeight = bloc.offsetHeight + 'px';
+        form.classList.add('est-envoye');
+        afficher('');
+        var confirmation = form.querySelector('.form-envoye');
+        if (confirmation) confirmation.focus();
+        if (window.ckrTrack) window.ckrTrack('demande_signup', { form: form.getAttribute('data-type') });
+      })
+      .catch(function (erreur) {
+        afficher(erreur && erreur.serveur && erreur.message ? erreur.message : TEXTE_ERREUR, 'est-erreur');
+        bouton.disabled = false;
+      });
+  });
+})();
+</script>
+</body>
+</html>

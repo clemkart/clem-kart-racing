@@ -1,0 +1,385 @@
+/* ============================================================
+   Clem Kart Racing : page-demande.css
+   Regles propres aux deux pages « sur demande », sans paiement :
+   /consulting (consulting en piste : demande de date, puis devis) et /marques
+   (collaboration, sponsoring). Les regles propres a /consulting sont en section 8
+   (body.page-consulting).
+   Chargee apres base.css, uniquement par ces pages (body.page-demande).
+   Aucune valeur brute hors des clamp() de titres et des tailles fixes
+   imposees par design/COMPOSITION.md (case 20 px, photo 240 px, filet 2 px).
+   Rayons 0, aucune ombre, aucun degrade, un seul rouge.
+
+   Les composants partages (.chrono, .filet-depart, .filet-apex, .plaque-titre,
+   .plaque-bloc) sont dans base.css, section 22.
+   ============================================================ */
+
+/* ---------- 4. Hero en bande (consulting en piste) : photo couleur 21:9, plaque qui deborde ---------- */
+body.page-demande .hero-bande { padding-top: var(--nav-h); }
+body.page-demande .hero-bande-photo {
+  width: 100%;
+  height: 48vh;
+  min-height: 280px;
+  max-height: 640px;
+  overflow: hidden;
+  background: var(--fond-2);
+}
+/* /consulting sert sa photo dans un picture (webp + jpg) : il doit remplir la bande lui aussi */
+body.page-demande .hero-bande-photo picture { display: block; width: 100%; height: 100%; }
+body.page-demande .hero-bande-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Recadrage sur le kart 795 (photos/piste-795-public) : le kart remonte au-dessus de la plaque,
+     la tribune reste en haut du cadre */
+  object-position: 50% 85%;
+}
+@media (min-width: 900px) {
+  body.page-demande .hero-bande-photo { height: 56vh; }
+}
+body.page-demande .hero-bande-plaque {
+  /* La plaque monte sous la photo : 12 a 20 % de la hauteur de la photo sur ordinateur */
+  margin-top: calc(-1 * clamp(var(--e-7), 9vh, var(--e-9)));
+}
+body.page-demande .hero-bande-plaque h1 {
+  font-size: clamp(48px, 7vw, 96px);
+  max-width: none;
+  /* « Consulting en piste » tient sur une ou deux lignes equilibrees, jamais « EN » seul */
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+@media (max-width: 599px) {
+  /* 48 px sur un ecran de 360 px : « CONSULTING » deborderait de la plaque */
+  body.page-demande .hero-bande-plaque h1 { font-size: clamp(36px, 11vw, 48px); }
+}
+@media (max-width: 899px) {
+  body.page-demande .hero-bande-photo { height: 42vh; min-height: 240px; }
+  body.page-demande .hero-bande-plaque { margin-top: calc(-1 * var(--e-6)); }
+}
+
+/* ---------- 5. Section « demande » : texte a gauche, formulaire a droite ---------- */
+body.page-demande .section-demande { padding-block: var(--section-y); }
+body.page-demande .demande-texte { display: grid; gap: var(--e-4); align-content: start; }
+body.page-demande .demande-texte p {
+  font-size: var(--t-1);
+  line-height: 1.45;
+}
+/* /consulting : le chapo en blanc casse, le reste du texte en secondaire */
+body.page-demande .demande-texte .demande-chapo { color: var(--texte); }
+body.page-demande .demande-texte p:not(.demande-chapo) { color: var(--texte-2); }
+@media (min-width: 900px) {
+  /* Colonnes 8 a 12. grid-column-start seul casserait le span de .col-5 (une seule colonne) */
+  body.page-demande .col-depart-8 { grid-column: 8 / -1; }
+}
+
+/* Le bloc formulaire : fond #0F0F0F, filet 1 px, 32 px de marge interieure, aucune carte dans une carte */
+body.page-demande .bloc-formulaire {
+  background: var(--fond-1);
+  border: var(--bordure);
+  padding: var(--e-6);
+}
+body.page-demande .bloc-formulaire h2 {
+  font-size: var(--t-2);
+  margin-bottom: var(--e-5);
+}
+body.page-demande .formulaire { max-width: none; }
+/* Colonnes des champs en minmax(0, 1fr) : un contenu long ne fait jamais deborder le bloc */
+body.page-demande .form-champs { grid-template-columns: minmax(0, 1fr); }
+/* Petit ecran : le bouton passe a la ligne au lieu de sortir du bloc, marge interieure reduite */
+body.page-demande .formulaire .bouton {
+  white-space: normal;
+  text-align: center;
+  padding-block: var(--e-3);
+  line-height: 1.2;
+}
+@media (max-width: 599px) {
+  body.page-demande .bloc-formulaire { padding: var(--e-5) var(--e-4); }
+  body.page-demande .formulaire .bouton { padding-inline: var(--e-4); }
+}
+body.page-demande .champ select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--e-7);
+  /* Chevron en SVG inline, une seule couleur, sans requete reseau */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23F2EDE8' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right var(--e-4) center;
+}
+/* Invite « Choisis dans la liste » : 62 % et non 40 %, pour rester lisible */
+body.page-demande .champ select:invalid { color: var(--texte-2); }
+body.page-demande .champ select option { color: var(--texte); background: var(--fond-2); }
+body.page-demande .champ textarea[aria-invalid="true"],
+body.page-demande .champ select[aria-invalid="true"] { border-color: var(--erreur); }
+
+/* Erreur sous le champ, jamais au-dessus. Le texte reste blanc casse (le rouge ne colore
+   jamais un texte de moins de 24 px) ; le rouge est porte par un tiret de 2 px, comme le chrono. */
+body.page-demande .champ-erreur {
+  display: none;
+  position: relative;
+  padding-left: var(--e-3);
+  font-size: var(--t--1);
+  color: var(--texte);
+}
+body.page-demande .champ-erreur::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 2px;
+  background: var(--erreur);
+}
+body.page-demande .champ.est-invalide .champ-erreur { display: block; }
+
+/* Case a cocher carree 20 px, finalite en une ligne de texte courant */
+body.page-demande .champ-case {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: var(--e-3);
+  align-items: start;
+}
+body.page-demande .champ-case input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  margin-top: 0.2em;
+  padding: 0;
+  accent-color: var(--texte);
+  border-radius: 0;
+}
+body.page-demande .champ-case label {
+  font-family: var(--police-texte);
+  font-weight: var(--graisse-normal);
+  font-size: var(--t--1);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--texte-2);
+  max-width: none;
+}
+body.page-demande .champ-case label a { color: var(--texte); }
+body.page-demande .champ-case.est-invalide input[type="checkbox"] { outline: 2px solid var(--erreur); outline-offset: 2px; }
+
+/* Bouton et sous-ligne */
+body.page-demande .formulaire .bouton { margin-top: var(--e-2); }
+body.page-demande .bouton-sous { max-width: none; }
+
+/* Etat envoye : le bloc devient une plaque, a la meme hauteur (le titre du formulaire s efface) */
+body.page-demande .bloc-formulaire:has(.formulaire.est-envoye) h2 { display: none; }
+body.page-demande .form-envoye p { font-size: var(--t-1); line-height: 1.45; }
+body.page-demande .form-envoye p + p { margin-top: var(--e-4); color: var(--texte-2); }
+body.page-demande .form-envoye:focus { outline: none; }
+/* Pas de carte dans une carte : le bloc formulaire est deja la plaque */
+body.page-demande .form-envoye.plaque-bloc { background: transparent; padding: 0; }
+
+/* ---------- 6. /marques : intro collante 4 colonnes, formulaire large 8 colonnes ---------- */
+body.page-demande .marques-hero {
+  padding-top: calc(var(--nav-h) + var(--e-7));
+  padding-bottom: var(--section-y);
+}
+body.page-demande .marques-intro { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--e-5); align-content: start; }
+/* Deux lignes equilibrees (« MARQUES ET / PARTENAIRES ») : jamais « ET » seul sur sa ligne */
+body.page-demande .marques-intro h1 {
+  font-size: clamp(48px, 7vw, 96px);
+  max-width: none;
+  text-wrap: balance;
+}
+body.page-demande .marques-intro p {
+  font-size: var(--t-1);
+  line-height: 1.45;
+}
+body.page-demande .marques-intro .mention { font-size: var(--t--2); }
+body.page-demande .marques-contact { border-top: var(--bordure); padding-top: var(--e-4); overflow-wrap: anywhere; }
+body.page-demande .marques-contact a { text-decoration: none; }
+body.page-demande .marques-contact a:hover { text-decoration: underline; }
+
+/* Recadrage serre 4:5 sur le casque, fait sur le fichier (clement-casque-nb.jpg) : aucun zoom ni filtre CSS */
+body.page-demande .photo-casque {
+  width: 240px;
+  max-width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--fond-2);
+  border: var(--bordure);
+}
+body.page-demande .photo-casque img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (min-width: 900px) {
+  body.page-demande .marques-intro {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--e-5));
+    align-self: start;
+  }
+}
+/* Le filet de depart de /marques : le bord haut du formulaire, a toutes les largeurs.
+   Pose sous la navigation, il se lisait comme un trait egare au-dessus du titre. */
+body.page-demande .marques-form .bloc-formulaire { border-top: 2px solid var(--rouge); }
+@media (max-width: 899px) {
+  body.page-demande .photo-casque { width: 60%; margin-left: auto; }
+}
+
+/* Grille de champs 6/6 : le seul formulaire large du site */
+body.page-demande .formulaire-large .form-champs { display: grid; gap: var(--e-4); }
+@media (min-width: 600px) {
+  body.page-demande .formulaire-large .form-champs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.page-demande .formulaire-large .champ-plein { grid-column: 1 / -1; }
+}
+body.page-demande fieldset { border: 0; min-width: 0; display: grid; gap: var(--e-2); }
+body.page-demande legend {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t--1);
+  letter-spacing: var(--espacement-libelle);
+  text-transform: uppercase;
+  color: var(--texte-2);
+  margin-bottom: var(--e-2);
+}
+body.page-demande .cases { display: grid; gap: var(--e-2) var(--e-4); }
+@media (min-width: 600px) { body.page-demande .cases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+body.page-demande .cases li { max-width: none; }
+body.page-demande .cases label {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: var(--e-3);
+  align-items: start;
+  font-size: var(--t--1);
+  color: var(--texte);
+  cursor: pointer;
+}
+body.page-demande .cases input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  margin-top: 0.15em;
+  accent-color: var(--texte);
+  border-radius: 0;
+}
+body.page-demande [hidden] { display: none !important; }
+
+/* Bloc #sponsors sous le formulaire : filet d apex, titre, deux lignes, aucun bouton */
+body.page-demande .bloc-sponsors { margin-top: var(--section-y); }
+body.page-demande .bloc-sponsors h2 { font-size: var(--t-3); margin-bottom: var(--e-5); }
+body.page-demande .bloc-sponsors p { font-size: var(--t-1); line-height: 1.45; }
+
+/* ---------- 7. Mouvement : l entree, puis rien ---------- */
+html.a-js body.page-demande .entree-suivante { animation-delay: 100ms; }
+@media (prefers-reduced-motion: reduce) {
+  html.a-js body.page-demande .entree-suivante { animation-delay: 0ms; }
+}
+
+/* Un chiffre et son unite ne se separent jamais en fin de ligne (texte courant, sans tiret de chrono) */
+body.page-demande .insecable { white-space: nowrap; }
+
+/* ---------- 8. /consulting (body.page-consulting) : la page de vente du consulting en piste ----------
+   Ordre : hero en bande, pour qui, la journee en trois temps, ce que ca change, pourquoi moi,
+   le prix, la demande de date (parcours + formulaire), la FAQ. Un seul bouton rouge par ecran :
+   la barre collante se cache devant le prix et le formulaire (script de la page). */
+
+/* Hero : la photo couleur, la plaque, puis le chapo et le bouton sous la plaque */
+body.page-consulting .hero-bande { padding-bottom: var(--e-7); }
+body.page-consulting .consulting-accroche {
+  display: grid;
+  gap: var(--e-5);
+  margin-top: var(--e-5);
+  max-width: var(--mesure);
+}
+body.page-consulting .consulting-action { display: grid; gap: var(--e-3); justify-items: start; }
+body.page-consulting .consulting-prix-ligne { font-size: var(--t--1); color: var(--texte-2); }
+body.page-consulting .consulting-prix-ligne .chrono { color: var(--texte); }
+
+/* Titres de bloc (h3) : Barlow Condensed, comme les libelles de la FAQ */
+body.page-consulting h3 {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  margin-bottom: var(--e-4);
+}
+
+/* Pour qui : deux colonnes, la seconde en secondaire et separee par un filet */
+body.page-consulting .consulting-pourqui .liste li { font-size: var(--t-0); line-height: 1.5; }
+body.page-consulting .consulting-pourqui-non .liste li { color: var(--texte-2); }
+@media (min-width: 900px) {
+  body.page-consulting .consulting-pourqui-non { border-left: var(--bordure); padding-left: var(--e-6); }
+}
+@media (max-width: 899px) {
+  body.page-consulting .consulting-pourqui-non { border-top: var(--bordure); padding-top: var(--e-5); }
+}
+
+/* La journee : trois temps indexes comme des tours, filets entre eux */
+body.page-consulting .consulting-temps { display: grid; border-top: var(--bordure); }
+body.page-consulting .consulting-temps > li {
+  display: grid;
+  gap: var(--e-4);
+  padding-block: var(--e-6);
+  border-bottom: var(--bordure);
+  max-width: none;
+}
+@media (min-width: 900px) {
+  body.page-consulting .consulting-temps > li { grid-template-columns: minmax(0, 3fr) minmax(0, 7fr); column-gap: var(--grille-ecart); }
+}
+body.page-consulting .consulting-temps-corps { display: grid; gap: var(--e-3); max-width: var(--mesure); }
+body.page-consulting .consulting-temps-corps h3 { font-size: var(--t-2); margin-bottom: 0; }
+body.page-consulting .consulting-temps-corps p,
+body.page-consulting .consulting-temps-corps .liste li { color: var(--texte-2); line-height: 1.55; }
+body.page-consulting .consulting-temps-corps .liste li { max-width: none; }
+
+/* Ce que ca change : une phrase forte, trois lignes, et la photo de grille a droite (dessous sur telephone) */
+body.page-consulting .consulting-change-grille { align-items: center; row-gap: var(--e-6); }
+body.page-consulting .consulting-change { display: grid; gap: var(--e-4); }
+body.page-consulting .consulting-change-photo { aspect-ratio: 3 / 2; border: var(--bordure); margin: 0; }
+body.page-consulting .consulting-change-photo picture,
+body.page-consulting .consulting-auteur-photo picture { display: block; width: 100%; height: 100%; }
+body.page-consulting .consulting-change-photo img { object-position: 50% 40%; }
+@media (min-width: 900px) {
+  body.page-consulting .consulting-change-photo { grid-column: 8 / -1; }
+}
+body.page-consulting .consulting-change h2 { font-size: var(--t-3); text-wrap: balance; }
+body.page-consulting .consulting-change p:not(.chapo) { color: var(--texte-2); }
+
+/* Pourquoi moi : photo 4 colonnes, texte de la colonne 6 a la fin */
+body.page-consulting .consulting-auteur { align-items: center; }
+body.page-consulting .consulting-auteur-photo .photo { max-width: 420px; }
+body.page-consulting .consulting-auteur-texte { display: grid; gap: var(--e-4); }
+body.page-consulting .consulting-auteur-texte p:not(.chrono) { color: var(--texte-2); }
+body.page-consulting .consulting-auteur-texte .chrono-ligne { margin-top: var(--e-2); }
+@media (min-width: 900px) {
+  body.page-consulting .consulting-auteur-texte { grid-column: 6 / -1; }
+}
+@media (max-width: 899px) {
+  body.page-consulting .consulting-auteur-photo .photo { width: 70%; }
+}
+
+/* Le prix : le gros chiffre a gauche, le detail de la colonne 7 a la fin */
+body.page-consulting .consulting-prix { display: grid; gap: var(--e-5); align-content: start; }
+body.page-consulting .consulting-prix .chrono-grand strong { font-size: clamp(88px, 12vw, 160px); }
+body.page-consulting .consulting-prix-note { color: var(--texte-2); max-width: 40ch; }
+body.page-consulting .consulting-prix-detail { display: grid; gap: var(--e-4); align-content: start; }
+body.page-consulting .consulting-prix-detail .liste + h3 { margin-top: var(--e-4); }
+body.page-consulting .consulting-prix-detail .liste li { max-width: none; }
+body.page-consulting .consulting-prix-action { margin-top: var(--e-4); }
+@media (min-width: 900px) {
+  body.page-consulting .consulting-prix-detail { grid-column: 7 / -1; }
+}
+
+/* La demande : le parcours en quatre etapes a gauche, le formulaire a droite */
+/* Le filet rouge reste celui du depart (une fois par page) : ici un filet simple */
+body.page-consulting .section-demande { border-top: var(--bordure); }
+body.page-consulting .demande-texte h2 { font-size: var(--t-3); }
+body.page-consulting .consulting-etapes li { max-width: none; }
+body.page-consulting .demande-texte .consulting-etapes li span { font-size: var(--t-0); line-height: 1.5; color: var(--texte); }
+body.page-consulting .demande-texte > p:last-child { font-size: var(--t-0); overflow-wrap: anywhere; }
+body.page-consulting .demande-texte a { color: var(--texte); }
+/* Le delai garde la taille du texte qui l entoure */
+body.page-consulting .demande-texte .consulting-etapes li span.chrono { font-size: 0.92em; }
+/* Ordinateur : le parcours reste en vue pendant qu on remplit le formulaire */
+@media (min-width: 900px) {
+  body.page-consulting .demande-texte { position: sticky; top: calc(var(--nav-h) + var(--e-5)); align-self: start; }
+}
+
+/* Barre collante cachee devant le prix et le formulaire */
+body.page-consulting .barre.est-cachee { transform: translateY(100%); }
+
+/* FAQ, puis un dernier bouton contour */
+body.page-consulting .consulting-fin { margin-top: var(--e-6); }

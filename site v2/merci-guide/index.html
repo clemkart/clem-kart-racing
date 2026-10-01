@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Merci, ton guide est à toi · {{marque.nom}}</title>
+<meta name="description" content="Merci pour ton achat. Ton guide se télécharge depuis la page de confirmation, juste après le paiement.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="canonical" href="{{sites.url}}{{routes.merci_guide}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Merci, ton guide est à toi · {{marque.nom}}">
+<meta property="og:description" content="Merci pour ton achat. Ton guide se télécharge depuis la page de confirmation, juste après le paiement.">
+<meta property="og:url" content="{{sites.url}}{{routes.merci_guide}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
+<link rel="stylesheet" href="/assets/page-merci.css">
+</head>
+<body class="page-merci" data-page="merci-guide">
+{{partial:nav-merci}}
+
+<main id="contenu">
+
+  <!-- Hero : le merci et l endroit ou se trouve le PDF. Cette page ne livre aucun fichier :
+       la livraison passe par la page de confirmation Stripe. Elle recoit aussi l ancienne adresse /merci.html (anciens acheteurs). -->
+  <section class="merci" data-hero>
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-8">
+          <div class="merci-en-tete entree">
+            <p class="mono">Paiement reçu</p>
+            <h1>Merci. Ton guide est à toi.</h1>
+            <p class="chapo">Ton guide se télécharge depuis la page de confirmation qui s’affiche juste après le paiement. Enregistre le PDF tout de suite, sur ton téléphone ou ton ordinateur : c’est ton exemplaire.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filet de depart, puis le bon de livraison : trois cellules, jamais plus -->
+  <section class="filet-depart section-merci">
+    <div class="conteneur">
+      <div class="bon-livraison reveal">
+        <div>
+          <p class="mention">Ton guide</p>
+          <p class="chrono">{{guide.format}}, {{guide.pages}} pages</p>
+        </div>
+        <div>
+          <p class="mention">Reçu et facture</p>
+          <p class="mono">Par email, envoyés par Stripe</p>
+        </div>
+        <div>
+          <p class="mention">Garantie</p>
+          <p class="chrono">{{garantie_jours}} jours</p>
+          <p class="mention">En plus de tes droits légaux</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Le PDF introuvable : le seul bloc encadre de la page -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-7">
+          <div class="plaque-bloc merci-retrouver reveal">
+            <h2>Tu ne retrouves pas ton PDF ?</h2>
+            <p><strong>Tu as payé ici, avec Stripe :</strong> le lien est sur la page de confirmation, juste après le paiement. L’email de Stripe contient ton reçu et ta facture, pas le guide.</p>
+            <p><strong>Tu as acheté ailleurs qu’ici :</strong> ton lien est dans l’email reçu au moment de ton achat.</p>
+            <p><strong>Toujours rien :</strong> écris-moi à <a href="mailto:{{contact.email}}">{{contact.email}}</a> avec l’adresse email de ton achat. Je te renvoie ton lien sous <span class="chrono">{{delais.renvoi_lien_h}} h</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comment lire le guide : trois lignes indexees comme des tours (design/COPY-VENTE.md, sections 2 et 3) -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-8 reveal">
+          <h2>Comment lire ton guide</h2>
+          <ol class="merci-etapes">
+            <li><div class="etape"><span class="etape-titre">Ce soir, commence par le chapitre <span class="chrono">04</span>.</span><span class="etape-detail">Le freinage dégressif : relâcher le frein au bon rythme, pour que le kart accepte de tourner.</span></div></li>
+            <li><div class="etape"><span class="etape-titre">À ta prochaine session, une seule chose.</span><span class="etape-detail">Choisis-la avant de partir, et ne travaille qu’elle.</span></div></li>
+            <li><div class="etape"><span class="etape-titre">Avant chaque roulage, relis le chapitre <span class="chrono">13</span>.</span><span class="etape-detail">Les <span class="chrono">10</span> fondements du pilotage, sur une page.</span></div></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- La suite possible, puis le contact : une seule section de lecture, un filet d apex entre les deux.
+       Aucun prix, aucun bouton, aucun lien de rattrapage : le prix lecteur n est visible que sur la page de confirmation Stripe. -->
+  <section class="section-merci">
+    <div class="conteneur">
+      <div class="grille">
+        <div class="col-7 merci-lecture reveal">
+          <h2>Et quand tu auras roulé</h2>
+          <p>Le guide t’explique comment ça marche. Le débrief te dit ce que toi, tu fais. Tu m’envoies une vidéo onboard que tu as déjà, je la regarde tour par tour.</p>
+          <p>Tu reçois par email, sous <span class="chrono">{{delais.debrief_h}} h</span>, une vidéo commentée sur tes images, tes <span class="chrono">3</span> priorités et un seul objectif.</p>
+          <p>Tu as payé ici, avec Stripe ? Ton prix lecteur est indiqué sur ta page de confirmation, avec le lien pour m’envoyer ta vidéo.</p>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <h2>Si quelque chose cloche</h2>
+          <p>Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux : si le guide ne t’apporte rien, un email et je te rembourse.</p>
+          <p>Une question, un fichier qui ne s’ouvre pas : <a href="mailto:{{contact.email}}">{{contact.email}}</a>. Je réponds sous <span class="chrono">{{delais.reponse_email_h}} h</span> les jours ouvrés.</p>
+          <div class="filet-apex" aria-hidden="true"></div>
+          <p class="merci-ligne merci-reseaux">Les prochaines vidéos sortent ici : <a href="{{reseaux.instagram}}" target="_blank" rel="noopener">Instagram</a> et <a href="{{reseaux.youtube}}" target="_blank" rel="noopener">YouTube</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{{partial:footer-merci}}
+</body>
+</html>

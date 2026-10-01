@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS public.sales (
   created_at    TIMESTAMPTZ DEFAULT NOW(),  -- moment de reception du ping
   sale_id       TEXT UNIQUE,                -- id Gumroad, cle d'idempotence (evite les doublons)
   product_name  TEXT,
-  price_cents   INTEGER,                    -- prix en centimes (ex 1699 = 16,99)
+  price_cents   INTEGER,                    -- prix en centimes (ex 1699 pour le guide, voir config/offres.json)
   currency      TEXT,
   quantity      INTEGER DEFAULT 1,
   discount_code TEXT,

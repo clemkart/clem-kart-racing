@@ -1,0 +1,573 @@
+/* ============================================================
+   Clem Kart Racing : page-marques.css
+   Regles propres a /marques (body.page-marques), chargee apres base.css.
+   La page a quitte page-demande.css : les regles de formulaire dont elle a besoin
+   sont reprises ici (section 9), sous body.page-marques.
+
+   Ordre de la page (Digital product/sponsoring/COPY-PAGE-MARQUES.md) :
+   1 en-tete et aiguillage, 2 preuves, 3 parcours saison (bande), 4 parcours reseaux,
+   5 qui je suis, 6 en resume, 7 questions, 8 formulaire.
+   Aucune valeur brute hors des clamp() de titres et des tailles fixes imposees par
+   design/COMPOSITION.md (case 20 px, filet 2 px). Rayons 0, aucune ombre, aucun degrade,
+   un seul rouge : le bouton principal, le filet de depart, les tirets du chrono.
+   ============================================================ */
+
+body.page-marques [hidden] { display: none !important; }
+
+/* Titres de bloc (h3) : Barlow Condensed, comme les questions de la FAQ */
+body.page-marques h3 {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: var(--e-4);
+}
+
+/* ---------- 1. En-tete et aiguillage ---------- */
+body.page-marques .marques-hero {
+  padding-top: calc(var(--nav-h) + var(--e-6));
+  padding-bottom: var(--e-7);
+}
+body.page-marques .marques-hero-grille { row-gap: var(--e-5); align-items: center; }
+body.page-marques .marques-hero-texte { display: grid; gap: var(--e-5); align-content: start; }
+body.page-marques .marques-hero-texte h1 {
+  font-size: clamp(44px, 6.4vw, 88px);
+  max-width: none;
+  text-wrap: balance;
+}
+body.page-marques .marques-hero-texte .chrono-ligne { max-width: 52ch; }
+body.page-marques .marques-hero-photo {
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--fond-2);
+  border: var(--bordure);
+}
+body.page-marques .marques-hero-photo picture,
+body.page-marques .marques-hero-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (min-width: 900px) {
+  body.page-marques .marques-hero-photo { grid-column: 7 / -1; }
+}
+/* Telephone : le texte, puis les deux parcours, puis la photo. On choisit sans defiler longtemps. */
+@media (max-width: 899px) {
+  body.page-marques .marques-hero-texte { order: 1; }
+  body.page-marques .marques-choix { order: 2; }
+  body.page-marques .marques-hero-photo { order: 3; aspect-ratio: 16 / 9; }
+}
+
+/* Les deux parcours : deux grandes zones cliquables separees par un filet, sans carte */
+body.page-marques .marques-choix {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: var(--e-2);
+}
+/* Colonne flexible : le texte prend la place libre, le prix et le lien s alignent en bas des deux parcours */
+body.page-marques .choix {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--e-3);
+  padding: var(--e-5) var(--e-4);
+  border-bottom: var(--bordure);
+  color: var(--texte);
+  text-decoration: none;
+  transition: background-color var(--duree-vite) var(--courbe);
+}
+body.page-marques .choix:hover { background: var(--fond-1); }
+body.page-marques .choix:focus-visible { outline-offset: calc(-1 * var(--focus-decalage)); }
+body.page-marques .choix-index { color: var(--texte-2); }
+body.page-marques .choix-titre {
+  font-family: var(--police-titre);
+  font-size: var(--t-2);
+  line-height: var(--interligne-titre);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+body.page-marques .choix-texte { flex: 1 0 auto; color: var(--texte-2); max-width: 52ch; line-height: 1.5; }
+body.page-marques .choix-pied { font-size: var(--t--1); color: var(--texte); }
+body.page-marques .choix-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  margin-top: var(--e-2);
+  padding-bottom: 2px;
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t--1);
+  letter-spacing: var(--espacement-libelle);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--filet-fort);
+}
+body.page-marques .choix-action::after {
+  content: '\2192';
+  font-family: var(--police-mono);
+  transition: transform var(--duree-vite) var(--courbe);
+}
+body.page-marques .choix:hover .choix-action { border-color: var(--texte); }
+body.page-marques .choix:hover .choix-action::after { transform: translateX(4px); }
+body.page-marques .choix-hesite { padding-top: var(--e-5); max-width: none; }
+@media (min-width: 900px) {
+  body.page-marques .marques-choix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.page-marques .choix { padding: var(--e-6); }
+  body.page-marques .choix + .choix { border-left: var(--bordure); }
+  body.page-marques .choix-hesite { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.page-marques .choix:hover .choix-action::after { transform: none; }
+}
+
+/* ---------- 2. Preuves : photo a gauche, deux chiffres et leur phrase a droite ---------- */
+body.page-marques .marques-preuves .grille { align-items: center; }
+body.page-marques .marques-preuves-photo { max-width: 360px; }
+body.page-marques .marques-preuves-texte { display: grid; align-content: start; }
+body.page-marques .marques-preuves-texte h2 { margin-bottom: var(--e-5); }
+body.page-marques .preuve {
+  display: grid;
+  gap: var(--e-2);
+  padding-block: var(--e-5);
+  border-top: var(--bordure);
+}
+body.page-marques .preuve-chiffre {
+  font-family: var(--police-titre);
+  font-size: clamp(64px, 9vw, 128px);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  max-width: none;
+}
+body.page-marques .preuve p + p { margin-top: 0; }
+body.page-marques .preuve p:not(.preuve-chiffre) { font-size: var(--t-1); line-height: 1.4; color: var(--texte-2); }
+body.page-marques .marques-preuves-texte .mention { border-top: var(--bordure); padding-top: var(--e-4); max-width: none; }
+@media (min-width: 900px) {
+  body.page-marques .marques-preuves-texte { grid-column: 6 / -1; }
+}
+@media (max-width: 899px) {
+  body.page-marques .marques-preuves-photo { width: 70%; }
+}
+
+/* ---------- 3. Parcours saison : la bande « argent » ---------- */
+body.page-marques .marques-entete { max-width: 60rem; }
+body.page-marques .marques-entete h2 { font-size: var(--t-4); margin-top: var(--e-3); }
+body.page-marques .marques-entete .chapo { max-width: var(--mesure); }
+
+body.page-marques .marques-objectif { margin-top: var(--e-8); align-items: start; }
+body.page-marques .marques-objectif-chiffre strong {
+  font-size: clamp(48px, 7vw, 104px);
+  white-space: normal;
+  text-wrap: balance;
+}
+body.page-marques .marques-objectif-texte { display: grid; gap: var(--e-4); }
+body.page-marques .marques-objectif-texte p + p { margin-top: 0; }
+body.page-marques .marques-objectif-texte p { color: var(--texte-2); }
+body.page-marques .marques-objectif-texte .marques-confiance {
+  color: var(--texte);
+  border-left: 2px solid var(--filet-fort);
+  padding-left: var(--e-4);
+}
+@media (min-width: 900px) {
+  body.page-marques .marques-objectif-texte { grid-column: 7 / -1; }
+}
+
+body.page-marques .marques-logo { margin-top: var(--e-8); align-items: center; }
+body.page-marques .marques-logo-photo .photo { max-width: 380px; }
+body.page-marques .marques-logo-texte .liste li { max-width: none; }
+@media (min-width: 900px) {
+  body.page-marques .marques-logo-texte { grid-column: 6 / -1; }
+}
+@media (max-width: 899px) {
+  body.page-marques .marques-logo-photo .photo { width: 70%; }
+}
+
+/* Les formules : le registre de base.css, sur la bande fond-1 (survol en fond-2) */
+body.page-marques .marques-formules { margin-top: var(--e-8); }
+body.page-marques .marques-formules-titre {
+  font-family: var(--police-titre);
+  font-weight: var(--graisse-normal);
+  font-size: var(--t-3);
+  line-height: var(--interligne-titre);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin-bottom: var(--e-5);
+}
+body.page-marques .formule { padding-inline: var(--e-4); }
+body.page-marques .formule:hover { background: var(--fond-2); }
+body.page-marques .formule-avant { background: var(--fond-2); border-top-color: var(--filet-fort); }
+body.page-marques .formule .registre-prix p { max-width: none; }
+body.page-marques .formule .registre-prix p + p { margin-top: 0; }
+body.page-marques .formule-nom {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+  margin-bottom: var(--e-2);
+}
+body.page-marques .formule-apartir { color: var(--texte-2); }
+body.page-marques .formule .prix { font-size: var(--t-3); }
+body.page-marques .formule .registre-texte p { margin-top: 0; }
+body.page-marques .formule-pourqui { color: var(--texte); margin-bottom: var(--e-3); }
+body.page-marques .formule .registre-texte .liste li { color: var(--texte-2); max-width: none; line-height: 1.5; }
+body.page-marques .formule-etiquette {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t--1);
+  color: var(--texte);
+  border-bottom: 1px solid var(--filet-fort);
+  padding-bottom: var(--e-2);
+}
+@media (max-width: 899px) {
+  body.page-marques .formule .registre-action .bouton { width: 100%; }
+}
+
+body.page-marques .marques-apres-formules { display: grid; gap: var(--e-3); margin-top: var(--e-6); list-style: none; }
+body.page-marques .marques-apres-formules li { color: var(--texte-2); }
+body.page-marques .marques-apres-formules a { color: var(--texte); }
+
+/* Comment ca se passe, a cote : une photo ou les engagements */
+body.page-marques .marques-deroule { margin-top: var(--e-8); align-items: start; }
+body.page-marques .marques-etapes li { max-width: none; }
+body.page-marques .marques-etapes li span { line-height: 1.5; }
+body.page-marques .marques-etapes li span.chrono { line-height: inherit; }
+body.page-marques .marques-note { margin-top: var(--e-5); font-size: var(--t--1); color: var(--texte-2); }
+body.page-marques .marques-deroule-droite { display: grid; gap: var(--e-6); align-content: start; }
+body.page-marques .marques-deroule-droite .liste li { max-width: none; color: var(--texte-2); }
+body.page-marques .marques-formats .marques-formules-titre { margin-bottom: var(--e-5); }
+body.page-marques .photo-cadre { display: grid; gap: 0; }
+body.page-marques .marques-photo-large { aspect-ratio: 3 / 2; }
+body.page-marques .marques-comptable { border-top: var(--bordure); padding-top: var(--e-5); }
+body.page-marques .marques-comptable p { font-size: var(--t--1); color: var(--texte-2); line-height: 1.55; }
+@media (min-width: 900px) {
+  body.page-marques .marques-deroule-droite { grid-column: 8 / -1; }
+}
+
+/* Le bouton du parcours, et son lien secondaire */
+body.page-marques .marques-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-5) var(--e-6);
+  margin-top: var(--e-8);
+}
+body.page-marques .marques-cta .bouton { white-space: normal; text-align: center; line-height: 1.2; padding-block: var(--e-3); }
+@media (max-width: 599px) {
+  body.page-marques .marques-cta .bouton { width: 100%; }
+}
+
+/* ---------- 4. Parcours reseaux ---------- */
+body.page-marques .marques-videos { margin-top: var(--e-7); align-items: center; }
+body.page-marques .marques-videos-photo .photo { max-width: 380px; }
+body.page-marques .marques-videos-texte .liste li { max-width: none; }
+body.page-marques .marques-videos-texte a { color: var(--texte); overflow-wrap: anywhere; }
+body.page-marques .marques-videos-texte .secondaire { margin-top: var(--e-5); }
+@media (min-width: 900px) {
+  body.page-marques .marques-videos-texte { grid-column: 6 / -1; }
+}
+@media (max-width: 899px) {
+  body.page-marques .marques-videos-photo .photo { width: 70%; }
+}
+
+/* Les formats : six lignes separees par des filets, nom, contenu, prix a droite */
+body.page-marques .marques-formats { margin-top: var(--e-8); }
+body.page-marques .formats { border-top: var(--bordure); }
+body.page-marques .formats li {
+  display: grid;
+  gap: var(--e-2);
+  padding-block: var(--e-5);
+  border-bottom: var(--bordure);
+  max-width: none;
+}
+body.page-marques .formats p { max-width: none; }
+body.page-marques .formats p + p { margin-top: 0; }
+body.page-marques .format-nom {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-1);
+  line-height: var(--interligne-serre);
+}
+body.page-marques .format-texte { color: var(--texte-2); line-height: 1.5; }
+body.page-marques .format-prix .mono { color: var(--texte-2); }
+body.page-marques .format-prix .chrono { font-size: var(--t-1); color: var(--texte); }
+body.page-marques .format-prix .chrono + .mono { display: block; margin-top: 2px; }
+@media (min-width: 900px) {
+  body.page-marques .formats li {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr);
+    column-gap: var(--grille-ecart);
+    align-items: baseline;
+  }
+  body.page-marques .format-prix { text-align: right; }
+}
+
+/* ---------- 5. Qui je suis ---------- */
+body.page-marques .marques-qui .grille { align-items: center; }
+body.page-marques .marques-qui-photo .photo { max-width: 400px; }
+body.page-marques .marques-qui-texte { display: grid; gap: var(--e-4); }
+body.page-marques .marques-qui-texte p + p { margin-top: 0; }
+body.page-marques .marques-qui-texte p:not(.chrono) { color: var(--texte-2); font-size: var(--t-1); line-height: 1.45; }
+@media (min-width: 900px) {
+  body.page-marques .marques-qui-texte { grid-column: 6 / -1; }
+}
+@media (max-width: 899px) {
+  body.page-marques .marques-qui-photo .photo { width: 70%; }
+}
+
+/* ---------- 6. En resume : un tableau a filets ; une ligne par critere sur telephone ---------- */
+body.page-marques .resume { width: 100%; border-collapse: collapse; }
+body.page-marques .resume th,
+body.page-marques .resume td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--e-4) var(--e-4) var(--e-4) 0;
+  border-top: var(--bordure);
+}
+body.page-marques .resume thead th,
+body.page-marques .resume thead td {
+  border-top: 0;
+  font-family: var(--police-titre);
+  font-weight: var(--graisse-normal);
+  font-size: var(--t-2);
+  line-height: var(--interligne-titre);
+  text-transform: uppercase;
+}
+body.page-marques .resume tbody th {
+  width: 24%;
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t--1);
+  letter-spacing: var(--espacement-libelle);
+  text-transform: uppercase;
+  color: var(--texte-2);
+}
+body.page-marques .resume tbody tr:last-child > * { border-bottom: var(--bordure); }
+@media (max-width: 599px) {
+  body.page-marques .resume thead {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+  body.page-marques .resume,
+  body.page-marques .resume tbody { display: block; }
+  body.page-marques .resume tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--e-4);
+    border-top: var(--bordure);
+    padding-block: var(--e-4);
+  }
+  body.page-marques .resume tbody tr:last-child { border-bottom: var(--bordure); }
+  body.page-marques .resume tbody th,
+  body.page-marques .resume tbody td { display: block; width: auto; padding: 0; border: 0; }
+  body.page-marques .resume tbody tr:last-child > * { border-bottom: 0; }
+  body.page-marques .resume tbody th { grid-column: 1 / -1; margin-bottom: var(--e-3); }
+  body.page-marques .resume tbody td { font-size: var(--t--1); line-height: 1.45; }
+  body.page-marques .resume tbody td::before {
+    content: attr(data-col);
+    display: block;
+    margin-bottom: var(--e-1);
+    font-family: var(--police-mono);
+    font-size: var(--t--2);
+    color: var(--texte-3);
+  }
+}
+
+/* ---------- 7. Questions, trois groupes ---------- */
+body.page-marques .faq-groupe { margin-top: var(--e-7); margin-bottom: var(--e-3); color: var(--texte-2); }
+body.page-marques .entete-section + .faq-groupe { margin-top: 0; }
+
+/* ---------- 8. Le formulaire : texte a gauche (colle sur ordinateur), formulaire a droite ---------- */
+body.page-marques .section-contact { padding-block: var(--section-y); }
+body.page-marques .contact-texte { display: grid; gap: var(--e-4); align-content: start; }
+body.page-marques .contact-texte h2 { font-size: var(--t-3); }
+body.page-marques .contact-texte p + p { margin-top: 0; }
+body.page-marques .contact-chapo { font-size: var(--t-1); line-height: 1.45; }
+body.page-marques .contact-texte .marques-etapes li span { color: var(--texte-2); }
+body.page-marques .contact-email { overflow-wrap: anywhere; color: var(--texte-2); }
+body.page-marques .contact-email a { color: var(--texte); }
+body.page-marques .contact-legal { max-width: none; }
+/* Colonnes 7 a 12 : grid-column-start seul (.col-depart-7) casserait le span de .col-6 */
+@media (min-width: 900px) {
+  body.page-marques .contact-form { grid-column: 7 / -1; }
+  body.page-marques .contact-texte { position: sticky; top: calc(var(--nav-h) + var(--e-5)); align-self: start; }
+}
+
+/* ---------- 9. Formulaire (repris de page-demande.css pour cette page) ---------- */
+body.page-marques .bloc-formulaire {
+  background: var(--fond-1);
+  border: var(--bordure);
+  padding: var(--e-6);
+}
+body.page-marques .formulaire { max-width: none; }
+body.page-marques .form-champs { display: grid; gap: var(--e-4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 600px) {
+  body.page-marques .formulaire-large .form-champs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.page-marques .formulaire-large .champ-plein { grid-column: 1 / -1; }
+}
+body.page-marques .formulaire .bouton {
+  white-space: normal;
+  text-align: center;
+  padding-block: var(--e-3);
+  line-height: 1.2;
+  margin-top: var(--e-2);
+}
+@media (max-width: 599px) {
+  body.page-marques .bloc-formulaire { padding: var(--e-5) var(--e-4); }
+  body.page-marques .formulaire .bouton { padding-inline: var(--e-4); }
+}
+body.page-marques .champ select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--e-7);
+  /* Chevron en SVG inline, une seule couleur, sans requete reseau */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23F2EDE8' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right var(--e-4) center;
+}
+body.page-marques .champ select option,
+body.page-marques .champ select optgroup { color: var(--texte); background: var(--fond-2); }
+body.page-marques .champ textarea { min-height: 112px; }
+body.page-marques .champ textarea[aria-invalid="true"],
+body.page-marques .champ select[aria-invalid="true"] { border-color: var(--erreur); }
+
+/* Erreur sous le champ : texte blanc casse, le rouge porte par un tiret de 2 px */
+body.page-marques .champ-erreur {
+  display: none;
+  position: relative;
+  padding-left: var(--e-3);
+  font-size: var(--t--1);
+  color: var(--texte);
+}
+body.page-marques .champ-erreur::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 2px;
+  background: var(--erreur);
+}
+body.page-marques .champ.est-invalide .champ-erreur { display: block; }
+
+/* Le projet : trois grands choix radio, l un sous l autre */
+body.page-marques .champ-projet { border: 0; padding: 0; min-width: 0; }
+body.page-marques legend {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t--1);
+  letter-spacing: var(--espacement-libelle);
+  text-transform: uppercase;
+  color: var(--texte-2);
+  margin-bottom: var(--e-2);
+  padding: 0;
+}
+body.page-marques .projets { display: grid; gap: var(--e-2); }
+body.page-marques .champ .projet {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: var(--e-3);
+  row-gap: var(--e-1);
+  align-items: start;
+  padding: var(--e-3) var(--e-4);
+  background: var(--fond-2);
+  border: 1px solid var(--filet-fort);
+  cursor: pointer;
+  font-family: var(--police-texte);
+  font-weight: var(--graisse-normal);
+  font-size: var(--t-0);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--texte);
+  transition: border-color var(--duree-vite) var(--courbe), background-color var(--duree-vite) var(--courbe);
+}
+body.page-marques .champ .projet:hover { border-color: var(--texte); }
+body.page-marques .champ .projet:has(input:checked) { border-color: var(--texte); background: var(--fond-3); }
+body.page-marques .projet input[type="radio"] {
+  grid-row: 1 / span 2;
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  margin: 0.15em 0 0;
+  padding: 0;
+  accent-color: var(--texte);
+}
+body.page-marques .projet-titre {
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle-fort);
+  font-size: var(--t-0);
+  line-height: var(--interligne-serre);
+}
+body.page-marques .projet-sous { font-size: var(--t--1); color: var(--texte-2); line-height: 1.4; }
+body.page-marques .champ-projet.est-invalide .projet { border-color: var(--erreur); }
+
+/* Preciser (facultatif) : un details natif, filets haut et bas */
+body.page-marques .preciser { border-top: var(--bordure); border-bottom: var(--bordure); }
+body.page-marques .preciser summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--e-4);
+  padding-block: var(--e-3);
+  font-family: var(--police-libelle);
+  font-weight: var(--graisse-libelle);
+  font-size: var(--t--1);
+  letter-spacing: var(--espacement-libelle);
+  text-transform: uppercase;
+  color: var(--texte-2);
+}
+body.page-marques .preciser summary::-webkit-details-marker { display: none; }
+body.page-marques .preciser summary::after {
+  content: '+';
+  flex: 0 0 auto;
+  font-family: var(--police-mono);
+  color: var(--texte);
+  transition: transform var(--duree-vite) var(--courbe);
+}
+body.page-marques .preciser[open] summary::after { transform: rotate(45deg); }
+body.page-marques .preciser summary:hover { color: var(--texte); }
+body.page-marques .preciser-champs { display: grid; gap: var(--e-4); padding-bottom: var(--e-4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 600px) {
+  body.page-marques .preciser-champs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.page-marques .preciser-champs .champ-plein { grid-column: 1 / -1; }
+}
+
+/* Case a cocher carree 20 px, finalite en une ligne de texte courant */
+body.page-marques .champ-case {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: var(--e-3);
+  align-items: start;
+}
+body.page-marques .champ-case input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  margin-top: 0.2em;
+  padding: 0;
+  accent-color: var(--texte);
+  border-radius: 0;
+}
+body.page-marques .champ-case label {
+  font-family: var(--police-texte);
+  font-weight: var(--graisse-normal);
+  font-size: var(--t--1);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--texte-2);
+  max-width: none;
+}
+body.page-marques .champ-case label a { color: var(--texte); }
+body.page-marques .champ-case .champ-erreur { grid-column: 1 / -1; }
+body.page-marques .champ-case.est-invalide input[type="checkbox"] { outline: 2px solid var(--erreur); outline-offset: 2px; }
+body.page-marques .bouton-sous { max-width: none; }
+
+/* Etat envoye : le bloc devient une plaque, a la meme hauteur */
+body.page-marques .form-envoye p { font-size: var(--t-1); line-height: 1.45; }
+body.page-marques .form-envoye p + p { margin-top: var(--e-4); color: var(--texte-2); }
+body.page-marques .form-envoye:focus { outline: none; }
+body.page-marques .form-envoye.plaque-bloc { background: transparent; padding: 0; }
+
+/* ---------- 10. Mouvement : l entree du hero, puis rien ---------- */
+html.a-js body.page-marques .entree-suivante { animation-delay: 100ms; }
+@media (prefers-reduced-motion: reduce) {
+  html.a-js body.page-marques .entree-suivante { animation-delay: 0ms; }
+}

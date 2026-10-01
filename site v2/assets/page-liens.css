@@ -1,0 +1,132 @@
+/* ============================================================
+   Clem Kart Racing : page-liens.css
+   Regles propres a /liens, chargees apres base.css.
+   Une colonne de 420 px, aucune navigation, un seul bouton rouge.
+   Aucune valeur brute hors des tailles de dessin (icones, fleche) :
+   tout vient de tokens.css. Rayons 0, transform et opacity seulement.
+   ============================================================ */
+
+/* ---------- 1. Colonne ---------- */
+.page-liens .liens-page { padding-block: var(--e-5) var(--e-8); }
+
+/* ---------- 2. Photo et plaque ---------- */
+/* Portrait couleur 4:5 (photos/clement-portrait, 640 et 1280 px) servi dans un cadre plus large :
+   4:3 sur ordinateur, 16:10 sur telephone. Le cadre garde le visage du front a la bouche au-dessus
+   de la plaque (en 2:1 la plaque couvrait la bouche). A 390 x 664 (navigateur integre d Instagram),
+   le guide, l analyse d onboard et le consulting tiennent dans le premier ecran.
+   Aucun filtre CSS : la couleur se regle sur le fichier. */
+.page-liens .liens-photo { aspect-ratio: 4 / 3; border: var(--bordure); }
+.page-liens .liens-photo picture { display: block; width: 100%; height: 100%; }
+.page-liens .liens-photo img { object-position: 50% 30%; }
+@media (max-width: 480px) {
+  .page-liens .liens-photo { aspect-ratio: 16 / 10; }
+  .page-liens .liens-photo img { object-position: 50% 38%; }
+}
+
+/* La plaque (base.css) mord le bas de la photo de 24 px ; le nom reste aligne sur la colonne */
+.page-liens .plaque-titre {
+  margin-top: calc(-1 * var(--e-5));
+  font-size: var(--t-3);
+  line-height: 1;
+}
+.page-liens .liens-marque { margin-top: var(--e-1); }
+.page-liens .liens-faits {
+  margin-top: var(--e-3);
+  max-width: none;
+  font-size: var(--t--1);
+  line-height: 1.5;
+  color: var(--texte-2);
+}
+
+/* ---------- 3. Les cinq boutons ----------
+   Ligne 1 : titre a gauche, prix a droite (mono, sans tiret de chrono).
+   Ligne 2 : la sous-ligne sur toute la largeur utile.
+   La fleche occupe sa propre colonne sur les deux lignes. */
+.page-liens .liens-boutons { display: grid; gap: var(--e-3); margin-top: var(--e-5); }
+.page-liens .lien-bio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-rows: auto auto;
+  column-gap: var(--e-3);
+  row-gap: var(--e-1);
+  align-items: baseline;
+  min-height: var(--e-8);
+  padding: var(--e-3) var(--e-4);
+}
+.page-liens .lien-bio-titre { grid-column: 1; grid-row: 1; }
+.page-liens .lien-bio-prix {
+  grid-column: 2; grid-row: 1;
+  font-family: var(--police-mono);
+  font-size: var(--t--1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--texte);
+}
+.page-liens .lien-bio-sous {
+  grid-column: 1 / span 2; grid-row: 2;
+  line-height: 1.35;
+  max-width: none;
+}
+.page-liens .lien-bio-fleche {
+  grid-column: 3; grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--police-mono);
+  color: var(--texte-2);
+  transition: transform var(--duree-vite) var(--courbe);
+}
+.page-liens .lien-bio:hover .lien-bio-fleche { color: var(--texte); transform: translateX(3px); }
+.page-liens .lien-bio-principal .lien-bio-fleche { color: var(--texte); }
+/* Sur le fond rouge, la sous-ligne reste lisible en blanc casse plein */
+.page-liens .lien-bio-principal .lien-bio-sous { opacity: 1; }
+
+/* Le bouton principal est un peu plus haut : c est la seule action qui compte */
+.page-liens .lien-bio-principal { min-height: calc(var(--e-8) + var(--e-2)); padding-block: var(--e-4); }
+.page-liens .lien-bio-principal .lien-bio-titre { font-size: var(--t-0); }
+.page-liens .lien-bio-principal .lien-bio-prix { font-size: var(--t-0); }
+
+/* Le site : bouton fantome, filet plus leger que les boutons contour */
+.page-liens .lien-bio-site { border-color: var(--filet); }
+.page-liens .lien-bio-site:hover { border-color: var(--texte); }
+
+/* Un chiffre et son unite ne se separent jamais en fin de ligne */
+.page-liens .insecable { white-space: nowrap; }
+
+/* ---------- 4. Sous les boutons ---------- */
+.page-liens .liens-extrait { margin-top: var(--e-5); max-width: none; font-size: var(--t--1); color: var(--texte-2); }
+.page-liens .liens-extrait a { color: var(--texte); text-decoration: underline; text-underline-offset: 0.18em; }
+.page-liens .liens-extrait a:hover { text-decoration-thickness: 2px; }
+
+/* Trois garanties, une par ligne, en mono : une feuille de temps, pas un bandeau */
+.page-liens .liens-confiance {
+  display: grid;
+  gap: var(--e-1);
+  margin-top: var(--e-5);
+  padding-top: var(--e-4);
+  border-top: var(--bordure);
+  font-family: var(--police-mono);
+  font-size: var(--t--2);
+  line-height: 1.5;
+  color: var(--texte-2);
+}
+.page-liens .liens-confiance li { max-width: none; }
+
+/* Icones : 20 px, monochromes, alignees a gauche, zone de touche 44 px */
+.page-liens .liens-reseaux { justify-content: flex-start; gap: var(--e-2); margin-top: var(--e-4); margin-left: calc(-1 * var(--e-3)); }
+.page-liens .liens-reseaux li { max-width: none; }
+.page-liens .liens-reseaux a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--bouton-h-petit); height: var(--bouton-h-petit);
+  color: var(--texte-2);
+}
+.page-liens .liens-reseaux a:hover { color: var(--texte); }
+.page-liens .liens-reseaux svg { width: 20px; height: 20px; fill: currentColor; }
+
+.page-liens .liens-fin { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-4); margin-top: var(--e-5); max-width: none; }
+.page-liens .liens-fin a { color: var(--texte-2); text-decoration: none; border-bottom: 1px solid var(--filet-fort); }
+.page-liens .liens-fin a:hover { color: var(--texte); border-color: var(--texte); }
+
+/* ---------- 5. Mouvement : la plaque puis la pile des boutons, 60 ms apres ---------- */
+html.a-js .page-liens .liens-boutons.entree { animation-delay: 60ms; }
+@media (prefers-reduced-motion: reduce) {
+  .page-liens .lien-bio:hover .lien-bio-fleche { transform: none; }
+}
