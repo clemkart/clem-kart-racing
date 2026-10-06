@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 {{partial:head}}
+{{partial:mouvement}}
 <title>Tableur de réglages karting gratuit · {{marque.nom}}</title>
 <meta name="description" content="Le tableur de réglages karting gratuit de {{marque.auteur}} : un journal de session, un guide des réglages, un diagnostic express, les pressions et la pluie. Par email.">
 <meta name="robots" content="index, follow">
@@ -16,32 +17,37 @@
 <!-- Page de capture historique (aimant « tableur seul »). Hors lot 1 : absente du sitemap.
      Le formulaire garde lm-email, lm-btn, lm-msg et poste vers send-email avec magnet = tableur.
      Sans JavaScript, la fonction renvoie sur #envoye. Les cinq onglets decrits sont ceux du fichier
-     envoye (tableur-reglages-kart-v2.xlsx) : rien d autre n est promis. -->
+     envoye (tableur-reglages-kart-v2.xlsx) : rien d autre n est promis.
+     Direction V5 (5.4) : meme gabarit et meme feuille que /extrait, sans carte du circuit (aucun chapitre offert ici). -->
 </head>
 <body class="page-tableur">
-<!-- Menu reduit des pages de capture : le logo et le retour au site, rien d autre.
-     Aucun prix ni lien vers le guide avant l email : la bande « Le guide complet » plus bas le presente apres la valeur. -->
+<!-- Menu reduit des pages de capture : le symbole, le nom et le retour au site, rien d autre.
+     Aucun prix ni lien vers le guide avant l email : la bande « Le guide complet » plus bas le presente apres la valeur.
+     Bord bas : la barre de secteurs (progression de la lecture). -->
 <a class="evitement" href="#contenu">Aller au contenu</a>
 <header class="nav nav-reduite nav-capture">
   <div class="conteneur nav-inner">
-    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil">Clem <span>Kart</span> Racing</a>
+    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil"><svg class="symbole" viewBox="0 0 22 22" width="22" height="22" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg><span class="nav-marque-nom"><span>Clem Kart</span> <span>Racing</span></span></a>
     <div class="nav-capture-liens">
       <a class="nav-capture-retour" href="{{routes.accueil}}">Retour au site</a>
     </div>
   </div>
+  <div class="secteurs" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
 </header>
 
-<main id="contenu">
+<main id="contenu" data-trajectoire>
 
-  <!-- Hero : le formulaire est l objet, visible sans defiler -->
-  <section class="hero conteneur" data-hero aria-labelledby="titre-tableur">
-    <div class="grille">
-      <div class="col-6 hero-texte entree">
-        <p class="mono secondaire">Gratuit, par email, au format Excel</p>
-        <h1 id="titre-tableur" class="titre-hero">Le tableur de réglages karting</h1>
-        <p class="chapo">Le tableur que je remplis après mes sessions. Tu notes ce que tu changes, un seul réglage à la fois, et tu sais enfin ce qui a marché.</p>
+  <!-- Ecran 1 : le formulaire est l objet, visible sans defiler. Sur ordinateur, une photo de Clement
+       au volant en colonnes 8 a 12 (cachee sur telephone, chargee seulement si elle s affiche).
+       En bas : la ligne de depart, d ou part la trajectoire de la page. -->
+  <section class="extrait-hero tableur-hero" data-hero aria-labelledby="titre-tableur">
+    <div class="conteneur extrait-hero-grille">
+      <div class="extrait-hero-texte">
+        <p class="libelle" data-entree="texte" data-t="0">Gratuit, par email, au format Excel</p>
+        <h1 id="titre-tableur" class="extrait-titre" data-entree="titre" data-t="0" data-duree="800">Le tableur de réglages karting</h1>
+        <p class="chapo" data-entree="texte" data-t="180">Le tableur que je remplis après mes sessions. Tu notes ce que tu changes, un seul réglage à la fois, et tu sais enfin ce qui a marché.</p>
 
-        <form id="lm-form" class="formulaire tableur-form" action="/.netlify/functions/send-email" method="post">
+        <form id="lm-form" class="formulaire tableur-form" action="/.netlify/functions/send-email" method="post" data-entree="texte" data-t="260">
           <input type="hidden" name="magnet" value="tableur">
           <div class="form-champs pile">
             <div class="champ">
@@ -65,6 +71,16 @@
           </div>
         </form>
       </div>
+
+      <div class="tableur-photo cine" data-entree="photo" style="--entree-echelle: 1.08">
+        <picture>
+          <source type="image/webp" srcset="/photos/cockpit-volant-640.webp 640w, /photos/cockpit-volant-1280.webp 1280w" sizes="(min-width: 900px) 34vw, 1px" width="640" height="800">
+          <img src="/photos/cockpit-volant-640.jpg" srcset="/photos/cockpit-volant-640.jpg 640w, /photos/cockpit-volant-1280.jpg 1280w" sizes="(min-width: 900px) 34vw, 1px" width="640" height="800" alt="Clément Daniel installé dans son kart, casque et visière iridescente, les mains sur le volant" loading="lazy" decoding="async">
+        </picture>
+        <span class="voile voile-bas" aria-hidden="true"></span>
+      </div>
+
+      <div class="depart extrait-depart" aria-hidden="true" data-entree="depart"><span class="depart-s1">S1</span><span class="damier"></span><span class="depart-trait"></span></div>
     </div>
   </section>
 
@@ -77,56 +93,53 @@
     </div>
   </div>
 
-  <div class="conteneur"><div class="filet-rouge"></div></div>
+  <!-- Les cinq onglets du fichier, dans l ordre du classeur : des lignes numerotees par des pastilles (c est un ordre).
+       Ordinateur : le titre et la ligne honnete a gauche (colonnes 1 a 5), les onglets a droite (colonnes 7 a 12). -->
+  <section class="section tableur-section" aria-labelledby="titre-onglets">
+    <div class="conteneur tableur-grille">
+      <h2 id="titre-onglets" data-virage="g">Cinq onglets, dans cet ordre</h2>
+      <ol class="tableur-onglets">
+        <li class="reveal">
+          <h3>Accueil</h3>
+          <p class="secondaire">Comment t’en servir en trois étapes, et la logique à avoir avant de toucher au kart : le grip disponible, le type de circuit, un seul changement à la fois.</p>
+        </li>
+        <li class="reveal">
+          <h3>Journal</h3>
+          <p class="secondaire">Cinq fiches de session prêtes à remplir : le changement testé et ton verdict, ton meilleur tour, les conditions, le moteur, le châssis, les pressions au départ et à l’arrivée (l’écart se calcule tout seul), et ce que tu as compris.</p>
+        </li>
+        <li class="reveal">
+          <h3>Guide des réglages</h3>
+          <p class="secondaire">Ce que chaque réglage change, quand l’utiliser selon le grip et le circuit, et comment le régler : chasse, carrossage, parallélisme, voies, axe, pare-chocs, hauteur de caisse, siège, lest, pressions, jantes.</p>
+        </li>
+        <li class="reveal">
+          <h3>Diagnostic express</h3>
+          <p class="secondaire">Un symptôme (sous-virage, survirage, instabilité au freinage, kart qui saute, qui patine), le réflexe de pilotage à vérifier d’abord, puis la cause châssis possible et un seul changement à tester.</p>
+        </li>
+        <li class="reveal">
+          <h3>Pressions et pluie</h3>
+          <p class="secondaire">Des pressions de départ au sec et à la pluie, à adapter à ta marque de pneus, ce qu’une pression change dans le comportement du kart, et la liste des réglages pluie dans l’ordre.</p>
+        </li>
+      </ol>
 
-  <!-- Les cinq onglets du fichier, dans l ordre du classeur : des lignes separees par des filets, pas de cartes -->
-  <section class="conteneur section reveal" aria-labelledby="titre-onglets">
-    <div class="grille">
-      <div class="col-8">
-        <h2 id="titre-onglets">Cinq onglets, dans cet ordre</h2>
-        <ul class="liste-filets mt-6 tableur-onglets">
-          <li>
-            <h3 class="mb-4">Accueil</h3>
-            <p class="secondaire">Comment t’en servir en trois étapes, et la logique à avoir avant de toucher au kart : le grip disponible, le type de circuit, un seul changement à la fois.</p>
-          </li>
-          <li>
-            <h3 class="mb-4">Journal</h3>
-            <p class="secondaire">Cinq fiches de session prêtes à remplir : le changement testé et ton verdict, ton meilleur tour, les conditions, le moteur, le châssis, les pressions au départ et à l’arrivée (l’écart se calcule tout seul), et ce que tu as compris.</p>
-          </li>
-          <li>
-            <h3 class="mb-4">Guide des réglages</h3>
-            <p class="secondaire">Ce que chaque réglage change, quand l’utiliser selon le grip et le circuit, et comment le régler : chasse, carrossage, parallélisme, voies, axe, pare-chocs, hauteur de caisse, siège, lest, pressions, jantes.</p>
-          </li>
-          <li>
-            <h3 class="mb-4">Diagnostic express</h3>
-            <p class="secondaire">Un symptôme (sous-virage, survirage, instabilité au freinage, kart qui saute, qui patine), le réflexe de pilotage à vérifier d’abord, puis la cause châssis possible et un seul changement à tester.</p>
-          </li>
-          <li>
-            <h3 class="mb-4">Pressions et pluie</h3>
-            <p class="secondaire">Des pressions de départ au sec et à la pluie, à adapter à ta marque de pneus, ce qu’une pression change dans le comportement du kart, et la liste des réglages pluie dans l’ordre.</p>
-          </li>
-        </ul>
-
-        <!-- La ligne honnete, sous les onglets dans la meme colonne : aucun titre, un filet d apex au-dessus -->
-        <div class="tableur-honnete">
-          <div class="filet-apex" aria-hidden="true"></div>
-          <p>Des points de départ à adapter à ton kart, pas des réglages miracles. Aucun conseil de carburation.</p>
-          <p>Tu reçois un email tout de suite, puis un seul rappel sur le guide.</p>
-          <p>Désinscription à chaque email.</p>
-        </div>
+      <!-- La ligne honnete : aucun titre, un filet d apex au-dessus (sous le titre sur ordinateur, apres les onglets sur telephone) -->
+      <div class="tableur-honnete reveal">
+        <div class="filet-apex" aria-hidden="true"></div>
+        <p>Des points de départ à adapter à ton kart, pas des réglages miracles. Aucun conseil de carburation.</p>
+        <p>Tu reçois un email tout de suite, puis un seul rappel sur le guide.</p>
+        <p>Désinscription à chaque email.</p>
       </div>
     </div>
   </section>
 
-  <!-- Le guide complet : bande, prix depuis la config, bouton vers /guide -->
-  <section class="section-fond-2 filet-haut filet-bas section-serree reveal">
-    <div class="conteneur">
+  <!-- Le guide complet : bande de telemetrie, prix depuis la config, bouton vers /guide -->
+  <section class="section section-fond-2 filet-haut filet-bas tableur-guide-bande" aria-labelledby="titre-tableur-guide">
+    <div class="conteneur grille-telemetrie">
       <div class="grille tableur-guide">
         <div class="col-7">
-          <h2>Le guide complet</h2>
-          <p class="mt-4">Le tableur note ce que tu changes. Le guide «&nbsp;{{guide.titre}}&nbsp;» explique pourquoi ça marche : {{guide.chapitres}} chapitres, {{guide.format}} de {{guide.pages}} pages.</p>
+          <h2 id="titre-tableur-guide" data-virage="d">Le guide complet</h2>
+          <p class="tableur-guide-texte">Le tableur note ce que tu changes. Le guide «&nbsp;{{guide.titre}}&nbsp;» explique pourquoi ça marche : {{guide.chapitres}} chapitres, {{guide.format}} de {{guide.pages}} pages.</p>
         </div>
-        <div class="col-5">
+        <div class="col-5 tableur-guide-action reveal">
           <a class="bouton bouton-fantome bouton-large" href="{{routes.guide}}" data-cta="tableur-guide">Le guide complet <span class="chrono">{{guide.prix_affiche}}</span></a>
           <span class="bouton-sous">{{textes.sous_bouton_guide}}.</span>
           <p class="mt-4"><a class="lien-texte" href="{{routes.extrait_page}}" data-cta="tableur-extrait">{{extrait.appel_courant}}</a></p>
@@ -138,6 +151,7 @@
 </main>
 
 {{partial:footer}}
+{{partial:hud}}
 
 <script>
 /* Envoi du tableur : meme fonction send-email (magnet = tableur), evenement tableur_signup.

@@ -1,573 +1,467 @@
 /* ============================================================
-   Clem Kart Racing : page-marques.css
-   Regles propres a /marques (body.page-marques), chargee apres base.css.
-   La page a quitte page-demande.css : les regles de formulaire dont elle a besoin
-   sont reprises ici (section 9), sous body.page-marques.
-
+   Clem Kart Racing : page-marques.css (direction V5, 5.6 : vouvoiement,
+   mouvement 5, densite 4). La page /marques (body.page-marques), chargee apres
+   base.css et signature.css.
    Ordre de la page (Digital product/sponsoring/COPY-PAGE-MARQUES.md) :
-   1 en-tete et aiguillage, 2 preuves, 3 parcours saison (bande), 4 parcours reseaux,
-   5 qui je suis, 6 en resume, 7 questions, 8 formulaire.
-   Aucune valeur brute hors des clamp() de titres et des tailles fixes imposees par
-   design/COMPOSITION.md (case 20 px, filet 2 px). Rayons 0, aucune ombre, aucun degrade,
-   un seul rouge : le bouton principal, le filet de depart, les tirets du chrono.
+   1 ecran scinde et les deux parcours, 2 des videos qui sont vues, 3 parrainage de
+   saison (bande : objectif, logo, formules, deroule, comptable), 4 collaboration
+   reseaux (formats, deroule, engagements), 5 pilote et createur, 6 saison ou reseaux
+   (tableau), 7 vos questions, 8 parlons de votre projet (formulaire).
+   Aucune valeur brute : tokens.css. Mouvement : attributs lus par mouvement.js.
+   Etat cache seulement sous html.js-anim.
    ============================================================ */
 
-body.page-marques [hidden] { display: none !important; }
+.page-marques [hidden] { display: none !important; }
+/* Separateur des milliers : en Martian Mono, l espace insecable (U+00A0) prend la largeur d un chiffre
+   entier et « 912 570 » se lisait comme deux nombres. word-spacing agit sur cet espace (et sur celui
+   de l euro), dans le texte final comme pendant le defilement du compteur ; le texte reste celui de
+   la config pour les lecteurs d ecran. Environ un tiers de chiffre reste visible. */
+.page-marques { --serrage-milliers: -0.62ch; }
+.marques-cadre-portrait { aspect-ratio: 4 / 5; }
+.page-marques figure { margin: 0; }
 
-/* Titres de bloc (h3) : Barlow Condensed, comme les questions de la FAQ */
-body.page-marques h3 {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-  text-transform: none;
-  letter-spacing: 0;
-  margin-bottom: var(--e-4);
-}
+/* ---------- 1. L ecran scinde ---------- */
+.page-marques .marques-hero { position: relative; }
+.marques-ecran { position: relative; isolation: isolate; }
+/* Plein cadre : ni contour ni fond de chargement visible, la photo fond dans le noir */
+.marques-hero-photo { z-index: var(--z-photo); outline: 0; background: var(--fond-0); }
+.marques-hero-photo picture { transform-origin: 70% 55%; }
+.marques-hero-photo img { object-position: 70% 55%; }
+.marques-voile-bas { background-image: var(--voile-bas); }
+.marques-hero-texte { display: grid; gap: var(--e-5); align-content: center; }
+.marques-hero-texte h1 { font-size: var(--t-titre-1); max-width: 11ch; }
+.marques-hero-texte .chapo { max-width: 44ch; }
+.marques-audience { max-width: 52ch; padding-top: var(--e-4); border-top: var(--bordure); line-height: 1.6; }
+.marques-audience [data-compteur] { color: var(--texte); white-space: nowrap; word-spacing: calc(var(--serrage-milliers) * 0.8); }
+.marques-hero-bas { position: relative; }
+.marques-hero-bas .depart { margin-top: 0; }
 
-/* ---------- 1. En-tete et aiguillage ---------- */
-body.page-marques .marques-hero {
-  padding-top: calc(var(--nav-h) + var(--e-6));
-  padding-bottom: var(--e-7);
-}
-body.page-marques .marques-hero-grille { row-gap: var(--e-5); align-items: center; }
-body.page-marques .marques-hero-texte { display: grid; gap: var(--e-5); align-content: start; }
-body.page-marques .marques-hero-texte h1 {
-  font-size: clamp(44px, 6.4vw, 88px);
-  max-width: none;
-  text-wrap: balance;
-}
-body.page-marques .marques-hero-texte .chrono-ligne { max-width: 52ch; }
-body.page-marques .marques-hero-photo {
-  aspect-ratio: 3 / 2;
-  overflow: hidden;
-  background: var(--fond-2);
-  border: var(--bordure);
-}
-body.page-marques .marques-hero-photo picture,
-body.page-marques .marques-hero-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Ordinateur : la photo va de la colonne 7 au bord droit, sur toute la hauteur de l ecran */
 @media (min-width: 900px) {
-  body.page-marques .marques-hero-photo { grid-column: 7 / -1; }
+  .marques-ecran {
+    container-type: inline-size; display: flex; align-items: center;
+    min-height: clamp(640px, 100svh, 1040px);
+    padding-block: calc(var(--nav-h) + var(--e-7)) var(--e-9);
+  }
+  .marques-ecran-grille { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); }
+  .marques-hero-texte { grid-column: 1 / 7; }
+  .marques-hero-photo {
+    --bord: max(var(--gouttiere-large), calc((100cqw - var(--conteneur)) / 2 + var(--gouttiere-large)));
+    --col: calc((100cqw - 2 * var(--bord) - 11 * var(--grille-ecart)) / 12);
+    position: absolute; top: 0; bottom: 0; right: 0;
+    left: calc(var(--bord) + 6 * var(--col) + 6 * var(--grille-ecart));
+    /* Le fondu porte sur tout le panneau (photo, voiles, grain et fond) : le bord gauche et le bas
+       finissent en transparent, aucune arete ni bande plus claire ne se detache du noir (comme /liens) */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26%), linear-gradient(to bottom, #000 72%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, #000 26%), linear-gradient(to bottom, #000 72%, transparent 100%);
+    mask-composite: intersect;
+  }
+  /* Bord gauche fondu dans le noir, haut assombri sous la navigation, bas fondu vers les parcours */
+  .marques-voile-gauche { right: auto; width: 46%; background-image: var(--voile-gauche); }
+  .marques-voile-haut { bottom: auto; height: 36%; background-image: var(--voile-haut); }
+  .marques-hero-bas { margin-top: calc(-1 * var(--e-7)); }
 }
-/* Telephone : le texte, puis les deux parcours, puis la photo. On choisit sans defiler longtemps. */
+/* Telephone : le texte, puis la photo en bande 16:9 pleine largeur, puis le depart et les parcours */
 @media (max-width: 899px) {
-  body.page-marques .marques-hero-texte { order: 1; }
-  body.page-marques .marques-choix { order: 2; }
-  body.page-marques .marques-hero-photo { order: 3; aspect-ratio: 16 / 9; }
+  .marques-ecran { display: flex; flex-direction: column; padding-top: calc(var(--nav-h) + var(--e-6)); }
+  .marques-ecran-grille { order: 1; }
+  .marques-hero-photo { order: 2; aspect-ratio: 16 / 9; margin-top: var(--e-7); }
+  .marques-hero-photo img { object-position: 50% 50%; }
+  .marques-voile-gauche, .marques-voile-haut { display: none; }
+  /* Fondu court au bas du cadre : le kart reste lisible, le bord se perd dans le noir */
+  .marques-voile-bas { top: auto; height: 34%; }
+  .marques-hero-texte .chapo { font-size: var(--t-texte); line-height: 1.5; }
+  .marques-hero-bas .depart { margin-top: var(--e-6); }
 }
 
-/* Les deux parcours : deux grandes zones cliquables separees par un filet, sans carte */
-body.page-marques .marques-choix {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  margin-top: var(--e-2);
+/* Entree : la photo s ouvre comme un volet depuis la gauche (900 ms), sous html.js-anim seulement */
+@keyframes volet-gauche { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@media (prefers-reduced-motion: no-preference) {
+  html.js-anim .marques-hero-photo { animation: volet-gauche 900ms var(--ease-glisse) both; }
 }
-/* Colonne flexible : le texte prend la place libre, le prix et le lien s alignent en bas des deux parcours */
-body.page-marques .choix {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--e-3);
-  padding: var(--e-5) var(--e-4);
-  border-bottom: var(--bordure);
-  color: var(--texte);
-  text-decoration: none;
-  transition: background-color var(--duree-vite) var(--courbe);
+
+/* Les deux parcours (3.8) : deux stands, toute la carte est le lien */
+.marques-choix { display: grid; gap: var(--grille-ecart); margin-top: var(--e-7); }
+.choix {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--e-4);
+  padding: var(--e-6); border: var(--bordure); color: var(--texte); text-decoration: none;
+  transition: background-color var(--d-court) var(--ease-sortie);
 }
-body.page-marques .choix:hover { background: var(--fond-1); }
-body.page-marques .choix:focus-visible { outline-offset: calc(-1 * var(--focus-decalage)); }
-body.page-marques .choix-index { color: var(--texte-2); }
-body.page-marques .choix-titre {
-  font-family: var(--police-titre);
-  font-size: var(--t-2);
-  line-height: var(--interligne-titre);
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  text-wrap: balance;
+.choix::before {
+  content: ''; position: absolute; top: -1px; left: -1px; right: -1px; height: 2px;
+  background: var(--rouge); transform: scaleX(0); transform-origin: left center;
+  transition: transform 380ms var(--ease-sortie);
 }
-body.page-marques .choix-texte { flex: 1 0 auto; color: var(--texte-2); max-width: 52ch; line-height: 1.5; }
-body.page-marques .choix-pied { font-size: var(--t--1); color: var(--texte); }
-body.page-marques .choix-action {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--e-2);
-  margin-top: var(--e-2);
-  padding-bottom: 2px;
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t--1);
-  letter-spacing: var(--espacement-libelle);
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--filet-fort);
+.choix:hover { color: var(--texte); }
+.choix:focus-visible { outline-offset: calc(-1 * var(--focus-decalage)); }
+.choix-index.chrono-bloc { color: var(--texte-2); }
+.choix-titre {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: var(--t-titre-3); line-height: 1; letter-spacing: 0.02em; text-transform: uppercase;
+  text-wrap: balance; max-width: 16ch;
 }
-body.page-marques .choix-action::after {
-  content: '\2192';
-  font-family: var(--police-mono);
-  transition: transform var(--duree-vite) var(--courbe);
+.choix-texte { flex: 1 0 auto; max-width: 52ch; font-size: var(--t-texte); line-height: 1.6; color: var(--texte-2); }
+.choix-pied {
+  padding-top: var(--e-4); border-top: var(--bordure); align-self: stretch;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-donnee); line-height: 1.5; color: var(--texte-2);
 }
-body.page-marques .choix:hover .choix-action { border-color: var(--texte); }
-body.page-marques .choix:hover .choix-action::after { transform: translateX(4px); }
-body.page-marques .choix-hesite { padding-top: var(--e-5); max-width: none; }
+.choix-pied .chrono { color: var(--texte); }
+/* L action de la carte a l allure d un bouton contour avec sa fleche : sur un ecran tactile (sans
+   survol), on voit tout de suite ou toucher. Toute la carte reste le lien ; la fleche est dessinee en
+   CSS (masque SVG), le libelle ne change pas. */
+.choix-action {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: var(--e-4);
+  min-height: var(--bouton-h-petit); padding: 0 var(--e-4) 0 var(--e-5);
+  border: 1px solid var(--filet-fort); border-radius: var(--rayon);
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: 0.9375rem; line-height: 1.15; letter-spacing: 0.04em; text-transform: uppercase; color: var(--texte);
+  transition: border-color var(--d-court) var(--ease-sortie), background-color var(--d-court) var(--ease-sortie);
+}
+.choix-action::after {
+  content: ''; flex: 0 0 auto; width: 18px; height: 12px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='12' viewBox='0 0 18 12'><path d='M0 6h16M11 1l5 5-5 5' fill='none' stroke='%23000' stroke-width='1.6'/></svg>") center / contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='12' viewBox='0 0 18 12'><path d='M0 6h16M11 1l5 5-5 5' fill='none' stroke='%23000' stroke-width='1.6'/></svg>") center / contain no-repeat;
+  transition: transform var(--d-court) var(--ease-sortie);
+}
+.choix:active { background: var(--fond-1); }
+.choix:active .choix-action { border-color: var(--rouge-bouton); background: var(--rouge-bouton); }
+@media (hover: hover) and (pointer: fine) {
+  .choix:hover { background: var(--fond-1); }
+  .choix:hover::before { transform: scaleX(1); }
+  .choix:hover .choix-action { border-color: var(--rouge-bouton); background: var(--rouge-bouton); }
+  .choix:hover .choix-action::after { transform: translateX(4px); }
+}
+.choix:focus-visible .choix-action { border-color: var(--texte); }
+.choix-hesite { margin-top: var(--e-3); max-width: none; }
 @media (min-width: 900px) {
-  body.page-marques .marques-choix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  body.page-marques .choix { padding: var(--e-6); }
-  body.page-marques .choix + .choix { border-left: var(--bordure); }
-  body.page-marques .choix-hesite { grid-column: 1 / -1; }
+  .marques-choix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .choix-hesite { grid-column: 1 / -1; }
 }
-@media (prefers-reduced-motion: reduce) {
-  body.page-marques .choix:hover .choix-action::after { transform: none; }
-}
-
-/* ---------- 2. Preuves : photo a gauche, deux chiffres et leur phrase a droite ---------- */
-body.page-marques .marques-preuves .grille { align-items: center; }
-body.page-marques .marques-preuves-photo { max-width: 360px; }
-body.page-marques .marques-preuves-texte { display: grid; align-content: start; }
-body.page-marques .marques-preuves-texte h2 { margin-bottom: var(--e-5); }
-body.page-marques .preuve {
-  display: grid;
-  gap: var(--e-2);
-  padding-block: var(--e-5);
-  border-top: var(--bordure);
-}
-body.page-marques .preuve-chiffre {
-  font-family: var(--police-titre);
-  font-size: clamp(64px, 9vw, 128px);
-  line-height: 1;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  max-width: none;
-}
-body.page-marques .preuve p + p { margin-top: 0; }
-body.page-marques .preuve p:not(.preuve-chiffre) { font-size: var(--t-1); line-height: 1.4; color: var(--texte-2); }
-body.page-marques .marques-preuves-texte .mention { border-top: var(--bordure); padding-top: var(--e-4); max-width: none; }
-@media (min-width: 900px) {
-  body.page-marques .marques-preuves-texte { grid-column: 6 / -1; }
-}
-@media (max-width: 899px) {
-  body.page-marques .marques-preuves-photo { width: 70%; }
-}
-
-/* ---------- 3. Parcours saison : la bande « argent » ---------- */
-body.page-marques .marques-entete { max-width: 60rem; }
-body.page-marques .marques-entete h2 { font-size: var(--t-4); margin-top: var(--e-3); }
-body.page-marques .marques-entete .chapo { max-width: var(--mesure); }
-
-body.page-marques .marques-objectif { margin-top: var(--e-8); align-items: start; }
-body.page-marques .marques-objectif-chiffre strong {
-  font-size: clamp(48px, 7vw, 104px);
-  white-space: normal;
-  text-wrap: balance;
-}
-body.page-marques .marques-objectif-texte { display: grid; gap: var(--e-4); }
-body.page-marques .marques-objectif-texte p + p { margin-top: 0; }
-body.page-marques .marques-objectif-texte p { color: var(--texte-2); }
-body.page-marques .marques-objectif-texte .marques-confiance {
-  color: var(--texte);
-  border-left: 2px solid var(--filet-fort);
-  padding-left: var(--e-4);
-}
-@media (min-width: 900px) {
-  body.page-marques .marques-objectif-texte { grid-column: 7 / -1; }
-}
-
-body.page-marques .marques-logo { margin-top: var(--e-8); align-items: center; }
-body.page-marques .marques-logo-photo .photo { max-width: 380px; }
-body.page-marques .marques-logo-texte .liste li { max-width: none; }
-@media (min-width: 900px) {
-  body.page-marques .marques-logo-texte { grid-column: 6 / -1; }
-}
-@media (max-width: 899px) {
-  body.page-marques .marques-logo-photo .photo { width: 70%; }
-}
-
-/* Les formules : le registre de base.css, sur la bande fond-1 (survol en fond-2) */
-body.page-marques .marques-formules { margin-top: var(--e-8); }
-body.page-marques .marques-formules-titre {
-  font-family: var(--police-titre);
-  font-weight: var(--graisse-normal);
-  font-size: var(--t-3);
-  line-height: var(--interligne-titre);
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  margin-bottom: var(--e-5);
-}
-body.page-marques .formule { padding-inline: var(--e-4); }
-body.page-marques .formule:hover { background: var(--fond-2); }
-body.page-marques .formule-avant { background: var(--fond-2); border-top-color: var(--filet-fort); }
-body.page-marques .formule .registre-prix p { max-width: none; }
-body.page-marques .formule .registre-prix p + p { margin-top: 0; }
-body.page-marques .formule-nom {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-  margin-bottom: var(--e-2);
-}
-body.page-marques .formule-apartir { color: var(--texte-2); }
-body.page-marques .formule .prix { font-size: var(--t-3); }
-body.page-marques .formule .registre-texte p { margin-top: 0; }
-body.page-marques .formule-pourqui { color: var(--texte); margin-bottom: var(--e-3); }
-body.page-marques .formule .registre-texte .liste li { color: var(--texte-2); max-width: none; line-height: 1.5; }
-body.page-marques .formule-etiquette {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t--1);
-  color: var(--texte);
-  border-bottom: 1px solid var(--filet-fort);
-  padding-bottom: var(--e-2);
-}
-@media (max-width: 899px) {
-  body.page-marques .formule .registre-action .bouton { width: 100%; }
-}
-
-body.page-marques .marques-apres-formules { display: grid; gap: var(--e-3); margin-top: var(--e-6); list-style: none; }
-body.page-marques .marques-apres-formules li { color: var(--texte-2); }
-body.page-marques .marques-apres-formules a { color: var(--texte); }
-
-/* Comment ca se passe, a cote : une photo ou les engagements */
-body.page-marques .marques-deroule { margin-top: var(--e-8); align-items: start; }
-body.page-marques .marques-etapes li { max-width: none; }
-body.page-marques .marques-etapes li span { line-height: 1.5; }
-body.page-marques .marques-etapes li span.chrono { line-height: inherit; }
-body.page-marques .marques-note { margin-top: var(--e-5); font-size: var(--t--1); color: var(--texte-2); }
-body.page-marques .marques-deroule-droite { display: grid; gap: var(--e-6); align-content: start; }
-body.page-marques .marques-deroule-droite .liste li { max-width: none; color: var(--texte-2); }
-body.page-marques .marques-formats .marques-formules-titre { margin-bottom: var(--e-5); }
-body.page-marques .photo-cadre { display: grid; gap: 0; }
-body.page-marques .marques-photo-large { aspect-ratio: 3 / 2; }
-body.page-marques .marques-comptable { border-top: var(--bordure); padding-top: var(--e-5); }
-body.page-marques .marques-comptable p { font-size: var(--t--1); color: var(--texte-2); line-height: 1.55; }
-@media (min-width: 900px) {
-  body.page-marques .marques-deroule-droite { grid-column: 8 / -1; }
-}
-
-/* Le bouton du parcours, et son lien secondaire */
-body.page-marques .marques-cta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--e-5) var(--e-6);
-  margin-top: var(--e-8);
-}
-body.page-marques .marques-cta .bouton { white-space: normal; text-align: center; line-height: 1.2; padding-block: var(--e-3); }
 @media (max-width: 599px) {
-  body.page-marques .marques-cta .bouton { width: 100%; }
+  .choix { padding: var(--e-5); }
+  /* Au pouce : l action prend toute la largeur de la carte, la fleche au bord droit */
+  .choix-action { align-self: stretch; }
 }
 
-/* ---------- 4. Parcours reseaux ---------- */
-body.page-marques .marques-videos { margin-top: var(--e-7); align-items: center; }
-body.page-marques .marques-videos-photo .photo { max-width: 380px; }
-body.page-marques .marques-videos-texte .liste li { max-width: none; }
-body.page-marques .marques-videos-texte a { color: var(--texte); overflow-wrap: anywhere; }
-body.page-marques .marques-videos-texte .secondaire { margin-top: var(--e-5); }
-@media (min-width: 900px) {
-  body.page-marques .marques-videos-texte { grid-column: 6 / -1; }
-}
-@media (max-width: 899px) {
-  body.page-marques .marques-videos-photo .photo { width: 70%; }
-}
-
-/* Les formats : six lignes separees par des filets, nom, contenu, prix a droite */
-body.page-marques .marques-formats { margin-top: var(--e-8); }
-body.page-marques .formats { border-top: var(--bordure); }
-body.page-marques .formats li {
-  display: grid;
-  gap: var(--e-2);
-  padding-block: var(--e-5);
-  border-bottom: var(--bordure);
-  max-width: none;
-}
-body.page-marques .formats p { max-width: none; }
-body.page-marques .formats p + p { margin-top: 0; }
-body.page-marques .format-nom {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-}
-body.page-marques .format-texte { color: var(--texte-2); line-height: 1.5; }
-body.page-marques .format-prix .mono { color: var(--texte-2); }
-body.page-marques .format-prix .chrono { font-size: var(--t-1); color: var(--texte); }
-body.page-marques .format-prix .chrono + .mono { display: block; margin-top: 2px; }
-@media (min-width: 900px) {
-  body.page-marques .formats li {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr);
-    column-gap: var(--grille-ecart);
-    align-items: baseline;
-  }
-  body.page-marques .format-prix { text-align: right; }
-}
-
-/* ---------- 5. Qui je suis ---------- */
-body.page-marques .marques-qui .grille { align-items: center; }
-body.page-marques .marques-qui-photo .photo { max-width: 400px; }
-body.page-marques .marques-qui-texte { display: grid; gap: var(--e-4); }
-body.page-marques .marques-qui-texte p + p { margin-top: 0; }
-body.page-marques .marques-qui-texte p:not(.chrono) { color: var(--texte-2); font-size: var(--t-1); line-height: 1.45; }
-@media (min-width: 900px) {
-  body.page-marques .marques-qui-texte { grid-column: 6 / -1; }
-}
-@media (max-width: 899px) {
-  body.page-marques .marques-qui-photo .photo { width: 70%; }
-}
-
-/* ---------- 6. En resume : un tableau a filets ; une ligne par critere sur telephone ---------- */
-body.page-marques .resume { width: 100%; border-collapse: collapse; }
-body.page-marques .resume th,
-body.page-marques .resume td {
-  text-align: left;
-  vertical-align: top;
-  padding: var(--e-4) var(--e-4) var(--e-4) 0;
-  border-top: var(--bordure);
-}
-body.page-marques .resume thead th,
-body.page-marques .resume thead td {
-  border-top: 0;
-  font-family: var(--police-titre);
-  font-weight: var(--graisse-normal);
-  font-size: var(--t-2);
-  line-height: var(--interligne-titre);
-  text-transform: uppercase;
-}
-body.page-marques .resume tbody th {
-  width: 24%;
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t--1);
-  letter-spacing: var(--espacement-libelle);
-  text-transform: uppercase;
-  color: var(--texte-2);
-}
-body.page-marques .resume tbody tr:last-child > * { border-bottom: var(--bordure); }
+/* Telephone etroit : les deux parcours passent avant la photo du 695. La premiere decision arrive dans
+   le premier ecran ; la photo ferme l en-tete en bande 16:9, juste avant les preuves. Les deux
+   conteneurs s effacent (display: contents) pour que l ordre se regle sur la section seule. */
 @media (max-width: 599px) {
-  body.page-marques .resume thead {
-    position: absolute; width: 1px; height: 1px; overflow: hidden;
-    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
-  }
-  body.page-marques .resume,
-  body.page-marques .resume tbody { display: block; }
-  body.page-marques .resume tbody tr {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: var(--e-4);
-    border-top: var(--bordure);
-    padding-block: var(--e-4);
-  }
-  body.page-marques .resume tbody tr:last-child { border-bottom: var(--bordure); }
-  body.page-marques .resume tbody th,
-  body.page-marques .resume tbody td { display: block; width: auto; padding: 0; border: 0; }
-  body.page-marques .resume tbody tr:last-child > * { border-bottom: 0; }
-  body.page-marques .resume tbody th { grid-column: 1 / -1; margin-bottom: var(--e-3); }
-  body.page-marques .resume tbody td { font-size: var(--t--1); line-height: 1.45; }
-  body.page-marques .resume tbody td::before {
-    content: attr(data-col);
-    display: block;
-    margin-bottom: var(--e-1);
-    font-family: var(--police-mono);
-    font-size: var(--t--2);
-    color: var(--texte-3);
-  }
+  .page-marques .marques-hero { display: flex; flex-direction: column; isolation: isolate; padding-top: calc(var(--nav-h) + var(--e-6)); }
+  .page-marques .marques-ecran, .page-marques .marques-hero-bas { display: contents; }
+  .marques-ecran-grille { order: 1; }
+  .marques-hero-bas .depart { order: 2; margin-inline: var(--gouttiere-large); }
+  .marques-choix { order: 3; margin-inline: var(--gouttiere-large); }
+  .marques-hero-photo { order: 4; margin-top: var(--e-8); }
+  /* Les preuves : le titre et les deux chiffres d abord, la vue embarquee ensuite (deux photos ne se
+     suivent plus) */
+  .marques-preuves-texte { order: -1; }
 }
 
-/* ---------- 7. Questions, trois groupes ---------- */
-body.page-marques .faq-groupe { margin-top: var(--e-7); margin-bottom: var(--e-3); color: var(--texte-2); }
-body.page-marques .entete-section + .faq-groupe { margin-top: 0; }
-
-/* ---------- 8. Le formulaire : texte a gauche (colle sur ordinateur), formulaire a droite ---------- */
-body.page-marques .section-contact { padding-block: var(--section-y); }
-body.page-marques .contact-texte { display: grid; gap: var(--e-4); align-content: start; }
-body.page-marques .contact-texte h2 { font-size: var(--t-3); }
-body.page-marques .contact-texte p + p { margin-top: 0; }
-body.page-marques .contact-chapo { font-size: var(--t-1); line-height: 1.45; }
-body.page-marques .contact-texte .marques-etapes li span { color: var(--texte-2); }
-body.page-marques .contact-email { overflow-wrap: anywhere; color: var(--texte-2); }
-body.page-marques .contact-email a { color: var(--texte); }
-body.page-marques .contact-legal { max-width: none; }
-/* Colonnes 7 a 12 : grid-column-start seul (.col-depart-7) casserait le span de .col-6 */
+/* ---------- 2. Des videos qui sont vues : la vue embarquee, deux chiffres sur la grille de telemetrie ---------- */
+.marques-preuves .grille-telemetrie { --telemetrie-debord: var(--rythme-section); }
+.marques-preuves .grille { align-items: center; row-gap: var(--e-7); }
+.marques-preuves-texte { display: grid; align-content: start; }
+.marques-preuves-texte h2 { margin-bottom: var(--e-6); }
+.preuve { display: grid; gap: var(--e-3); padding-block: var(--e-5); border-top: var(--bordure); }
+.preuve p { max-width: none; }
+.preuve p + p { margin-top: 0; }
+.preuve-chiffre {
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal);
+  font-size: var(--t-chiffre); line-height: 1; letter-spacing: -0.02em; white-space: nowrap; color: var(--texte);
+  word-spacing: var(--serrage-milliers); font-variant-numeric: tabular-nums;
+}
+.preuve p:not(.preuve-chiffre) { max-width: 46ch; color: var(--texte-2); }
+.marques-preuves-texte .mention {
+  max-width: none; padding-top: var(--e-4); border-top: var(--bordure);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro); color: var(--texte-3);
+}
 @media (min-width: 900px) {
-  body.page-marques .contact-form { grid-column: 7 / -1; }
-  body.page-marques .contact-texte { position: sticky; top: calc(var(--nav-h) + var(--e-5)); align-self: start; }
+  .marques-preuves-texte { grid-column: 6 / -1; }
 }
 
-/* ---------- 9. Formulaire (repris de page-demande.css pour cette page) ---------- */
-body.page-marques .bloc-formulaire {
-  background: var(--fond-1);
-  border: var(--bordure);
-  padding: var(--e-6);
+/* ---------- 3. Parrainage de saison : la bande ---------- */
+.marques-entete { max-width: 62rem; }
+.marques-entete h2 { max-width: 18ch; }
+.marques-entete .chapo { max-width: var(--mesure); }
+
+/* L objectif : le chiffre geant en mono sur sa grille de telemetrie, le texte a droite */
+/* Le releve est cale en haut, sur la ligne du titre a droite : il se lit comme l en-tete du bloc, pas
+   comme un chiffre perdu au pied d une grille vide */
+.marques-objectif { margin-top: var(--e-9); padding-block: var(--e-7); border-top: var(--bordure); border-bottom: var(--bordure); align-items: start; row-gap: var(--e-6); }
+.marques-objectif.grille-telemetrie::before { left: 0; right: 0; top: 0; bottom: 0; }
+.marques-objectif-chiffre { gap: var(--e-3); }
+/* Le budget total se lit a la taille des prix des formules (.prix) : la tres grande taille reste aux
+   preuves d audience, et le ticket d entree n est pas ecrase par le montant de la saison */
+.marques-objectif-chiffre strong { font-size: var(--t-titre-3); white-space: normal; text-wrap: balance; line-height: 1.02; word-spacing: calc(var(--serrage-milliers) * 0.7); }
+.marques-objectif-texte { display: grid; gap: var(--e-4); }
+.marques-objectif-texte h3 { font-size: var(--t-titre-4); }
+.marques-objectif-texte p + p { margin-top: 0; }
+.marques-objectif-texte p { color: var(--texte-2); }
+.marques-objectif-texte .marques-confiance { color: var(--texte); border-left: 2px solid var(--filet-fort); padding-left: var(--e-4); }
+@media (min-width: 900px) {
+  .marques-objectif-texte { grid-column: 8 / -1; }
 }
-body.page-marques .formulaire { max-width: none; }
-body.page-marques .form-champs { display: grid; gap: var(--e-4); grid-template-columns: minmax(0, 1fr); }
+
+/* Ou va votre logo : la photo et ses trois cordes, le texte a droite */
+.marques-logo { margin-top: var(--e-9); align-items: center; row-gap: var(--e-7); }
+.marques-logo-cadre { position: relative; }
+.logo-repere { position: absolute; z-index: var(--z-contenu); width: 10px; height: 10px; margin: -5px 0 0 -5px; pointer-events: none; }
+.logo-repere .corde { position: absolute; inset: 0; }
+.logo-repere-casque { left: 55%; top: 18%; }
+.logo-repere-poitrine { left: 50%; top: 35%; }
+.logo-repere-ponton { left: 40%; top: 88%; }
+.marques-logo-texte h3 { font-size: var(--t-titre-4); margin-bottom: var(--e-5); }
+.marques-logo-texte .liste li { max-width: none; }
+@media (min-width: 900px) {
+  .marques-logo-texte { grid-column: 7 / -1; }
+}
+
+/* Les formules : un registre de quatre lignes (jamais quatre cartes) */
+.marques-formules { margin-top: var(--e-9); }
+.marques-formules-titre { font-size: var(--t-titre-3); margin-bottom: var(--e-6); }
+.formule { padding-inline: var(--e-5); }
+.formule .registre-prix p { max-width: none; }
+.formule .registre-prix p + p { margin-top: 0; }
+.formule-nom {
+  margin-bottom: var(--e-3);
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: var(--t-titre-4); line-height: 1; letter-spacing: 0.02em; text-transform: uppercase;
+}
+.formule-apartir.mono { font-size: var(--t-micro); color: var(--texte-2); }
+.formule .prix { margin-block: var(--e-1); color: var(--texte); word-spacing: calc(var(--serrage-milliers) * 0.8); }
+.formule .registre-texte p { margin-top: 0; }
+.formule-pourqui { margin-bottom: var(--e-4); font-weight: var(--graisse-forte); color: var(--texte); }
+.formule .registre-texte .liste li { max-width: none; line-height: 1.5; color: var(--texte-2); }
+.formule .registre-faits { gap: var(--e-3); }
+.formule .registre-faits li.chrono { color: var(--texte-2); }
+.formule-etiquette {
+  justify-self: start; padding: 6px 10px; border: 1px solid var(--texte);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro); line-height: 1.3; color: var(--texte);
+}
+.formule-avant { background: var(--fond-2); box-shadow: inset 3px 0 0 var(--rouge); }
+@media (hover: hover) and (pointer: fine) {
+  .formule:hover { background: var(--fond-2); }
+}
+@media (min-width: 900px) {
+  .formule .registre-prix { grid-column: 1 / 4; grid-row: 1 / 3; }
+  .formule .registre-texte { grid-column: 4 / 10; grid-row: 1 / 3; }
+  .formule .registre-faits { grid-column: 10 / -1; grid-row: 1; }
+  .formule .registre-action { grid-column: 10 / -1; grid-row: 2; align-self: end; }
+}
+@media (max-width: 899px) {
+  .formule { padding-inline: var(--e-4); }
+  .formule .registre-action .bouton { width: 100%; }
+}
+.marques-apres-formules { display: grid; gap: var(--e-3); margin-top: var(--e-6); }
+.marques-apres-formules li { max-width: none; color: var(--texte-2); }
+.marques-apres-formules a { color: var(--texte); }
+
+/* Comment ca se passe (pastilles), et a droite la photo du kart 95 ou les engagements */
+.marques-deroule { margin-top: var(--e-9); align-items: start; row-gap: var(--e-7); }
+.marques-deroule h3 { font-size: var(--t-titre-4); margin-bottom: var(--e-5); }
+.marques-etapes li { max-width: none; }
+.marques-etapes li > span { line-height: 1.55; }
+.marques-note { margin-top: var(--e-5); font-size: var(--t-petit); color: var(--texte-2); }
+.marques-deroule-droite { display: grid; gap: var(--e-6); align-content: start; }
+.marques-deroule-droite .liste li { max-width: none; color: var(--texte-2); }
+.photo-cadre { display: grid; gap: 0; }
+.marques-photo-large { aspect-ratio: 3 / 2; }
+.marques-comptable { padding: var(--e-5); background: var(--fond-2); }
+.marques-comptable h3 { font-size: var(--t-chapo); margin-bottom: var(--e-3); }
+.marques-comptable p { font-size: var(--t-petit); line-height: 1.6; color: var(--texte-2); }
+@media (min-width: 900px) {
+  .marques-deroule-droite { grid-column: 8 / -1; }
+}
+
+/* Le bouton du parcours et son lien secondaire */
+.marques-cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--e-5) var(--e-6); margin-top: var(--e-8); padding-top: var(--e-7); border-top: var(--bordure); }
+.marques-cta .bouton { white-space: normal; text-align: center; line-height: 1.2; padding-block: var(--e-3); }
+@media (max-width: 599px) {
+  .marques-cta .bouton { width: 100%; }
+}
+
+/* ---------- 4. Collaboration reseaux ---------- */
+.marques-videos { margin-top: var(--e-7); align-items: center; row-gap: var(--e-7); }
+.marques-videos-texte h3 { font-size: var(--t-titre-4); margin-bottom: var(--e-5); }
+.marques-videos-texte .liste { gap: var(--e-4); }
+.marques-videos-texte .liste li { max-width: none; font-size: var(--t-texte); }
+.marques-videos-texte .chrono { font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: 0.94em; }
+.marques-videos-texte a { color: var(--texte); overflow-wrap: anywhere; }
+.marques-videos-texte .secondaire { margin-top: var(--e-5); }
+@media (min-width: 900px) {
+  .marques-videos-texte { grid-column: 6 / -1; }
+}
+
+/* Les formats : une liste de prix en lignes, le montant en mono a droite */
+.marques-formats { margin-top: var(--e-9); }
+.formats { border-top: var(--bordure); }
+.formats li { display: grid; gap: var(--e-2); padding-block: var(--e-5); border-bottom: var(--bordure); max-width: none; }
+.formats p { max-width: none; }
+.formats p + p { margin-top: 0; }
+.format-nom {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: var(--t-titre-4); line-height: 1; letter-spacing: 0.02em; text-transform: uppercase;
+}
+.format-texte { font-size: var(--t-petit); line-height: 1.6; color: var(--texte-2); }
+.format-texte .chrono { color: var(--texte); }
+.format-prix .mono { font-size: var(--t-micro); color: var(--texte-2); }
+.format-prix .chrono { font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-chapo); color: var(--texte); }
+.format-prix .chrono + .mono { display: block; margin-top: var(--e-1); }
+@media (min-width: 900px) {
+  .formats li { grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr); column-gap: var(--grille-ecart); align-items: baseline; }
+  .format-prix { text-align: right; }
+}
+
+/* ---------- 5. Pilote et createur ---------- */
+.marques-qui .grille { align-items: center; row-gap: var(--e-7); }
+.marques-qui-photo img { object-position: 45% 40%; }
+.marques-qui-texte { display: grid; gap: var(--e-4); }
+.marques-qui-texte h2 { margin-bottom: var(--e-3); }
+.marques-qui-texte p + p { margin-top: 0; }
+.marques-qui-texte p:not(.chrono) { color: var(--texte-2); }
+.marques-qui-texte .chrono-ligne { margin-top: var(--e-3); padding-top: var(--e-4); border-top: var(--bordure); max-width: none; }
+@media (min-width: 900px) {
+  .marques-qui-texte { grid-column: 6 / -1; }
+}
+
+/* ---------- 6. Saison ou reseaux : un tableau de telemetrie ---------- */
+.resume { width: 100%; border-collapse: collapse; }
+.resume th, .resume td { padding: var(--e-4) var(--e-5) var(--e-4) 0; border-top: var(--bordure); text-align: left; vertical-align: top; }
+.resume thead th, .resume thead td { padding-bottom: var(--e-5); border-top: 0; }
+.resume thead th {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: var(--t-titre-4); line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; color: var(--texte);
+}
+.resume tbody th { width: 24%; font-weight: var(--graisse-forte); font-size: var(--t-petit); color: var(--texte); }
+.resume tbody td { color: var(--texte-2); line-height: 1.55; }
+.resume .chrono { font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: 0.94em; color: var(--texte); }
+.resume tbody tr:last-child > * { border-bottom: var(--bordure); }
+@media (max-width: 899px) {
+  .resume thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .resume, .resume tbody { display: block; }
+  .resume tbody tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--e-4); padding-block: var(--e-4); border-top: var(--bordure); }
+  .resume tbody tr:last-child { border-bottom: var(--bordure); }
+  .resume tbody th, .resume tbody td { display: block; width: auto; padding: 0; border: 0; }
+  .resume tbody tr:last-child > * { border-bottom: 0; }
+  .resume tbody th { grid-column: 1 / -1; margin-bottom: var(--e-3); }
+  .resume tbody td { font-size: var(--t-petit); }
+  .resume tbody td::before {
+    content: attr(data-col); display: block; margin-bottom: var(--e-1);
+    font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro); color: var(--texte-3);
+  }
+}
+
+/* ---------- 7. Vos questions, trois groupes ---------- */
+.faq-groupe { margin-top: var(--e-8); margin-bottom: var(--e-4); }
+.entete-section + .faq-groupe { margin-top: 0; }
+
+/* ---------- 8. Parlons de votre projet : le texte colle a gauche, le formulaire en panneau a droite ---------- */
+.page-marques .section-contact { padding-block: var(--rythme-section); }
+.contact-texte { display: grid; gap: var(--e-5); align-content: start; }
+.contact-texte p + p { margin-top: 0; }
+.contact-chapo { font-size: var(--t-chapo); line-height: var(--interligne-chapo); max-width: 34ch; }
+.contact-texte .marques-etapes { margin-block: var(--e-3); }
+.contact-email { overflow-wrap: anywhere; color: var(--texte-2); }
+.contact-email a { color: var(--texte); }
+.contact-legal { max-width: none; font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro); }
+@media (min-width: 900px) {
+  .page-marques .contact-form { grid-column: 7 / -1; }
+  .contact-texte { position: sticky; top: calc(var(--nav-h) + var(--e-6)); align-self: start; }
+}
+
+/* Le panneau (3.11) */
+.page-marques .bloc-formulaire { background: var(--fond-1); border: var(--bordure); padding: var(--e-6); }
+.page-marques .formulaire { max-width: none; }
+.page-marques .form-champs { display: grid; gap: var(--e-5); grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 600px) {
-  body.page-marques .formulaire-large .form-champs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  body.page-marques .formulaire-large .champ-plein { grid-column: 1 / -1; }
-}
-body.page-marques .formulaire .bouton {
-  white-space: normal;
-  text-align: center;
-  padding-block: var(--e-3);
-  line-height: 1.2;
-  margin-top: var(--e-2);
+  .page-marques .formulaire-large .form-champs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--e-4); }
+  .page-marques .formulaire-large .champ-plein { grid-column: 1 / -1; }
 }
 @media (max-width: 599px) {
-  body.page-marques .bloc-formulaire { padding: var(--e-5) var(--e-4); }
-  body.page-marques .formulaire .bouton { padding-inline: var(--e-4); }
+  .page-marques .bloc-formulaire { padding: var(--e-5); }
 }
-body.page-marques .champ select {
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: var(--e-7);
-  /* Chevron en SVG inline, une seule couleur, sans requete reseau */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23F2EDE8' stroke-width='1.5'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right var(--e-4) center;
+.page-marques .formulaire .bouton { margin-top: var(--e-2); white-space: normal; text-align: center; line-height: 1.2; }
+.page-marques .bouton-sous { max-width: none; }
+.page-marques .champ select {
+  appearance: none; -webkit-appearance: none; padding-right: var(--e-7);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23F2F0EB' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat; background-position: right var(--e-4) center;
 }
-body.page-marques .champ select option,
-body.page-marques .champ select optgroup { color: var(--texte); background: var(--fond-2); }
-body.page-marques .champ textarea { min-height: 112px; }
-body.page-marques .champ textarea[aria-invalid="true"],
-body.page-marques .champ select[aria-invalid="true"] { border-color: var(--erreur); }
+.page-marques .champ select option, .page-marques .champ select optgroup { color: var(--texte); background: var(--fond-2); }
+.page-marques .champ textarea { min-height: 140px; }
+/* Erreur sous le champ, seulement quand il est signale (le carre rouge est dans base.css) */
+.page-marques .champ-erreur { display: none; }
+.page-marques .champ.est-invalide .champ-erreur { display: flex; }
 
-/* Erreur sous le champ : texte blanc casse, le rouge porte par un tiret de 2 px */
-body.page-marques .champ-erreur {
-  display: none;
-  position: relative;
-  padding-left: var(--e-3);
-  font-size: var(--t--1);
-  color: var(--texte);
+/* Le projet : trois grandes cases (72 px au moins) ; choisie : bord craie, filet rouge de 3 px en haut */
+.page-marques .champ-projet { border: 0; padding: 0; min-width: 0; }
+.page-marques legend { padding: 0; margin-bottom: var(--e-3); font-weight: var(--graisse-moyenne); font-size: var(--t-petit); color: var(--texte); }
+.projets { display: grid; gap: var(--e-3); }
+.page-marques .champ .projet {
+  position: relative; display: grid; grid-template-columns: 22px minmax(0, 1fr); column-gap: var(--e-4); row-gap: var(--e-1);
+  align-content: center; min-height: 72px; padding: var(--e-4) var(--e-5);
+  border: 1px solid var(--filet-fort); cursor: pointer;
+  font-weight: var(--graisse-normal); font-size: var(--t-texte); color: var(--texte);
+  transition: border-color var(--d-court) var(--ease-sortie), background-color var(--d-court) var(--ease-sortie);
 }
-body.page-marques .champ-erreur::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.2em;
-  bottom: 0.2em;
-  width: 2px;
-  background: var(--erreur);
+.page-marques .champ .projet::before {
+  content: ''; position: absolute; top: -1px; left: -1px; right: -1px; height: 3px;
+  background: var(--rouge); transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--d-court) var(--ease-sortie);
 }
-body.page-marques .champ.est-invalide .champ-erreur { display: block; }
+.page-marques .champ .projet:has(input:checked) { border-color: var(--texte); background: var(--fond-1); }
+.page-marques .champ .projet:has(input:checked)::before { transform: scaleX(1); }
+@media (hover: hover) and (pointer: fine) {
+  .page-marques .champ .projet:hover { border-color: var(--texte); }
+}
+.page-marques .projet input[type="radio"] { grid-row: 1 / span 2; width: 22px; height: 22px; min-height: 0; margin-top: 1px; padding: 0; }
+.projet-titre { font-weight: var(--graisse-forte); line-height: 1.3; }
+.projet-sous { font-size: var(--t-petit); line-height: 1.45; color: var(--texte-2); }
+.page-marques .champ-projet.est-invalide .projet { border-color: var(--rouge); }
 
-/* Le projet : trois grands choix radio, l un sous l autre */
-body.page-marques .champ-projet { border: 0; padding: 0; min-width: 0; }
-body.page-marques legend {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t--1);
-  letter-spacing: var(--espacement-libelle);
-  text-transform: uppercase;
-  color: var(--texte-2);
-  margin-bottom: var(--e-2);
-  padding: 0;
+/* Preciser (facultatif) : le meme rendu que la FAQ */
+.preciser { border-top: var(--bordure); border-bottom: var(--bordure); }
+.preciser summary {
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--e-4);
+  min-height: var(--zone-touche); padding-block: var(--e-4);
+  font-weight: var(--graisse-forte); font-size: var(--t-texte); line-height: 1.35; color: var(--texte);
 }
-body.page-marques .projets { display: grid; gap: var(--e-2); }
-body.page-marques .champ .projet {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  column-gap: var(--e-3);
-  row-gap: var(--e-1);
-  align-items: start;
-  padding: var(--e-3) var(--e-4);
-  background: var(--fond-2);
-  border: 1px solid var(--filet-fort);
-  cursor: pointer;
-  font-family: var(--police-texte);
-  font-weight: var(--graisse-normal);
-  font-size: var(--t-0);
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--texte);
-  transition: border-color var(--duree-vite) var(--courbe), background-color var(--duree-vite) var(--courbe);
+.preciser summary::-webkit-details-marker { display: none; }
+.preciser summary::after {
+  content: '+'; flex: 0 0 auto; font-family: var(--police-mono); font-size: 1.25em; line-height: 1;
+  transition: transform var(--d-court) var(--ease-sortie);
 }
-body.page-marques .champ .projet:hover { border-color: var(--texte); }
-body.page-marques .champ .projet:has(input:checked) { border-color: var(--texte); background: var(--fond-3); }
-body.page-marques .projet input[type="radio"] {
-  grid-row: 1 / span 2;
-  width: 20px;
-  height: 20px;
-  min-height: 0;
-  margin: 0.15em 0 0;
-  padding: 0;
-  accent-color: var(--texte);
-}
-body.page-marques .projet-titre {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-0);
-  line-height: var(--interligne-serre);
-}
-body.page-marques .projet-sous { font-size: var(--t--1); color: var(--texte-2); line-height: 1.4; }
-body.page-marques .champ-projet.est-invalide .projet { border-color: var(--erreur); }
-
-/* Preciser (facultatif) : un details natif, filets haut et bas */
-body.page-marques .preciser { border-top: var(--bordure); border-bottom: var(--bordure); }
-body.page-marques .preciser summary {
-  list-style: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--e-4);
-  padding-block: var(--e-3);
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t--1);
-  letter-spacing: var(--espacement-libelle);
-  text-transform: uppercase;
-  color: var(--texte-2);
-}
-body.page-marques .preciser summary::-webkit-details-marker { display: none; }
-body.page-marques .preciser summary::after {
-  content: '+';
-  flex: 0 0 auto;
-  font-family: var(--police-mono);
-  color: var(--texte);
-  transition: transform var(--duree-vite) var(--courbe);
-}
-body.page-marques .preciser[open] summary::after { transform: rotate(45deg); }
-body.page-marques .preciser summary:hover { color: var(--texte); }
-body.page-marques .preciser-champs { display: grid; gap: var(--e-4); padding-bottom: var(--e-4); grid-template-columns: minmax(0, 1fr); }
+.preciser[open] summary::after { transform: rotate(45deg); }
+.preciser-champs { display: grid; gap: var(--e-5); padding-bottom: var(--e-5); grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 600px) {
-  body.page-marques .preciser-champs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  body.page-marques .preciser-champs .champ-plein { grid-column: 1 / -1; }
+  .preciser-champs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--e-4); }
+  .preciser-champs .champ-plein { grid-column: 1 / -1; }
 }
 
-/* Case a cocher carree 20 px, finalite en une ligne de texte courant */
-body.page-marques .champ-case {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  gap: var(--e-3);
-  align-items: start;
-}
-body.page-marques .champ-case input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  min-height: 0;
-  margin-top: 0.2em;
-  padding: 0;
-  accent-color: var(--texte);
-  border-radius: 0;
-}
-body.page-marques .champ-case label {
-  font-family: var(--police-texte);
-  font-weight: var(--graisse-normal);
-  font-size: var(--t--1);
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--texte-2);
-  max-width: none;
-}
-body.page-marques .champ-case label a { color: var(--texte); }
-body.page-marques .champ-case .champ-erreur { grid-column: 1 / -1; }
-body.page-marques .champ-case.est-invalide input[type="checkbox"] { outline: 2px solid var(--erreur); outline-offset: 2px; }
-body.page-marques .bouton-sous { max-width: none; }
+/* Case d accord : 22 px, le libelle en petit */
+.page-marques .champ-case { grid-template-columns: 22px minmax(0, 1fr); column-gap: var(--e-3); align-items: start; }
+.page-marques .champ-case input[type="checkbox"] { width: 22px; height: 22px; min-height: 0; margin-top: 2px; padding: 0; }
+.page-marques .champ-case label { font-weight: var(--graisse-normal); color: var(--texte-2); line-height: 1.55; max-width: none; cursor: pointer; }
+.page-marques .champ-case label a { color: var(--texte); }
+.page-marques .champ-case .champ-erreur { grid-column: 1 / -1; }
+.page-marques .champ-case.est-invalide input[type="checkbox"] { border-color: var(--rouge); box-shadow: inset 0 0 0 1px var(--rouge); }
 
-/* Etat envoye : le bloc devient une plaque, a la meme hauteur */
-body.page-marques .form-envoye p { font-size: var(--t-1); line-height: 1.45; }
-body.page-marques .form-envoye p + p { margin-top: var(--e-4); color: var(--texte-2); }
-body.page-marques .form-envoye:focus { outline: none; }
-body.page-marques .form-envoye.plaque-bloc { background: transparent; padding: 0; }
+/* Etat envoye : le panneau est deja la plaque, coche craie de 24 px devant la premiere phrase */
+.page-marques .form-envoye.plaque-bloc { padding: 0; background: transparent; border: 0; }
+.page-marques .form-envoye.plaque-bloc::before { display: none; }
+.page-marques .form-envoye p { font-size: var(--t-chapo); line-height: 1.45; }
+.page-marques .form-envoye .envoye-titre { display: flex; align-items: center; gap: var(--e-4); }
+.page-marques .form-envoye .envoye-titre::before {
+  content: ''; flex: 0 0 auto; width: 18px; height: 10px; margin: -6px 3px 0;
+  border-left: 2px solid var(--texte); border-bottom: 2px solid var(--texte); transform: rotate(-45deg);
+}
+.page-marques .form-envoye p + p { margin-top: var(--e-4); font-size: var(--t-texte); color: var(--texte-2); }
+.page-marques .form-envoye:focus { outline: none; }
 
-/* ---------- 10. Mouvement : l entree du hero, puis rien ---------- */
-html.a-js body.page-marques .entree-suivante { animation-delay: 100ms; }
+/* ---------- 9. Mouvement reduit : les survols changent de couleur sans bouger ---------- */
 @media (prefers-reduced-motion: reduce) {
-  html.a-js body.page-marques .entree-suivante { animation-delay: 0ms; }
+  .choix::before, .page-marques .champ .projet::before, .choix-action::after { transition: none; }
+  .choix:hover .choix-action::after { transform: none; }
 }

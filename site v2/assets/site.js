@@ -165,22 +165,62 @@
     }
   }
 
-  /* ---------- 5. Apparitions au defilement, une seule fois ---------- */
+  /* ---------- 5. Apparitions au defilement, une seule fois ----------
+     Seuil en pixels, pas en proportion : un bloc commence a apparaitre des que son haut passe les 92 %
+     de l ecran, quelle que soit sa hauteur (jamais de bande vide en bas de l ecran a l arret).
+     Un bloc plus haut que l ecran (formulaire, registre) ne glisse pas d un seul tenant : ses enfants
+     apparaissent un par un, avec un petit decalage. Un bloc qui contient un bouton apparait des son
+     premier pixel a l ecran : un bouton n est jamais cliquable et invisible. */
+  var DECALAGE_MAX = 4;
+  function enfantsVisibles(el) {
+    return Array.prototype.filter.call(el.children, function (c) {
+      return c.offsetHeight > 0 && !c.classList.contains('reveal') && !/^(SCRIPT|STYLE|TEMPLATE|INPUT)$/.test(c.tagName);
+    });
+  }
+  function decouperGrandBloc(el, hauteurEcran) {
+    if (/^(TABLE|THEAD|TBODY|TR|DETAILS|BLOCKQUOTE)$/.test(el.tagName)) return [el];
+    if (el.getBoundingClientRect().height <= hauteurEcran) return [el];
+    var racine = el;
+    var enfants = enfantsVisibles(racine);
+    /* Un seul enfant (le formulaire dans sa colonne) : on descend d un niveau */
+    while (enfants.length === 1 && enfantsVisibles(enfants[0]).length > 1) { racine = enfants[0]; enfants = enfantsVisibles(racine); }
+    if (enfants.length < 2) return [el];
+    /* Un enfant deja transforme par sa feuille (inclinaison, decalage) garderait « transform: none » une fois
+       visible : dans ce cas le bloc reste entier */
+    var transforme = enfants.some(function (c) { var t = window.getComputedStyle(c).transform; return t && t !== 'none'; });
+    if (transforme) return [el];
+    el.classList.remove('reveal');
+    return enfants.map(function (c, k) {
+      c.classList.add('reveal');
+      c.style.setProperty('--i', String(Math.min(k, DECALAGE_MAX)));
+      return c;
+    });
+  }
   function preparerReveal() {
-    var cibles = doc.querySelectorAll('.reveal');
+    var cibles = Array.prototype.slice.call(doc.querySelectorAll('.reveal'));
     if (!cibles.length) return;
     if (reduitMouvement || !('IntersectionObserver' in window)) {
       for (var i = 0; i < cibles.length; i++) cibles[i].classList.add('est-visible');
       return;
     }
-    var obs = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        en.target.classList.add('est-visible');
-        obs.unobserve(en.target);
-      });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
-    for (var j = 0; j < cibles.length; j++) obs.observe(cibles[j]);
+    var h = window.innerHeight || 800;
+    var liste = [];
+    cibles.forEach(function (c) { liste = liste.concat(decouperGrandBloc(c, h)); });
+    function surEntree(obs) {
+      return function (entrees) {
+        entrees.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          en.target.classList.add('est-visible');
+          obs.unobserve(en.target);
+        });
+      };
+    }
+    var obsBloc = new IntersectionObserver(function (e) { surEntree(obsBloc)(e); }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+    var obsBouton = new IntersectionObserver(function (e) { surEntree(obsBouton)(e); }, { rootMargin: '0px', threshold: 0 });
+    liste.forEach(function (el) {
+      var bouton = el.matches('a.bouton, button') || !!el.querySelector('a.bouton, button[type="submit"]');
+      (bouton ? obsBouton : obsBloc).observe(el);
+    });
   }
 
   /* ---------- 6. Menu mobile ---------- */
@@ -192,7 +232,14 @@
       nav.classList.toggle('est-ouverte', ouvrir);
       doc.body.classList.toggle('menu-ouvert', ouvrir);
       bouton.setAttribute('aria-expanded', ouvrir ? 'true' : 'false');
-      bouton.textContent = ouvrir ? 'Fermer' : 'Menu';
+      /* Deux libelles superposes (largeur fixe) : seul le visible est lu */
+      var libelles = bouton.querySelectorAll('.nav-menu-libelle');
+      if (libelles.length === 2) {
+        libelles[0].setAttribute('aria-hidden', ouvrir ? 'true' : 'false');
+        libelles[1].setAttribute('aria-hidden', ouvrir ? 'false' : 'true');
+      } else {
+        bouton.textContent = ouvrir ? 'Fermer' : 'Menu';
+      }
     }
     bouton.addEventListener('click', function () {
       var ouvrir = !nav.classList.contains('est-ouverte');
@@ -204,7 +251,16 @@
       }
     });
     doc.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('est-ouverte')) { basculer(false); bouton.focus(); }
+      if (!nav.classList.contains('est-ouverte')) return;
+      if (e.key === 'Escape') { basculer(false); bouton.focus(); return; }
+      /* Focus pris dans le menu ouvert : Tab et Maj+Tab bouclent entre le bouton Menu et les destinations */
+      if (e.key !== 'Tab') return;
+      var cibles = [bouton].concat(Array.prototype.filter.call(nav.querySelectorAll('.nav-liens a[href]'), function (a) { return a.offsetParent !== null; }));
+      var premier = cibles[0];
+      var dernier = cibles[cibles.length - 1];
+      if (e.shiftKey && doc.activeElement === premier) { e.preventDefault(); dernier.focus(); }
+      else if (!e.shiftKey && doc.activeElement === dernier) { e.preventDefault(); premier.focus(); }
+      else if (cibles.indexOf(doc.activeElement) === -1) { e.preventDefault(); premier.focus(); }
     });
     /* Un lien du menu choisi : le menu se referme (utile pour les ancres de la meme page) */
     nav.addEventListener('click', function (e) {
@@ -212,8 +268,8 @@
     });
     /* Passage en largeur ordinateur : le menu telephone ne reste pas ouvert */
     try {
-      /* Meme seuil que base.css (section 7) : au-dela, les liens tiennent dans la barre */
-      var bureau = window.matchMedia('(min-width: 1024px)');
+      /* Meme seuil que base.css (section 6) : au-dela, les liens tiennent dans la barre */
+      var bureau = window.matchMedia('(min-width: 1100px)');
       var surChangement = function (m) { if (m.matches) basculer(false); };
       if (bureau.addEventListener) bureau.addEventListener('change', surChangement);
       else if (bureau.addListener) bureau.addListener(surChangement);

@@ -1,121 +1,236 @@
 /* ============================================================
-   Clem Kart Racing : tokens.css
-   Le seul fichier qui decide des couleurs, polices, tailles,
-   espacements, durees et courbes. base.css et les pages ne
-   contiennent aucune valeur brute : elles lisent ces variables.
-   Section 9 du plan V4 (23/09/2026).
+   Clem Kart Racing : tokens.css (direction V5 « La trajectoire », 02/10/2026)
+   Le seul fichier qui decide des couleurs, polices, tailles, espacements,
+   plans, durees et courbes. base.css, signature.css et les feuilles de page
+   ne contiennent aucune valeur brute : elles lisent ces variables.
+   Un seul theme, sombre. Un seul rouge. Rayon 0 partout (seuls les reperes
+   sont ronds : cordes, pastilles, feux, tete de trajectoire, bouton radio).
    ============================================================ */
 
-:root {
-  /* ---------- Fonds : quatre noirs, jamais de noir pur en aplat ---------- */
-  --fond-0: #070707;
-  --fond-1: #0F0F0F;
-  --fond-2: #161616;
-  --fond-3: #1C1C1C;
-
-  /* ---------- Texte : blanc casse, jamais gris pour du texte utile ---------- */
-  --texte: #F2EDE8;
-  --texte-rgb: 242, 237, 232;
-  --texte-2: rgba(var(--texte-rgb), 0.62);   /* secondaire, 62 % */
-  --texte-3: rgba(var(--texte-rgb), 0.40);   /* legendes, mentions */
-  --filet: rgba(var(--texte-rgb), 0.10);      /* filets 1 px */
-  --filet-fort: rgba(var(--texte-rgb), 0.22);
-
-  /* ---------- Un seul accent : le rouge ---------- */
-  --rouge: #D9171D;          /* grands titres, filets, chiffres */
-  --rouge-bouton: #C4141A;   /* fond des boutons */
-  --rouge-survol: #A51115;   /* survol */
-  --rouge-rgb: 217, 23, 29;
-
-  /* Vert reserve aux coches du quiz et a l etat « envoye », jamais decoratif */
-  --ok: #3FA35B;
-  --erreur: #D9171D;
-
-  /* ---------- Polices : 5 graisses, pas une de plus ----------
-     Bebas Neue 400, Barlow Condensed 600 et 700, Barlow 400, JetBrains Mono 400 */
-  --police-titre: 'Bebas Neue', 'Barlow Condensed', Impact, sans-serif;
-  --police-libelle: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  --police-texte: 'Barlow', system-ui, sans-serif;
-  --police-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
-
-  --graisse-normal: 400;
-  --graisse-libelle: 600;
-  --graisse-libelle-fort: 700;
-
-  /* ---------- Echelle de texte fluide (Utopia, base 4 px, 360 px -> 1280 px) ---------- */
-  --t--2: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);       /* 12 -> 13 : mono, mentions */
-  --t--1: clamp(0.8125rem, 0.78rem + 0.22vw, 0.9375rem);     /* 13 -> 15 : libelles, nav, boutons */
-  --t-0: clamp(1.0625rem, 1.04rem + 0.11vw, 1.125rem);       /* 17 -> 18 : texte courant */
-  --t-1: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);           /* 20 -> 24 : chapo */
-  --t-2: clamp(1.625rem, 1.35rem + 1.2vw, 2.25rem);          /* 26 -> 36 : titre de bloc */
-  --t-3: clamp(2.25rem, 1.75rem + 2.2vw, 3.5rem);            /* 36 -> 56 : titre de section */
-  --t-4: clamp(3rem, 2.2rem + 3.6vw, 5rem);                  /* 48 -> 80 : grand titre */
-  --t-hero: clamp(3.5rem, 9vw, 8rem);                        /* 56 -> 128 : hero */
-
-  /* Interlignes et espacements de lettres */
-  --interligne-titre: 0.92;
-  --interligne-serre: 1.1;
-  --interligne-texte: 1.6;
-  --espacement-libelle: 0.08em;
-  --espacement-libelle-fort: 0.12em;
-  --mesure: 62ch;   /* largeur max d un paragraphe */
-
-  /* ---------- Espacements : base 4 px ---------- */
-  --e-1: 0.25rem;   /* 4 */
-  --e-2: 0.5rem;    /* 8 */
-  --e-3: 0.75rem;   /* 12 */
-  --e-4: 1rem;      /* 16 */
-  --e-5: 1.5rem;    /* 24 */
-  --e-6: 2rem;      /* 32 */
-  --e-7: 3rem;      /* 48 */
-  --e-8: 4rem;      /* 64 */
-  --e-9: 6rem;      /* 96 */
-  --e-10: 8rem;     /* 128 */
-  --section-y: clamp(var(--e-8), 4rem + 4vw, var(--e-10));
-  --gouttiere: 16px;                 /* marge mobile */
-  --gouttiere-large: clamp(16px, 4vw, 60px);
-
-  /* ---------- Grille ---------- */
-  --conteneur: 1280px;
-  --conteneur-lecture: 720px;
-  --conteneur-liens: 420px;
-  --colonnes: 12;
-  --grille-ecart: clamp(16px, 2vw, 32px);
-
-  /* ---------- Formes : racing = aretes vives ---------- */
-  --rayon: 0;
-  --bordure: 1px solid var(--filet);
-  --bouton-h: 56px;
-  --bouton-h-petit: 44px;
-  --nav-h: 64px;
-  --barre-h: 64px;
-
-  /* ---------- Mouvement : budget strict, transform et opacity seulement ---------- */
-  --duree-vite: 160ms;
-  --duree: 320ms;
-  --duree-entree: 700ms;
-  --courbe: cubic-bezier(0.16, 1, 0.3, 1);   /* depart rapide, fin douce */
-  --courbe-sortie: cubic-bezier(0.4, 0, 1, 1);
-  --decalage-reveal: 24px;
-
-  /* ---------- Plans ---------- */
-  --z-nav: 100;
-  --z-barre: 90;
-  --z-menu: 110;
-
-  /* ---------- Focus visible ---------- */
-  --focus: 2px solid var(--texte);
-  --focus-decalage: 3px;
-
-  color-scheme: dark;
+/* ---------- Polices de secours calees (CLS nul pendant le chargement) ----------
+   Une seule graisse declaree par face : aucune graisse synthetique. size-adjust mesure dans Edge
+   (largeur du texte reel / largeur du texte de secours, a la meme taille, sur les paragraphes et les
+   titres de /, /guide, /liens et /marques : ecart sous 1 %). Hauteurs mesurees le 06/10 a 100 px :
+   Hubot et Mona montent de 109 et descendent de 32, Martian Mono 100 et 20, aucun interligne propre.
+   Les overrides sont multiplies par size-adjust : ascent-override = 109 / size-adjust, etc.
+   Ainsi la boite de chaque ligne ne bouge pas quand la vraie police arrive. */
+@font-face {
+  font-family: 'Hubot Sans Repli';
+  src: local('Arial Narrow Bold'), local('ArialNarrow-Bold'), local('Arial Narrow'), local('Arial Bold');
+  font-weight: 800;
+  size-adjust: 81.2%;
+  ascent-override: 134.2%;
+  descent-override: 39.4%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Mona Sans Repli';
+  src: local('Arial'), local('ArialMT');
+  font-weight: 400;
+  size-adjust: 102.5%;
+  ascent-override: 106.3%;
+  descent-override: 31.2%;
+  line-gap-override: 0%;
+}
+/* 500 (liens de navigation) : Arial normal un peu agrandi, sinon le navigateur prendrait la face 400 */
+@font-face {
+  font-family: 'Mona Sans Repli';
+  src: local('Arial'), local('ArialMT');
+  font-weight: 500;
+  size-adjust: 104.4%;
+  ascent-override: 104.4%;
+  descent-override: 30.7%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Mona Sans Repli';
+  src: local('Arial Bold'), local('Arial-BoldMT');
+  font-weight: 600;
+  size-adjust: 99%;
+  ascent-override: 110.1%;
+  descent-override: 32.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Martian Mono Repli';
+  src: local('Consolas'), local('Courier New');
+  font-weight: 400;
+  size-adjust: 118%;
+  ascent-override: 84.7%;
+  descent-override: 16.9%;
+  line-gap-override: 0%;
 }
 
-/* Reduced motion : les durees tombent a zero, base.css coupe le reste */
+:root {
+  color-scheme: dark;
+
+  /* ---------- Fonds : le noir piste et trois paliers ---------- */
+  --fond-0: #060607;
+  --fond-1: #0E0E10;
+  --fond-2: #161619;
+  --fond-3: #1C1C1F;
+
+  /* ---------- Texte craie ---------- */
+  --texte: #F2F0EB;
+  --texte-rgb: 242, 240, 235;
+  --texte-2: rgba(var(--texte-rgb), 0.68);     /* secondaire : 8,2:1 sur fond-0 */
+  --texte-3: rgba(var(--texte-rgb), 0.56);     /* mentions : 5,8:1, minimum du petit texte */
+  --filet: rgba(var(--texte-rgb), 0.12);       /* decoratif */
+  --filet-fort: rgba(var(--texte-rgb), 0.24);  /* structure, contour des boutons fantomes */
+  --filet-champ: rgba(var(--texte-rgb), 0.40); /* bord des champs et des cases : 3,4:1 */
+  --gris-piste: #46464A;                       /* piste, secteurs a venir : decoratif seulement */
+  --feu-eteint: #2A2A2E;                       /* feux de depart eteints (/liens) */
+
+  /* ---------- Un seul rouge : celui de la couverture du guide ---------- */
+  --rouge: #C40C2C;          /* jamais pour du texte sous 24 px */
+  --rouge-bouton: #C40C2C;   /* craie dessus : 5,4:1 */
+  --rouge-survol: #A80A26;   /* craie dessus : 6,7:1 */
+  --rouge-rgb: 196, 12, 44;
+  --ok: var(--texte);        /* plus de vert : un etat reussi s ecrit en craie avec une coche */
+  --erreur: var(--rouge);    /* une marque, jamais un texte */
+
+  /* ---------- Polices : trois familles, pas une de plus ---------- */
+  --police-titre: 'Hubot Sans', 'Hubot Sans Repli', 'Arial Narrow', sans-serif;
+  --police-texte: 'Mona Sans', 'Mona Sans Repli', system-ui, sans-serif;
+  --police-mono: 'Martian Mono', 'Martian Mono Repli', ui-monospace, Consolas, monospace;
+  --graisse-normal: 400;
+  --graisse-moyenne: 500;
+  --graisse-forte: 600;
+  --graisse-titre: 800;
+  --largeur-titre: 75%;
+  --largeur-mono: 87.5%;
+
+  /* ---------- Echelle fluide (360 a 1440 px) ---------- */
+  --t-micro: clamp(0.6875rem, 0.6667rem + 0.0926vw, 0.75rem);      /* 11 a 12 : releves, P1 a P5 */
+  --t-donnee: clamp(0.8125rem, 0.7917rem + 0.0926vw, 0.875rem);    /* 13 a 14 : lignes de donnees */
+  --t-petit: clamp(0.875rem, 0.8542rem + 0.0926vw, 0.9375rem);     /* 14 a 15 : navigation, aides */
+  --t-texte: clamp(1.0625rem, 1.0417rem + 0.0926vw, 1.125rem);     /* 17 a 18 : texte courant */
+  --t-chapo: clamp(1.1875rem, 1.0833rem + 0.463vw, 1.5rem);        /* 19 a 24 : chapos, citations */
+  --t-titre-4: clamp(1.375rem, 1.2083rem + 0.7407vw, 1.875rem);    /* 22 a 30 : h3 */
+  --t-titre-3: clamp(1.75rem, 1.4167rem + 1.4815vw, 2.75rem);      /* 28 a 44 : h3 forts, portes, menu */
+  --t-titre-2: clamp(2.25rem, 1.5rem + 3.3333vw, 4.5rem);          /* 36 a 72 : h2 de section */
+  --t-titre-1: clamp(2.75rem, 1.3333rem + 6.2963vw, 7rem);         /* 44 a 112 : h1 de page */
+  --t-affiche: clamp(3.25rem, 1.5rem + 7.7778vw, 8.5rem);          /* 52 a 136 : chute de l accueil */
+  --t-chiffre: clamp(3.5rem, 2.1667rem + 5.9259vw, 7.5rem);        /* 56 a 120 : prix geants, en mono */
+
+  --interligne-affiche: 0.86;
+  --interligne-titre: 0.9;
+  --interligne-section: 1.02;   /* h2 : la cedille d un Ç (FAÇONS, REÇUS) ne pose plus sur la lettre haute d en dessous (a 0,98 elle touchait encore) */
+  --interligne-serre: 1.1;
+  --interligne-texte: 1.65;
+  --interligne-chapo: 1.4;
+  /* Mesures en em (66 et 42 caracteres « 0 » de Mona Sans, qui fait 0,614 em) : la meme boite avec la
+     police de secours, donc les memes coupures de ligne quand la vraie police arrive (le ch, lui, changerait) */
+  --mesure: 40.5em;
+  --mesure-chapo: 25.8em;
+
+  /* ---------- Grille, espacements, plans ---------- */
+  --conteneur: 1400px;
+  --gouttiere: 16px;
+  --gouttiere-large: clamp(1rem, -0.1667rem + 5.1852vw, 4.5rem);   /* 16 a 72 */
+  --grille-ecart: clamp(1rem, 0.6667rem + 1.4815vw, 2rem);         /* 16 a 32 */
+  --colonnes: 12;
+  --rythme-section: clamp(5rem, 3.6667rem + 5.9259vw, 9rem);       /* 80 a 144 */
+  --titre-contenu: 3rem;                                           /* titre de section vers contenu : 48 */
+  /* Bord gauche du contenu, mesure depuis le bord de l ecran (sert aux photos collees au bord) */
+  --bord-contenu: max(var(--gouttiere-large), calc((100vw - var(--conteneur)) / 2 + var(--gouttiere-large)));
+
+  /* Base 4 px */
+  --e-1: 0.25rem;  /* 4 */
+  --e-2: 0.5rem;   /* 8 */
+  --e-3: 0.75rem;  /* 12 */
+  --e-4: 1rem;     /* 16 */
+  --e-5: 1.5rem;   /* 24 */
+  --e-6: 2rem;     /* 32 */
+  --e-7: 3rem;     /* 48 */
+  --e-8: 4rem;     /* 64 */
+  --e-9: 6rem;     /* 96 */
+  --e-10: 8rem;    /* 128 */
+
+  --nav-h: 56px;
+  --barre-h: 64px;
+  --bouton-h: 56px;
+  --bouton-h-petit: 44px;
+  --champ-h: 56px;
+  --zone-touche: 44px;
+
+  /* Plans : aucune autre valeur */
+  --z-photo: 0;
+  --z-trajectoire: 1;
+  --z-contenu: 2;
+  --z-hud: 70;
+  --z-barre: 80;
+  --z-nav: 100;
+  --z-menu: 110;
+  --z-evitement: 120;
+
+  /* ---------- Formes ---------- */
+  --rayon: 0;
+  --bordure: 1px solid var(--filet);
+  --focus: 2px solid var(--texte);
+  --focus-decalage: 3px;
+  --ombre-objet: 0 40px 80px rgba(0, 0, 0, 0.55);
+
+  /* ---------- Voiles : les seuls aplats poses sur les photos ---------- */
+  --voile-haut: linear-gradient(to bottom, rgba(6, 6, 7, 0.94) 0%, rgba(6, 6, 7, 0.78) 24%, rgba(6, 6, 7, 0.25) 40%, rgba(6, 6, 7, 0) 50%);
+  --voile-bas: linear-gradient(to top, rgba(6, 6, 7, 0.97) 0%, rgba(6, 6, 7, 0.8) 20%, rgba(6, 6, 7, 0) 38%);
+  --voile-fondu: linear-gradient(to top, rgba(6, 6, 7, 1) 0%, rgba(6, 6, 7, 0.75) 22%, rgba(6, 6, 7, 0) 55%);
+  --voile-gauche: linear-gradient(to right, rgba(6, 6, 7, 0.96) 0%, rgba(6, 6, 7, 0.9) 34%, rgba(6, 6, 7, 0.35) 58%, rgba(6, 6, 7, 0) 75%);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+
+  /* ---------- Mouvement ---------- */
+  --d-instant: 120ms;   /* appui */
+  --d-court: 220ms;     /* survol, focus, petits elements */
+  --d-moyen: 420ms;     /* menu, panneaux, changement de page */
+  --d-long: 900ms;      /* revelations de titres, compteurs */
+  --d-hero: 1400ms;     /* mise en place de la photo du premier ecran */
+  --ease-sortie: cubic-bezier(0.23, 1, 0.32, 1);   /* courbe par defaut de l interface */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);      /* revelations, entrees */
+  --ease-glisse: cubic-bezier(0.77, 0, 0.175, 1);  /* deplacements a l ecran */
+  --reveal-decalage: 28px;
+  --reveal-pas: 60ms;
+
+  /* ---------- Noms d avant la V5, gardes le temps de la refonte ----------
+     Les feuilles de page pas encore refaites les lisent encore. A retirer quand
+     plus aucune feuille ne les cite (recherche : police-libelle, t--1, duree-vite...). */
+  --police-libelle: var(--police-titre);
+  --graisse-libelle: var(--graisse-forte);
+  --graisse-libelle-fort: var(--graisse-forte);
+  --t--2: var(--t-donnee);
+  --t--1: var(--t-petit);
+  --t-0: var(--t-texte);
+  --t-1: var(--t-chapo);
+  --t-2: var(--t-titre-4);
+  --t-3: var(--t-titre-2);
+  --t-4: var(--t-titre-1);
+  --t-hero: var(--t-affiche);
+  --espacement-libelle: 0.04em;
+  --espacement-libelle-fort: 0.06em;
+  --section-y: var(--rythme-section);
+  --conteneur-lecture: 720px;
+  --conteneur-liens: 420px;
+  --duree-vite: var(--d-court);
+  --duree: 320ms;
+  --duree-entree: 800ms;
+  --courbe: var(--ease-expo);
+  --courbe-sortie: cubic-bezier(0.4, 0, 1, 1);
+  --decalage-reveal: var(--reveal-decalage);
+}
+
+@media (min-width: 1100px) {
+  :root { --nav-h: 64px; }
+}
+
+/* Mouvement reduit : les durees tombent a zero, base.css coupe le reste */
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --duree-vite: 0ms;
+    --d-instant: 0ms;
+    --d-court: 0ms;
+    --d-moyen: 0ms;
+    --d-long: 0ms;
+    --d-hero: 0ms;
     --duree: 0ms;
     --duree-entree: 0ms;
-    --decalage-reveal: 0px;
+    --reveal-decalage: 0px;
   }
 }

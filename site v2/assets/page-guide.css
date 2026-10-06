@@ -1,279 +1,460 @@
 /* ============================================================
-   Clem Kart Racing : page-guide.css
-   Regles propres a la page de vente du livre (/guide).
-   Chargee apres base.css, uniquement par cette page (body.page-guide).
-   Aucune valeur brute hors des clamp() de titres et des tailles de planche :
-   tout vient de tokens.css. Rayons 0, aucune ombre, aucun degrade, un seul rouge.
-
-   Les composants partages (.chrono, .chrono-grand, .plaque-titre, .filet-apex,
-   .filet-depart, .planche, .quote-colonne) sont dans base.css, section 22.
-   Ici : tailles et placements propres a la page seulement.
+   Clem Kart Racing : page-guide.css (direction V5, 5.3)
+   La page de vente du guide seulement (body.page-guide), chargee apres base.css et signature.css.
+   1 le virage (premier ecran, trace sur la photo, couverture sur la ligne de depart), 2 feuilleter,
+   3 pour qui, 4 le sommaire (carte du circuit pilotee par la lecture), 5 trois croyances et le schema,
+   6 preuves, 7 l auteur, 8 le prix, 9 FAQ, 10 le dernier bouton, 11 barre d achat, 12 fenetre des pages.
+   Aucune valeur brute hors des tailles propres a la page : tokens.css. Mouvement : attributs lus par
+   mouvement.js (mode d emploi en tete de ce fichier) ; les etats caches ne s ecrivent que sous html.js-anim.
    ============================================================ */
 
-/* ---------- 0. Colonnes de depart propres a la page ----------
-   base.css ecrit .col-6 (grid-column: span 6) puis .col-depart-7 (grid-column-start: 7) :
-   la fin retombe sur auto et la colonne ne fait plus qu une piste. On pose ici debut et largeur ensemble. */
+/* ---------- 1. Le virage : premier ecran ---------- */
+.page-guide .hero-guide { position: relative; z-index: var(--z-contenu); isolation: isolate; }
+.hero-guide-cine { z-index: var(--z-photo); }
+.hero-guide-cine picture { transform-origin: 50% 55%; }
+.hero-guide-cine img { object-position: 50% 50%; }
+.hero-guide-voile-haut { background-image: var(--voile-haut); }
+.hero-guide-voile-gauche { background-image: var(--voile-gauche); }
+.hero-guide-voile-bas { background-image: var(--voile-bas); }
+
+/* Le trace sur la photo : meme cadrage que l image (preserveAspectRatio slice = object-fit: cover), au-dessus des voiles */
+.hero-trace {
+  position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; max-width: none;
+  overflow: hidden; pointer-events: none; fill: none;
+}
+.trace-passe { fill: none; stroke: rgba(var(--texte-rgb), 0.55); stroke-width: 3; stroke-dasharray: 2 10; stroke-linecap: round; }
+.trace-suivre { fill: none; stroke: var(--rouge); stroke-width: 4; stroke-linecap: round; }
+.trace-corde-anneau { fill: none; stroke: var(--texte); stroke-width: 1.5; transition: stroke var(--d-court) var(--ease-sortie); }
+.trace-corde-disque {
+  fill: var(--rouge); stroke: var(--fond-0); stroke-width: 4;
+  transform-box: fill-box; transform-origin: center;
+  transition: opacity var(--d-court) var(--ease-sortie), transform var(--d-court) var(--ease-sortie);
+}
+.trace-corde-onde { fill: none; stroke: var(--texte); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+html.js-anim .trace-corde:not(.est-allumee) .trace-corde-disque { opacity: 0; transform: scale(0.4); }
+html.js-anim .trace-corde:not(.est-allumee) .trace-corde-anneau { stroke: var(--gris-piste); }
+.trace-corde.est-allumee .trace-corde-onde { animation: corde-onde 400ms var(--ease-sortie) 1; }
+/* Le meme dessin en unites de la photo portrait (1280 de large, affichee en 390 px) */
+.hero-trace-portrait .trace-passe { stroke-width: 9; stroke-dasharray: 6 30; }
+.hero-trace-portrait .trace-suivre { stroke-width: 11; }
+.hero-trace-portrait .trace-corde-anneau, .hero-trace-portrait .trace-corde-onde { stroke-width: 4.5; }
+.hero-trace-portrait .trace-corde-disque { stroke-width: 12; }
+
+/* Le texte : libelle mono, titre de la couverture (« plus vite » en rouge), chapo, resume, actions */
+.hero-surtitre { color: var(--texte-2); }
+.hero-guide h1 { margin-top: var(--e-4); max-width: none; line-height: var(--interligne-titre); }
+.hero-guide h1 .plaque-titre, .hero-guide h1 .titre-ligne { display: block; }
+.titre-rouge { color: var(--rouge); }
+/* Entree du surtitre et des deux lignes du h1, en CSS des le premier rendu : chaque ligne monte derriere son masque
+   (meme courbe et meme amplitude que les titres decoupes par mouvement.js), sans SplitText ni CDN.
+   Le masque deborde de 0,2em pour les accents ; sans html.js-anim (mouvement reduit, CDN en erreur), tout est en place. */
+.entree-ligne { display: block; }
+@keyframes entree-ligne { from { transform: translateY(140%); } }
+@keyframes glisse-rouge { from { transform: translateX(-0.08em); } }
+html.js-anim .hero-guide .masque-entree { overflow: hidden; overflow: clip; overflow-clip-margin: 0.2em; }
+html.js-anim .hero-guide .entree-ligne { animation: entree-ligne 1000ms var(--ease-expo) var(--t-ligne, 100ms) both; }
+html.js-anim .hero-guide .plaque-titre { --t-ligne: 160ms; }
+html.js-anim .hero-guide .titre-ligne { --t-ligne: 240ms; }
+/* « plus vite » avance de 0,08em pendant que sa ligne monte : jamais plus que l espace (0,18em dans cette police),
+   les deux mots restent separes a chaque image */
+html.js-anim .hero-guide .titre-ligne .titre-rouge { display: inline-block; animation: glisse-rouge 1000ms var(--ease-expo) 300ms both; }
+.hero-guide .chapo { margin-top: var(--e-5); max-width: 46ch; }
+.hero-guide .hero-resume { display: block; margin-top: var(--e-4); color: var(--texte); }
+.hero-actions { margin-top: var(--e-6); display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--e-4) var(--e-6); }
+.hero-achat { display: flex; flex-direction: column; align-items: flex-start; }
+.hero-achat .bouton { flex: 0 0 auto; }
+.hero-guide .hero-garantie { margin-top: var(--e-3); max-width: none; }
+.hero-guide .hero-garantie + .bouton-cgv { margin-top: 2px; }
+.hero-actions > .lien-texte { display: inline-flex; align-items: center; min-height: var(--bouton-h); }
+.hero-guide .hero-lecteurs { display: block; margin-top: var(--e-5); color: var(--texte-2); }
+
+/* La couverture : un objet pose sur le noir, jamais de grain */
+.hero-guide-objet { position: relative; z-index: 1; }
+.planche-couverture { border: 0; background: none; }
+.planche-couverture picture { display: block; }
+.planche-couverture img { display: block; width: 100%; height: auto; }
+/* Un objet, pas un aplat : contour d un pixel et ombre tres diffuse qui le detachent du noir */
+.hero-guide .planche-couverture img { outline-color: var(--filet-fort); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6); }
+
+/* Ordinateur : photo plein cadre ; le titre en haut, le kart et son trace au milieu (vers 46 a 51 % de la hauteur,
+   la photo etant centree), le chapo et l achat en bas, la couverture en bas a droite qui deborde de 48 px.
+   Un pixel de moins que l ecran : la photo reste l element LCP (Chrome ignore une image qui couvre tout l ecran). */
 @media (min-width: 900px) {
-  body.page-guide .feuilleter-planches { grid-column: 9 / span 4; }
-  body.page-guide .croyances-liste { grid-column: 7 / span 6; }
-  body.page-guide .preuves-colonne { grid-column: 1 / -1; }
-  body.page-guide .prix-detail { grid-column: 7 / span 6; }
-  body.page-guide .final-colonne { grid-column: 6 / span 7; }
+  .page-guide .hero-guide {
+    display: grid; grid-template-rows: auto 1fr auto;
+    min-height: clamp(640px, calc(100svh - 1px), 1100px);
+    row-gap: var(--e-4); /* ecran bas (1024 x 640) : le chapo ne colle jamais au titre */
+  }
+  .hero-guide-cine { position: absolute; inset: 0; }
+  .hero-trace-portrait { display: none; }
+  .hero-guide-haut { grid-row: 1; padding-top: calc(var(--nav-h) + clamp(16px, 3.4svh, 40px)); }
+  .hero-guide-contenu { grid-row: 3; padding-bottom: clamp(20px, 3svh, 36px); }
+  .hero-guide h1 { font-size: clamp(2.75rem, min(6.8vw, 11svh), 7rem); }
+  .hero-guide h1 .plaque-titre { white-space: nowrap; }
+  .hero-guide-grille { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: end; }
+  .hero-guide-texte { grid-column: 1 / 8; }
+  .hero-guide .chapo { margin-top: 0; }
+  /* Posee sur la ligne de depart (le haut du trait rouge : 7 px au-dessus du bas du bloc depart), entiere dans
+     le premier ecran : sa hauteur ne depasse jamais l ecran moins la navigation et 120 px (largeur = hauteur x 640 / 906) */
+  .hero-guide-objet {
+    --couverture-l: clamp(232px, 23vw, 330px);
+    position: absolute; right: var(--gouttiere-large); bottom: calc(clamp(20px, 3svh, 36px) + 7px);
+    width: min(var(--couverture-l), calc((100svh - var(--nav-h) - 120px) * 640 / 906));
+  }
+  .page-guide .hero-guide .depart { margin-top: calc(clamp(28px, 4svh, 48px) + 17px); } /* meme respiration que l accueil */
 }
-
-/* ---------- 1. Signatures propres a la page ---------- */
-/* La plaque du titre : une ligne du h1, sans marge verticale en plus */
-body.page-guide .plaque-titre { padding-block: 0; }
-/* Entre deux croyances ou deux blocs de lecture, le filet d apex separe aussi par le haut */
-body.page-guide .filet-apex { margin-block: var(--e-6); }
-/* Le filet de depart passe devant le bas de la couverture */
-body.page-guide .filet-depart { position: relative; z-index: 1; background: var(--fond-0); }
-
-/* ---------- 4. Hero : texte a gauche, la couverture debout a droite ---------- */
-body.page-guide .hero-guide { padding-block: var(--e-7) 0; min-height: 0; align-items: stretch; }
-body.page-guide .hero-grille { row-gap: var(--e-6); align-items: start; }
-body.page-guide .hero-surtitre { color: var(--texte-2); }
-body.page-guide .hero-guide h1 {
-  max-width: none;
-  font-size: clamp(56px, 7.5vw, 112px);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-body.page-guide .hero-guide h1 .titre-ligne { display: block; }
-body.page-guide .hero-guide .chapo { max-width: 38ch; }
-body.page-guide .hero-guide .hero-sous { margin-top: calc(var(--e-2) * -1); }
-/* La garantie colle au bouton : le doute se leve au moment du clic */
-body.page-guide .hero-guide .hero-garantie { margin-top: var(--e-2); max-width: none; }
-body.page-guide .hero-guide .hero-lecteurs { margin-top: calc(var(--e-4) * -1); color: var(--texte-2); }
-/* Le bouton d achat et sa mention CGV restent groupes ; le lien Feuilleter se cale sur le bouton */
-body.page-guide .hero-actions { align-items: flex-start; }
-body.page-guide .hero-achat { display: flex; flex-direction: column; align-items: flex-start; }
-body.page-guide .hero-actions .lien-texte { margin-top: calc((var(--bouton-h) - 1.6em) / 2); }
-body.page-guide .hero-objet { display: flex; justify-content: flex-end; align-items: flex-start; }
-body.page-guide .planche-couverture { width: 60%; max-width: 420px; }
-body.page-guide .planche-couverture picture, body.page-guide .planche-rail picture { display: block; }
-/* Deuxieme temps de la seule animation d entree : la couverture, 100 ms apres le titre */
-html.a-js body.page-guide .entree-suivante { animation-delay: 100ms; }
-
-@media (min-width: 900px) {
-  body.page-guide .hero-guide { padding-block: var(--e-8) 0; }
-  body.page-guide .hero-grille { align-items: stretch; }
-  /* Le texte passe au-dessus de la couverture : la plaque du titre mord sur son bord gauche */
-  body.page-guide .hero-texte { grid-column: 1 / span 6; padding-bottom: var(--e-7); position: relative; z-index: 2; }
-  body.page-guide .plaque-titre { white-space: nowrap; }
-  /* La couverture est posee sur la ligne de base du hero */
-  body.page-guide .hero-objet { grid-column: 8 / -1; position: relative; z-index: 1; align-items: flex-end; }
-  /* Le livre rentre dans la page : ses 40 derniers pixels passent sous le filet de depart */
-  body.page-guide .planche-couverture { width: 420px; margin-bottom: -40px; }
-}
-
-/* ---------- 5. Feuilleter : l introduction en vrai texte, les planches collantes a droite ---------- */
-body.page-guide .intro-guide h3 { margin-bottom: var(--e-5); }
-body.page-guide .intro-guide p { max-width: var(--mesure); }
-body.page-guide .intro-guide .intro-suite { border-top: var(--bordure); margin-top: var(--e-6); padding-top: var(--e-5); color: var(--texte-2); }
-body.page-guide .intro-guide .intro-suite a { color: var(--texte); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-body.page-guide .planche-rail {
-  display: grid;
-  grid-template-columns: repeat(2, 180px);
-  gap: var(--e-3);
-  justify-content: end;
-}
-body.page-guide .planche-rangee {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--e-4);
-  margin-top: var(--e-6);
-}
-/* Grille a part pour la rangee : la zone de collage des planches s arrete a la fin de l introduction */
-body.page-guide .feuilleter-rangee { margin-top: 0; }
-body.page-guide .feuilleter-suite { margin-top: var(--e-7); display: flex; flex-direction: column; align-items: flex-start; }
-
-@media (min-width: 900px) {
-  body.page-guide .feuilleter-planches {
-    position: sticky;
-    top: calc(var(--nav-h) + var(--e-5));
-    align-self: start;
+/* Ecran bas (portable a 680 px de haut) : le bloc du bas remonte jusqu au trace ; le trace rouge se fond
+   alors dans le noir avant d atteindre le texte */
+@media (min-width: 900px) and (max-height: 780px) {
+  /* Le titre un peu plus petit et la ligne de depart plus proche : tout le premier ecran, couverture comprise,
+     tient encore dans 640 px de haut */
+  .hero-guide h1 { font-size: clamp(2.75rem, min(6.8vw, 10svh), 7rem); }
+  .page-guide .hero-guide .depart { margin-top: calc(clamp(28px, 4svh, 48px) + 8px); }
+  .hero-trace-large {
+    -webkit-mask-image: linear-gradient(to right, transparent 26%, #000 44%);
+    mask-image: linear-gradient(to right, transparent 26%, #000 44%);
   }
 }
+/* Entre 900 et 1100 px : le texte laisse la place a la couverture */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .hero-guide-objet { --couverture-l: clamp(200px, 26vw, 260px); }
+}
+
+/* Telephone et tablette : bande photo, le texte remonte de 96 px sur la bande, la couverture apres les actions.
+   Sous 600 px, photo portrait dans une bande de 52svh, jamais assez basse pour que la corde passe sous le texte
+   (corde a 0,227 x largeur + moitie de la bande) ; de 600 a 899 px, la photo 16:9 entiere. */
 @media (max-width: 899px) {
-  /* Telephone : le titre de la section, puis les quatre planches en rangee horizontale (200 px chacune), puis l introduction.
-     La colonne de texte s efface (display: contents) pour que ses deux enfants se rangent autour des planches. */
-  body.page-guide .feuilleter-texte { display: contents; }
-  /* Devenus enfants de la grille, ils prennent toute la largeur comme les autres (.grille > * ne les voit pas) */
-  body.page-guide .feuilleter .entete-section,
-  body.page-guide .intro-guide { grid-column: 1 / -1; }
-  body.page-guide .feuilleter .entete-section { order: 1; margin-bottom: 0; }
-  body.page-guide .feuilleter-planches { order: 2; margin-inline: calc(var(--gouttiere-large) * -1); }
-  body.page-guide .intro-guide { order: 3; }
-  /* La rangee des trois pages vit dans sa propre grille, apres l introduction : aucun order a poser */
-  body.page-guide .planche-rail,
-  body.page-guide .planche-rangee {
-    display: flex;
-    justify-content: flex-start;
-    gap: var(--e-3);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-inline: var(--gouttiere);
-    padding-bottom: var(--e-2);
-    -webkit-overflow-scrolling: touch;
+  .hero-guide-cine { position: relative; height: clamp(300px, max(52svh, 45.3vw + 260px), 540px); }
+  .hero-guide-voile-haut { background-image: linear-gradient(to bottom, rgba(6, 6, 7, 0.62) 0%, rgba(6, 6, 7, 0) 24%); }
+  .hero-guide-voile-gauche { display: none; }
+  .hero-guide-voile-bas { background-image: var(--voile-fondu); }
+  .hero-guide-haut { margin-top: -96px; }
+  .hero-guide h1 { font-size: var(--t-titre-1); margin-top: var(--e-3); }
+  .hero-guide .chapo { font-size: var(--t-texte); line-height: 1.5; margin-top: var(--e-4); }
+  .hero-guide .hero-resume { margin-top: var(--e-3); }
+  .hero-actions { margin-top: var(--e-5); flex-direction: column; gap: var(--e-3); }
+  .hero-actions > .lien-texte { min-height: var(--zone-touche); }
+  .hero-guide .hero-lecteurs { margin-top: var(--e-3); }
+  .hero-guide-objet { width: 64%; max-width: 340px; margin: var(--e-7) auto 0; }
+  .page-guide .hero-guide .depart { margin-top: var(--e-7); }
+}
+@media (max-width: 599px) { .hero-trace-large { display: none; } }
+@media (min-width: 600px) and (max-width: 899px) {
+  .hero-guide-cine { height: auto; aspect-ratio: 16 / 9; }
+  .hero-trace-portrait { display: none; }
+}
+
+/* ---------- 2. Feuilleter : colonne de lecture a gauche, quatre pages collees a droite ---------- */
+.page-guide .feuilleter { padding-top: calc(var(--rythme-section) + 48px); }
+.feuilleter-grille { display: grid; gap: var(--e-7); }
+.page-guide .feuilleter h2 { max-width: 14ch; }
+.intro-guide h3 { font-size: var(--t-titre-4); margin-bottom: var(--e-5); }
+.intro-guide p { max-width: 62ch; line-height: 1.7; color: var(--texte-2); }
+.intro-guide p:first-of-type { color: var(--texte); }
+.intro-guide .intro-suite { margin-top: var(--e-6); padding-top: var(--e-5); border-top: var(--bordure); }
+.intro-guide .intro-suite a { color: var(--texte); text-decoration: underline; text-decoration-color: var(--filet-champ); text-underline-offset: 0.2em; }
+.intro-guide .intro-suite a:hover { text-decoration-color: var(--texte); }
+.planche-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-4); }
+.planche-rail .planche { box-shadow: var(--ombre-objet); }
+/* Le feuilletage : chaque page arrive de biais et se pose a plat, une par une */
+html.a-js .page-guide .planche-rail .reveal { --r: -3deg; transform: translateY(40px) rotate(var(--r)); }
+html.a-js .page-guide .planche-rail .reveal:nth-child(even) { --r: 2.5deg; }
+html.a-js .page-guide .planche-rail .reveal.est-visible { transform: none; }
+.feuilleter-suite { margin-top: var(--e-8); display: flex; flex-direction: column; align-items: flex-start; }
+@media (min-width: 900px) {
+  .feuilleter-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: start; }
+  .feuilleter-texte { grid-column: 1 / 8; }
+  .feuilleter-planches { grid-column: 9 / -1; position: sticky; top: calc(var(--nav-h) + 32px); }
+}
+/* Telephone : le titre, puis les quatre pages en grille 2 x 2, puis l introduction */
+@media (max-width: 899px) {
+  .page-guide .feuilleter { padding-top: calc(var(--rythme-section) + 24px); }
+  .feuilleter-texte { display: contents; }
+  .page-guide .feuilleter .entete-section { order: 1; margin-bottom: 0; }
+  .feuilleter-planches { order: 2; }
+  .intro-guide { order: 3; }
+  .planche-rail { gap: var(--e-3); }
+}
+
+/* ---------- 3. Pour qui : deux colonnes, un filet vertical ; la coche craie, la croix rouge ---------- */
+.pourqui-grille { display: grid; }
+.pourqui-colonne h3 { display: flex; align-items: center; gap: 14px; font-size: var(--t-titre-3); margin-bottom: var(--e-5); }
+.pourqui-colonne h3::before {
+  content: ''; flex: 0 0 auto; width: 28px; height: 28px; background: var(--texte);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.pourqui-non h3::before {
+  background: var(--rouge);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6l12 12M18 6L6 18' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6l12 12M18 6L6 18' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E");
+}
+.pourqui-colonne p { max-width: 44ch; font-size: var(--t-texte); line-height: 1.9; }
+.pourqui-colonne a { color: var(--texte); text-decoration: underline; text-decoration-color: var(--filet-champ); }
+.pourqui-oui p { color: var(--texte); }
+.pourqui-non p { color: var(--texte-2); }
+.pourqui-non { margin-top: var(--e-7); padding-top: var(--e-7); border-top: var(--bordure); }
+@media (min-width: 900px) {
+  .pourqui-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); }
+  .pourqui-oui { grid-column: 1 / 7; }
+  .pourqui-non { grid-column: 7 / -1; margin-top: 0; padding-top: 0; border-top: 0; padding-left: var(--grille-ecart); border-left: var(--bordure); }
+}
+
+/* ---------- 4. Le sommaire : la carte du circuit pilotee par la lecture ---------- */
+.page-guide .sommaire-section h2 { max-width: 14ch; }
+.sommaire-grille { display: grid; }
+/* Le panneau de la carte : un ecran de telemetrie (lignes verticales a 4,5 %) */
+.sommaire-carte { position: relative; z-index: 1; }
+.sommaire-carte .circuit-virage circle { r: 24px; }
+.sommaire-carte .circuit-virage text { font-size: 19px; }
+.sommaire-carte .circuit-piste { stroke-width: 14; }
+.sommaire-carte .circuit-trace { stroke-width: 6; }
+/* Liste des chapitres */
+.sommaire-partie + .sommaire-partie { margin-top: var(--e-6); padding-top: var(--e-6); border-top: var(--bordure); }
+.sommaire-partie .libelle { margin-bottom: var(--e-2); }
+.sommaire-liste { display: grid; }
+.sommaire-chapitre {
+  position: relative; display: grid; grid-template-columns: 32px minmax(0, 1fr); column-gap: var(--e-4); align-items: start;
+  max-width: none; padding: 14px 0 14px 20px;
+}
+/* Le chapitre lu : un filet rouge de 2 px a sa gauche */
+.sommaire-chapitre::before {
+  content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 2px; background: var(--rouge);
+  transform: scaleY(0); transform-origin: top center; transition: transform var(--d-moyen) var(--ease-sortie);
+}
+.sommaire-chapitre.est-actif::before { transform: none; }
+/* Le chrono devient une pastille du circuit : 32 px, fond rouge, chiffre craie */
+.sommaire-chapitre > .chrono-bloc {
+  display: grid; place-items: center; width: 32px; height: 32px; margin-top: 2px;
+  border-radius: 50%; background: var(--rouge); color: var(--texte);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte); font-size: var(--t-micro); line-height: 1;
+  transition: background-color var(--d-court) var(--ease-sortie), box-shadow var(--d-court) var(--ease-sortie), color var(--d-court) var(--ease-sortie);
+}
+/* Lecture pilotee (classe circuit-anime posee par mouvement.js) : les chapitres pas encore lus ont une pastille eteinte */
+.sommaire-section:has(.circuit-anime) .sommaire-chapitre:not(.est-actif):not(.est-lu) > .chrono-bloc {
+  background: var(--fond-3); box-shadow: inset 0 0 0 1px var(--gris-piste); color: var(--texte-2);
+}
+.sommaire-tete { display: flex; align-items: baseline; gap: var(--e-3); }
+.sommaire-titre {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: var(--t-titre-4); line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; text-wrap: balance;
+}
+.sommaire-conduite { flex: 1 1 var(--e-5); min-width: var(--e-5); border-bottom: 1px dotted var(--filet-champ); transform: translateY(-0.3em); }
+.sommaire-page { flex: 0 0 auto; color: var(--texte-2); white-space: nowrap; }
+.sommaire-ligne { margin-top: 6px; font-size: var(--t-petit); line-height: 1.5; color: var(--texte-2); max-width: 54ch; }
+/* Mention « dans l extrait » : etiquette mono encadree ; chapitre 04 des la version 2, 03 et 05 a partir de la version 3 */
+.sommaire-extrait {
+  display: none; width: fit-content; margin-top: var(--e-2); padding: 4px 8px;
+  border: 1px solid var(--filet-champ); font-size: var(--t-micro); line-height: 1.3; color: var(--texte);
+}
+[data-extrait-version="2"] .sommaire-extrait[data-des="2"],
+[data-extrait-version="3"] .sommaire-extrait[data-des="2"],
+[data-extrait-version="3"] .sommaire-extrait[data-des="3"] { display: block; }
+.sommaire-fin { margin-top: var(--e-8); font-size: var(--t-chapo); line-height: var(--interligne-chapo); max-width: 40ch; color: var(--texte); }
+@media (min-width: 900px) {
+  .sommaire-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: start; }
+  .sommaire-carte {
+    grid-column: 1 / 6; position: sticky; top: calc(var(--nav-h) + 48px);
+    padding: var(--e-6) var(--e-5); background-color: var(--fond-1); border: var(--bordure);
+    background-image: linear-gradient(to right, rgba(var(--texte-rgb), 0.045) 1px, transparent 1px);
+    background-size: calc(100% / 6) 100%; background-position: -1px 0;
   }
-  body.page-guide .planche-rail li { flex: 0 0 200px; scroll-snap-align: start; }
-  body.page-guide .planche-rangee { margin-inline: calc(var(--gouttiere-large) * -1); padding-inline: var(--gouttiere-large); }
-  body.page-guide .planche-rail { padding-inline: var(--gouttiere-large); scroll-padding-inline: var(--gouttiere-large); }
-  body.page-guide .planche-rangee { scroll-padding-inline: var(--gouttiere-large); }
-  body.page-guide .planche-rangee li { flex: 0 0 70%; scroll-snap-align: start; }
+  .sommaire-parties { grid-column: 7 / -1; }
+  .page-guide .sommaire-fin { margin-left: calc((100% + var(--grille-ecart)) / 2); }
 }
-
-/* ---------- 6. Pour qui, pas pour qui : deux colonnes 6/6, un seul filet vertical sur toute leur hauteur ---------- */
-body.page-guide .pourqui-grille { row-gap: 0; }
-body.page-guide .pourqui-colonne h3 { font-size: var(--t-3); margin-bottom: var(--e-5); }
-body.page-guide .pourqui-colonne p { max-width: var(--mesure); }
-body.page-guide .pourqui-non { border-top: var(--bordure); margin-top: var(--e-6); padding-top: var(--e-6); }
-@media (min-width: 900px) {
-  body.page-guide .pourqui-non { border-top: 0; margin-top: 0; padding-top: 0; border-left: var(--bordure); padding-left: var(--e-6); }
-}
-
-/* ---------- 7. Le sommaire : cinq parties, numeros de page reels, filet pointille de conduite ---------- */
-body.page-guide .sommaire-partie + .sommaire-partie { border-top: var(--bordure); margin-top: var(--e-6); padding-top: var(--e-6); }
-body.page-guide .sommaire-partie .libelle { margin-bottom: var(--e-4); }
-body.page-guide .sommaire-liste { display: grid; gap: var(--e-4); }
-body.page-guide .sommaire-chapitre {
-  display: grid;
-  grid-template-columns: 4ch minmax(0, 1fr);
-  gap: var(--e-3);
-  align-items: start;
-  max-width: none;
-}
-body.page-guide .sommaire-chapitre > .chrono { margin-top: 0.35em; }
-body.page-guide .sommaire-tete { display: flex; align-items: baseline; gap: var(--e-2); }
-body.page-guide .sommaire-titre {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-}
-body.page-guide .sommaire-conduite {
-  flex: 1 1 var(--e-5);
-  min-width: var(--e-5);
-  border-bottom: 1px dotted var(--filet-fort);
-  transform: translateY(-0.35em);
-}
-body.page-guide .sommaire-page { color: var(--texte-2); white-space: nowrap; }
-body.page-guide .sommaire-ligne { font-size: var(--t--1); color: var(--texte-2); max-width: 52ch; margin-top: var(--e-1); }
-body.page-guide .sommaire-fin { margin-top: var(--e-7); font-size: var(--t-1); }
-/* Mention « dans l extrait » : chapitre 04 des la version 2, chapitres 03 et 05 a partir de la version 3 */
-body.page-guide .sommaire-extrait { display: none; color: var(--texte-2); margin-top: var(--e-1); }
-body.page-guide [data-extrait-version="2"] .sommaire-extrait[data-des="2"],
-body.page-guide [data-extrait-version="3"] .sommaire-extrait[data-des="2"],
-body.page-guide [data-extrait-version="3"] .sommaire-extrait[data-des="3"] { display: block; }
-
-/* ---------- 8. Les croyances et le virage : le seul dessin du site ---------- */
-body.page-guide .virage-schema { width: 100%; height: auto; max-width: 560px; }
-body.page-guide .virage-hachure { stroke: var(--texte-3); stroke-width: 1; }
-body.page-guide .virage-bord { fill: none; stroke: var(--texte); stroke-width: 1; }
-body.page-guide .virage-sens { fill: none; stroke: var(--texte-3); stroke-width: 1; }
-body.page-guide .virage-apprise { fill: none; stroke: var(--texte-2); stroke-width: 1.5; stroke-dasharray: 6 5; }
-body.page-guide .virage-grip { fill: none; stroke: var(--rouge); stroke-width: 2; stroke-linecap: butt; }
-body.page-guide .virage-point { fill: var(--texte); }
-body.page-guide .virage-point-gaz { fill: var(--rouge); }
-body.page-guide .virage-texte {
-  font-family: var(--police-mono);
-  font-size: 15px;
-  fill: var(--texte-2);
-}
-body.page-guide .virage-texte-titre { fill: var(--texte); }
-body.page-guide .croyance-libelle { color: var(--texte-2); margin-bottom: var(--e-2); }
-body.page-guide .croyance-phrase {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-  color: var(--texte-2);
-  margin-bottom: var(--e-3);
-}
-body.page-guide .croyance-phrase s { text-decoration-thickness: 1px; }
-body.page-guide .croyance-reponse { max-width: 48ch; }
+/* Telephone : la carte reste collee en haut de la section pendant que la liste defile dessous */
 @media (max-width: 899px) {
-  body.page-guide .virage { margin-bottom: var(--e-4); }
+  .sommaire-carte {
+    position: sticky; top: var(--nav-h); margin-inline: calc(-1 * var(--gouttiere-large));
+    height: calc(clamp(150px, 46vw, 220px) + 40px); padding: var(--e-3) var(--gouttiere-large) 28px;
+    background: linear-gradient(to bottom, var(--fond-0) 80%, rgba(6, 6, 7, 0));
+  }
+  .sommaire-carte .circuit { width: auto; height: 100%; margin-inline: auto; }
+  .sommaire-carte .circuit-virage circle { r: 22px; }
+  .sommaire-carte .circuit-virage text { display: none; }
+  .sommaire-parties { margin-top: var(--e-4); }
+  /* Le numero de page reste a droite du titre, sans filet de conduite (la place manque) */
+  .sommaire-tete { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--e-3); align-items: start; }
+  .sommaire-conduite { display: none; }
+  .sommaire-page { padding-top: 2px; }
 }
 
-/* ---------- 9. Preuves : trois messages cote a cote des 900 px (.quotes-trois de base.css), comme sur l accueil ---------- */
-body.page-guide .quotes-mention { margin-top: var(--e-6); }
-
-/* ---------- 10. L auteur : photo petite a gauche, texte a droite ---------- */
-body.page-guide .auteur .grille { align-items: start; }
-body.page-guide .auteur-photo .photo { max-width: 280px; }
-body.page-guide .auteur-texte h2 { font-size: var(--t-3); margin-bottom: var(--e-5); }
-body.page-guide .auteur-texte p { max-width: 52ch; }
-body.page-guide .auteur-texte .chrono-ligne { margin-top: var(--e-5); }
+/* ---------- 5. Trois croyances : le schema du virage, les phrases barrees en rouge ---------- */
+.page-guide .croyances h2 { max-width: 16ch; }
+.croyances-grille { display: grid; gap: var(--e-7); }
+.virage-schema { width: 100%; height: auto; max-width: 560px; overflow: visible; }
+.virage-hachure { stroke: rgba(var(--texte-rgb), 0.1); stroke-width: 1; }
+.virage-bord { fill: none; stroke: rgba(var(--texte-rgb), 0.35); stroke-width: 1.5; }
+.virage-sens { fill: none; stroke: var(--texte-3); stroke-width: 1.5; }
+.virage-apprise { fill: none; stroke: rgba(var(--texte-rgb), 0.55); stroke-width: 2; stroke-dasharray: 2 7; stroke-linecap: round; }
+.virage-grip { fill: none; stroke: var(--rouge); stroke-width: 3; stroke-linecap: butt; }
+.virage-point { fill: var(--rouge); }
+.virage-texte { font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: 14px; fill: var(--texte-2); }
+.virage-texte-titre { fill: var(--texte); font-weight: var(--graisse-moyenne); }
+.croyance-libelle { color: var(--texte-2); margin-bottom: var(--e-3); }
+.croyance-phrase {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: var(--t-titre-4); line-height: 1.05; letter-spacing: 0.02em; text-transform: uppercase;
+  color: rgba(var(--texte-rgb), 0.7); margin-bottom: var(--e-4); text-wrap: balance;
+}
+/* Le trait rouge de 2 px qui barre la phrase : un aplat par ligne, dessine de gauche a droite a l apparition */
+.croyance-phrase s {
+  text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  background: linear-gradient(var(--rouge), var(--rouge)) no-repeat 0 52% / 100% 2px;
+  transition: background-size 450ms var(--ease-sortie) 200ms;
+}
+html.a-js .croyance.reveal:not(.est-visible) .croyance-phrase s { background-size: 0% 2px; }
+.croyance-reponse { max-width: 48ch; }
+.page-guide .croyances .filet-apex { width: 100%; margin-block: var(--e-6); border-top: var(--bordure); }
 @media (min-width: 900px) {
-  body.page-guide .auteur-photo { grid-column: 1 / span 3; }
-  body.page-guide .auteur-texte { grid-column: 4 / span 6; }
+  .croyances-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: start; }
+  .virage { grid-column: 1 / 6; position: sticky; top: calc(var(--nav-h) + 48px); }
+  .croyances-liste { grid-column: 7 / -1; }
+}
+/* Telephone : le schema en pleine largeur, ses textes agrandis pour rester lisibles (12 px a l ecran) */
+@media (max-width: 899px) {
+  .virage-texte { font-size: 17px; }
+}
+/* Sous 600 px le schema est reduit a 0,64 : il deborde dans les gouttieres (la route file hors de l ecran a droite,
+   le bord exterieur garde 21 px a gauche) et ses textes passent a 18 unites, soit 12,5 px a l ecran sur 390 px */
+@media (max-width: 599px) {
+  .virage { margin-inline: calc(var(--gouttiere-large) * -1); }
+  .virage-schema { max-width: none; }
+  .virage-texte { font-size: 18px; }
+  /* La legende (les 4 derniers elements : deux traits, deux libelles) recule de 50 unites pour tenir dans l ecran */
+  /* Libelles aeres : 22 unites entre les lignes au lieu de 18 (les lignes ne se touchent plus a 12,5 px),
+     le premier descend de 6 unites pour s ecarter du bord interieur et du trait rouge, la legende de 4 */
+  .virage-textes > :nth-last-child(-n + 4) { transform: translate(-50px, 4px); }
+  .virage-textes > :nth-child(1) { transform: translateY(6px); }
+  .virage-textes > :nth-child(2) { transform: translateY(10px); }
+  .virage-textes > :nth-child(3) { transform: translateY(4px); }
+  .virage-textes > :nth-child(4) { transform: translateY(8px); }
+  .virage-textes > :nth-child(5) { transform: translateY(12px); }
+  .virage-textes > :nth-child(6) { transform: none; }
+  .virage-textes > :nth-child(7) { transform: translateY(4px); }
+  .virage-textes > :nth-child(8) { transform: translateY(8px); }
 }
 
-/* ---------- 11. Prix et garantie : la seule bande de prix du site ---------- */
-body.page-guide .bloc-prix { padding-block: var(--e-9); }
-body.page-guide .prix-lignes { display: grid; gap: var(--e-2); margin-top: var(--e-5); }
-body.page-guide .prix-lignes li { max-width: none; }
-body.page-guide .prix-detail .liste { margin-bottom: var(--e-6); }
-body.page-guide .prix-action { display: grid; gap: 0; }
-body.page-guide .prix-action .bouton-sous { margin-top: var(--e-3); }
-body.page-guide .prix-action .bouton-cgv { margin-top: var(--e-1); }
-body.page-guide .prix-garantie { margin-top: var(--e-6); font-size: var(--t-1); line-height: 1.45; max-width: none; }
+/* ---------- 6. Preuves : decalage inverse de l accueil, la premiere colonne est la plus basse ---------- */
+.preuves-titre { max-width: 18ch; margin-bottom: var(--titre-contenu); }
+.page-guide .quotes { --reveal-pas: 80ms; }
+.page-guide .quotes-mention { margin-top: var(--e-8); font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro); color: var(--texte-3); max-width: none; }
+@media (min-width: 900px) {
+  .page-guide .quotes.quotes-trois .quote-colonne:nth-child(1) { margin-top: 128px; }
+  .page-guide .quotes.quotes-trois .quote-colonne:nth-child(2) { margin-top: 64px; }
+  .page-guide .quotes.quotes-trois .quote-colonne:nth-child(3) { margin-top: 0; }
+}
+/* Telephone : la bande se fait glisser, les citations sont la tout de suite */
+@media (max-width: 899px) { html.a-js .page-guide .quotes .reveal { opacity: 1; transform: none; } }
 
-/* ---------- 12. FAQ : marqueur en blanc casse, le rouge reste sur ce qui se clique ---------- */
-body.page-guide .faq summary { font-weight: var(--graisse-libelle-fort); }
-body.page-guide .faq details > p { max-width: var(--mesure); }
-body.page-guide .faq a { color: var(--texte); }
+/* ---------- 7. L auteur : la photo en contre-jour a gauche, le texte a droite ---------- */
+.auteur-grille { display: grid; gap: var(--e-7); }
+.auteur-photo { aspect-ratio: 4 / 5; max-width: 460px; }
+.auteur-photo img { object-position: 50% 40%; }
+.auteur-texte h2 { margin-bottom: var(--e-6); }
+.auteur-texte p:not(.chrono-ligne) { font-size: var(--t-chapo); line-height: 1.45; max-width: 40ch; }
+.auteur-texte .chrono-ligne { margin-top: var(--e-6); padding-top: var(--e-4); border-top: var(--bordure); max-width: 52ch; }
+@media (min-width: 900px) {
+  .auteur-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: center; }
+  .auteur-photo { grid-column: 1 / 5; max-width: none; }
+  .auteur-texte { grid-column: 6 / 12; }
+}
 
-/* ---------- 13. Dernier bouton ---------- */
-body.page-guide .final-titre { font-size: var(--t-4); margin-bottom: var(--e-5); }
-body.page-guide .final-action { margin-top: var(--e-6); display: flex; flex-direction: column; align-items: flex-start; }
-/* La photo en piste : colonnes 1 a 5 sur ordinateur, au-dessus du titre sur telephone */
-body.page-guide .final .grille { align-items: center; }
-body.page-guide .final-photo { aspect-ratio: 3 / 2; border: var(--bordure); }
-body.page-guide .final-photo img { object-position: 60% 50%; }
-@media (min-width: 900px) { body.page-guide .final-photo { grid-column: 1 / span 5; grid-row: 1; } body.page-guide .final-colonne { grid-row: 1; } }
+/* ---------- 8. Le prix : la bande de donnees, sur la grille de telemetrie ---------- */
+.page-guide .bloc-prix { background: var(--fond-1); border-top: var(--bordure); border-bottom: var(--bordure); }
+.page-guide .bloc-prix .conteneur { --telemetrie-debord: var(--rythme-section); }
+.prix-grille { display: grid; gap: var(--e-7); }
+/* Le prix en Hubot Sans condensee, chiffres tabulaires : en mono, chaque signe prenait une cellule entiere et la
+   virgule comme l espace avant l euro laissaient des trous (« 16 ,99  € »). Ici la virgule et l euro gardent leur
+   chasse naturelle, comme un numero de course. Le compteur defile dans la meme police (memes largeurs de chiffres),
+   et s il entoure un jour ses separateurs ou son unite d un span, ils restent a la taille du texte d origine :
+   aucun saut quand le texte exact revient en fin de defilement. */
+.prix-colonne .chrono-grand strong {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: calc(var(--t-chiffre) * 1.2); line-height: 0.92; letter-spacing: 0;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.prix-colonne .chrono-grand :is(.chiffre-sep, .chiffre-unite) { margin: 0; font: inherit; vertical-align: baseline; }
+.prix-lignes { margin-top: var(--e-6); border-top: var(--bordure); max-width: 30ch; }
+.prix-lignes li { max-width: none; padding-block: 10px; border-bottom: var(--bordure); color: var(--texte-2); }
+.prix-detail .liste { gap: var(--e-4); margin-bottom: var(--e-7); }
+.prix-detail .liste li { max-width: 56ch; }
+.prix-action { display: grid; }
+.prix-action .bouton-sous { margin-top: var(--e-3); }
+.prix-action .bouton-cgv { margin-top: var(--e-1); }
+.prix-garantie { margin-top: var(--e-7); padding-top: var(--e-6); border-top: var(--bordure); font-size: var(--t-chapo); line-height: 1.45; max-width: none; color: var(--texte); }
+@media (min-width: 900px) {
+  .prix-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: start; }
+  /* Le prix reste sous les yeux pendant qu on lit ce qui est livre */
+  .prix-colonne { grid-column: 1 / 6; position: sticky; top: calc(var(--nav-h) + 48px); }
+  .prix-detail { grid-column: 7 / -1; }
+}
 
-/* ---------- 14. Barre collante : filet de depart repris, cachee devant le prix et le bouton final ---------- */
-body.page-guide .barre { border-top: 2px solid var(--rouge); padding-bottom: env(safe-area-inset-bottom, 0); }
-body.page-guide .barre-texte { display: flex; align-items: center; gap: var(--e-2); white-space: nowrap; }
-/* Le bouton et sa mention CGV restent groupes ; la barre grandit d une ligne, le bas de page compense */
-body.page-guide .barre { padding-top: var(--e-2); padding-bottom: calc(var(--e-2) + env(safe-area-inset-bottom, 0px)); }
-body.page-guide .barre-achat { display: flex; flex-direction: column; align-items: stretch; flex: 1 1 auto; }
-body.page-guide .barre-achat .bouton-cgv { margin-top: 2px; text-align: center; }
+/* ---------- 9. FAQ : colonnes 1 a 8 ---------- */
+.page-guide .faq a { color: var(--texte); text-decoration: underline; text-decoration-color: var(--filet-champ); }
+@media (min-width: 900px) {
+  .faq-colonne { width: calc((100% - 11 * var(--grille-ecart)) / 12 * 8 + 7 * var(--grille-ecart)); }
+}
+
+/* ---------- 10. Le dernier bouton : la photo collee au bord gauche, le titre rempli mot a mot ---------- */
+.page-guide .final { container-type: inline-size; }
+.final-grille { display: grid; gap: var(--e-7); }
+.final-photo { aspect-ratio: 3 / 2; margin-inline: calc(-1 * var(--gouttiere-large)); }
+.final-photo img { object-position: 60% 50%; }
+.final-titre { max-width: 14ch; margin-bottom: var(--e-6); }
+.final-colonne .chapo { max-width: 40ch; }
+.final-action { margin-top: var(--e-7); display: flex; flex-direction: column; align-items: flex-start; }
+@media (min-width: 900px) {
+  .final-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: center; }
+  .final-photo {
+    --bord: max(var(--gouttiere-large), calc((100cqw - var(--conteneur)) / 2 + var(--gouttiere-large)));
+    grid-column: 1 / 6; margin-inline: calc(-1 * var(--bord)) 0;
+  }
+  .final-colonne { grid-column: 7 / -1; }
+}
+
+/* ---------- 11. Barre d achat : bord haut en barre de secteurs, cachee devant le prix et le bouton final ---------- */
+.page-guide .barre { padding-top: var(--e-2); padding-bottom: calc(var(--e-2) + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 600px) { .page-guide .barre-texte { display: flex; align-items: center; gap: var(--e-3); white-space: nowrap; } }
+.page-guide .barre-texte .chrono { font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal); font-size: 0.9375rem; letter-spacing: 0; text-transform: none; color: var(--texte-2); }
+.page-guide .barre-achat { display: flex; flex-direction: column; align-items: stretch; flex: 1 1 auto; }
+.page-guide .barre-achat .bouton-cgv { margin-top: 2px; text-align: center; font-size: var(--t-micro); }
 body.page-guide.a-barre { padding-bottom: calc(var(--barre-h) + var(--e-6)); }
-@media (min-width: 600px) {
-  body.page-guide .barre-achat { flex: 0 0 auto; }
-}
-body.page-guide .barre.est-cachee { transform: translateY(100%); }
+@media (min-width: 600px) { .page-guide .barre-achat { flex: 0 0 auto; } }
+.page-guide .barre.est-cachee { transform: translateY(100%); }
 
-/* ---------- 15. Feuilletage : dialog natif, page en 640 x 906 centree ---------- */
-body.page-guide .dialog-planche {
-  border: 0;
-  padding: 0;
-  margin: auto;
-  max-width: min(100vw, 640px);
-  max-height: 100vh;
-  background: transparent;
-  overflow: visible;
+/* ---------- 12. Fenetre des pages du guide ---------- */
+.dialog-planche {
+  border: 0; padding: 0; margin: auto; max-width: min(100vw, 640px); max-height: 100svh;
+  background: transparent; overflow: visible; color: var(--texte);
+  opacity: 0; scale: 0.96;
+  transition: opacity 160ms var(--ease-sortie), scale 160ms var(--ease-sortie), overlay 160ms allow-discrete, display 160ms allow-discrete;
 }
-body.page-guide .dialog-planche::backdrop { background: rgba(7, 7, 7, 0.95); }
-body.page-guide .dialog-planche img {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: calc(100vh - var(--e-8));
-  object-fit: contain;
-  border: var(--bordure);
+.dialog-planche[open] { opacity: 1; scale: 1; transition-duration: var(--d-court); }
+@starting-style { .dialog-planche[open] { opacity: 0; scale: 0.96; } }
+.dialog-planche::backdrop {
+  background: rgba(6, 6, 7, 0.92); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity var(--d-court) var(--ease-sortie), overlay var(--d-court) allow-discrete, display var(--d-court) allow-discrete;
 }
-body.page-guide .dialog-fermer {
-  position: fixed;
-  top: var(--e-4);
-  right: var(--e-4);
-  background: var(--fond-0);
+.dialog-planche[open]::backdrop { opacity: 1; }
+@starting-style { .dialog-planche[open]::backdrop { opacity: 0; } }
+.dialog-planche img {
+  display: block; width: 100%; height: auto; max-height: 90svh; object-fit: contain;
+  outline: 1px solid var(--filet-fort); outline-offset: -1px;
+}
+.dialog-fermer { position: fixed; top: var(--e-4); right: var(--e-4); background: var(--fond-0); }
+@media (prefers-reduced-transparency: reduce) { .dialog-planche::backdrop { background: var(--fond-0); -webkit-backdrop-filter: none; backdrop-filter: none; } }
+
+/* ---------- 13. Navigation : sur sa propre page, le bouton « Le guide » de la barre telephone ferait doublon ---------- */
+.page-guide .nav-guide-court { display: none; }
+
+/* ---------- 14. Mouvement reduit : tout est en place, les survols changent sans bouger ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html.a-js .page-guide .planche-rail .reveal { transform: none; }
+  .dialog-planche { scale: 1; }
 }
 
-/* ---------- 16. Navigation : sur sa propre page, le bouton « Le guide » de la barre telephone ferait doublon ---------- */
-body.page-guide .nav-guide-court { display: none; }
+@media print {
+  .hero-trace, .sommaire-carte { display: none !important; }
+  .page-guide .hero-guide { color: #000; }
+}

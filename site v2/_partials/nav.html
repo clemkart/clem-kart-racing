@@ -1,17 +1,20 @@
 <!-- Partial nav : quatre destinations (le guide, l analyse d onboard, le consulting en piste, les marques).
      Le guide est un bouton contour, jamais rouge : le seul bouton rouge d un ecran est celui de la page.
-     Sous 1024 px : le bouton « Le guide » reste visible a cote de « Menu » (des 360 px), et le menu plein ecran
-     donne a chaque destination une ligne qui dit ce que c est. L extrait gratuit n apparait que dans ce menu
-     (sur ordinateur il est dans le hero de l accueil, la page du guide et le pied de page). -->
+     1100 px et plus : trois liens en ligne et le bouton « Le guide ». Sous 1100 px : « Le guide » et « Menu »,
+     puis le menu plein ecran (une ligne par destination, numerotee, avec ce que c est).
+     L extrait gratuit n apparait que dans ce menu (sur ordinateur il est dans l accueil, le guide et le pied).
+     Le bouton porte ses deux libelles superposes (Menu, Fermer) : sa largeur ne change jamais, « Le guide » ne bouge pas.
+     Bord bas : la barre de secteurs (progression de la lecture, en CSS). -->
 <a class="evitement" href="#contenu">Aller au contenu</a>
 <header class="nav">
   <div class="conteneur nav-inner">
-    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil">Clem <span>Kart</span> Racing</a>
+    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil"><svg class="symbole" viewBox="0 0 22 22" width="22" height="22" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg><span class="nav-marque-nom"><span>Clem Kart</span> <span>Racing</span></span></a>
     <div class="nav-outils">
       <a class="bouton bouton-fantome bouton-petit nav-guide-court" href="{{routes.guide}}" data-cta="nav-mobile">Le guide</a>
-      <button class="nav-menu-bouton" type="button" aria-expanded="false" aria-controls="nav-liens">Menu</button>
+      <button class="nav-menu-bouton" type="button" aria-expanded="false" aria-controls="nav-liens"><span class="nav-menu-libelle nav-menu-ouvrir">Menu</span><span class="nav-menu-libelle nav-menu-fermer" aria-hidden="true">Fermer</span></button>
     </div>
-    <nav class="nav-liens" id="nav-liens" aria-label="Navigation principale">
+    <nav class="nav-liens" id="nav-liens" aria-label="Navigation principale" data-lenis-prevent>
+      <svg class="nav-trace" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M100 1 C 98 34, 90 56, 62 66 S 8 82, 0 99" vector-effect="non-scaling-stroke"/></svg>
       <a class="nav-lien nav-lien-guide" href="{{routes.guide}}" data-cta="nav-menu"><span class="nav-lien-titre">Le guide</span><span class="nav-lien-sous">{{guide.format}}, {{guide.pages}} pages · {{guide.prix_affiche}}</span></a>
       <a class="nav-lien" href="{{routes.onboard_offre}}"><span class="nav-lien-titre">Analyse d’onboard</span><span class="nav-lien-sous">Ta vidéo commentée · {{debrief.prix_affiche}}</span></a>
       <a class="nav-lien" href="{{routes.journee}}"><span class="nav-lien-titre">{{journee.titre}}</span><span class="nav-lien-sous">Une journée avec moi · {{journee.prix_affiche}}</span></a>
@@ -20,4 +23,5 @@
       <a class="bouton bouton-fantome nav-guide" href="{{routes.guide}}" data-cta="nav">Le guide</a>
     </nav>
   </div>
+  <div class="secteurs" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
 </header>

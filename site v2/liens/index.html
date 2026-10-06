@@ -12,90 +12,104 @@
 <meta property="og:url" content="{{sites.url}}{{routes.liens}}">
 <meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
 <meta name="twitter:image" content="{{sites.url}}/photos/og-image.jpg">
-<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/clement-portrait-640.webp 640w, /photos/clement-portrait-1280.webp 1280w" imagesizes="(max-width: 452px) calc(100vw - 32px), 420px" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/piste-25-contre-jour-640.webp 640w, /photos/piste-25-contre-jour-1280.webp 1280w, /photos/piste-25-contre-jour-1600.webp 1600w" imagesizes="(min-width: 900px) 58vw, 100vw" fetchpriority="high">
 <link rel="stylesheet" href="/assets/page-liens.css">
 </head>
 <body class="page-liens">
-<!-- Page de liens des bios Instagram, TikTok et YouTube : une colonne, aucun menu, aucun formulaire, aucun compteur.
-     Aucun lien Facebook tant que reseaux.facebook est vide dans la config.
-     Les cinq boutons sont de vrais liens. site.js propage les UTM et envoie bio_click (attribut data-bio).
-     Ordre : le guide (seul bouton rouge), l analyse d onboard (directement sur l offre, sans le quiz),
+<!-- Page de liens des bios Instagram, TikTok et YouTube (direction V5, 5.2) : aucune navigation,
+     aucun formulaire, aucune bibliotheque. Aucun lien Facebook tant que reseaux.facebook est vide dans la config.
+     Les cinq liens sont de vrais liens. site.js propage les UTM et envoie bio_click (attribut data-bio).
+     Ordre : le guide (seule case rouge, la pole), l analyse d onboard (directement sur l offre, sans le quiz),
      le consulting en piste, les marques (vouvoiement), le site. L extrait gratuit reste en lien texte dessous.
-     Chaque bouton : un titre, une sous-ligne courte, le prix a droite en mono quand il y en a un, une fleche.
-     Photo : photos/clement-portrait (couleur, 4:5), cadree sur le visage. Sur telephone le cadre passe en 16:10 :
-     le visage reste lisible au-dessus de la plaque et les trois offres tiennent dans le premier ecran d Instagram. -->
-<main id="contenu" class="conteneur conteneur-liens liens-page">
+     Photo : piste-25-contre-jour (4:5), Clement de face dans son kart, casque et visiere baissee : aucun visage.
+     Telephone : bande photo de 40svh, le nom remonte de 64 px dessus, les feux en haut a gauche de la bande.
+     Ordinateur : photo en panneau fixe a droite (42 % jusqu au bord), colonne de 540 px a gauche.
+     Les cinq liens forment une grille de depart : P2 et P4 decales a gauche, meme bord droit (prix et fleches
+     en une colonne), position P1 a P5 ecrite par CSS (data-position).
+     Mouvement (interface.js, une fois par session) : les feux s allument un par un, restent allumes, s eteignent ;
+     a l extinction le trait rouge se trace sous le nom et la grille part en cascade. Fini avant 1,2 s.
+     La photo passe de l echelle 1,06 a 1. Rien de cache : tout est cliquable des la premiere image. -->
+<main id="contenu" class="liens-page">
 
-  <header class="liens-tete entree">
-    <div class="photo liens-photo">
-      <picture>
-        <source type="image/webp" srcset="/photos/clement-portrait-640.webp 640w, /photos/clement-portrait-1280.webp 1280w" sizes="(max-width: 452px) calc(100vw - 32px), 420px">
-        <img src="/photos/clement-portrait-640.jpg" srcset="/photos/clement-portrait-640.jpg 640w, /photos/clement-portrait-1280.jpg 1280w" sizes="(max-width: 452px) calc(100vw - 32px), 420px" width="640" height="800" alt="{{marque.auteur}}, pilote de karting, de face en veste d’équipe grise, regard droit vers l’objectif, au bord d’une piste" fetchpriority="high" decoding="async">
-      </picture>
-    </div>
-    <h1 class="plaque plaque-titre liens-nom">{{marque.auteur}}</h1>
-    <p class="liens-marque">{{marque.nom}}</p>
-    <p class="liens-faits">{{faits.ligne}}</p>
-  </header>
+  <div class="liens-photo cine">
+    <picture>
+      <source type="image/webp" srcset="/photos/piste-25-contre-jour-640.webp 640w, /photos/piste-25-contre-jour-1280.webp 1280w, /photos/piste-25-contre-jour-1600.webp 1600w" sizes="(min-width: 900px) 58vw, 100vw" width="640" height="800">
+      <img src="/photos/piste-25-contre-jour-640.jpg" srcset="/photos/piste-25-contre-jour-640.jpg 640w, /photos/piste-25-contre-jour-1280.jpg 1280w, /photos/piste-25-contre-jour-1600.jpg 1600w" sizes="(min-width: 900px) 58vw, 100vw" width="640" height="800" alt="Clément Daniel au volant de son kart rouge numéro 25, face à l’objectif, dans la lumière dorée d’une fin de journée" fetchpriority="high" decoding="async">
+    </picture>
+    <span class="voile liens-voile-haut" aria-hidden="true"></span>
+    <span class="voile liens-voile-bas" aria-hidden="true"></span>
+  </div>
 
-  <nav class="liens-boutons entree" aria-label="Mes liens">
-    <a class="lien-bio lien-bio-principal" href="{{routes.guide}}" data-bio="guide" data-bouton="guide" data-position="1">
-      <span class="lien-bio-titre">Le guide</span>
-      <span class="lien-bio-prix">{{guide.prix_affiche}}</span>
-      <span class="lien-bio-sous">{{guide.titre}} · {{guide.format}}</span>
-      <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="lien-bio" href="{{routes.onboard_offre}}" data-bio="onboard" data-bouton="onboard" data-position="2">
-      <span class="lien-bio-titre">Analyse de ton onboard</span>
-      <span class="lien-bio-prix">{{debrief.prix_affiche}}</span>
-      <span class="lien-bio-sous">Ta vidéo commentée et 3 priorités, sous <span class="insecable">{{delais.debrief_h}} h</span></span>
-      <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="lien-bio" href="{{routes.journee}}" data-bio="journee" data-bouton="journee" data-position="3">
-      <span class="lien-bio-titre">{{journee.titre}}</span>
-      <span class="lien-bio-prix">{{journee.prix_affiche}}</span>
-      <span class="lien-bio-sous">{{journee.sous_ligne}}</span>
-      <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="lien-bio" href="{{routes.marques}}" data-bio="marques" data-bouton="marques" data-position="4">
-      <span class="lien-bio-titre">Marques et sponsors</span>
-      <span class="lien-bio-sous">Sponsoring de saison ou vidéos pour votre marque</span>
-      <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
-    </a>
-    <a class="lien-bio lien-bio-site" href="{{routes.accueil}}" data-bio="site" data-bouton="site" data-position="5">
-      <span class="lien-bio-titre">Le site</span>
-      <span class="lien-bio-sous">Mon parcours, mes vidéos, tout le reste</span>
-      <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
-    </a>
-  </nav>
+  <div class="liens-colonne">
+    <header class="liens-tete">
+      <div class="feux liens-feux" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="liens-titre">
+        <h1 class="liens-nom">{{marque.auteur}}</h1>
+        <span class="liens-trait" aria-hidden="true"></span>
+      </div>
+      <p class="liens-marque"><svg class="symbole" viewBox="0 0 22 22" width="16" height="16" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg>{{marque.nom}}</p>
+      <p class="liens-faits">{{faits.ligne}}</p>
+    </header>
 
-  <p class="liens-extrait">Pas encore prêt ? <a href="{{routes.extrait_page}}" data-cta="liens-extrait">{{extrait.appel_courant}}</a></p>
-
-  <ul class="liens-confiance" aria-label="Garanties">
-    <li>Paiement sécurisé par Stripe</li>
-    <li>Garantie <span class="insecable">{{garantie_jours}} jours</span> en plus de tes droits légaux</li>
-    <li>Analyse livrée sous <span class="insecable">{{delais.debrief_h}} h</span></li>
-  </ul>
-
-  <ul class="liens-reseaux" aria-label="Réseaux">
-    <li>
-      <a href="{{reseaux.instagram}}" target="_blank" rel="noopener" aria-label="Instagram de {{marque.nom}}">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3"/></svg>
+    <nav class="liens-boutons" aria-label="Mes liens">
+      <a class="lien-bio lien-bio-principal" href="{{routes.guide}}" data-bio="guide" data-bouton="guide" data-position="1">
+        <span class="lien-bio-titre">Le guide</span>
+        <span class="lien-bio-prix">{{guide.prix_affiche}}</span>
+        <span class="lien-bio-sous">{{guide.titre}} · {{guide.format}}</span>
+        <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>
-    </li>
-    <li>
-      <a href="{{reseaux.tiktok}}" target="_blank" rel="noopener" aria-label="TikTok de {{marque.nom}}">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M16.5 3c.3 2.2 1.7 3.8 4 4v3c-1.5 0-2.9-.5-4-1.3V15a5.5 5.5 0 1 1-5.5-5.5c.3 0 .7 0 1 .1v3.1a2.5 2.5 0 1 0 1.5 2.3V3h3z"/></svg>
+      <a class="lien-bio" href="{{routes.onboard_offre}}" data-bio="onboard" data-bouton="onboard" data-position="2">
+        <span class="lien-bio-titre">Analyse de ton onboard</span>
+        <span class="lien-bio-prix">{{debrief.prix_affiche}}</span>
+        <span class="lien-bio-sous">Ta vidéo commentée et 3 priorités, sous <span class="insecable">{{delais.debrief_h}} h</span></span>
+        <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>
-    </li>
-    <li>
-      <a href="{{reseaux.youtube}}" target="_blank" rel="noopener" aria-label="Chaîne YouTube de {{marque.nom}}">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M22 8.2c-.2-1.3-1-2.2-2.2-2.4C17.8 5.5 12 5.5 12 5.5s-5.8 0-7.8.3C3 6 2.2 6.9 2 8.2 1.7 10 1.7 12 1.7 12s0 2 .3 3.8c.2 1.3 1 2.2 2.2 2.4 2 .3 7.8.3 7.8.3s5.8 0 7.8-.3c1.2-.2 2-1.1 2.2-2.4.3-1.8.3-3.8.3-3.8s0-2-.3-3.8zM10 15V9l5.2 3L10 15z"/></svg>
+      <a class="lien-bio" href="{{routes.journee}}" data-bio="journee" data-bouton="journee" data-position="3">
+        <span class="lien-bio-titre">{{journee.titre}}</span>
+        <span class="lien-bio-prix">{{journee.prix_affiche}}</span>
+        <span class="lien-bio-sous">{{journee.sous_ligne}}</span>
+        <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>
-    </li>
-  </ul>
+      <a class="lien-bio" href="{{routes.marques}}" data-bio="marques" data-bouton="marques" data-position="4">
+        <span class="lien-bio-titre">Marques et sponsors</span>
+        <span class="lien-bio-sous">Sponsoring de saison ou vidéos pour votre marque</span>
+        <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="lien-bio lien-bio-site" href="{{routes.accueil}}" data-bio="site" data-bouton="site" data-position="5">
+        <span class="lien-bio-titre">Le site</span>
+        <span class="lien-bio-sous">Mon parcours, mes vidéos, tout le reste</span>
+        <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
+      </a>
+    </nav>
 
-  <p class="mention liens-fin"><a href="{{routes.mentions}}">Mentions légales</a> <a href="{{routes.cgv}}">CGV</a> <a href="{{routes.confidentialite}}">Confidentialité</a> <a href="{{routes.retractation}}">Renoncer au contrat ici</a></p>
+    <p class="liens-extrait">Pas encore prêt ? <a href="{{routes.extrait_page}}" data-cta="liens-extrait">{{extrait.appel_courant}}</a></p>
+
+    <ul class="liens-confiance" aria-label="Garanties">
+      <li>Paiement sécurisé par Stripe</li>
+      <li>Garantie <span class="insecable">{{garantie_jours}} jours</span> en plus de tes droits légaux</li>
+      <li>Analyse livrée sous <span class="insecable">{{delais.debrief_h}} h</span></li>
+    </ul>
+
+    <ul class="liens-reseaux" aria-label="Réseaux">
+      <li>
+        <a href="{{reseaux.instagram}}" target="_blank" rel="noopener" aria-label="Instagram de {{marque.nom}}">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="{{reseaux.tiktok}}" target="_blank" rel="noopener" aria-label="TikTok de {{marque.nom}}">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M16.5 3c.3 2.2 1.7 3.8 4 4v3c-1.5 0-2.9-.5-4-1.3V15a5.5 5.5 0 1 1-5.5-5.5c.3 0 .7 0 1 .1v3.1a2.5 2.5 0 1 0 1.5 2.3V3h3z"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="{{reseaux.youtube}}" target="_blank" rel="noopener" aria-label="Chaîne YouTube de {{marque.nom}}">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M22 8.2c-.2-1.3-1-2.2-2.2-2.4C17.8 5.5 12 5.5 12 5.5s-5.8 0-7.8.3C3 6 2.2 6.9 2 8.2 1.7 10 1.7 12 1.7 12s0 2 .3 3.8c.2 1.3 1 2.2 2.2 2.4 2 .3 7.8.3 7.8.3s5.8 0 7.8-.3c1.2-.2 2-1.1 2.2-2.4.3-1.8.3-3.8.3-3.8s0-2-.3-3.8zM10 15V9l5.2 3L10 15z"/></svg>
+        </a>
+      </li>
+    </ul>
+
+    <p class="mention liens-fin"><a href="{{routes.mentions}}">Mentions légales</a> <a href="{{routes.cgv}}">CGV</a> <a href="{{routes.confidentialite}}">Confidentialité</a> <a href="{{routes.retractation}}">Renoncer au contrat ici</a></p>
+  </div>
 
 </main>
 </body>

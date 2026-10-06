@@ -1,0 +1,7 @@
+<!-- Partial hud : les deux releves en coin (ordinateur, 1024 px et plus), juste apres le pied de page.
+     Pages sans barre d achat seulement : accueil, /marques, /extrait, /tableur-reglages, pages legales.
+     Decoratifs (aria-hidden). Le nom de section et le chrono sont ecrits par interface.js :
+     le HTML de depart ne contient que S1 et 0:00.0 ; le releve de droite reste invisible jusqu au premier
+     temps de secteur, puis apparait en fondu avec son compteur. -->
+<div class="hud hud-gauche" aria-hidden="true"><span class="hud-segments"><i class="est-en-cours"></i><i></i><i></i></span><b class="hud-secteur">S1</b><span class="hud-section"></span></div>
+<div class="hud hud-droite" aria-hidden="true"><span>Tour</span><b class="hud-chrono">0:00.0</b></div>

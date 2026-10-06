@@ -1,18 +1,27 @@
 <!-- Partial head : balises communes a toutes les pages. La page ecrit ensuite title, description,
      canonical, og:* et, pour les pages merci, meta robots noindex.
-     Image de partage : chaque page ecrit og:image et twitter:image (/photos/og-image.jpg, 1200 x 630,
-     ou une photo couleur propre a la page), jamais ici, sinon la page en aurait deux. -->
+     Image de partage : chaque page ecrit og:image et twitter:image, jamais ici, sinon la page en aurait deux.
+     Pages a mouvement (accueil, /guide, /extrait, /tableur-reglages, /consulting, /marques, 404) :
+     ajouter le partial mouvement juste apres celui-ci. -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#070707">
+<meta name="theme-color" content="#060607">
 <meta property="og:site_name" content="{{marque.nom}}">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
-<!-- Polices : une seule feuille, 5 graisses exactement (Bebas Neue 400, Barlow Condensed 600 et 700, Barlow 400, JetBrains Mono 400).
-     Auto-hebergement en woff2 prevu, en attente de l accord de Clement pour telecharger les fichiers. -->
+<!-- Favicon : la corde (un arc de virage craie et un point rouge a la corde) sur le noir piste -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060607'/%3E%3Cpath d='M5 27C5 13 13 5 27 5' fill='none' stroke='%23F2F0EB' stroke-width='3'/%3E%3Ccircle cx='11' cy='11' r='3.5' fill='%23C40C2C'/%3E%3C/svg%3E">
+<!-- Polices : trois familles (Hubot Sans 800 largeur 75, Mona Sans 400 a 600, Martian Mono 400 a 600 largeur 87,5) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Barlow&family=JetBrains+Mono&display=swap">
+<!-- Hubot Sans (latin, 20 Ko) prechargee : les titres et les boutons s affichent d emblee dans leur police,
+     sans passer par la police de secours (dont la largeur varie de 3 a 6 % selon les lettres : une ligne
+     de titre pourrait passer a la ligne puis remonter). Adresse lue dans la feuille Google Fonts du 06/10 :
+     si Google change de version (v5), la remplacer par la nouvelle (sinon le prechargement ne sert plus a rien). -->
+<link rel="preload" href="https://fonts.gstatic.com/s/hubotsans/v5/pe0BMIiULYxOvxVLbVwhONyy6zb7yFM9V5HpiZ3X0avsIiCxjLsCZ7Fth7rU.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hubot+Sans:wdth,wght@75,800&family=Martian+Mono:wdth,wght@87.5,400..600&family=Mona+Sans:wght@400..600&display=swap">
 <link rel="stylesheet" href="/assets/tokens.css">
 <link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/signature.css">
 <script src="/assets/site.js" defer></script>
+<script src="/assets/interface.js" defer></script>

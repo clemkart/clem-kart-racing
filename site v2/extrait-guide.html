@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 {{partial:head}}
+{{partial:mouvement}}
 <title>Extrait gratuit du guide karting · Clem Kart Racing</title>
 <meta name="description" content="{{extrait.promesse_courante}}. Gratuit, par email.">
 <link rel="canonical" href="{{sites.url}}/extrait-guide.html">
@@ -14,30 +15,35 @@
 <link rel="stylesheet" href="/assets/page-extrait.css">
 </head>
 <body class="page-extrait">
-<!-- Menu reduit des pages de capture : le logo et le retour au site, rien d autre.
-     Aucun prix ni lien vers le guide avant l email : la bande « Le guide complet » plus bas le presente apres la valeur. -->
+<!-- Menu reduit des pages de capture : le symbole, le nom et le retour au site, rien d autre.
+     Aucun prix ni lien vers le guide avant l email : la bande « Le guide complet » plus bas le presente apres la valeur.
+     Bord bas : la barre de secteurs (progression de la lecture), comme la navigation commune. -->
 <a class="evitement" href="#contenu">Aller au contenu</a>
 <header class="nav nav-reduite nav-capture">
   <div class="conteneur nav-inner">
-    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil">Clem <span>Kart</span> Racing</a>
+    <a class="nav-marque" href="{{routes.accueil}}" aria-label="{{marque.nom}}, accueil"><svg class="symbole" viewBox="0 0 22 22" width="22" height="22" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg><span class="nav-marque-nom"><span>Clem Kart</span> <span>Racing</span></span></a>
     <div class="nav-capture-liens">
       <a class="nav-capture-retour" href="{{routes.accueil}}">Retour au site</a>
     </div>
   </div>
+  <div class="secteurs" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
 </header>
 
-<main id="contenu">
+<main id="contenu" data-trajectoire>
 
-  <!-- Hero : le formulaire est l objet. Colonnes 1 a 6 le texte et le champ, colonnes 8 a 12 les numeros de chapitre. -->
-  <section class="hero" data-hero aria-labelledby="titre-extrait">
-    <div class="conteneur grille">
-      <div class="col-6 hero-texte entree">
-        <p class="mono secondaire">Gratuit, par email</p>
-        <h1 id="titre-extrait" class="extrait-titre">L’extrait du guide, gratuit</h1>
-        <p class="chapo">{{extrait.promesse_courante}}. À tester à ta prochaine session.</p>
+  <!-- Ecran 1 (direction V5, 5.4) : le formulaire et la carte du circuit du guide.
+       Colonnes 1 a 6 : libelle, titre, chapo, formulaire. Colonnes 8 a 12 : le circuit (13 chapitres, 13 virages),
+       le trace rouge file du depart jusqu au dernier chapitre offert, qui s allume (version lue dans la config).
+       En bas : la ligne de depart, d ou part la trajectoire de la page. -->
+  <section class="extrait-hero" data-hero aria-labelledby="titre-extrait">
+    <div class="conteneur extrait-hero-grille">
+      <div class="extrait-hero-texte">
+        <p class="libelle" data-entree="texte" data-t="0">Gratuit, par email</p>
+        <h1 id="titre-extrait" class="extrait-titre" data-entree="titre" data-t="0" data-duree="800">L’extrait du guide, gratuit</h1>
+        <p class="chapo" data-entree="texte" data-t="180">{{extrait.promesse_courante}}. À tester à ta prochaine session.</p>
 
         <!-- Sans JavaScript, le formulaire poste vers la fonction, qui renvoie sur #envoye -->
-        <form id="lm-form" class="formulaire extrait-form" action="/.netlify/functions/send-email" method="post">
+        <form id="lm-form" class="formulaire extrait-form" action="/.netlify/functions/send-email" method="post" data-entree="texte" data-t="260">
           <input type="hidden" name="magnet" value="extrait">
           <div class="form-champs pile">
             <div class="champ">
@@ -70,40 +76,62 @@
         </form>
       </div>
 
-      <div class="col-5 col-depart-8 hero-objet entree" aria-hidden="true">
+      <!-- La carte : decorative (aria-hidden), la liste « Ce que tu recois » dit la meme chose en texte -->
+      <div class="extrait-carte" data-extrait-version="{{extrait.version}}" aria-hidden="true">
+        <svg class="circuit" viewBox="-32 -32 812 537" width="812" height="537" focusable="false" data-circuit="offerts">
+          <path class="circuit-piste" d="M201 395 L558 443 L673 380 L632 283 L718 205 L654 94 L539 142 L450 49 L346 97 L253 30 L134 68 L30 164 L108 268 L45 376 Z"/>
+          <path class="circuit-trace" d="M201 395 L558 443 L673 380 L632 283 L718 205 L654 94 L539 142 L450 49 L346 97 L253 30 L134 68 L30 164 L108 268 L45 376 Z"/>
+          <g class="circuit-damier" transform="translate(201 395) rotate(7.4)"><rect x="-12" y="-7" width="24" height="14"/><path d="M-12 -7h6v7h-6zM0 -7h6v7h-6zM-6 0h6v7h-6zM6 0h6v7h-6z"/></g>
+          <g class="circuit-virage" data-virage-num="1"><circle cx="558" cy="443" r="17"/><text x="558" y="443">1</text></g>
+          <g class="circuit-virage" data-virage-num="2"><circle cx="673" cy="380" r="17"/><text x="673" y="380">2</text></g>
+          <g class="circuit-virage" data-virage-num="3"><circle cx="632" cy="283" r="17"/><text x="632" y="283">3</text></g>
+          <g class="circuit-virage" data-virage-num="4"><circle cx="718" cy="205" r="17"/><text x="718" y="205">4</text></g>
+          <g class="circuit-virage" data-virage-num="5"><circle cx="654" cy="94" r="17"/><text x="654" y="94">5</text></g>
+          <g class="circuit-virage" data-virage-num="6"><circle cx="539" cy="142" r="17"/><text x="539" y="142">6</text></g>
+          <g class="circuit-virage" data-virage-num="7"><circle cx="450" cy="49" r="17"/><text x="450" y="49">7</text></g>
+          <g class="circuit-virage" data-virage-num="8"><circle cx="346" cy="97" r="17"/><text x="346" y="97">8</text></g>
+          <g class="circuit-virage" data-virage-num="9"><circle cx="253" cy="30" r="17"/><text x="253" y="30">9</text></g>
+          <g class="circuit-virage" data-virage-num="10"><circle cx="134" cy="68" r="17"/><text x="134" y="68">10</text></g>
+          <g class="circuit-virage" data-virage-num="11"><circle cx="30" cy="164" r="17"/><text x="30" y="164">11</text></g>
+          <g class="circuit-virage" data-virage-num="12"><circle cx="108" cy="268" r="17"/><text x="108" y="268">12</text></g>
+          <g class="circuit-virage" data-virage-num="13"><circle cx="45" cy="376" r="17"/><text x="45" y="376">13</text></g>
+        </svg>
+        <!-- La legende : l introduction (le depart, un mini damier) et le chapitre 04 (sa pastille) -->
         <div class="extrait-pile">
-          <div class="extrait-pile-ligne">
+          <div class="extrait-pile-ligne extrait-pile-intro">
+            <span class="numeral">Intro</span>
             <span class="mono">L’introduction complète</span>
-            <span class="numeral numeral-2">Intro</span>
           </div>
-          <div class="extrait-pile-ligne extrait-pile-decalee">
+          <div class="extrait-pile-ligne">
+            <span class="numeral">04</span>
             <span class="mono">Le freinage dégressif</span>
-            <span class="numeral numeral-3">04</span>
           </div>
         </div>
       </div>
+
+      <div class="depart extrait-depart" aria-hidden="true" data-entree="depart"><span class="depart-s1">S1</span><span class="damier"></span><span class="depart-trait"></span></div>
     </div>
   </section>
 
-  <!-- Ce que tu recois : le filet de depart en tete (seul rouge hors bouton), deux blocs alignes en haut
-       (les numeros geants restent l image du hero, pas repris ici), la ligne du tableur, puis la ligne honnete -->
-  <section class="section filet-depart reveal" aria-labelledby="titre-recois">
+  <!-- Ce que tu recois : deux blocs alignes en haut (un trait rouge de 32 px au-dessus de chacun),
+       la ligne du tableur (les cinq onglets en etiquettes), puis la ligne honnete -->
+  <section class="section extrait-recois" aria-labelledby="titre-recois">
     <div class="conteneur">
-      <h2 id="titre-recois">Ce que tu reçois</h2>
-      <div class="grille extrait-blocs">
-        <article class="col-5 extrait-bloc">
+      <h2 id="titre-recois" data-virage="g">Ce que tu reçois</h2>
+      <div class="extrait-blocs">
+        <article class="extrait-bloc reveal">
           <div class="filet-apex" aria-hidden="true"></div>
           <h3 class="extrait-bloc-titre">L’introduction complète</h3>
           <p>Pourquoi tu stagnes malgré les heures de roulage. Le guide part d’une idée simple : un kart n’a pas besoin d’être forcé, il a besoin d’être compris. L’introduction pose cette grille de lecture.</p>
         </article>
-        <article class="col-6 extrait-bloc extrait-bloc-droite">
+        <article class="extrait-bloc extrait-bloc-droite reveal" style="--i: 1">
           <div class="filet-apex" aria-hidden="true"></div>
-          <h3 class="extrait-bloc-titre">Chapitre 04 : le freinage dégressif</h3>
+          <h3 class="extrait-bloc-titre">Chapitre <span class="chiffre-titre">04</span> : le freinage dégressif</h3>
           <p>Un chapitre entier, tel qu’il est dans le guide. Pourquoi la façon dont tu relâches le frein compte plus que la façon dont tu appuies. Et pourquoi c’est le relâché qui décide si le kart pivote.</p>
         </article>
       </div>
 
-      <div class="extrait-tableur">
+      <div class="extrait-tableur reveal">
         <h3>Le tableur de réglages</h3>
         <div>
           <p>Dans le même email. Tu notes ce que tu changes, un seul réglage à la fois, pour arrêter de deviner.</p>
@@ -118,7 +146,7 @@
       </div>
 
       <!-- La ligne honnete, sous le tableur dans le meme conteneur : aucun titre, un filet d apex au-dessus -->
-      <div class="extrait-honnete">
+      <div class="extrait-honnete reveal">
         <div class="filet-apex" aria-hidden="true"></div>
         <p>Pas de réglage de carburation, pas de promesse de chrono.</p>
         <p>Tu reçois un email tout de suite, puis un seul rappel sur le guide.</p>
@@ -136,19 +164,20 @@
     </div>
   </div>
 
-  <!-- Le guide complet : la seule bande de la page, le prix arrive ici seulement -->
-  <section class="section-fond-2 filet-haut filet-bas extrait-guide reveal" aria-labelledby="titre-guide-complet">
-    <div class="conteneur grille">
-      <div class="col-2">
+  <!-- Le guide complet : la seule bande de la page (grille de telemetrie), le prix arrive ici seulement.
+       La page 1 du PDF posee en objet, inclinee de 3 degres, se redresse au survol. -->
+  <section class="section section-fond-2 filet-haut filet-bas extrait-guide" aria-labelledby="titre-guide-complet">
+    <div class="conteneur grille extrait-guide-grille grille-telemetrie">
+      <div class="col-2 extrait-guide-objet">
         <a class="planche" href="{{routes.guide}}" data-cta="extrait-planche">
-          <img src="/guide/page-01.png" width="640" height="906" loading="lazy" alt="Première page du guide «&nbsp;{{guide.titre}}&nbsp;» : le sommaire des {{guide.chapitres}} chapitres">
+          <img src="/guide/page-01.png" width="640" height="906" loading="lazy" decoding="async" alt="Première page du guide «&nbsp;{{guide.titre}}&nbsp;» : le sommaire des {{guide.chapitres}} chapitres">
         </a>
       </div>
-      <div class="col-6 col-depart-3">
-        <h2 id="titre-guide-complet">Le guide complet</h2>
+      <div class="col-6 col-depart-3 extrait-guide-texte">
+        <h2 id="titre-guide-complet" data-virage="d">Le guide complet</h2>
         <p class="chapo">Tu veux la méthode entière, les <span class="insecable">{{guide.chapitres}}</span> chapitres, dans l’ordre ?</p>
       </div>
-      <div class="col-3 col-depart-10 extrait-guide-action">
+      <div class="col-3 col-depart-10 extrait-guide-action reveal">
         <a class="bouton bouton-fantome bouton-large" href="{{routes.guide}}" data-cta="extrait-guide">Le guide complet <span class="chrono">{{guide.prix_affiche}}</span></a>
         <span class="bouton-sous">PDF de <span class="insecable">{{guide.pages}} pages</span>. Garantie <span class="insecable">{{garantie_jours}} jours</span> en plus de tes droits légaux.</span>
       </div>
@@ -158,6 +187,7 @@
 </main>
 
 {{partial:footer}}
+{{partial:hud}}
 
 <script>
 // Envoi de l extrait (fonction Netlify vers Brevo). Corps : { email, magnet: 'extrait', site_web } (site_web = piege a robots, vide pour un humain).

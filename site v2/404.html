@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+{{partial:mouvement}}
+<title>Sortie de piste · {{marque.nom}}</title>
+<meta name="description" content="Cette page n’existe pas, ou plus.">
+<meta name="robots" content="noindex">
+<link rel="preload" as="image" type="image/webp" media="(max-width: 899px)" imagesrcset="/photos/piste-95-dos-virage-portrait-640.webp 640w, /photos/piste-95-dos-virage-portrait-1280.webp 1280w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 900px)" imagesrcset="/photos/piste-95-dos-virage-960.webp 960w, /photos/piste-95-dos-virage-1600.webp 1600w, /photos/piste-95-dos-virage-2400.webp 2400w" imagesizes="100vw" fetchpriority="high">
+<link rel="stylesheet" href="/assets/page-404.css">
+</head>
+<body class="page-404" data-page="404">
+{{partial:nav}}
+
+<!-- Page 404 (DIRECTION-V5, 5.9) : Netlify la sert pour toute adresse inconnue, d ou les chemins absolus.
+     Le kart 95 plein cadre ; un trace rouge part du kart, sort par l exterieur du virage et finit
+     dans l herbe sur un anneau de corde vide. Le trace se dessine une fois au chargement (mouvement.js,
+     data-dessin="chargement") ; sans script ou avec le mouvement reduit, il est dessine en entier.
+     Chapitre 4.5 : seules la photo et le trace bougent, le texte est lisible des la premiere image.
+     Texte a valider par Clement (annexe 7.3, point 4). -->
+<main id="contenu">
+  <section class="hors-piste" aria-labelledby="titre-404">
+    <div class="hors-piste-cine cine" data-entree="photo" style="--entree-echelle: 1.1">
+      <picture>
+        <source media="(max-width: 899px)" type="image/webp" srcset="/photos/piste-95-dos-virage-portrait-640.webp 640w, /photos/piste-95-dos-virage-portrait-1280.webp 1280w" sizes="100vw" width="640" height="800">
+        <source media="(max-width: 899px)" srcset="/photos/piste-95-dos-virage-portrait-640.jpg 640w, /photos/piste-95-dos-virage-portrait-1280.jpg 1280w" sizes="100vw" width="640" height="800">
+        <source type="image/webp" srcset="/photos/piste-95-dos-virage-960.webp 960w, /photos/piste-95-dos-virage-1600.webp 1600w, /photos/piste-95-dos-virage-2400.webp 2400w" sizes="100vw">
+        <img src="/photos/piste-95-dos-virage-1600.jpg" srcset="/photos/piste-95-dos-virage-960.jpg 960w, /photos/piste-95-dos-virage-1600.jpg 1600w, /photos/piste-95-dos-virage-2400.jpg 2400w" sizes="100vw" width="1600" height="900" alt="Clément Daniel, vu de dos dans son kart numéro 95, au milieu d’un virage à gauche bordé d’un vibreur" fetchpriority="high" decoding="async">
+      </picture>
+      <span class="voile hors-piste-voile-haut" aria-hidden="true"></span>
+      <span class="voile hors-piste-voile-bas" aria-hidden="true"></span>
+      <span class="voile hors-piste-voile-gauche" aria-hidden="true"></span>
+      <!-- Le trace hors piste : un dessin par cadrage, cale sur la photo (object-fit: cover, centre) -->
+      <svg class="hors-piste-trace hors-piste-trace-large" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" data-dessin="chargement">
+        <path class="hp-trace" d="M990 452 C1030 430 1110 400 1180 385 S1290 368 1330 366" data-trace data-t="400" data-duree="1200"/>
+        <g class="hp-anneau" data-apparait="echelle" data-t="1500" data-duree="400"><circle class="hp-anneau-fond" cx="1330" cy="366" r="11"/><circle class="hp-anneau-trait" cx="1330" cy="366" r="9"/></g>
+      </svg>
+      <svg class="hors-piste-trace hors-piste-trace-portrait" viewBox="0 0 640 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" data-dessin="chargement">
+        <path class="hp-trace" d="M360 442 C390 426 449 404 500 392 S570 381 592 380" data-trace data-t="400" data-duree="1200"/>
+        <g class="hp-anneau" data-apparait="echelle" data-t="1500" data-duree="400"><circle class="hp-anneau-fond" cx="592" cy="380" r="9"/><circle class="hp-anneau-trait" cx="592" cy="380" r="7"/></g>
+      </svg>
+    </div>
+
+    <div class="conteneur hors-piste-texte">
+      <p class="libelle">404</p>
+      <h1 id="titre-404">Sortie de piste.</h1>
+      <p class="chapo">Cette page n’existe pas, ou plus.</p>
+      <div class="hors-piste-actions">
+        <a class="bouton bouton-principal" href="{{routes.accueil}}" data-aimant>Retour à l’accueil</a>
+        <a class="lien-texte" href="{{routes.guide}}">Voir le guide</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{partial:footer}}
+</body>
+</html>

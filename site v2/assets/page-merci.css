@@ -1,131 +1,184 @@
 /* ============================================================
-   Clem Kart Racing : page-merci.css
-   Regles propres aux trois pages apres paiement :
-   /merci-guide, /merci-guide-lecteur, /merci-onboard (et l ancienne /merci.html).
-   Chargee apres base.css, uniquement par ces pages (body.page-merci).
-   Aucune valeur brute hors des clamp() de titres : tout vient de tokens.css.
-   Rayons 0, aucune ombre, aucun degrade, aucun bouton : le rouge ne sert qu au filet de depart
-   et aux tirets du chrono.
-
-   Ces pages ne livrent aucun fichier : la livraison passe par la page de confirmation Stripe.
-   Les composants partages (.chrono, .chrono-grand, .bon-livraison, .plaque-bloc,
-   .filet-apex, .filet-depart) sont dans base.css, section 22.
-   La nav et le pied sont les partials reduits nav-merci et footer-merci.
+   Clem Kart Racing : page-merci.css (direction V5, chapitre 5.7)
+   Les pages d arrivee apres paiement : /merci-guide, /merci-guide-lecteur, /merci-onboard.
+   Chargee apres base.css et signature.css, uniquement par ces pages (body.page-merci).
+   Aucune bibliotheque, aucune trajectoire, aucun bouton : le damier est l image de la page.
+     1. Haut de page : le drapeau a damier sous la navigation, libelle, titre, chapo.
+     2. Le filet de depart : un trait rouge qui finit sur un mini damier.
+     3. Le bon de livraison : trois cellules de donnees sur la grille de telemetrie.
+     4. Les etapes : pastilles numerotees reliees par un trace.
+     5. Plaque, lecture, titres de section.
+     6. /merci-onboard : le 72 h geant.
+   Entrees : animations CSS seules, sous prefers-reduced-motion: no-preference.
+   Un etat cache n existe que pendant l animation, ou sous html.a-ui / html.a-js
+   (classes posees par interface.js et site.js) : sans script, tout est visible.
    ============================================================ */
 
-/* ---------- 1. Hero : texte seul, colonnes 1 a 8 ---------- */
-body.page-merci .merci { padding-block: calc(var(--nav-h) + var(--e-8)) var(--e-8); }
-body.page-merci .merci h1 {
-  font-size: clamp(48px, 7vw, 96px);
-  margin-bottom: 0;
+/* ---------- 1. Haut de page : l arrivee ---------- */
+body.page-merci .merci { padding-block: var(--nav-h) var(--e-8); }
+/* Le drapeau d arrivee, pleine largeur, colle sous la navigation (apparition en marches : interface.js) */
+body.page-merci .merci-arrivee { display: block; margin-bottom: clamp(3rem, 1.6rem + 6vw, 7rem); }
+body.page-merci .merci-arrivee .damier { width: 100%; }
+
+body.page-merci .merci-en-tete { display: grid; gap: var(--e-5); justify-items: start; }
+body.page-merci .merci-en-tete .mono { color: var(--texte-2); }
+body.page-merci .merci h1 { font-size: var(--t-titre-1); line-height: var(--interligne-titre); max-width: 16ch; margin-bottom: 0; }
+body.page-merci .merci-en-tete .chapo { font-size: var(--t-chapo); line-height: var(--interligne-chapo); max-width: var(--mesure-chapo); color: var(--texte); }
+
+/* Entree : le libelle, le titre, puis le chapo montent de 24 px l un apres l autre.
+   Le bloc lui-meme ne bouge plus : ce sont ses enfants. */
+@media (prefers-reduced-motion: no-preference) {
+  body.page-merci .merci-en-tete.entree { animation: none; }
+  body.page-merci .merci-en-tete.entree > * { animation: entree 700ms var(--ease-expo) both; }
+  body.page-merci .merci-en-tete.entree > :nth-child(1) { animation-delay: 60ms; }
+  body.page-merci .merci-en-tete.entree > :nth-child(2) { animation-delay: 100ms; }
+  body.page-merci .merci-en-tete.entree > :nth-child(3) { animation-delay: 220ms; }
+  body.page-merci .chrono-grand-hero.entree { animation-delay: 0ms; }
+  body.page-merci .entree-suivante.entree > :nth-child(1) { animation-delay: 160ms; }
+  body.page-merci .entree-suivante.entree > :nth-child(2) { animation-delay: 280ms; }
 }
-body.page-merci .merci-en-tete { display: grid; gap: var(--e-4); }
-body.page-merci .merci-en-tete .chapo { color: var(--texte); }
-body.page-merci .merci-en-tete .chapo a { text-decoration-color: var(--filet-fort); }
 
-/* Hero du debrief : gros chiffre a gauche, titre a droite */
-body.page-merci .chrono-grand-hero strong { font-size: clamp(120px, 16vw, 220px); }
-body.page-merci .merci-scinde { align-items: end; }
-body.page-merci .merci-scinde h1 { font-size: var(--t-4); }
+/* ---------- 2. Le filet de depart : trait rouge de 2 px, mini damier a droite ----------
+   base.css le pose sur toute la section (bord haut) ; ici il tient dans la largeur du contenu
+   et se dessine une fois, quand interface.js voit son damier (classe .est-vue). */
+body.page-merci .filet-depart { border-top: 0; }
+body.page-merci .filet-depart::after { content: none; }
+body.page-merci .filet-ligne { display: flex; align-items: center; margin-bottom: var(--e-7); }
+body.page-merci .filet-trait { flex: 1 1 auto; height: 2px; background: var(--rouge); transform-origin: left center; }
+body.page-merci .filet-ligne .damier { flex: 0 0 24px; width: 24px; }
+@keyframes merci-trait { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: no-preference) {
+  html.a-ui body.page-merci .filet-ligne:has(.damier-marches:not(.est-vue)) .filet-trait { transform: scaleX(0); }
+  html.a-ui body.page-merci .filet-ligne:has(.damier-marches.est-vue) .filet-trait { animation: merci-trait 700ms var(--ease-glisse) both; }
+  body.page-merci .filet-ligne .damier-marches.est-vue { animation-delay: 560ms; }
+}
 
-/* Entree : le titre, puis l objet 100 ms apres */
-html.a-js body.page-merci .entree-suivante { animation-delay: 100ms; }
-
-/* ---------- 2. Bon de livraison (base.css) : les valeurs passent a la ligne ----------
-   A 768 px, trois cellules d environ 230 px : un .chrono en nowrap debordait de sa cellule. */
-body.page-merci .bon-livraison > div { min-width: 0; align-content: start; }
+/* ---------- 3. Bon de livraison : trois cellules de donnees ----------
+   Libelle en Martian Mono micro, valeur en Martian Mono au corps du chapo, note en Mona.
+   A partir de 600 px, la bande suit les douze colonnes : chaque filet de cellule tombe
+   sur une ligne de la grille de telemetrie posee derriere elle. */
+body.page-merci .bon-livraison > div { min-width: 0; align-content: start; gap: var(--e-2); }
 body.page-merci .bon-livraison p { max-width: none; margin-top: 0; overflow-wrap: anywhere; }
-body.page-merci .bon-livraison .chrono,
-body.page-merci .bon-livraison .mono { white-space: normal; }
+body.page-merci .bon-livraison > div > .mention:first-child {
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro);
+  letter-spacing: 0.04em; color: var(--texte-2);
+}
+body.page-merci .bon-livraison :is(.chrono, .mono) {
+  display: block; white-space: normal;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal);
+  font-size: var(--t-chapo); line-height: 1.25; color: var(--texte);
+}
+body.page-merci .bon-livraison > div > .mention:not(:first-child) {
+  font-family: var(--police-texte); font-stretch: 100%; font-size: var(--t-petit); letter-spacing: 0; color: var(--texte-2);
+}
+@media (min-width: 600px) {
+  body.page-merci .bon-livraison { grid-template-columns: repeat(var(--colonnes), minmax(0, 1fr)); column-gap: var(--grille-ecart); }
+  body.page-merci .bon-livraison > div { grid-column: span 4; padding: var(--e-6) 0 var(--e-6) var(--e-5); border-left: var(--bordure); }
+  body.page-merci .bon-livraison > div:first-child { border-left: 0; padding-left: 0; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  body.page-merci .bon-livraison :is(.chrono, .mono) { font-size: var(--t-texte); }
+}
 
-/* ---------- 3. Titres de section ---------- */
-body.page-merci .section-merci h2 { font-size: var(--t-2); margin-bottom: var(--e-5); }
-
-/* ---------- 4. Le PDF introuvable : le seul bloc encadre ---------- */
-body.page-merci .merci-retrouver strong { font-family: var(--police-libelle); font-weight: var(--graisse-libelle); color: var(--texte); }
-body.page-merci .plaque-bloc a,
-body.page-merci .merci-lecture a { text-decoration-color: var(--filet-fort); }
-body.page-merci .plaque-bloc a:hover,
-body.page-merci .merci-lecture a:hover { text-decoration-color: var(--texte); }
-
-/* ---------- 5. Registre vertical indexe comme des tours (conseils de lecture, etapes du debrief) ---------- */
-body.page-merci .merci-etapes { display: grid; gap: 0; counter-reset: etape; }
+/* ---------- 4. Etapes : pastilles numerotees, reliees par un trace ----------
+   Une pastille rouge par etape (c est un ordre), un trait gris piste de l une a l autre.
+   Quand le bloc apparait (classe .est-visible de site.js), le trait se remplit en rouge,
+   etape apres etape : le parcours se dessine. */
+body.page-merci .merci-etapes { display: grid; gap: 0; counter-reset: etape; margin-top: var(--e-7); }
 body.page-merci .merci-etapes li {
   counter-increment: etape;
   position: relative;
   display: grid;
-  grid-template-columns: 4ch minmax(0, 1fr);
-  gap: var(--e-5);
-  align-items: baseline;
+  grid-template-columns: 26px minmax(0, 1fr);
+  column-gap: var(--e-5);
+  align-items: start;
   padding-block: var(--e-5);
   max-width: none;
 }
-/* Chaque ligne : une premiere proposition courte en Barlow Condensed, la suite en texte courant dessous.
-   Trois titres empiles en gras serre etaient lourds a lire sur telephone. */
-body.page-merci .merci-etapes .etape { display: grid; gap: var(--e-2); min-width: 0; }
-body.page-merci .merci-etapes .etape-titre {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-  color: var(--texte);
-}
-body.page-merci .merci-etapes .etape-detail {
-  font-size: var(--t-0);
-  line-height: var(--interligne-texte);
-  color: var(--texte-2);
-}
-body.page-merci .merci-etapes li + li { border-top: var(--bordure); }
 body.page-merci .merci-etapes li::before {
   content: counter(etape, decimal-leading-zero);
-  position: relative;
-  padding-left: var(--e-3);
-  font-family: var(--police-mono);
-  font-size: var(--t--2);
-  font-weight: var(--graisse-normal);
-  color: var(--texte);
+  position: relative; z-index: 2;
+  display: grid; place-items: center; width: 26px; height: 26px; margin-top: 0.15em;
+  border-radius: 50%; background: var(--rouge); color: var(--texte);
+  box-shadow: 0 0 0 4px var(--fond-0);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: var(--t-micro); line-height: 1; font-variant-numeric: tabular-nums;
 }
-body.page-merci .merci-etapes li::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: calc(var(--e-5) + 0.35em);
-  width: 2px;
-  height: 12px;
-  background: var(--rouge);
+/* Le trace : du centre d une pastille au centre de la suivante (meme decalage dans chaque ligne) */
+body.page-merci .merci-etapes li:not(:last-child)::after,
+body.page-merci .merci-etapes li:not(:last-child) .etape::before {
+  content: ''; position: absolute; left: 12px; top: calc(var(--e-5) + 0.15em + 13px);
+  width: 2px; height: 100%;
 }
-/* Dans une phrase, le chiffre reste en mono sans tiret : la ligne porte deja le sien */
-body.page-merci .merci-etapes li .chrono { font-size: 0.8em; }
-body.page-merci .merci-etapes-fin { margin-top: var(--e-5); }
+body.page-merci .merci-etapes li:not(:last-child)::after { z-index: 0; background: var(--gris-piste); }
+body.page-merci .merci-etapes li:not(:last-child) .etape::before { z-index: 1; background: var(--rouge); transform-origin: top center; }
+@media (prefers-reduced-motion: no-preference) {
+  html.a-js body.page-merci .reveal .merci-etapes li .etape::before { transform: scaleY(0); }
+  html.a-js body.page-merci .reveal.est-visible .merci-etapes li .etape::before {
+    transform: none;
+    transition: transform 700ms var(--ease-glisse) 350ms;
+  }
+  html.a-js body.page-merci .reveal.est-visible .merci-etapes li:nth-child(2) .etape::before { transition-delay: 1000ms; }
+}
+
+body.page-merci .merci-etapes .etape { display: grid; gap: var(--e-2); min-width: 0; }
+body.page-merci .merci-etapes .etape-titre {
+  font-family: var(--police-texte); font-weight: var(--graisse-forte);
+  font-size: var(--t-chapo); line-height: 1.3; color: var(--texte);
+}
+body.page-merci .merci-etapes .etape-detail { font-size: var(--t-texte); line-height: var(--interligne-texte); color: var(--texte-2); max-width: 58ch; }
+body.page-merci .merci-etapes-fin { margin-top: var(--e-5); padding-left: calc(26px + var(--e-5)); color: var(--texte); }
+
 /* Version serree, sous un chapo (merci-guide-lecteur) */
-body.page-merci .merci-etapes-serrees { margin-top: var(--e-5); }
+body.page-merci .merci-etapes-serrees { margin-top: var(--e-6); }
 body.page-merci .merci-etapes-serrees li { padding-block: var(--e-4); }
-body.page-merci .merci-etapes-serrees .etape-titre { font-size: var(--t-0); }
-body.page-merci .merci-etapes-serrees li::after { top: calc(var(--e-4) + 0.3em); }
+body.page-merci .merci-etapes-serrees li:not(:last-child)::after,
+body.page-merci .merci-etapes-serrees li:not(:last-child) .etape::before { top: calc(var(--e-4) + 0.15em + 13px); }
+body.page-merci .merci-etapes-serrees .etape-titre { font-size: var(--t-texte); }
+body.page-merci .merci-etapes-serrees .etape-detail { font-size: var(--t-petit); }
 
-/* ---------- 6. Lecture : suite, video, contact, garantie ---------- */
-body.page-merci .merci-lecture .filet-apex { margin-block: var(--e-6); }
+/* ---------- 5. Titres, plaque, lecture ---------- */
+body.page-merci .section-merci { padding-block: var(--e-8); }
+@media (min-width: 900px) { body.page-merci .section-merci { padding-block: var(--e-9); } }
+body.page-merci .section-merci h2 { font-size: var(--t-titre-2); max-width: 16ch; }
+/* Le PDF introuvable, la video inexploitable : le seul bloc encadre de chaque page */
+body.page-merci .plaque-bloc { padding: var(--e-6); }
+@media (min-width: 900px) { body.page-merci .plaque-bloc { padding: var(--e-7); } }
+body.page-merci .plaque-bloc h2 { font-size: var(--t-titre-4); line-height: 1; letter-spacing: 0.02em; margin-bottom: var(--e-5); }
+body.page-merci .plaque-bloc p { color: var(--texte-2); }
+body.page-merci .plaque-bloc strong { color: var(--texte); }
+body.page-merci .plaque-bloc a,
+body.page-merci .merci-lecture a { color: var(--texte); text-decoration-color: var(--filet-champ); }
+body.page-merci .plaque-bloc a:hover,
+body.page-merci .merci-lecture a:hover { text-decoration-color: var(--texte); }
+/* Lecture : une colonne de 62 caracteres, des titres plus courts que ceux des sections */
+body.page-merci .merci-lecture { max-width: 62ch; }
+body.page-merci .merci-lecture p { color: var(--texte-2); }
+body.page-merci .merci-lecture h2 { font-size: var(--t-titre-3); margin-bottom: var(--e-5); }
 body.page-merci .merci-lecture h2 + p { margin-top: 0; }
-body.page-merci .merci-ligne { font-size: var(--t-0); color: var(--texte); }
+body.page-merci .merci-lecture .filet-apex { margin-block: var(--e-7); }
+body.page-merci .merci-ligne { font-size: var(--t-texte); color: var(--texte); }
+body.page-merci .merci-lecture p.merci-ligne { color: var(--texte); }
 
-/* ---------- 7. Colonnes decalees (72 h a gauche, texte a droite) ----------
-   Dans base.css, .col-depart-7 ne pose que la colonne de depart : combine a .col-6
-   (grid-column: span 6), la fin retombe sur « auto » et le bloc ne prend qu une colonne.
-   On pose ici depart et etendue ensemble. */
+/* ---------- 6. /merci-onboard et le debrief en cours : le 72 h geant ---------- */
+body.page-merci .merci-scinde { align-items: start; }
+body.page-merci .merci .merci-scinde { align-items: end; }
+body.page-merci .chrono-grand { gap: var(--e-3); }
+/* L espace insecable de « 72 h » prend toute une chasse en mono : on la resserre */
+body.page-merci .chrono-grand strong { font-size: var(--t-chiffre); letter-spacing: -0.03em; word-spacing: -0.38em; }
+body.page-merci .chrono-grand-hero strong { font-size: clamp(6rem, 3rem + 13vw, 13.75rem); line-height: 0.82; }
+body.page-merci .chrono-grand .mono { max-width: 28ch; color: var(--texte-2); }
+body.page-merci .merci-scinde h1 { font-size: var(--t-titre-1); }
+body.page-merci .merci-scinde h2 { margin-bottom: 0; }
 @media (min-width: 900px) {
   body.page-merci .col-7.col-depart-6 { grid-column: 6 / span 7; }
   body.page-merci .col-6.col-depart-7 { grid-column: 7 / span 6; }
+  /* Le chiffre s aligne sur le bas du chapo : un trait de chronometrage court sous le titre */
+  body.page-merci .merci .merci-scinde .chrono-grand { padding-bottom: var(--e-2); }
+}
+@media (max-width: 899px) {
+  body.page-merci .merci-scinde { row-gap: var(--e-6); }
 }
 
-/* ---------- 8. Sections : rythme vertical propre a ces pages courtes ---------- */
-body.page-merci .section-merci { padding-block: var(--e-7); }
-@media (min-width: 900px) { body.page-merci .section-merci { padding-block: var(--e-8); } }
-
-/* Reduced motion : rien de plus que base.css, les delais tombent a zero */
-@media (prefers-reduced-motion: reduce) {
-  html.a-js body.page-merci .entree-suivante { animation-delay: 0ms; }
-}
-
-/* ---------- 9. Pied reduit : les liens legaux sur une ligne ----------
-   Dans base.css, « .pied ul » (grille) passe devant « .pied-legal » (flex) : on retablit la ligne ici. */
+/* ---------- 7. Pied reduit : les liens legaux sur une ligne ---------- */
 body.page-merci .pied-bas .pied-legal { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-4); }

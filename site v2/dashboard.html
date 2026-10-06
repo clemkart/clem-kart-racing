@@ -7,7 +7,7 @@
 <title>Dashboard | Clem Kart Racing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Barlow&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hubot+Sans:wdth,wght@75,800&family=Martian+Mono:wdth,wght@87.5,400..600&family=Mona+Sans:wght@400..600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
   :root{
@@ -18,7 +18,7 @@
     /* Le cyan n'appartient pas a la marque : il est reserve au coach IA, pour
        qu'on distingue au premier coup d'oeil la donnee mesuree de l'analyse. */
     --ai:#3DE0F0; --ai-dim:rgba(61,224,240,.55); --ai-glow:rgba(61,224,240,.22);
-    --fd:'Bebas Neue',sans-serif; --fc:'Barlow Condensed',sans-serif; --fb:'Barlow',sans-serif;
+    --fd:'Hubot Sans',sans-serif; --fc:'Mona Sans',sans-serif; --fb:'Mona Sans',sans-serif;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
 
@@ -60,7 +60,7 @@
   input[type=password]{ width:100%; padding:13px 14px; background:var(--b4); border:1px solid var(--wf); border-radius:9px; color:var(--w); font-family:var(--fb); font-size:15px; outline:none; transition:border-color .18s, box-shadow .18s; }
   input[type=password]:focus{ border-color:var(--red); box-shadow:0 0 0 3px rgba(217,23,29,.16); }
   button{ font-family:var(--fc); cursor:pointer; border:none; }
-  .btn{ width:100%; margin-top:14px; padding:13px; background:var(--red); color:#fff; border-radius:9px; font-size:16px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; transition:background .15s, box-shadow .15s, transform .1s; }
+  .btn{ width:100%; margin-top:14px; padding:13px; background:var(--red); color:#fff; border-radius:9px; font-size:16px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; transition:background .15s, box-shadow .15s, transform .1s; }
   .btn:hover{ background:var(--red-dark); box-shadow:0 0 24px var(--red-glow); }
   .btn:active{ transform:translateY(1px); }
   .err{ color:var(--red); font-size:13px; margin-top:12px; min-height:16px; }
@@ -120,14 +120,14 @@
   }
   .panel::before{ top:-1px; left:-1px; border-top:2px solid var(--red); border-left:2px solid var(--red); border-radius:14px 0 0 0; }
   .panel::after{ bottom:-1px; right:-1px; border-bottom:2px solid var(--red); border-right:2px solid var(--red); border-radius:0 0 14px 0; }
-  .panel h2{ font-family:var(--fc); font-size:16px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--w); margin-bottom:16px; }
+  .panel h2{ font-family:var(--fc); font-size:16px; font-weight:600; letter-spacing:.8px; text-transform:uppercase; color:var(--w); margin-bottom:16px; }
   .panel h2 small{ color:var(--wd); font-weight:400; text-transform:none; letter-spacing:0; }
   .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
   /* Sans min-width:0, un graphique garde sa largeur de depart et fait deborder la grille sur mobile. */
   .grid-2 > *{ min-width:0; }
   .chart-box{ position:relative; height:240px; }
   .empty{ color:var(--wd); font-size:14px; text-align:center; padding:30px 0; }
-  .sub{ font-family:var(--fc); font-size:13px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:var(--wd); margin:0 0 10px; }
+  .sub{ font-family:var(--fc); font-size:13px; font-weight:600; letter-spacing:.6px; text-transform:uppercase; color:var(--wd); margin:0 0 10px; }
   .sub small{ font-weight:400; text-transform:none; letter-spacing:0; }
   .prof-q{ font-family:var(--fc); font-size:13px; color:var(--w); margin:0 0 8px; }
   .prof{ margin-bottom:14px; }
@@ -473,7 +473,7 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 
   Chart.defaults.color = C.dim;
-  Chart.defaults.font.family = "'Barlow', sans-serif";
+  Chart.defaults.font.family = "'Mona Sans', sans-serif";
   Chart.defaults.font.size = 12;
 
   // ---------- Auth / fetch ----------

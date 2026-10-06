@@ -1,132 +1,250 @@
 /* ============================================================
-   Clem Kart Racing : page-liens.css
-   Regles propres a /liens, chargees apres base.css.
-   Une colonne de 420 px, aucune navigation, un seul bouton rouge.
-   Aucune valeur brute hors des tailles de dessin (icones, fleche) :
-   tout vient de tokens.css. Rayons 0, transform et opacity seulement.
+   Clem Kart Racing : page-liens.css (direction V5, 5.2)
+   La page d arrivee des bios : une photo de kart plein cadre, le nom en
+   affiche, et les cinq liens en grille de depart (P1 a P5, cases decalees).
+   Aucune navigation, aucune bibliotheque, aucune trajectoire.
+   Chargee apres base.css et signature.css ; tout est prefixe .page-liens.
+   Rayon 0. Seuls transform, opacity et les couleurs bougent.
+   Rien n est cache hors d une animation : si cette feuille ou un script
+   manque, tout reste visible et cliquable.
    ============================================================ */
 
-/* ---------- 1. Colonne ---------- */
-.page-liens .liens-page { padding-block: var(--e-5) var(--e-8); }
+.page-liens {
+  /* Hauteur de la bande photo sur telephone (240 a 380 px) : sert aussi a placer les feux */
+  --liens-photo-h: clamp(240px, 40svh, 380px);
+  --liens-remontee: 64px;
+  --liens-decalage: 32px;
+  --liens-case-fond: rgba(6, 6, 7, 0.55);
+}
+.page-liens .liens-page { position: relative; padding: 0; }
 
-/* ---------- 2. Photo et plaque ---------- */
-/* Portrait couleur 4:5 (photos/clement-portrait, 640 et 1280 px) servi dans un cadre plus large :
-   4:3 sur ordinateur, 16:10 sur telephone. Le cadre garde le visage du front a la bouche au-dessus
-   de la plaque (en 2:1 la plaque couvrait la bouche). A 390 x 664 (navigateur integre d Instagram),
-   le guide, l analyse d onboard et le consulting tiennent dans le premier ecran.
-   Aucun filtre CSS : la couleur se regle sur le fichier. */
-.page-liens .liens-photo { aspect-ratio: 4 / 3; border: var(--bordure); }
-.page-liens .liens-photo picture { display: block; width: 100%; height: 100%; }
-.page-liens .liens-photo img { object-position: 50% 30%; }
-@media (max-width: 480px) {
-  .page-liens .liens-photo { aspect-ratio: 16 / 10; }
-  .page-liens .liens-photo img { object-position: 50% 38%; }
+/* ---------- 1. La photo : bande sur telephone, panneau fixe a droite sur ordinateur ---------- */
+.page-liens .liens-photo {
+  z-index: var(--z-photo);
+  height: var(--liens-photo-h);
+  background: var(--fond-0);
+  outline: 0;
+}
+.page-liens .liens-photo img { object-position: 50% 72%; }
+.page-liens .liens-voile-haut { background-image: linear-gradient(to bottom, rgba(6, 6, 7, 0.55) 0%, rgba(6, 6, 7, 0) 32%); }
+.page-liens .liens-voile-bas { background-image: var(--voile-fondu); }
+
+/* ---------- 2. La colonne : le nom remonte de 64 px sur la photo ---------- */
+.page-liens .liens-colonne {
+  position: relative; z-index: var(--z-contenu);
+  margin-top: calc(-1 * var(--liens-remontee));
+  padding: 0 var(--gouttiere) var(--e-8);
 }
 
-/* La plaque (base.css) mord le bas de la photo de 24 px ; le nom reste aligne sur la colonne */
-.page-liens .plaque-titre {
-  margin-top: calc(-1 * var(--e-5));
-  font-size: var(--t-3);
-  line-height: 1;
+/* Feux de depart (signature.css) : en haut a gauche de la bande photo, a la marge.
+   Le portique (support noir et poutre grise) est dans signature.css, section 8. */
+.page-liens .liens-feux {
+  position: absolute; left: var(--gouttiere);
+  top: calc(var(--e-5) + var(--liens-remontee) - var(--liens-photo-h));
 }
-.page-liens .liens-marque { margin-top: var(--e-1); }
-.page-liens .liens-faits {
-  margin-top: var(--e-3);
-  max-width: none;
-  font-size: var(--t--1);
-  line-height: 1.5;
+
+.page-liens .liens-nom {
+  margin: 0; max-width: none;
+  font-size: clamp(2.75rem, 12.5vw, 4rem);
+  line-height: var(--interligne-affiche);
+  letter-spacing: 0;
+}
+.page-liens .liens-marque {
+  display: flex; align-items: center; gap: var(--e-2);
+  margin-top: var(--e-3); max-width: none;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal);
+  font-size: var(--t-micro); line-height: 1; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--texte-2);
 }
-
-/* ---------- 3. Les cinq boutons ----------
-   Ligne 1 : titre a gauche, prix a droite (mono, sans tiret de chrono).
-   Ligne 2 : la sous-ligne sur toute la largeur utile.
-   La fleche occupe sa propre colonne sur les deux lignes. */
-.page-liens .liens-boutons { display: grid; gap: var(--e-3); margin-top: var(--e-5); }
-.page-liens .lien-bio {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  grid-template-rows: auto auto;
-  column-gap: var(--e-3);
-  row-gap: var(--e-1);
-  align-items: baseline;
-  min-height: var(--e-8);
-  padding: var(--e-3) var(--e-4);
+/* Le trait de trajectoire sous le nom : 2 px rouges, une tete ronde au bout, de la longueur du nom
+   (le bloc titre prend la largeur du nom). Toujours visible ; il ne se trace (scaleX) qu a l extinction
+   des feux. Conteneur de taille : la tete se cale sur sa longueur (100cqw, signature.css). */
+.page-liens .liens-titre { width: fit-content; max-width: 100%; }
+.page-liens .liens-trait {
+  position: relative; display: block; container-type: inline-size;
+  height: 8px; margin-top: var(--e-3);
 }
-.page-liens .lien-bio-titre { grid-column: 1; grid-row: 1; }
+.page-liens .liens-trait::before,
+.page-liens .liens-trait::after { content: ''; position: absolute; top: 50%; }
+.page-liens .liens-trait::before {
+  left: 0; right: 4px; height: 2px; margin-top: -1px;
+  background: linear-gradient(to right, rgba(196, 12, 44, 0.35), var(--rouge) 40%);
+  transform-origin: left center;
+}
+.page-liens .liens-trait::after {
+  right: 0; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%;
+  background: var(--rouge); box-shadow: 0 0 0 3px var(--fond-0);
+}
+.page-liens .liens-marque .symbole { width: 16px; height: 16px; color: var(--texte); }
+.page-liens .liens-faits {
+  margin-top: var(--e-3); max-width: 28.2em; /* 46 « 0 » de Mona, en em : meme coupure avec la police de secours */
+  font-size: var(--t-petit); line-height: 1.5; color: var(--texte-2);
+}
+
+/* ---------- 3. La grille de depart ----------
+   Une case = un marquage de grille peint : bord haut et bord gauche seulement.
+   Ligne 1 : titre, prix en mono, fleche. Ligne 2 : la sous-ligne. Position P1 a P5 en haut a gauche. */
+.page-liens .liens-boutons { display: grid; gap: 10px; margin-top: var(--e-5); }
+.page-liens .lien-bio {
+  position: relative; isolation: isolate;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-rows: auto auto;
+  column-gap: 14px; row-gap: 6px; align-items: baseline;
+  min-height: 0; padding: 26px 14px 12px;
+  border: 0; border-top: 1px solid var(--filet-champ); border-left: 1px solid var(--filet-champ);
+  background: var(--liens-case-fond);
+  color: var(--texte); text-decoration: none;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  transition: border-color var(--d-court) var(--ease-sortie), scale var(--d-instant) var(--ease-sortie);
+}
+/* Decalage de grille a gauche seulement (P2, P4) : toutes les cases finissent au meme bord droit,
+   les prix et les fleches tombent dans une seule colonne d une case a l autre. */
+.page-liens .lien-bio:nth-child(even) { margin-left: var(--liens-decalage); }
+.page-liens .lien-bio::before {
+  content: "P" attr(data-position);
+  content: "P" attr(data-position) / "";
+  position: absolute; top: 9px; left: 14px;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: var(--t-micro); line-height: 1; letter-spacing: 0.04em; color: var(--texte-2);
+}
+/* Survol : un voile craie a 4 % sous le texte (P1 : le rouge plus sombre balaie la case) */
+.page-liens .lien-bio::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: rgba(var(--texte-rgb), 0.04); opacity: 0;
+  transition: opacity var(--d-court) var(--ease-sortie);
+}
+.page-liens .lien-bio-titre {
+  grid-column: 1; grid-row: 1;
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: 1.1875rem; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase;
+}
 .page-liens .lien-bio-prix {
   grid-column: 2; grid-row: 1;
-  font-family: var(--police-mono);
-  font-size: var(--t--1);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  color: var(--texte);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal);
+  font-size: 1rem; line-height: 1; white-space: nowrap; color: var(--texte);
 }
 .page-liens .lien-bio-sous {
   grid-column: 1 / span 2; grid-row: 2;
-  line-height: 1.35;
-  max-width: none;
+  max-width: none; font-size: 0.8125rem; line-height: 1.35; color: var(--texte-2);
 }
 .page-liens .lien-bio-fleche {
-  grid-column: 3; grid-row: 1 / span 2;
-  align-self: center;
-  font-family: var(--police-mono);
-  color: var(--texte-2);
-  transition: transform var(--duree-vite) var(--courbe);
+  grid-column: 3; grid-row: 1; align-self: baseline;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: 0.9375rem; line-height: 1;
+  color: var(--texte);
+  transition: transform var(--d-court) var(--ease-sortie);
 }
-.page-liens .lien-bio:hover .lien-bio-fleche { color: var(--texte); transform: translateX(3px); }
-.page-liens .lien-bio-principal .lien-bio-fleche { color: var(--texte); }
-/* Sur le fond rouge, la sous-ligne reste lisible en blanc casse plein */
-.page-liens .lien-bio-principal .lien-bio-sous { opacity: 1; }
-
-/* Le bouton principal est un peu plus haut : c est la seule action qui compte */
-.page-liens .lien-bio-principal { min-height: calc(var(--e-8) + var(--e-2)); padding-block: var(--e-4); }
-.page-liens .lien-bio-principal .lien-bio-titre { font-size: var(--t-0); }
-.page-liens .lien-bio-principal .lien-bio-prix { font-size: var(--t-0); }
-
-/* Le site : bouton fantome, filet plus leger que les boutons contour */
-.page-liens .lien-bio-site { border-color: var(--filet); }
-.page-liens .lien-bio-site:hover { border-color: var(--texte); }
-
-/* Un chiffre et son unite ne se separent jamais en fin de ligne */
 .page-liens .insecable { white-space: nowrap; }
 
-/* ---------- 4. Sous les boutons ---------- */
-.page-liens .liens-extrait { margin-top: var(--e-5); max-width: none; font-size: var(--t--1); color: var(--texte-2); }
-.page-liens .liens-extrait a { color: var(--texte); text-decoration: underline; text-underline-offset: 0.18em; }
-.page-liens .liens-extrait a:hover { text-decoration-thickness: 2px; }
+/* P1, la pole position : la seule case pleine, en rouge, texte craie plein (5,4:1) */
+.page-liens .lien-bio-principal { background: var(--rouge-bouton); border-color: var(--rouge-bouton); }
+.page-liens .lien-bio-principal::before,
+.page-liens .lien-bio-principal .lien-bio-sous { color: var(--texte); }
+.page-liens .lien-bio-principal::after {
+  background: var(--rouge-survol); opacity: 1;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 320ms var(--ease-sortie);
+}
 
-/* Trois garanties, une par ligne, en mono : une feuille de temps, pas un bandeau */
+.page-liens .lien-bio:active { scale: 0.98; }
+.page-liens .lien-bio-principal:active::after { transform: scaleX(1); transition-duration: 0ms; }
+.page-liens .lien-bio:focus-visible { outline: var(--focus); outline-offset: var(--focus-decalage); }
+@media (hover: hover) and (pointer: fine) {
+  .page-liens .lien-bio:hover { border-color: var(--texte); background: var(--liens-case-fond); }
+  .page-liens .lien-bio:hover::after { opacity: 1; }
+  .page-liens .lien-bio:hover .lien-bio-fleche { transform: translateX(4px); }
+  .page-liens .lien-bio-principal:hover { border-color: var(--rouge-bouton); background: var(--rouge-bouton); }
+  .page-liens .lien-bio-principal:hover::after { transform: scaleX(1); }
+}
+
+/* ---------- 4. Sous la grille ---------- */
+.page-liens .liens-extrait { margin-top: var(--e-6); max-width: none; font-size: var(--t-petit); color: var(--texte-2); }
+.page-liens .liens-extrait a {
+  color: var(--texte); text-decoration: underline; text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em; text-decoration-color: var(--filet-fort);
+}
+.page-liens .liens-extrait a:hover { text-decoration-color: var(--texte); text-decoration-thickness: 2px; }
+
+/* Les trois garanties : une feuille de temps en mono, sous un filet */
 .page-liens .liens-confiance {
-  display: grid;
-  gap: var(--e-1);
-  margin-top: var(--e-5);
-  padding-top: var(--e-4);
-  border-top: var(--bordure);
-  font-family: var(--police-mono);
-  font-size: var(--t--2);
-  line-height: 1.5;
-  color: var(--texte-2);
+  display: grid; gap: var(--e-1);
+  margin-top: var(--e-5); padding-top: var(--e-4); border-top: var(--bordure);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); line-height: 1.6; color: var(--texte-2);
 }
 .page-liens .liens-confiance li { max-width: none; }
 
-/* Icones : 20 px, monochromes, alignees a gauche, zone de touche 44 px */
-.page-liens .liens-reseaux { justify-content: flex-start; gap: var(--e-2); margin-top: var(--e-4); margin-left: calc(-1 * var(--e-3)); }
+/* Reseaux : 24 px dans une zone de 44 px, alignes optiquement sur la colonne */
+.page-liens .liens-reseaux { display: flex; justify-content: flex-start; gap: var(--e-1); margin-top: var(--e-4); margin-left: -10px; }
 .page-liens .liens-reseaux li { max-width: none; }
 .page-liens .liens-reseaux a {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: var(--bouton-h-petit); height: var(--bouton-h-petit);
-  color: var(--texte-2);
+  display: grid; place-items: center; width: var(--zone-touche); height: var(--zone-touche);
+  color: var(--texte-2); transition: color var(--d-court) var(--ease-sortie);
 }
 .page-liens .liens-reseaux a:hover { color: var(--texte); }
-.page-liens .liens-reseaux svg { width: 20px; height: 20px; fill: currentColor; }
+.page-liens .liens-reseaux svg { width: 24px; height: 24px; fill: currentColor; }
 
-.page-liens .liens-fin { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-4); margin-top: var(--e-5); max-width: none; }
-.page-liens .liens-fin a { color: var(--texte-2); text-decoration: none; border-bottom: 1px solid var(--filet-fort); }
-.page-liens .liens-fin a:hover { color: var(--texte); border-color: var(--texte); }
+.page-liens .liens-fin { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-4); margin-top: var(--e-4); max-width: none; }
+.page-liens .liens-fin a {
+  color: var(--texte-2); text-decoration: underline; text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em; text-decoration-color: var(--filet-fort);
+}
+.page-liens .liens-fin a:hover { color: var(--texte); text-decoration-color: currentColor; }
 
-/* ---------- 5. Mouvement : la plaque puis la pile des boutons, 60 ms apres ---------- */
-html.a-js .page-liens .liens-boutons.entree { animation-delay: 60ms; }
+/* ---------- 5. Tablette (600 a 899 px) : bande plus haute, colonne de 560 px au plus ---------- */
+@media (min-width: 600px) and (max-width: 899px) {
+  .page-liens { --liens-photo-h: clamp(320px, 48svh, 520px); }
+  .page-liens .liens-photo img { object-position: 50% 62%; }
+  .page-liens .liens-colonne { max-width: calc(560px + 2 * var(--gouttiere-large)); padding-inline: var(--gouttiere-large); }
+  .page-liens .liens-feux { left: var(--gouttiere-large); }
+  .page-liens .liens-nom { font-size: clamp(2.75rem, 11vw, 5.25rem); }
+}
+
+/* ---------- 6. Ordinateur (900 px et plus) : panneau photo fixe a droite, colonne a gauche ---------- */
+@media (min-width: 900px) {
+  /* --liens-arret : vide entre la colonne et le panneau photo, pour que les cases
+     s arretent avant la photo au lieu de mordre sur son fondu.
+     --liens-photo-g : bord gauche du panneau, a 42 % de la largeur, recule juste ce qu il faut
+     sur les petits ordinateurs pour garder 400 px de colonne (sans saut). */
+  .page-liens {
+    --liens-arret: 24px;
+    --liens-photo-g: max(42vw, calc(var(--bord-contenu) + 400px + var(--liens-arret)));
+  }
+  /* Du bord gauche du panneau jusqu au bord, toute la hauteur ; le bord gauche fond dans le noir */
+  .page-liens .liens-photo {
+    position: fixed; top: 0; right: 0; bottom: 0; left: var(--liens-photo-g);
+    height: auto;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%);
+    mask-image: linear-gradient(to right, transparent 0, #000 22%);
+  }
+  .page-liens .liens-photo img { object-position: 50% 62%; }
+  .page-liens .liens-voile-haut { display: none; }
+  .page-liens .liens-voile-bas { background-image: linear-gradient(to top, rgba(6, 6, 7, 0.6) 0%, rgba(6, 6, 7, 0) 28%); }
+  /* La colonne s aligne sur le bord du contenu et s arrete avant le panneau photo */
+  .page-liens .liens-colonne {
+    width: min(540px, calc(var(--liens-photo-g) - var(--bord-contenu) - var(--liens-arret)));
+    margin: 0 0 0 var(--bord-contenu);
+    padding: 40px 0 var(--e-8);
+  }
+  .page-liens .liens-feux { position: static; margin-bottom: 28px; }
+  .page-liens .liens-nom { font-size: var(--t-affiche); }
+  .page-liens .liens-marque { margin-top: var(--e-4); }
+  .page-liens .liens-boutons { margin-top: var(--e-6); }
+  .page-liens .lien-bio { padding: 30px 18px 16px; }
+  .page-liens .lien-bio::before { top: 11px; left: 18px; }
+  .page-liens .lien-bio-titre { font-size: 1.3125rem; }
+  .page-liens .lien-bio-sous { font-size: 0.84375rem; }
+}
+
+/* ---------- 7. Mouvement : la photo se pose (echelle 1,06 vers 1, transformation seulement) ----------
+   Les feux et l avancee de la grille sont dans signature.css (html.feux-depart, pose par interface.js). */
+@keyframes liens-photo { from { transform: scale(1.06); } }
+@media (prefers-reduced-motion: no-preference) {
+  .page-liens .liens-photo picture { animation: liens-photo 1200ms var(--ease-expo) both; }
+}
 @media (prefers-reduced-motion: reduce) {
   .page-liens .lien-bio:hover .lien-bio-fleche { transform: none; }
+  .page-liens .lien-bio:active { scale: 1; }
+}
+@media print {
+  .page-liens .liens-photo, .page-liens .liens-feux { display: none; }
+  .page-liens .liens-colonne { margin: 0; }
 }

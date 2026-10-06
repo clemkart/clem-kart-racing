@@ -22,6 +22,7 @@
   <!-- Hero : le merci et l endroit ou se trouve le PDF. Cette page ne livre aucun fichier :
        la livraison passe par la page de confirmation Stripe. Elle recoit aussi l ancienne adresse /merci.html (anciens acheteurs). -->
   <section class="merci" data-hero>
+    <div class="merci-arrivee" aria-hidden="true"><span class="damier damier-marches"></span></div>
     <div class="conteneur">
       <div class="grille">
         <div class="col-8">
@@ -37,7 +38,8 @@
 
   <!-- Filet de depart, puis le bon de livraison : trois cellules, jamais plus -->
   <section class="filet-depart section-merci">
-    <div class="conteneur">
+    <div class="conteneur grille-telemetrie">
+      <div class="filet-ligne" aria-hidden="true"><span class="filet-trait"></span><span class="damier damier-marches"></span></div>
       <div class="bon-livraison reveal">
         <div>
           <p class="mention">Ton guide</p>

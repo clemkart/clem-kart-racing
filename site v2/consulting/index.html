@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 {{partial:head}}
+{{partial:mouvement}}
 <title>{{journee.titre}} · Une journée avec moi sur ton circuit · {{marque.nom}}</title>
 <meta name="description" content="{{journee.sous_titre}} {{journee.prix_affiche}} {{journee.unite}}, sur devis. Demande ta date en deux minutes.">
 <meta name="robots" content="index, follow">
@@ -12,46 +13,55 @@
 <meta property="og:url" content="{{sites.url}}{{routes.journee}}">
 <meta property="og:image" content="{{sites.url}}/photos/piste-795-public-1600.jpg">
 <meta name="twitter:image" content="{{sites.url}}/photos/piste-795-public-1600.jpg">
-<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/piste-795-public-960.webp 960w, /photos/piste-795-public-1600.webp 1600w, /photos/piste-795-public-2400.webp 2400w" imagesizes="100vw">
+<link rel="preload" as="image" type="image/webp" media="(max-width: 899px)" imagesrcset="/photos/piste-795-public-portrait-640.webp 640w, /photos/piste-795-public-portrait-1280.webp 1280w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 900px)" imagesrcset="/photos/piste-795-public-960.webp 960w, /photos/piste-795-public-1600.webp 1600w, /photos/piste-795-public-2400.webp 2400w" imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="/assets/page-demande.css">
 </head>
 <body class="page-demande page-consulting" data-page="consulting">
 {{partial:nav}}
 
-<main id="contenu">
+<main id="contenu" data-trajectoire>
 
-  <!-- Hero en bande : la photo couleur file d un bord a l autre, la plaque de titre deborde sous elle.
-       Photo partagee : photos/piste-795-public (registre photos/PHOTOS.md). -->
+  <!-- Ecran 1 : la bande cinemascope (2,39:1 sur ordinateur, 4:5 sur telephone). Le titre est a cheval
+       sur le bas de la bande : moitie sur la photo, moitie sur le noir. Puis le chapo, l action, et la
+       ligne de depart d ou part la trajectoire. Photos : piste-795-public et son portrait (photos/PHOTOS.md). -->
   <section class="hero-bande" data-hero>
-    <div class="hero-bande-photo">
+    <div class="hero-bande-photo cine" data-entree="photo" style="--entree-echelle: 1.08">
       <picture>
+        <source media="(max-width: 899px)" type="image/webp" srcset="/photos/piste-795-public-portrait-640.webp 640w, /photos/piste-795-public-portrait-1280.webp 1280w" sizes="100vw" width="640" height="800">
+        <source media="(max-width: 899px)" srcset="/photos/piste-795-public-portrait-640.jpg 640w, /photos/piste-795-public-portrait-1280.jpg 1280w" sizes="100vw" width="640" height="800">
         <source type="image/webp" srcset="/photos/piste-795-public-960.webp 960w, /photos/piste-795-public-1600.webp 1600w, /photos/piste-795-public-2400.webp 2400w" sizes="100vw">
         <img src="/photos/piste-795-public-1600.jpg" srcset="/photos/piste-795-public-960.jpg 960w, /photos/piste-795-public-1600.jpg 1600w, /photos/piste-795-public-2400.jpg 2400w" sizes="100vw" width="1600" height="1067" alt="Clément Daniel en course dans son kart bleu et blanc numéro 795, devant une tribune pleine de spectateurs" fetchpriority="high" decoding="async">
       </picture>
+      <span class="voile voile-bas" aria-hidden="true"></span>
     </div>
-    <div class="conteneur">
-      <div class="hero-bande-plaque plaque-titre entree">
+    <div class="conteneur hero-bande-corps">
+      <div class="hero-bande-titre" data-entree="titre" data-t="300" data-duree="900">
         <h1>{{journee.titre}}</h1>
       </div>
-      <div class="consulting-accroche entree entree-suivante">
-        <p class="chapo">{{journee.sous_titre}}</p>
-        <div class="consulting-action">
-          <a class="bouton bouton-principal" href="#demande" data-cta="hero" data-zone="hero" data-demande>Demander une date</a>
+      <div class="consulting-accroche">
+        <p class="chapo" data-entree="texte" data-t="420">{{journee.sous_titre}}</p>
+        <div class="consulting-action" data-entree="texte" data-t="500">
+          <a class="bouton bouton-principal" href="#demande" data-aimant data-cta="hero" data-zone="hero" data-demande>Demander une date</a>
           <p class="consulting-prix-ligne"><span class="chrono">{{journee.prix_affiche}}</span> {{journee.unite}}. Rien à payer en ligne : tu reçois le devis avant de dire oui.</p>
         </div>
       </div>
+      <div class="depart" aria-hidden="true" data-entree="depart"><span class="depart-s1">S1</span><span class="damier"></span><span class="depart-trait"></span></div>
     </div>
   </section>
 
-  <!-- Section 2 : pour qui, pas pour qui. Le filet de depart, une fois par page. -->
-  <section class="section filet-depart reveal">
+  <!-- Section 2 : pour qui, pas pour qui. Deux colonnes : la coche et la croix. -->
+  <section class="section consulting-pourqui-section">
     <div class="conteneur">
       <div class="entete-section">
-        <h2>C’est pour toi ?</h2>
+        <h2 data-virage="g">C’est pour toi ?</h2>
       </div>
       <div class="grille consulting-pourqui">
-        <div class="col-6">
-          <h3>Oui, si</h3>
+        <div class="col-6 consulting-pourqui-oui reveal">
+          <div class="pourqui-tete">
+            <svg class="pourqui-signe" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+            <h3>Oui, si</h3>
+          </div>
           <ul class="liste">
             <li>Tu roules en compétition, ou en loisir régulier avec ton propre kart.</li>
             <li>Tu tournes au même chrono depuis des semaines et tu ne sais pas où tu perds.</li>
@@ -59,8 +69,11 @@
             <li>Tu veux un regard de quelqu’un qui roule encore, pas une théorie.</li>
           </ul>
         </div>
-        <div class="col-6 consulting-pourqui-non">
-          <h3>Non, si</h3>
+        <div class="col-6 consulting-pourqui-non reveal reveal-decale-1">
+          <div class="pourqui-tete">
+            <svg class="pourqui-signe pourqui-croix" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+            <h3>Non, si</h3>
+          </div>
           <ul class="liste">
             <li>Tu roules en kart de location : il change à chaque session, on ne peut rien régler.</li>
             <li>Tu attends une promesse de chrono ou de podium. Je n’en fais pas.</li>
@@ -71,15 +84,17 @@
     </div>
   </section>
 
-  <!-- Section 3 : la journee en trois temps, indexes comme des tours de chronometrage. -->
-  <section class="section filet-haut reveal" id="journee">
+  <!-- Section 3 : la journee en trois temps, comme les trois secteurs d un tour. En haut de chaque temps,
+       un segment de secteur se remplit en rouge pendant la lecture (data-segment, lu par mouvement.js). -->
+  <section class="section filet-haut" id="journee">
     <div class="conteneur">
       <div class="entete-section">
-        <h2>Comment se passe la journée</h2>
-        <p class="chapo">Trois temps. Le plus important se joue entre les sessions.</p>
+        <h2 data-virage="d">Comment se passe la journée</h2>
+        <p class="chapo reveal">Trois temps. Le plus important se joue entre les sessions.</p>
       </div>
-      <ol class="consulting-temps">
-        <li>
+      <ol class="consulting-temps" data-scene="trois-temps">
+        <li class="reveal">
+          <span class="temps-segment" data-segment aria-hidden="true"></span>
           <p class="chrono chrono-bloc consulting-temps-index">01 · Avant</p>
           <div class="consulting-temps-corps">
             <h3>On prépare</h3>
@@ -87,7 +102,8 @@
             <p>J’arrive en sachant quoi regarder.</p>
           </div>
         </li>
-        <li>
+        <li class="reveal" style="--i: 1">
+          <span class="temps-segment" data-segment aria-hidden="true"></span>
           <p class="chrono chrono-bloc consulting-temps-index">02 · Sur place</p>
           <div class="consulting-temps-corps">
             <h3>On roule, on regarde, on règle</h3>
@@ -100,7 +116,8 @@
             </ul>
           </div>
         </li>
-        <li>
+        <li class="reveal" style="--i: 2">
+          <span class="temps-segment" data-segment aria-hidden="true"></span>
           <p class="chrono chrono-bloc consulting-temps-index">03 · Après</p>
           <div class="consulting-temps-corps">
             <h3>Tu repars avec un écrit</h3>
@@ -112,41 +129,44 @@
     </div>
   </section>
 
-  <!-- Section 4 : ce que ca change. Une phrase forte, trois lignes, aucune promesse de chrono. -->
-  <section class="section section-fond-1 filet-haut filet-bas reveal">
+  <!-- Section 4 : ce que ca change. La phrase de la page qui se remplit mot a mot pendant la lecture
+       (data-remplissage ; data-revele="non" : pas de revelation ligne a ligne en plus). Photo en relief. -->
+  <section class="section section-fond-1 filet-haut filet-bas consulting-change-section">
     <div class="conteneur">
       <div class="grille consulting-change-grille">
         <div class="col-6 consulting-change">
-          <h2>Tu ne repars pas avec vingt conseils. Tu repars avec un plan.</h2>
-          <p class="chapo">Où tu perds du temps. Pourquoi. Par quoi commencer.</p>
-          <p>Et un kart réglé pour ta façon de rouler, pas pour celle du voisin de paddock.</p>
-          <p>À ta prochaine sortie, tu sais quoi tester. Une chose à la fois.</p>
+          <h2 data-virage="g" data-revele="non" data-remplissage>Tu ne repars pas avec vingt conseils. Tu repars avec un plan.</h2>
+          <div class="consulting-change-texte reveal">
+            <p class="chapo">Où tu perds du temps. Pourquoi. Par quoi commencer.</p>
+            <p>Et un kart réglé pour ta façon de rouler, pas pour celle du voisin de paddock.</p>
+            <p>À ta prochaine sortie, tu sais quoi tester. Une chose à la fois.</p>
+          </div>
         </div>
         <!-- Photo couleur de grille (photos/paddock-echange-pilote) : deux pilotes casqués, aucun visage reconnaissable -->
-        <figure class="col-5 photo consulting-change-photo">
+        <figure class="cine consulting-change-photo" data-relief>
           <picture>
-            <source type="image/webp" srcset="/photos/paddock-echange-pilote-640.webp 640w, /photos/paddock-echange-pilote-1280.webp 1280w" sizes="(min-width: 900px) 40vw, calc(100vw - 32px)">
-            <img src="/photos/paddock-echange-pilote-640.jpg" srcset="/photos/paddock-echange-pilote-640.jpg 640w, /photos/paddock-echange-pilote-1280.jpg 1280w" sizes="(min-width: 900px) 40vw, calc(100vw - 32px)" width="640" height="427" loading="lazy" decoding="async" alt="{{marque.auteur}}, casque sur la tête, serre la main d’un autre pilote sur la grille après une manche">
+            <source type="image/webp" srcset="/photos/paddock-echange-pilote-640.webp 640w, /photos/paddock-echange-pilote-1280.webp 1280w" sizes="(min-width: 900px) 46vw, calc(100vw - 32px)">
+            <img src="/photos/paddock-echange-pilote-640.jpg" srcset="/photos/paddock-echange-pilote-640.jpg 640w, /photos/paddock-echange-pilote-1280.jpg 1280w" sizes="(min-width: 900px) 46vw, calc(100vw - 32px)" width="640" height="427" loading="lazy" decoding="async" alt="{{marque.auteur}}, casque sur la tête, serre la main d’un autre pilote sur la grille après une manche">
           </picture>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- Section 5 : pourquoi moi. Photo couleur (disque Elements, 2025/KARTING/Photo Kart/IMG_4351), recadree 4:5, en 640 et 800 px, webp et jpg. -->
-  <section class="section reveal">
+  <!-- Section 5 : pourquoi moi. Photo de dos dans l epingle (photos/piste-95-epingle, 4:5), volet et relief. -->
+  <section class="section consulting-auteur-section">
     <div class="conteneur">
       <div class="grille consulting-auteur">
         <div class="col-4 consulting-auteur-photo">
-          <figure class="photo photo-portrait">
+          <figure class="cine consulting-auteur-cadre" data-volet data-relief>
             <picture>
-              <source type="image/webp" srcset="/consulting/clement-640.webp 640w, /consulting/clement-800.webp 800w" sizes="(min-width: 900px) 420px, 70vw">
-              <img src="/consulting/clement-800.jpg" srcset="/consulting/clement-640.jpg 640w, /consulting/clement-800.jpg 800w" sizes="(min-width: 900px) 420px, 70vw" width="800" height="1000" loading="lazy" decoding="async" alt="{{marque.auteur}} au paddock, protège-côtes sur les épaules, entre deux sessions">
+              <source type="image/webp" srcset="/photos/piste-95-epingle-640.webp 640w, /photos/piste-95-epingle-1280.webp 1280w" sizes="(min-width: 900px) 32vw, calc(100vw - 32px)">
+              <img src="/photos/piste-95-epingle-640.jpg" srcset="/photos/piste-95-epingle-640.jpg 640w, /photos/piste-95-epingle-1280.jpg 1280w" sizes="(min-width: 900px) 32vw, calc(100vw - 32px)" width="640" height="800" loading="lazy" decoding="async" alt="{{marque.auteur}}, vu de dos dans son kart numéro 95, collé au vibreur à l’entrée d’une épingle">
             </picture>
           </figure>
         </div>
         <div class="col-7 consulting-auteur-texte">
-          <h2>Pourquoi moi</h2>
+          <h2 data-virage="d">Pourquoi moi</h2>
           <p>Je roule encore. Je connais la pression d’une grille, les pneus qui ne montent pas en température et le kart qui refuse de tourner.</p>
           <p>Pas de mécano, pas de team : j’ai appris le pilotage et les réglages seul, en me trompant beaucoup. Ce que j’ai mis des années à comprendre, je te le montre en une journée.</p>
           <p>J’ai aussi écrit le guide « {{guide.titre}} ». {{lecteurs.phrase}}.</p>
@@ -157,19 +177,19 @@
   </section>
 
   <!-- Section 6 : prix, ce qui est compris, frais de deplacement. Prix et unite lus dans la config. -->
-  <section class="section bloc-prix section-fond-1 filet-haut filet-bas reveal" id="prix">
-    <div class="conteneur">
+  <section class="section bloc-prix section-fond-1 filet-haut filet-bas" id="prix">
+    <div class="conteneur grille-telemetrie">
       <div class="entete-section">
-        <h2>Le prix</h2>
+        <h2 data-virage="g">Le prix</h2>
       </div>
       <div class="grille">
-        <div class="col-5 consulting-prix">
-          <p class="chrono-grand"><strong>{{journee.prix_affiche}}</strong><span class="mono">{{journee.unite}}</span></p>
+        <div class="col-5 consulting-prix reveal">
+          <p class="chrono-grand"><strong data-compteur>{{journee.prix_affiche}}</strong><span class="mono">{{journee.unite}}</span></p>
           <p class="consulting-prix-note">Les frais de déplacement sont calculés sur devis, selon la distance depuis le Morbihan : kilomètres, péages, et une nuit sur place si le circuit est loin. Tu connais le total avant de dire oui.</p>
         </div>
-        <div class="col-6 consulting-prix-detail">
+        <div class="col-6 consulting-prix-detail reveal reveal-decale-1">
           <h3>Ce qui est compris</h3>
-          <ul class="liste">
+          <ul class="liste liste-coches">
             <li>La préparation : un échange avant la journée et la lecture de tes chronos, onboards et données.</li>
             <li>La journée entière avec toi, au bord de la piste et au stand.</li>
             <li>Ton onboard filmé.</li>
@@ -185,7 +205,7 @@
             <li>Ta licence ou ton titre de participation, et ton assurance.</li>
           </ul>
           <div class="consulting-prix-action">
-            <a class="bouton bouton-principal" href="#demande" data-cta="prix" data-zone="prix" data-demande>Demander une date</a>
+            <a class="bouton bouton-principal" href="#demande" data-aimant data-cta="prix" data-zone="prix" data-demande>Demander une date</a>
             <span class="bouton-sous">Sans engagement. Devis avant toute réservation, aucun paiement en ligne.</span>
           </div>
         </div>
@@ -198,10 +218,10 @@
   <section class="section-demande" id="demande">
     <div class="conteneur">
       <div class="grille">
-        <div class="col-6 demande-texte reveal">
-          <h2>Demander une date</h2>
+        <div class="col-6 demande-texte">
+          <h2 data-virage="d">Demander une date</h2>
           <p class="demande-chapo">Deux minutes. Je lis chaque demande moi-même.</p>
-          <ol class="liste-numeros consulting-etapes">
+          <ol class="liste-numeros consulting-etapes reveal">
             <li><span>Tu remplis le formulaire : ton circuit, ta date, ton kart.</span></li>
             <li><span>Je te réponds sous <span class="chrono">{{journee.reponse_h}} h</span> avec un devis : la journée, les frais de déplacement, le total.</span></li>
             <li><span>Tu valides le devis. On fixe la date et on prépare la journée.</span></li>
@@ -289,14 +309,14 @@
   </section>
 
   <!-- Section 8 : FAQ, details natifs. -->
-  <section class="section filet-haut faq-section reveal">
+  <section class="section filet-haut faq-section">
     <div class="conteneur">
       <div class="grille">
         <div class="col-8">
           <div class="entete-section">
-            <h2>Avant de demander</h2>
+            <h2 data-virage="g">Avant de demander</h2>
           </div>
-          <div class="faq">
+          <div class="faq reveal">
             <details>
               <summary>Sur quels circuits ?</summary>
               <p>Sur le circuit de ton choix. Je pars du Morbihan : plus le circuit est loin, plus les frais de déplacement montent.<br>Tu les vois dans le devis, avant de t’engager.</p>
@@ -342,6 +362,7 @@
 
 <!-- Barre collante : apparait quand le hero est sorti de l ecran, se cache devant le prix et le formulaire. -->
 <div class="barre" role="region" aria-label="Demander une date">
+  <div class="secteurs" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
   <div class="conteneur barre-inner">
     <p class="barre-texte">{{journee.titre}} <span class="chrono">{{journee.prix_affiche}}</span></p>
     <a class="bouton bouton-principal" href="#demande" data-cta="barre" data-zone="barre" data-demande>Demander une date</a>

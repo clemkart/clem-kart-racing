@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 {{partial:head}}
+{{partial:mouvement}}
 <title>Marques et partenaires · {{marque.nom}}</title>
 <meta name="description" content="Pilote de karting et créateur de vidéos. Votre logo sur ma saison {{sponsoring.saison}}, ou vos produits dans mes vidéos : choisissez votre parcours, je vous réponds sous {{delais.reponse_marques_h}} h.">
 <meta name="robots" content="index, follow">
@@ -13,36 +14,45 @@
 <meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/piste-795-vibreur-640.webp 640w, /photos/piste-795-vibreur-1280.webp 1280w" imagesizes="(min-width: 900px) 46vw, 100vw">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/piste-695-ciel-960.webp 960w, /photos/piste-695-ciel-1600.webp 1600w, /photos/piste-695-ciel-2400.webp 2400w" imagesizes="(min-width: 900px) 160vh, 100vw" media="(min-width: 600px)" fetchpriority="high">
 <link rel="stylesheet" href="/assets/page-marques.css">
 </head>
 <body class="page-marques" data-page="marques">
 {{partial:nav}}
 
-<main id="contenu">
+<main id="contenu" data-trajectoire>
 
   <!-- 1. En-tete et aiguillage (COPY-PAGE-MARQUES.md, section 2). En moins de 5 secondes, la marque
        sait qui je suis, qu il y a deux chemins, et lequel est le sien. Vouvoiement partout.
-       Telephone : texte, puis les deux parcours, puis la photo (ordre CSS). -->
+       Ordinateur : ecran scinde, le texte sur le noir (colonnes 1 a 6), la photo du kart 695 et de ses
+       logos de la colonne 7 jusqu au bord droit, sur toute la hauteur, bord gauche fondu dans le noir.
+       Tablette : texte, photo en bande 16:9, puis la ligne de depart et les deux parcours.
+       Telephone (moins de 600 px) : texte, depart, les deux parcours, puis la photo en bande 16:9. -->
   <section class="marques-hero" data-hero aria-labelledby="marques-titre">
-    <div class="conteneur">
-      <div class="grille marques-hero-grille">
-
-        <div class="col-6 marques-hero-texte entree">
-          <h1 id="marques-titre">Mettez votre marque en piste.</h1>
-          <p class="chapo">Je suis Clément Daniel, pilote de karting en compétition et créateur de vidéos de pilotage. Il y a deux façons de travailler avec moi. Choisissez la vôtre.</p>
-          <p class="chrono chrono-ligne">{{audience.vues_affiche}} vues sur {{audience.reels}} Reels Instagram {{audience.periode}} · vidéo médiane : {{audience.mediane_affiche}} vues</p>
+    <div class="marques-ecran">
+      <div class="marques-hero-photo cine" data-entree="photo" style="--entree-echelle: 1.06">
+        <picture>
+          <source type="image/webp" srcset="/photos/piste-695-ciel-960.webp 960w, /photos/piste-695-ciel-1600.webp 1600w, /photos/piste-695-ciel-2400.webp 2400w" sizes="(min-width: 900px) 160vh, 100vw">
+          <img src="/photos/piste-695-ciel-1600.jpg" srcset="/photos/piste-695-ciel-960.jpg 960w, /photos/piste-695-ciel-1600.jpg 1600w, /photos/piste-695-ciel-2400.jpg 2400w" sizes="(min-width: 900px) 160vh, 100vw" width="1600" height="900" alt="Clément Daniel dans son kart Redspeed numéro 695, vu de profil en contre-plongée sous un ciel bleu chargé de nuages, sur la grille du circuit du Mans" fetchpriority="high" decoding="async">
+        </picture>
+        <span class="voile marques-voile-haut" aria-hidden="true"></span>
+        <span class="voile marques-voile-gauche" aria-hidden="true"></span>
+        <span class="voile marques-voile-bas" aria-hidden="true"></span>
+      </div>
+      <div class="conteneur marques-ecran-grille">
+        <div class="marques-hero-texte">
+          <h1 id="marques-titre" data-entree="titre" data-t="150" data-duree="900">Mettez votre marque en piste.</h1>
+          <p class="chapo" data-entree="texte" data-t="320">Je suis Clément Daniel, pilote de karting en compétition et créateur de vidéos de pilotage. Il y a deux façons de travailler avec moi. Choisissez la vôtre.</p>
+          <p class="chrono chrono-ligne marques-audience" data-entree="texte" data-t="500"><span data-compteur>{{audience.vues_affiche}}</span> vues sur {{audience.reels}} Reels Instagram {{audience.periode}} · vidéo médiane : <span data-compteur>{{audience.mediane_affiche}}</span> vues</p>
         </div>
+      </div>
+    </div>
 
-        <div class="col-6 marques-hero-photo entree entree-suivante">
-          <picture>
-            <source type="image/webp" srcset="/photos/piste-795-vibreur-640.webp 640w, /photos/piste-795-vibreur-1280.webp 1280w" sizes="(min-width: 900px) 46vw, 100vw">
-            <img src="/photos/piste-795-vibreur-1280.jpg" srcset="/photos/piste-795-vibreur-640.jpg 640w, /photos/piste-795-vibreur-1280.jpg 1280w" sizes="(min-width: 900px) 46vw, 100vw" width="1280" height="853" alt="Kart numéro 795 de Clément Daniel qui longe un vibreur rouge et jaune, casque Arai et combinaison bleue bien visibles" fetchpriority="high" decoding="async">
-          </picture>
-        </div>
+    <div class="conteneur marques-hero-bas">
+        <div class="depart" aria-hidden="true" data-entree="depart"><span class="depart-s1">S1</span><span class="damier"></span><span class="depart-trait"></span></div>
 
-        <!-- Les deux cartes d aiguillage : toute la carte est cliquable. Le filet de depart, une fois par page. -->
-        <nav class="col-12 marques-choix filet-depart" aria-label="Choisissez votre parcours">
+        <!-- Les deux parcours, deux « stands » : toute la carte est cliquable. -->
+        <nav class="marques-choix reveal" aria-label="Choisissez votre parcours">
           <a class="choix" href="#saison" data-parcours="saison" data-zone="aiguillage">
             <span class="choix-index chrono chrono-bloc">01 · Parrainage de saison</span>
             <span class="choix-titre">Vous voulez votre logo sur ma saison</span>
@@ -59,32 +69,30 @@
           </a>
           <p class="choix-hesite"><a class="lien-texte" href="#contact" data-parcours="deux" data-zone="aiguillage" data-demande>Vous hésitez, ou vous voulez les deux ? Écrivez-moi, on trie ensemble.</a></p>
         </nav>
-
-      </div>
     </div>
   </section>
 
   <!-- 2. Les preuves (section 3 de la copie). Deux chiffres verifies (bloc audience de la config),
        le total et la mediane cote a cote. Le partenaire de 2024 n est pas cite sans son accord. -->
-  <section class="section filet-haut marques-preuves reveal" aria-labelledby="preuves-titre">
-    <div class="conteneur">
+  <section class="section filet-haut marques-preuves" aria-labelledby="preuves-titre">
+    <div class="conteneur grille-telemetrie">
       <div class="grille">
         <figure class="col-4 marques-preuves-photo">
-          <div class="photo photo-portrait">
+          <div class="cine marques-cadre-portrait" data-relief>
             <picture>
-              <source type="image/webp" srcset="/photos/clement-trophee-640.webp 640w" sizes="(min-width: 900px) 30vw, 70vw">
-              <img src="/photos/clement-trophee-640.jpg" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel tout sourire, un trophée d’Ancenis dans une main et son casque dans l’autre">
+              <source type="image/webp" srcset="/photos/cockpit-dessus-640.webp 640w, /photos/cockpit-dessus-1280.webp 1280w" sizes="(min-width: 900px) 30vw, calc(100vw - 32px)">
+              <img src="/photos/cockpit-dessus-640.jpg" srcset="/photos/cockpit-dessus-640.jpg 640w, /photos/cockpit-dessus-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, calc(100vw - 32px)" width="640" height="800" loading="lazy" decoding="async" alt="Vue plongeante sur Clément Daniel dans son kart, les mains sur le volant, comme une caméra embarquée">
             </picture>
           </div>
         </figure>
         <div class="col-7 marques-preuves-texte">
-          <h2 id="preuves-titre">Des vidéos qui sont vues</h2>
-          <div class="preuve">
-            <p class="preuve-chiffre">{{audience.vues_affiche}}</p>
+          <h2 id="preuves-titre" data-virage="g">Des vidéos qui sont vues</h2>
+          <div class="preuve reveal">
+            <p class="preuve-chiffre" data-compteur>{{audience.vues_affiche}}</p>
             <p>vues sur mes {{audience.reels}} Reels Instagram, {{audience.periode}}.</p>
           </div>
-          <div class="preuve">
-            <p class="preuve-chiffre">{{audience.mediane_affiche}}</p>
+          <div class="preuve reveal" style="--i: 1">
+            <p class="preuve-chiffre" data-compteur>{{audience.mediane_affiche}}</p>
             <p>vues pour ma vidéo médiane sur la même période. Je vous donne les deux chiffres, pas seulement le meilleur.</p>
           </div>
           <p class="mention">Source : {{audience.source}}.</p>
@@ -98,18 +106,18 @@
        le budget detaille, la date limite et les zones vues par la camera. -->
   <section class="section section-fond-1 filet-haut filet-bas marques-saison" id="saison" aria-labelledby="saison-titre">
     <div class="conteneur">
-      <div class="entete-section marques-entete reveal">
+      <div class="entete-section marques-entete">
         <p class="libelle">Parrainage de saison · {{sponsoring.association.nom_affiche}}</p>
-        <h2 id="saison-titre">Votre logo sur ma saison {{sponsoring.saison}}.</h2>
-        <p class="chapo">Pendant toute la saison, votre marque roule avec moi : sur le kart, le casque ou la combinaison selon la formule, et à l’écran dans mes vidéos de course. À partir de la formule {{sponsoring.formules.officiel.titre}}, vous la faites vivre auprès de vos clients avec le kart exposé chez vous, des photos de course et une vidéo tournée dans votre entreprise.</p>
+        <h2 id="saison-titre" data-virage="d">Votre logo sur ma saison <span class="chiffre-titre">{{sponsoring.saison}}</span>.</h2>
+        <p class="chapo reveal">Pendant toute la saison, votre marque roule avec moi : sur le kart, le casque ou la combinaison selon la formule, et à l’écran dans mes vidéos de course. À partir de la formule {{sponsoring.formules.officiel.titre}}, vous la faites vivre auprès de vos clients avec le kart exposé chez vous, des photos de course et une vidéo tournée dans votre entreprise.</p>
       </div>
 
       <!-- 3.1 L objectif de la saison -->
-      <div class="grille marques-objectif reveal">
-        <div class="col-5">
-          <p class="chrono-grand marques-objectif-chiffre"><strong>{{sponsoring.objectif_affiche}}</strong><span class="mono">pour rouler la saison {{sponsoring.saison}}</span></p>
+      <div class="grille marques-objectif grille-telemetrie reveal">
+        <div class="col-7 marques-objectif-gauche">
+          <p class="chrono-grand marques-objectif-chiffre"><strong data-compteur>{{sponsoring.objectif_affiche}}</strong><span class="mono">pour rouler la saison {{sponsoring.saison}}</span></p>
         </div>
-        <div class="col-6 marques-objectif-texte">
+        <div class="col-5 marques-objectif-texte">
           <h3>Ce que je cherche, et pourquoi</h3>
           <p>Pour rouler la saison {{sponsoring.saison}} dans de bonnes conditions, il me faut entre {{sponsoring.objectif_min_affiche}} et {{sponsoring.objectif_max_affiche}}. Je dois racheter un kart, et une saison complète, c’est aussi les pneus, les engagements, l’entretien du moteur et les déplacements.</p>
           <p>Ce n’est pas un budget de luxe. C’est ce qu’il faut aujourd’hui pour être au départ avec un matériel correct.</p>
@@ -118,17 +126,22 @@
       </div>
 
       <!-- 3.2 Ou va votre logo, et ce qui est inclus dans toutes les formules -->
-      <div class="grille marques-logo reveal">
-        <figure class="col-4 marques-logo-photo">
-          <div class="photo photo-portrait">
+      <div class="grille marques-logo">
+        <figure class="col-5 marques-logo-photo">
+          <!-- Trois cordes posees sur la photo (decoratives), en pourcentages du cadre : le casque,
+               la poitrine de la combinaison, le ponton du kart. Elles s allument l une apres l autre. -->
+          <div class="cine marques-cadre-portrait marques-logo-cadre" data-dessin>
             <picture>
               <source type="image/webp" srcset="/photos/marques-combinaison-kart-640.webp 640w, /photos/marques-combinaison-kart-1280.webp 1280w" sizes="(min-width: 900px) 30vw, 70vw">
-              <img src="/photos/marques-combinaison-kart-640.jpg" srcset="/photos/marques-combinaison-kart-640.jpg 640w, /photos/marques-combinaison-kart-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, 70vw" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel debout dans son kart numéro 795, casque, combinaison et kart visibles en entier">
+              <img src="/photos/marques-combinaison-kart-640.jpg" srcset="/photos/marques-combinaison-kart-640.jpg 640w, /photos/marques-combinaison-kart-1280.jpg 1280w" sizes="(min-width: 900px) 34vw, calc(100vw - 32px)" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel debout dans son kart numéro 795, casque, combinaison et kart visibles en entier">
             </picture>
+            <span class="logo-repere logo-repere-casque" aria-hidden="true"><span class="corde" data-allume data-t="200"></span></span>
+            <span class="logo-repere logo-repere-poitrine" aria-hidden="true"><span class="corde" data-allume data-t="480"></span></span>
+            <span class="logo-repere logo-repere-ponton" aria-hidden="true"><span class="corde" data-allume data-t="760"></span></span>
           </div>
           <figcaption class="photo-legende">Le kart, le casque, la combinaison : les trois endroits où votre logo roule.</figcaption>
         </figure>
-        <div class="col-6 marques-logo-texte">
+        <div class="col-6 marques-logo-texte reveal">
           <h3>Inclus dans toutes les formules</h3>
           <ul class="liste">
             <li>Une convention de parrainage d’une page, signée avant tout versement.</li>
@@ -272,10 +285,10 @@
         </div>
         <div class="col-5 marques-deroule-droite">
           <figure class="photo-cadre">
-            <div class="photo marques-photo-large">
+            <div class="cine marques-photo-large" data-relief>
               <picture>
-                <source type="image/webp" srcset="/photos/marques-cockpit-logos-640.webp 640w, /photos/marques-cockpit-logos-1280.webp 1280w" sizes="(min-width: 900px) 38vw, 100vw">
-                <img src="/photos/marques-cockpit-logos-640.jpg" srcset="/photos/marques-cockpit-logos-640.jpg 640w, /photos/marques-cockpit-logos-1280.jpg 1280w" sizes="(min-width: 900px) 38vw, 100vw" width="640" height="427" loading="lazy" decoding="async" alt="Clément Daniel s’installe dans son kart Redspeed numéro 95, logos de partenaires visibles sur la combinaison et le ponton">
+                <source type="image/webp" srcset="/photos/piste-95-arriere-640.webp 640w, /photos/piste-95-arriere-1280.webp 1280w" sizes="(min-width: 900px) 38vw, calc(100vw - 32px)">
+                <img src="/photos/piste-95-arriere-640.jpg" srcset="/photos/piste-95-arriere-640.jpg 640w, /photos/piste-95-arriere-1280.jpg 1280w" sizes="(min-width: 900px) 38vw, calc(100vw - 32px)" width="640" height="427" loading="lazy" decoding="async" alt="Le kart numéro 95 de Clément Daniel vu de l’arrière, son nom et les logos de partenaires sur la combinaison et le ponton">
               </picture>
             </div>
             <figcaption class="photo-legende">Des logos de partenaires sur la combinaison et sur le ponton du kart.</figcaption>
@@ -288,7 +301,7 @@
       </div>
 
       <div class="marques-cta reveal">
-        <a class="bouton bouton-principal" href="#contact" data-parcours="saison" data-zone="saison" data-demande>Recevoir une proposition pour la saison</a>
+        <a class="bouton bouton-principal" href="#contact" data-aimant data-parcours="saison" data-zone="saison" data-demande>Recevoir une proposition pour la saison</a>
         <a class="lien-texte" href="#contact" data-parcours="saison" data-rappel data-zone="saison" data-demande>Je préfère être rappelé</a>
       </div>
     </div>
@@ -297,18 +310,18 @@
   <!-- 4. Parcours B : collaboration reseaux, l activite professionnelle de Clement (section 5 de la copie). -->
   <section class="section marques-reseaux" id="reseaux" aria-labelledby="reseaux-titre">
     <div class="conteneur">
-      <div class="entete-section marques-entete reveal">
+      <div class="entete-section marques-entete">
         <p class="libelle">Collaboration réseaux · {{marques.structure_reseaux}}</p>
-        <h2 id="reseaux-titre">Vos produits dans mes vidéos.</h2>
-        <p class="chapo">Je teste, j’explique et je montre en piste. Votre produit est utilisé pour de vrai, filmé en onboard, et présenté par quelqu’un qui sait ce qu’il fait sur un kart.</p>
+        <h2 id="reseaux-titre" data-virage="g">Vos produits dans mes vidéos.</h2>
+        <p class="chapo reveal">Je teste, j’explique et je montre en piste. Votre produit est utilisé pour de vrai, filmé en onboard, et présenté par quelqu’un qui sait ce qu’il fait sur un kart.</p>
       </div>
 
       <div class="grille marques-videos reveal">
         <figure class="col-4 marques-videos-photo">
-          <div class="photo photo-portrait">
+          <div class="cine marques-cadre-portrait">
             <picture>
-              <source type="image/webp" srcset="/photos/paddock-gants-640.webp 640w, /photos/paddock-gants-1280.webp 1280w" sizes="(min-width: 900px) 30vw, 70vw">
-              <img src="/photos/paddock-gants-640.jpg" srcset="/photos/paddock-gants-640.jpg 640w, /photos/paddock-gants-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, 70vw" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel casqué enfile ses gants avant de rouler, ciel bleu derrière lui">
+              <source type="image/webp" srcset="/photos/paddock-gants-640.webp 640w, /photos/paddock-gants-1280.webp 1280w" sizes="(min-width: 900px) 30vw, calc(100vw - 32px)">
+              <img src="/photos/paddock-gants-640.jpg" srcset="/photos/paddock-gants-640.jpg 640w, /photos/paddock-gants-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, calc(100vw - 32px)" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel casqué enfile ses gants avant de rouler, ciel bleu derrière lui">
             </picture>
           </div>
         </figure>
@@ -387,26 +400,26 @@
       </div>
 
       <div class="marques-cta reveal">
-        <a class="bouton bouton-principal" href="#contact" data-parcours="reseaux" data-zone="reseaux" data-demande>Proposer une collaboration</a>
+        <a class="bouton bouton-principal" href="#contact" data-aimant data-parcours="reseaux" data-zone="reseaux" data-demande>Proposer une collaboration</a>
         <a class="lien-texte" href="#contact" data-parcours="reseaux" data-kit data-zone="reseaux" data-demande>Recevoir d’abord mes chiffres d’audience</a>
       </div>
     </div>
   </section>
 
   <!-- 5. Qui je suis (section 6 de la copie) : portrait couleur, faits de la config. -->
-  <section class="section filet-haut marques-qui reveal" aria-labelledby="qui-titre">
+  <section class="section filet-haut marques-qui" aria-labelledby="qui-titre">
     <div class="conteneur">
       <div class="grille">
         <div class="col-4 marques-qui-photo">
-          <div class="photo photo-portrait">
+          <div class="cine marques-cadre-portrait" data-relief>
             <picture>
-              <source type="image/webp" srcset="/photos/clement-portrait-640.webp 640w, /photos/clement-portrait-1280.webp 1280w" sizes="(min-width: 900px) 30vw, 70vw">
-              <img src="/photos/clement-portrait-640.jpg" srcset="/photos/clement-portrait-640.jpg 640w, /photos/clement-portrait-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, 70vw" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel, pilote de karting, de face en veste d’équipe grise, regard droit vers l’objectif, au bord d’une piste">
+              <source type="image/webp" srcset="/photos/pilote-contre-jour-640.webp 640w, /photos/pilote-contre-jour-1280.webp 1280w" sizes="(min-width: 900px) 30vw, calc(100vw - 32px)">
+              <img src="/photos/pilote-contre-jour-640.jpg" srcset="/photos/pilote-contre-jour-640.jpg 640w, /photos/pilote-contre-jour-1280.jpg 1280w" sizes="(min-width: 900px) 30vw, calc(100vw - 32px)" width="640" height="800" loading="lazy" decoding="async" alt="Clément Daniel de profil, casque sur la tête, en contre-jour dans la lumière du soir">
             </picture>
           </div>
         </div>
         <div class="col-7 marques-qui-texte">
-          <h2 id="qui-titre">Clément Daniel, pilote et créateur</h2>
+          <h2 id="qui-titre" data-virage="d">Clément Daniel, pilote et créateur</h2>
           <p>{{faits.anciennete}}, en NSK et en Rotax Max. Je vis à Questembert, dans le Morbihan.</p>
           <p>Je filme mes séances pour expliquer le pilotage : c’est devenu mes vidéos. J’ai aussi écrit un guide de pilotage et j’analyse les vidéos embarquées d’autres pilotes.</p>
           <p class="chrono chrono-ligne">{{faits.titre_court}}</p>
@@ -416,12 +429,12 @@
   </section>
 
   <!-- 6. En resume (section 7 de la copie) : la separation en un coup d oeil. -->
-  <section class="section filet-haut marques-resume reveal" aria-labelledby="resume-titre">
+  <section class="section filet-haut marques-resume" aria-labelledby="resume-titre">
     <div class="conteneur">
       <div class="entete-section">
-        <h2 id="resume-titre">Saison ou réseaux : la différence en un coup d’œil</h2>
+        <h2 id="resume-titre" data-virage="g">Saison ou réseaux : la différence en un coup d’œil</h2>
       </div>
-      <table class="resume">
+      <table class="resume reveal">
         <thead>
           <tr>
             <td></td>
@@ -467,12 +480,12 @@
   </section>
 
   <!-- 7. Questions frequentes (section 8 de la copie), trois groupes. -->
-  <section class="section filet-haut faq-section reveal" aria-labelledby="faq-titre">
+  <section class="section filet-haut faq-section" aria-labelledby="faq-titre">
     <div class="conteneur">
       <div class="grille">
         <div class="col-8">
           <div class="entete-section">
-            <h2 id="faq-titre">Vos questions</h2>
+            <h2 id="faq-titre" data-virage="d">Vos questions</h2>
           </div>
 
           <h3 class="faq-groupe">Parrainage de saison</h3>
@@ -553,8 +566,8 @@
   <section class="section-contact filet-haut" id="contact" aria-labelledby="contact-titre">
     <div class="conteneur">
       <div class="grille">
-        <div class="col-5 contact-texte reveal">
-          <h2 id="contact-titre">Parlons de votre projet</h2>
+        <div class="col-5 contact-texte">
+          <h2 id="contact-titre" data-virage="g">Parlons de votre projet</h2>
           <p class="contact-chapo">Une minute suffit. Je lis chaque demande moi-même et je vous réponds sous <span class="chrono">{{delais.reponse_marques_h}} h</span>.</p>
           <ol class="liste-numeros marques-etapes">
             <li><span>Vous choisissez votre projet et vous laissez votre contact.</span></li>
@@ -698,6 +711,7 @@
 </main>
 
 {{partial:footer}}
+{{partial:hud}}
 
 <script>
 /* Page /marques.

@@ -15,7 +15,113 @@ Usage dans le HTML (exemple) :
 </picture>
 ```
 
-## Clément, visage visible
+## Direction V5 (02/10/2026) : aucun visage en gros plan
+
+Plus aucune page ne doit citer un gros plan du visage. Ne sont plus utilisées (elles sortiront du dossier publié quand plus aucune page ne les cite ; elles restent dans l'historique git) : clement-portrait, clement-avatar, clement-sourire, clement-trophee, clement-podium, marques-cockpit-logos (les yeux se voient sous la visière), paddock-pre-grille (un adulte non validé). Hors de ce dossier : consulting/clement-640 et -800, clement-trophee-nb.jpg, clement-casque-nb.jpg, assets/clement.jpg, site-catalogue/clement.jpg et site-catalogue/partage.jpg (à refaire).
+
+## Nouvelles photos V5 (exportées le 02/10/2026, même retouche, aucune métadonnée)
+
+Exportées avec le script de retouche habituel (recadre, retouche, propre, enregistre ; JPEG progressif 80, WebP 78), depuis E: en lecture seule. Poids ajouté : 5,2 Mo (JPEG et WebP).
+
+### piste-25-file
+- Fichiers : piste-25-file-960 (960x540), -1600 (1600x900), -2400 (2400x1350), .jpg et .webp
+- Cadre : 16:9, boîte (0.0, 0.156, 1.0, 1.0)
+- Source : E:/KARTING 2024/Photo Kart/ligue/Le mans/854_5067.jpg
+- Usage : premier écran de l'accueil (ordinateur) ; écran d'accueil du diagnostic (site 2)
+- Alt : « Clément Daniel lancé à pleine vitesse dans son kart rouge numéro 25, l’arrière-plan filé par la vitesse, au circuit du Mans »
+
+### piste-25-file-portrait
+- Fichiers : piste-25-file-portrait-640 (640x800), -1280 (1280x1600), .jpg et .webp
+- Cadre (refait le 06/10) : 4:5 serré sur le kart (environ 80 % de la largeur), ciel coupé, piste en bas ; recadré dans piste-25-file-2400 (x 710 à 1726, y 80 à 1350), le disque E: n'étant pas branché
+- Étalonnage cinéma du 06/10 (voir plus bas) avec un dégradé neutre en haut : le haut de l'image est sombre dès la source (gris moyen 95/255 sur le cinquième du haut, contre 241 avant)
+- Source : la même que piste-25-file
+- Usage : premier écran de l'accueil (téléphone) ; diagnostic du site 2 (téléphone)
+- Alt : celui de piste-25-file
+
+### piste-25-contre-jour
+- Fichiers : piste-25-contre-jour-640 (640x800), -1280 (1280x1600), -1600 (1600x2000), .jpg et .webp
+- Cadre : 4:5, boîte (0.0, 0.17, 1.0, 1.0)
+- Source : E:/2025/KARTING/Photo Kart/IMG_6767.jpeg
+- Usage : page /liens
+- Alt : « Clément Daniel au volant de son kart rouge numéro 25, face à l’objectif, dans la lumière dorée d’une fin de journée »
+
+### piste-95-dos-virage
+- Fichiers : piste-95-dos-virage-960 (960x540), -1600 (1600x900), -2400 (2400x1350), .jpg et .webp
+- Cadre : 16:9, boîte (0.0, 0.10, 1.0, 1.0)
+- Source : E:/KARTING 2024/Photo Kart/mina/MINA LAVAL 2022/DSC_1133.jpg
+- Usage : premier écran de /guide, avec le tracé ; page 404
+- Alt : « Clément Daniel, vu de dos dans son kart numéro 95, au milieu d’un virage à gauche bordé d’un vibreur »
+
+### piste-95-dos-virage-portrait
+- Fichiers : piste-95-dos-virage-portrait-640 (640x800), -1280 (1280x1600), .jpg et .webp
+- Cadre : 4:5, boîte (0.25, 0.0, 0.92, 1.0)
+- Source : la même que piste-95-dos-virage
+- Usage : premier écran de /guide et 404 (téléphone)
+- Alt : celui de piste-95-dos-virage
+
+### piste-95-epingle
+- Fichiers : piste-95-epingle-640 (640x800), -1280 (1280x1600), .jpg et .webp
+- Poids : la 1280 est reencodee le 06/10 depuis l export (lissage 0,7 px, WebP 64 : 146 Ko au lieu de 285 ; JPEG 72 : 243 Ko). Le bitume tres detaille gonflait le fichier ; le grain CSS des cadres .cine le remplace a l ecran.
+- Cadre : 4:5, boîte (0.05, 0.0, 0.70, 1.0)
+- Source : E:/2025/KARTING/Photo Kart/lcp_mina_ancenis_20240907_0161_HD.jpeg
+- Usage : « Pourquoi moi » (/consulting)
+- Alt : « Clément Daniel, vu de dos dans son kart numéro 95, collé au vibreur à l’entrée d’une épingle »
+
+### pilote-contre-jour
+- Fichiers : pilote-contre-jour-640 (640x800), -1280 (1280x1600), .jpg et .webp
+- Cadre : 4:5, boîte (0.0, 0.08, 1.0, 1.0)
+- Source : E:/KARTING 2024/Photo Kart/ligue/ancenis/wetransfer__isa6387-jpg_2023-04-10_1856/_ISA6387.jpg
+- Usage : « Qui l'a écrit » (/guide), « Clément Daniel, pilote et créateur » (/marques), « Qui regarde ta vidéo » (site 2)
+- Alt : « Clément Daniel de profil, casque sur la tête, en contre-jour dans la lumière du soir »
+
+### cockpit-volant
+- Fichiers : cockpit-volant-640 (640x800), -1280 (1280x1600), .jpg et .webp
+- Cadre : 4:5, boîte (0.30, 0.0, 0.90, 1.0)
+- Source : E:/2025/KARTING/Photo Kart/IMG_3187.jpeg
+- Usage : offre « L'analyse de ton onboard » de l'accueil
+- Alt : « Clément Daniel installé dans son kart, casque et visière iridescente, les mains sur le volant »
+
+### cockpit-dessus
+- Fichiers : cockpit-dessus-640 (640x800), -1280 (1280x1600), .jpg et .webp
+- Cadre : 4:5, boîte (0.10, 0.0, 0.80, 1.0)
+- Source : E:/2025/KARTING/Photo Kart/IMG_2773.jpeg
+- Usage : « Des vidéos qui sont vues » (/marques)
+- Alt : « Vue plongeante sur Clément Daniel dans son kart, les mains sur le volant, comme une caméra embarquée »
+
+### piste-795-public-portrait
+- Fichiers : piste-795-public-portrait-640 (640x800), -1280 (1280x1599), .jpg et .webp
+- Cadre : 4:5, boîte (0.22, 0.0, 0.82, 1.0)
+- Source : E:/KARTING 2024/Photo Kart/nsk/NSK ESSAY/IMG_4349.jpeg
+- Usage : premier écran de /consulting (téléphone) ; offre consulting de l'accueil
+- Alt : celui de piste-795-public
+
+### piste-95-arriere
+- Fichiers : piste-95-arriere-640 (640x427), -1280 (1280x853), .jpg et .webp
+- Cadre : 3:2 (photo entière)
+- Source : E:/2025/KARTING/Photo Kart/IMG_4439.jpeg
+- Usage : « Comment ça se passe » de la saison (/marques), à la place de marques-cockpit-logos
+- Alt : « Le kart numéro 95 de Clément Daniel vu de l’arrière, son nom et les logos de partenaires sur la combinaison et le ponton »
+
+### Étalonnage cinéma (06/10/2026)
+
+Pour que les photos du contenu fondent dans le noir comme celles des premiers écrans : noirs plus denses (point noir 3 %, gamma 1,06), hautes lumières baissées par un genou doux au-dessus de 52 %, vignettage léger, dégradé neutre en haut quand le ciel est clair. Le calcul porte sur la luminance seule : teintes et rouges intacts. Script : scratchpad photos-tri/etalonnage_cine.py (repart des exports d'avant, copiés dans origines-t2, pour ne jamais retoucher deux fois). Mêmes noms, mêmes tailles, aucune métadonnée.
+- piste-25-file-portrait (nouveau cadre, ci-dessus)
+- clement-drapeau (ciel gris assombri en haut)
+- piste-795-public-portrait
+- cockpit-volant
+
+### Existantes, toujours utilisées en V5
+- clement-drapeau (de dos) : « Qui je suis » de l'accueil
+- piste-95-virage : bloc final de /guide
+- piste-795-public : premier écran de /consulting (ordinateur)
+- paddock-echange-pilote : « Ce que ça change » (/consulting)
+- piste-695-ciel : premier écran de /marques
+- marques-combinaison-kart : « Inclus dans toutes les formules » (/marques)
+- paddock-gants : « Ce que mes vidéos font » (/marques)
+
+À confirmer par Clément : le kart numéro 25 (piste-25-file, piste-25-contre-jour) est bien le sien (même autocollant de châssis « 1817 » que le kart 95), et les crédits des photos (préfixes 854_, _ISA, lcp_, DSC_).
+
+## Avant la V5 : Clément, visage visible (plus utilisées)
 
 ### clement-portrait
 - Fichiers : clement-portrait-640 (640x800), clement-portrait-1280 (1280x1600), .jpg et .webp
@@ -59,7 +165,7 @@ Usage dans le HTML (exemple) :
 - Fichiers : piste-695-ciel-960 (960x540), -1600 (1600x900), -2400 (2400x1350), .jpg et .webp
 - Cadre : 16:9
 - Source : E:/2025/KARTING/Photo Kart/IMG_3183.jpeg (même image en 2000 px dans E:/HYPE RMCIT 22/IMG_3183.JPG)
-- Usage : hero de l'accueil ; sert aussi à og-image.jpg
+- Usage : premier écran de /marques (V5) ; sert aussi à og-image.jpg (ancien premier écran de l'accueil)
 - Alt : « Clément Daniel dans son kart Redspeed numéro 695, vu de profil en contre-plongée sous un ciel bleu chargé de nuages, sur la grille du circuit du Mans »
 
 ### piste-95-virage

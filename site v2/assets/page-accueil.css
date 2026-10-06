@@ -1,214 +1,236 @@
 /* ============================================================
-   Clem Kart Racing : page-accueil.css
-   Regles propres a l accueil (/). Chargee apres base.css, uniquement
-   par cette page (body.page-accueil).
-   Les composants partages (.chrono, .plaque-titre, .filet-depart, .registre,
-   .numeral, .planche, .quote-colonne) sont dans base.css, section 22.
-   Ici : tailles et placements propres a la page seulement.
-   Rayons 0, aucune ombre, aucun degrade, un seul rouge, transform et opacity seulement.
+   Clem Kart Racing : page-accueil.css (direction V5, 5.1)
+   L accueil seulement (body.page-accueil), charge apres base.css et signature.css.
+   Ecran 1 l affiche, 2 la bande de chronometrage, 3 trois plans, 4 messages recus,
+   5 qui je suis, 6 gratuit (circuit du guide), 7 et ensuite. Le pied de page est l arrivee.
+   Aucune valeur brute : tokens.css. Mouvement : attributs lus par mouvement.js.
    ============================================================ */
 
-/* ---------- 1. Hero : texte colonnes 1 a 5, photo colonnes 6 a 12 collee au bord droit ---------- */
-body.page-accueil .hero {
-  align-items: stretch;
-  min-height: min(88vh, 900px);
-  padding-block: var(--nav-h) 0;
-  /* La photo file jusqu au bord de l ecran : 100vw compte la barre de defilement, on coupe ce qui depasse */
-  overflow-x: clip;
-}
-body.page-accueil .hero-grille { align-items: center; row-gap: 0; }
-body.page-accueil .hero-texte { gap: var(--e-5); padding-block: var(--e-7); }
-body.page-accueil .hero-texte h1 { max-width: none; }
+/* ---------- 1. L affiche ---------- */
+.page-accueil .affiche { position: relative; isolation: isolate; overflow: clip; }
+.affiche-cine { z-index: var(--z-photo); }
+.affiche-cine picture { transform-origin: 50% 60%; }
+.affiche-cine img { object-position: 42% 60%; }
+.affiche-titre { font-size: var(--t-titre-1); line-height: var(--interligne-affiche); }
+.affiche-ligne { display: block; }
+.affiche-amorce { letter-spacing: 0.01em; }
+.affiche-chute { letter-spacing: 0; }
+.affiche-chapo br { display: none; }
+.affiche-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--e-4) 28px; }
+.affiche-actions .bouton { flex: 0 0 auto; }
+.affiche-sous { flex: 1 1 15ch; max-width: 30ch; font-size: var(--t-petit); line-height: 1.55; color: var(--texte-2); }
+.affiche-sous .lien-texte { font-weight: var(--graisse-normal); color: var(--texte-2); text-decoration-color: var(--filet-champ); text-underline-offset: 5px; }
+.affiche-sous .lien-texte:hover { color: var(--texte); text-decoration-color: var(--texte); }
 
-/* Le titre : trois phrases, chacune commence sa ligne. COMPOSITION 5.1 demande clamp(44px, 6.5vw, 96px),
-   mais une phrase de 38 signes ne tient pas sur 5 colonnes a 96 px : la taille reste dans cette fourchette
-   et chaque phrase passe au plus sur deux lignes, pour que le bouton reste dans le premier ecran. */
-body.page-accueil .hero-titre { font-size: clamp(44px, 4.4vw, 96px); line-height: var(--interligne-titre); }
-body.page-accueil .hero-ligne { display: block; }
-body.page-accueil .hero-chapo { max-width: var(--mesure); }
-body.page-accueil .hero-sous { max-width: var(--mesure); }
-body.page-accueil .hero-sous .lien-texte { text-transform: none; letter-spacing: 0; font-family: var(--police-texte); font-weight: var(--graisse-normal); font-size: var(--t--1); line-height: 1.6; text-wrap: balance; }
-/* Le lien est souligne par une bordure : en bloc, pour que la seconde ligne ne laisse pas un mot seul souligne */
-body.page-accueil .hero-sous .lien-texte { display: inline-block; max-width: 44ch; }
-
-/* La plaque : la derniere ligne du titre ne se coupe pas */
-body.page-accueil .plaque-titre { white-space: nowrap; }
-
-/* La photo : pleine hauteur du hero, jusqu au bord droit de l ecran, aucun voile */
-body.page-accueil .hero-photo-bord {
-  position: relative;
-  align-self: stretch;
-  min-height: 42vh;
-  background: var(--fond-2);
-}
-body.page-accueil .hero-photo-bord picture { position: absolute; inset: 0; }
-body.page-accueil .hero-photo-bord img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Le pilote et le numero 695 restent dans le cadre, quelle que soit la largeur */
-  object-position: 60% 60%;
-}
 @media (min-width: 900px) {
-  body.page-accueil .hero-photo-bord {
-    grid-column: 6 / -1;
-    margin-right: calc(-1 * ((100vw - min(100vw, var(--conteneur))) / 2 + var(--gouttiere-large)));
-  }
-  /* Sur ordinateur la plaque porte la derniere ligne du titre ET mord sur la photo : elle est calee a droite
-     de la colonne de texte puis poussee au-dela de la gouttiere, d environ 17 % de la largeur de la photo
-     (la photo fait environ 7/5 de la colonne de texte, 100 % * 0.25 ~ 7/5 * 0.17). Le texte de la plaque
-     passe donc vraiment sur la photo : jamais d aplat noir vide. */
-  body.page-accueil .plaque-titre {
-    display: block;
-    width: max-content;
-    max-width: none;
-    margin-left: auto;
-    margin-right: calc(-1 * (var(--grille-ecart) + 100% * 0.25));
-    padding: var(--e-2) var(--e-5);
-  }
+  /* Un pixel de moins que l ecran : Chrome ignore une image qui couvre tout l ecran pour le LCP ;
+     la photo de l affiche reste ainsi l element LCP, jamais un titre masque. */
+  .page-accueil .affiche { display: grid; grid-template-rows: 1fr auto; height: clamp(640px, calc(100svh - 1px), 1100px); }
+  .affiche-cine { position: absolute; inset: 0; }
+  .affiche-voile-haut { background-image: var(--voile-haut); }
+  .affiche-voile-bas { background-image: var(--voile-bas); }
+  .affiche-haut { align-self: start; padding-top: calc(var(--nav-h) + clamp(20px, 4svh, 48px)); }
+  .affiche-amorce { font-size: clamp(1.375rem, 0.6rem + min(1.8vw, 3.4svh), 2.375rem); line-height: 1.02; }
+  .affiche-chute { margin-top: 0.1em; font-size: clamp(3.25rem, min(7.4vw, 12.5svh), 8.5rem); line-height: 0.84; white-space: nowrap; }
+  .affiche-bas { padding-bottom: clamp(20px, 3svh, 36px); }
+  .affiche-rangee { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: end; }
+  .affiche-chapo { grid-column: 1 / 7; }
+  .affiche-actions { grid-column: 8 / -1; }
+  /* La ligne de depart respire sous le chapo : 28 a 48 px entre le texte et S1 (S1 occupe 17 px au-dessus du damier) */
+  .affiche .depart { margin-top: calc(clamp(28px, 4svh, 48px) + 17px); }
 }
-/* Telephone : photo en haut (casque et volant), titre dessous, le bloc de texte chevauche le bas de la photo.
-   Le bouton principal reste visible sans defiler a 375 x 667. */
+
+/* Telephone : bande photo de 56svh, le bloc de texte remonte de 118 px sur la photo.
+   La photo portrait est recadree serre sur le kart, ciel assombri des la source (PHOTOS.md) ;
+   le voile du haut pose la navigation sur du noir (contraste AA mesure derriere « Menu »). */
 @media (max-width: 899px) {
-  body.page-accueil .hero { padding-top: var(--nav-h); min-height: 0; }
-  body.page-accueil .hero-photo-bord {
-    order: -1;
-    height: 34vh;
-    min-height: 0;
-    margin-inline: calc(-1 * var(--gouttiere-large));
-  }
-  body.page-accueil .hero-photo-bord img { object-position: 55% 62%; }
-  body.page-accueil .hero-texte {
-    position: relative;
-    z-index: 2;
-    gap: var(--e-4);
-    margin-top: calc(-1 * var(--e-6));
-    padding-block: var(--e-3) var(--e-7);
-    background: var(--fond-0);
-  }
-  body.page-accueil .hero-titre { font-size: clamp(34px, 10vw, 48px); }
-  body.page-accueil .hero-chapo { font-size: var(--t-0); }
-  body.page-accueil .hero-chapo br { display: none; }
-  /* Les deux premieres phrases coulent ensemble, la troisieme garde sa ligne */
-  body.page-accueil .hero-ligne:not(:last-child) { display: inline; }
-  body.page-accueil .plaque-titre { white-space: normal; margin-left: 0; padding: 0; background: transparent; }
+  .affiche-cine { position: relative; height: clamp(320px, 56svh, 520px); }
+  .affiche-cine img { object-position: 50% 46%; }
+  .affiche-voile-haut { background-image: linear-gradient(to bottom, rgba(6, 6, 7, 0.92) 0%, rgba(6, 6, 7, 0.6) 16%, rgba(6, 6, 7, 0) 34%); }
+  .affiche-voile-bas { background-image: var(--voile-fondu); }
+  .affiche-haut { margin-top: -118px; }
+  .affiche-amorce { font-size: clamp(1.1875rem, 0.55rem + 3.4vw, 1.5rem); line-height: 1.04; }
+  .affiche-chute { margin-top: 0.12em; font-size: clamp(3rem, 1rem + 10vw, 4.5rem); line-height: 0.86; }
+  .affiche-rangee { display: grid; gap: var(--e-5); margin-top: var(--e-5); }
+  .affiche-chapo { font-size: var(--t-texte); line-height: 1.5; max-width: 36ch; }
+  .affiche-actions { flex-direction: column; align-items: flex-start; }
+  /* En colonne, la base de 15ch deviendrait une hauteur (135 px de vide sous le lien) : hauteur du texte seulement */
+  .affiche-sous { flex: 0 0 auto; }
+  /* 30 px entre le lien et S1 (S1 occupe 17 px au-dessus du damier) */
+  .affiche .depart { margin-top: var(--e-7); }
+  .affiche-bas { padding-bottom: var(--e-6); }
 }
 
-/* Entree : les trois lignes montent en decalage, la photo 100 ms apres le titre */
-html.a-js body.page-accueil .entree-2 { animation-delay: 80ms; }
-html.a-js body.page-accueil .entree-3 { animation-delay: 160ms; }
-html.a-js body.page-accueil .entree-photo { animation-delay: 100ms; }
-
-/* ---------- 2. Ligne de preuves : quatre faits sources, separes par des filets verticaux ---------- */
-body.page-accueil .faits {
-  min-height: var(--e-8);
-  display: flex;
-  align-items: center;
-  border-bottom: var(--bordure);
+/* ---------- 2. La bande de chronometrage ---------- */
+.page-accueil .faits { border-top: var(--bordure); border-bottom: var(--bordure); }
+.preuves-ligne { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.preuves-ligne li { max-width: none; display: grid; gap: 6px; align-content: start; padding: var(--e-5) 0 var(--e-5) var(--e-4); border-left: var(--bordure); }
+.preuves-ligne li:nth-child(odd) { padding-left: 0; border-left: 0; }
+.preuves-ligne li:nth-child(n + 3) { border-top: var(--bordure); }
+.preuve-chiffre {
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal);
+  font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem); line-height: 1.2; letter-spacing: -0.01em; color: var(--texte);
 }
-body.page-accueil .preuves-ligne {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--e-4) var(--e-5);
-  padding-block: var(--e-5);
-}
-body.page-accueil .preuves-ligne li { max-width: none; display: grid; gap: var(--e-1); align-content: start; }
-body.page-accueil .preuve-chiffre {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-  color: var(--texte);
-}
-body.page-accueil .preuve-detail { font-size: var(--t--1); line-height: 1.45; color: var(--texte-2); }
+.preuve-detail { font-size: var(--t-petit); line-height: 1.45; color: var(--texte-2); }
 @media (min-width: 900px) {
-  body.page-accueil .preuves-ligne { grid-template-columns: 1fr 1fr 1.6fr 1fr; gap: 0; }
-  body.page-accueil .preuves-ligne li { padding-inline: var(--e-5); border-left: var(--bordure); }
-  body.page-accueil .preuves-ligne li:first-child { padding-left: 0; border-left: 0; }
+  .preuves-ligne { grid-template-columns: 1fr 1fr 1.5fr 1fr; }
+  .preuves-ligne li { padding: var(--e-6) var(--e-5); border-left: var(--bordure); }
+  .preuves-ligne li:nth-child(odd) { padding-left: var(--e-5); border-left: var(--bordure); }
+  .preuves-ligne li:first-child { padding-left: 0; border-left: 0; }
+  .preuves-ligne li:nth-child(n + 3) { border-top: 0; }
 }
 
-/* ---------- 3. Les trois offres : registre de trois lignes ---------- */
-body.page-accueil .offres-titre { margin-bottom: var(--e-6); }
-body.page-accueil .registre-texte h3 { font-size: var(--t-2); }
-body.page-accueil .registre-faits li { color: var(--texte-2); font-size: var(--t--1); }
-/* Les trois faits ont le meme traitement : Barlow gris, chiffres tabulaires (le chrono en ligne n a ni mono ni couleur a part) */
-body.page-accueil .registre-faits li .chrono { white-space: normal; }
-/* Le bouton de l offre : le libelle tient sur une ligne, le prix passe dessous si la colonne est etroite */
-body.page-accueil .registre-action .bouton { row-gap: var(--e-1); padding-block: var(--e-2); }
-/* Le visuel de chaque ligne (base.css, .visuel-registre) : meme cadre 3:2 et meme largeur sur les trois lignes.
-   Telephone : pleine largeur jusqu a 420 px ; ordinateur : les deux premieres colonnes. */
-body.page-accueil .registre-objet .visuel-registre { width: min(100%, 420px); }
-@media (min-width: 900px) { body.page-accueil .registre-objet .visuel-registre { width: 100%; } }
-body.page-accueil .registre-ligne:hover .visuel-registre { border-color: var(--filet-fort); }
-/* Le numeral (bande gratuite) : chiffre en Bebas, nom en mono dessous */
-body.page-accueil .numeral { display: grid; gap: var(--e-2); align-content: start; }
-body.page-accueil .numeral-chiffre { white-space: nowrap; }
-body.page-accueil .numeral .mono { color: var(--texte-2); }
-
-/* ---------- 4. Messages recus : trois colonnes des 900 px (base.css, .quotes-trois) ---------- */
-body.page-accueil .messages-recus h2 { margin-bottom: var(--e-6); }
-body.page-accueil .quotes-mention { margin-top: var(--e-6); }
-
-/* ---------- 5. Qui je suis : photo petite a gauche, texte a droite ---------- */
-body.page-accueil .qui-grille { align-items: center; }
-body.page-accueil .qui-photo { max-width: 400px; border: var(--bordure); }
-body.page-accueil .qui-photo img { object-position: 50% 35%; }
-body.page-accueil .qui-texte { display: grid; gap: var(--e-5); align-content: center; }
-body.page-accueil .qui-lignes { font-size: var(--t-1); line-height: 1.45; max-width: none; }
-@media (min-width: 900px) { body.page-accueil .qui-texte { grid-column: 6 / 12; } }
-body.page-accueil .qui-reseaux { display: flex; flex-wrap: wrap; gap: var(--e-3) var(--e-5); }
-
-/* ---------- 6. Gratuit : bande fond-2, libelle, numeros de chapitre a droite ---------- */
-body.page-accueil .gratuit { padding-block: var(--e-9); border-top: var(--bordure); border-bottom: var(--bordure); }
-body.page-accueil .gratuit-grille { align-items: center; }
-body.page-accueil .gratuit-texte { display: grid; gap: var(--e-4); align-content: center; }
-body.page-accueil .gratuit-texte h2 { margin-top: var(--e-2); }
-body.page-accueil .gratuit-texte .bouton { margin-top: var(--e-2); }
-body.page-accueil .gratuit-promesse { font-size: var(--t-1); line-height: 1.45; color: var(--texte); }
-body.page-accueil .gratuit-numeraux { display: grid; align-content: center; }
-body.page-accueil .numeraux { display: flex; flex-wrap: wrap; gap: var(--e-6); align-items: end; }
-/* Deux chapitres, deux numeraux : un filet vertical les separe, sinon « Intro 04 » se lit d un seul bloc */
-body.page-accueil .numeraux .numeral + .numeral { border-left: var(--bordure); padding-left: var(--e-6); }
-/* Une seule version affichee, selon extrait.version dans la config */
-body.page-accueil .gratuit-numeraux[data-extrait-version="2"] [data-si-version="3"],
-body.page-accueil .gratuit-numeraux[data-extrait-version="3"] [data-si-version="2"] { display: none; }
-@media (min-width: 900px) {
-  body.page-accueil .gratuit-numeraux { grid-column: 7 / -1; }
-  body.page-accueil .numeraux { justify-content: flex-end; }
+/* ---------- 3. Trois plans ---------- */
+.offres-titre { max-width: 18ch; margin-bottom: var(--titre-contenu); }
+.offre { display: grid; gap: var(--e-6); padding-block: var(--e-7); border-top: var(--bordure); }
+.offre:last-child { border-bottom: var(--bordure); }
+.offre-visuel { width: 100%; max-width: 560px; }
+.offre-cadre { display: block; position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--fond-1); }
+.offre-cadre img { transition: scale 600ms var(--ease-sortie); }
+/* Les photos se posent sur le noir : un voile bas discret, sous le grain (z 3) */
+.offre-cadre.cine::before, .qui-photo::before {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background-image: linear-gradient(to top, rgba(6, 6, 7, 0.55) 0%, rgba(6, 6, 7, 0) 30%);
 }
-/* Telephone : le libelle et le titre ouvrent la bande, les numeros de chapitre suivent le bouton */
+.offre-cadre-objet { display: grid; place-items: center; outline: 1px solid rgba(var(--texte-rgb), 0.08); outline-offset: -1px; }
+.offre-cadre-objet picture { display: block; width: 64%; }
+.offre-cadre-objet img { width: 100%; height: auto; }
+.offre-texte h3 { font-size: var(--t-titre-3); max-width: 16ch; }
+.offre-texte > p { margin-top: var(--e-5); font-size: var(--t-texte); color: var(--texte); }
+.offre-faits { margin-top: var(--e-6); border-top: var(--bordure); max-width: 52ch; }
+.offre-faits li {
+  max-width: none; padding-block: 10px; border-bottom: var(--bordure);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-donnee); line-height: 1.45; color: var(--texte-2);
+}
+.offre-faits .chrono { font-family: inherit; white-space: normal; }
+.offre-action { margin-top: var(--e-6); display: grid; justify-items: start; }
+.offre-action .bouton { white-space: normal; text-align: left; }
+@media (hover: hover) and (pointer: fine) {
+  .offre:hover .offre-cadre img { scale: 1.03; }
+}
+/* Ordinateur : le visuel reste colle (colonnes 1 a 5) pendant que le texte de son offre defile (7 a 12) */
+@media (min-width: 1100px) {
+  .offre {
+    grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); row-gap: 0;
+    min-height: 92svh; align-items: center; padding-block: var(--e-6); border-top: 0;
+  }
+  .offre:last-child { border-bottom: 0; }
+  .offre-visuel { grid-column: 1 / 6; align-self: start; max-width: none; position: sticky; top: calc(var(--nav-h) + 32px); height: min(72svh, 640px); }
+  .offre-cadre { height: 100%; aspect-ratio: auto; }
+  .offre-texte { grid-column: 7 / -1; }
+  /* La derniere offre n a plus rien a laisser defiler : pas de hauteur d ecran ni de visuel colle,
+     sinon 400 px de noir avant « Messages recus » */
+  .offre:last-child { min-height: auto; padding-bottom: 0; }
+  .offre:last-child .offre-visuel { position: relative; top: 0; align-self: center; }
+}
+
+/* ---------- 4. Messages recus ---------- */
+.messages-titre { max-width: 18ch; margin-bottom: var(--titre-contenu); }
+.page-accueil .quotes { --reveal-pas: 80ms; }
+.quotes-mention { margin-top: var(--e-8); font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro); color: var(--texte-3); }
+@media (min-width: 900px) { .quotes-mention { margin-top: calc(var(--e-8) + 32px); } }
+/* Telephone : la bande se fait glisser, les citations sont la tout de suite */
+@media (max-width: 899px) { html.a-js .page-accueil .quotes .reveal { opacity: 1; transform: none; } }
+
+/* ---------- 5. Qui je suis ---------- */
+.page-accueil .qui { position: relative; }
+.qui-photo { aspect-ratio: 4 / 5; }
+.qui-photo img { object-position: 50% 35%; }
+.qui-texte h2 { margin-bottom: var(--e-6); }
+.qui-lignes { font-size: var(--t-chapo); line-height: 1.45; max-width: 34ch; color: var(--texte); }
+.qui-reseaux { margin-top: var(--e-6); display: flex; flex-wrap: wrap; gap: var(--e-3) var(--e-6); }
 @media (max-width: 899px) {
-  body.page-accueil .gratuit { padding-block: var(--e-8); }
-  body.page-accueil .numeraux { gap: var(--e-5); }
+  .page-accueil .qui { padding-top: 0; }
+  .qui-photo { width: 100%; max-height: 82svh; margin-bottom: var(--e-7); }
+}
+/* Ordinateur : la photo (colonnes 1 a 5) va jusqu au bord gauche de l ecran, sur toute la hauteur */
+@media (min-width: 900px) {
+  .page-accueil .qui { container-type: inline-size; display: flex; align-items: center; min-height: clamp(560px, 50vw, 820px); }
+  .qui-photo {
+    --bord: max(var(--gouttiere-large), calc((100cqw - var(--conteneur)) / 2 + var(--gouttiere-large)));
+    --col: calc((100cqw - 2 * var(--bord) - 11 * var(--grille-ecart)) / 12);
+    position: absolute; top: 0; bottom: 0; left: 0;
+    width: calc(var(--bord) + 5 * var(--col) + 4 * var(--grille-ecart));
+    aspect-ratio: auto;
+  }
+  .qui-grille { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); }
+  .qui-texte { grid-column: 7 / -1; }
+  /* Collee au bord gauche, la photo fond vers le texte : un voile a droite en plus du voile bas */
+  .qui-photo::before {
+    background-image: linear-gradient(to top, rgba(6, 6, 7, 0.55) 0%, rgba(6, 6, 7, 0) 30%),
+      linear-gradient(to left, rgba(6, 6, 7, 0.6) 0%, rgba(6, 6, 7, 0) 28%);
+  }
 }
 
-/* ---------- 7. Et ensuite : quatre portes pleine largeur, filets, fleche mono ---------- */
-body.page-accueil .ensuite h2 { margin-bottom: var(--e-6); }
-body.page-accueil .portes { display: grid; border-top: var(--bordure); }
-body.page-accueil .portes li { max-width: none; border-bottom: var(--bordure); }
-/* La fleche suit le libelle (et bouge avec lui au survol) : a 1 000 px du texte, elle se lisait comme un point parasite */
-body.page-accueil .portes a {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: var(--e-4);
-  padding-block: var(--e-5);
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
-  text-decoration: none;
-  color: var(--texte);
+/* ---------- 6. Gratuit : la bande de telemetrie et le circuit du guide ---------- */
+.page-accueil .gratuit { background: var(--fond-1); border-top: var(--bordure); border-bottom: var(--bordure); }
+.gratuit-grille { display: grid; gap: var(--e-8); --telemetrie-debord: var(--rythme-section); }
+.gratuit-texte { display: grid; gap: var(--e-4); align-content: start; }
+.gratuit-texte h2 { margin-top: var(--e-2); max-width: 14ch; }
+.gratuit-promesse { margin-top: var(--e-3); font-size: var(--t-chapo); line-height: 1.4; max-width: 34ch; color: var(--texte); }
+.gratuit-texte > p + p { margin-top: 0; }
+.gratuit-texte > p:not(.libelle):not(.gratuit-promesse):not(.gratuit-action) { color: var(--texte-2); }
+.gratuit-action { margin-top: var(--e-4); }
+.gratuit-carte { display: grid; gap: var(--e-6); align-content: center; }
+.gratuit-carte .circuit { max-width: 620px; justify-self: center; }
+/* La legende : chaque chapitre offert sur une ligne, sa pastille (ou un mini damier pour l introduction) */
+.numeraux { display: grid; gap: var(--e-3); }
+.gratuit-legende .numeral {
+  display: flex; align-items: center; gap: 14px; max-width: none;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-donnee); line-height: 1.3; letter-spacing: 0;
 }
-body.page-accueil .portes a > span { transition: transform var(--duree-vite) var(--courbe); }
-body.page-accueil .portes a:hover > span { transform: translateX(4px); }
-body.page-accueil .portes a .mono { font-size: var(--t-0); color: var(--texte); }
+.gratuit-legende .numeral-chiffre {
+  display: inline-grid; place-items: center; flex: 0 0 auto; width: 26px; height: 26px;
+  border-radius: 50%; background: var(--rouge); color: var(--texte);
+  font-weight: var(--graisse-forte); font-size: var(--t-micro); line-height: 1;
+}
+.gratuit-legende .numeral .mono { color: var(--texte); }
+.gratuit-legende .numeral-intro::before {
+  content: ''; flex: 0 0 auto; width: 26px; height: 12px;
+  background: conic-gradient(var(--texte) 90deg, var(--fond-0) 90deg 180deg, var(--texte) 180deg 270deg, var(--fond-0) 270deg) 0 0 / 12px 12px;
+}
+.gratuit-legende .numeral-intro .numeral-chiffre {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+/* Une seule version de la legende, selon extrait.version dans la config */
+.gratuit-carte[data-extrait-version="2"] [data-si-version="3"],
+.gratuit-carte[data-extrait-version="3"] [data-si-version="2"] { display: none; }
+@media (min-width: 900px) {
+  .gratuit-grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grille-ecart); align-items: center; }
+  .gratuit-texte { grid-column: 1 / 6; }
+  .gratuit-carte { grid-column: 7 / -1; }
+  .gratuit-legende { justify-self: center; width: min(100%, 620px); }
+}
 
-/* ---------- 8. Reduced motion : les delais tombent a zero (le survol est coupe dans base.css) ---------- */
+/* ---------- 7. Et ensuite : lignes de classement ---------- */
+.ensuite h2 { margin-bottom: var(--titre-contenu); }
+.portes { border-top: var(--bordure); }
+.portes li { position: relative; max-width: none; border-bottom: var(--bordure); }
+.portes a {
+  position: relative; isolation: isolate; display: flex; align-items: center; justify-content: space-between; gap: var(--e-5);
+  min-height: 88px; padding-block: var(--e-4); color: var(--texte); text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* L aplat rouge balaie la ligne de gauche a droite sous le texte ; il deborde un peu dans la marge */
+.portes a::before {
+  content: ''; position: absolute; z-index: -1; top: 0; bottom: 0; left: calc(-1 * var(--e-4)); right: calc(-1 * var(--e-4));
+  background: var(--rouge); transform: scaleX(0); transform-origin: left center;
+  transition: transform 380ms var(--ease-sortie);
+}
+.porte-libelle {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: var(--t-titre-3); line-height: 1; letter-spacing: 0.02em; text-transform: uppercase;
+}
+.porte-fleche { flex: 0 0 auto; font-size: var(--t-titre-4); line-height: 1; color: var(--texte); transition: transform 380ms var(--ease-sortie); }
+.portes a:active::before { transform: scaleX(1); transition-duration: 0ms; }
+@media (hover: hover) and (pointer: fine) {
+  .portes a:hover::before { transform: scaleX(1); }
+  .portes a:hover .porte-fleche { transform: translateX(6px); }
+}
+@media (max-width: 899px) { .portes a { min-height: 64px; } }
+
+/* ---------- 8. Mouvement reduit : les survols changent de couleur sans bouger ---------- */
 @media (prefers-reduced-motion: reduce) {
-  html.a-js body.page-accueil .entree-2,
-  html.a-js body.page-accueil .entree-3,
-  html.a-js body.page-accueil .entree-photo { animation-delay: 0ms; }
+  .portes a:hover .porte-fleche { transform: none; }
+  .offre:hover .offre-cadre img { scale: 1; }
 }

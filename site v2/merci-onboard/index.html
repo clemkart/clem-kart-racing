@@ -23,11 +23,12 @@
        Le chiffre geant est decoratif (aria-hidden) : le h1 porte la phrase complete pour les lecteurs d ecran.
        Le lien de la video arrive avec le paiement (champ obligatoire de la page Stripe du debrief). -->
   <section class="merci" data-hero>
+    <div class="merci-arrivee" aria-hidden="true"><span class="damier damier-marches"></span></div>
     <div class="conteneur">
       <div class="grille merci-scinde">
         <div class="col-5">
           <p class="chrono-grand chrono-grand-hero entree" aria-hidden="true">
-            <strong>{{delais.debrief_h}}&nbsp;h</strong>
+            <strong data-compteur>{{delais.debrief_h}}&nbsp;h</strong>
             <span class="mono">le chrono démarre quand j’ai ta vidéo</span>
           </p>
         </div>
@@ -44,6 +45,7 @@
   <!-- Filet de depart, puis ce qui se passe : trois lignes indexees comme des tours -->
   <section class="filet-depart section-merci">
     <div class="conteneur">
+      <div class="filet-ligne" aria-hidden="true"><span class="filet-trait"></span><span class="damier damier-marches"></span></div>
       <div class="grille">
         <div class="col-8 reveal">
           <h2>Ce qui se passe</h2>

@@ -1,0 +1,18 @@
+<!-- Partial mouvement : pages a mouvement seulement, juste apres le partial head.
+     1. html.js-anim si le mouvement n est pas reduit ; la classe tombe si un CDN repond en erreur (onerror) :
+        sans elle, tout est visible. Aucune minuterie ne la retire : l entree du premier ecran (photo, textes,
+        boutons, prix, ligne de depart) est en CSS et ne depend jamais des CDN, le h1 et les dessins du premier
+        ecran ont leur secours CSS (signature.css, chapitre 10), qui se jouent meme sur un telephone lent.
+        Un CDN qui ne repond jamais : au bout de 4 s sans mouvement.js, html.anim-secours affiche seulement
+        les etats qui attendent le script (circuit du guide, cordes), sans couper une animation en cours.
+     Avant tout : preconnect vers les deux CDN : la connexion s ouvre pendant que le HTML arrive.
+     2. GSAP 3.15 (coeur, ScrollTrigger, SplitText) sur cdnjs, Lenis 1.3.26 sur jsDelivr, avec integrity.
+     3. assets/mouvement.js : le moteur, pilote par des attributs (mode d emploi en tete du fichier). -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script>(function(d){try{if(matchMedia('(prefers-reduced-motion: no-preference)').matches){d.classList.add('js-anim');setTimeout(function(){if(!window.__ckrMouvement)d.classList.add('anim-secours');},4000);}}catch(e){}})(document.documentElement);</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js" integrity="sha512-oJ8QbaQThQoJZ7oEv+29jfPM6CcP+zUxh3PKJs1vyOhx0UraUrE7PQgeItu3dOuCJyrzWpoYMsVjkkPEBzbUqw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer onerror="document.documentElement.classList.remove('js-anim')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js" integrity="sha512-OaIE7ud4P04EhnBuhEcm0wQSceIxbi2pV03oBLS/+F6ampfxsnxcIxOp7H2eF9G7N0kEht0VAzOLG+dTLSo17Q==" crossorigin="anonymous" referrerpolicy="no-referrer" defer onerror="document.documentElement.classList.remove('js-anim')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/SplitText.min.js" integrity="sha512-LFdAHEel9Gwq2HmgZUgnl3mLwXjC6nrfMU6IRLA2AOaKQaWgdrT8ZlmI2ZjVkgB32TeYyi7KdD80ihb9W6uH8Q==" crossorigin="anonymous" referrerpolicy="no-referrer" defer onerror="document.documentElement.classList.remove('js-anim')"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" integrity="sha384-jqpi9VmOdhyLoLURgjCn7EpnG9BbnHW57ibIZoeaIU+erWDH3k8fQQg0xH2ySjnw" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="/assets/mouvement.js" defer></script>

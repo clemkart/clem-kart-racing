@@ -6,166 +6,372 @@
 <title>{{debrief.titre}} karting | {{marque.nom}}</title>
 <meta name="description" content="Sept questions pour savoir par où chercher tes dixièmes, puis l'analyse vidéo de ton onboard. Par {{marque.auteur}}."/>
 <link rel="canonical" href="{{sites.site2}}{{routes.onboard}}">
-<meta name="theme-color" content="#070707">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070707'/%3E%3Cpath d='M12 48 28 16h8L20 48z' fill='%23D9171D'/%3E%3Cpath d='M30 48 46 16h8L38 48z' fill='%23F2EDE8'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#060607">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060607'/%3E%3Cpath d='M5 27C5 13 13 5 27 5' fill='none' stroke='%23F2F0EB' stroke-width='3'/%3E%3Ccircle cx='11' cy='11' r='3.5' fill='%23C40C2C'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Tes chronos ne bougent plus&nbsp;? Trouvons où sont tes dixièmes.">
 <meta property="og:description" content="Réponds à 7&nbsp;questions, je te dis par où chercher tes dixièmes. Puis je vérifie sur tes images.">
 <meta property="og:url" content="{{sites.site2}}{{routes.onboard}}">
 <meta property="og:image" content="{{sites.site2}}/partage.jpg">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 600px)" href="/photos/piste-95-dos-virage-1600.webp" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(max-width: 599px)" imagesrcset="/photos/piste-95-dos-virage-portrait-640.webp 640w, /photos/piste-95-dos-virage-portrait-1280.webp 1280w" imagesizes="100vw" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700&family=Barlow&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hubot+Sans:wdth,wght@75,800&family=Martian+Mono:wdth,wght@87.5,400..600&family=Mona+Sans:wght@400..600&display=swap">
+<script>
+/* Revelations au defilement : l etat cache n existe que sous html.js-anim, pose ici seulement sans
+   preference de mouvement reduit. Si le script de bas de page n a pas demarre en 2 s, tout s affiche. */
+(function(d){try{if(matchMedia('(prefers-reduced-motion: no-preference)').matches&&'IntersectionObserver' in window){d.classList.add('js-anim');setTimeout(function(){if(!window.__ckrRevele)d.classList.remove('js-anim');},2000);}}catch(e){}})(document.documentElement);
+</script>
 <style>
+/* ============================================================
+   /onboard/ (site 2) : direction V5 « La trajectoire », 5.10.
+   Page autonome : memes valeurs que site v2/assets/tokens.css, aucune bibliotheque.
+   Noir piste, craie, un seul rouge. Hubot Sans (titres), Mona Sans (texte), Martian Mono (donnees).
+   Rayon 0 partout : seuls les reperes sont ronds (pastilles, ronds des reponses, coches).
+   ============================================================ */
+@font-face{font-family:'Hubot Sans Repli';src:local('Arial Narrow Bold'),local('ArialNarrow-Bold'),local('Arial Narrow'),local('Arial Bold');font-weight:800;size-adjust:80%;ascent-override:100%;descent-override:26%;}
+@font-face{font-family:'Mona Sans Repli';src:local('Arial'),local('ArialMT');font-weight:400;size-adjust:102.5%;ascent-override:92%;descent-override:24%;}
+@font-face{font-family:'Mona Sans Repli';src:local('Arial Bold'),local('Arial-BoldMT');font-weight:600;size-adjust:100%;ascent-override:92%;descent-override:24%;}
+@font-face{font-family:'Martian Mono Repli';src:local('Consolas'),local('Courier New');font-weight:400;size-adjust:118%;}
 :root{
- /* Memes valeurs que site v2/assets/tokens.css : un seul accent (le rouge), vert reserve aux coches du quiz */
- --red:#D9171D;--red-btn:#C4141A;--red-dark:#A51115;
- --black:#070707;--b2:#0F0F0F;--b3:#161616;--b4:#1C1C1C;
- --w:rgb(242,237,232);--wd:rgba(242,237,232,.62);--wq:rgba(242,237,232,.42);--wf:rgba(242,237,232,.10);--wf2:rgba(242,237,232,.04);--wf3:rgba(242,237,232,.22);
- --ok:#3FA35B;
- --fd:'Bebas Neue','Arial Narrow',Impact,sans-serif;--fc:'Barlow Condensed','Arial Narrow',sans-serif;--fb:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
- --pad:20px;
+ color-scheme:dark;
+ /* Couleurs V5 (2.1) sous les noms historiques de la page */
+ --red:#C40C2C;--red-btn:#C40C2C;--red-dark:#A80A26;
+ --black:#060607;--b2:#0E0E10;--b3:#161619;--b4:#1C1C1F;
+ --w:#F2F0EB;--wd:rgba(242,240,235,.68);--wq:rgba(242,240,235,.56);
+ --wf:rgba(242,240,235,.12);--wf3:rgba(242,240,235,.24);--wc:rgba(242,240,235,.40);--wf2:rgba(242,240,235,.045);
+ --piste:#46464A;--ok:#F2F0EB;
+ --fd:'Hubot Sans','Hubot Sans Repli','Arial Narrow',sans-serif;
+ --fc:'Mona Sans','Mona Sans Repli',system-ui,sans-serif;--fb:var(--fc);
+ --fm:'Martian Mono','Martian Mono Repli',ui-monospace,Consolas,monospace;
+ /* Echelle fluide (360 a 1440 px) */
+ --t-micro:clamp(.6875rem,.6667rem + .0926vw,.75rem);
+ --t-donnee:clamp(.8125rem,.7917rem + .0926vw,.875rem);
+ --t-petit:clamp(.875rem,.8542rem + .0926vw,.9375rem);
+ --t-texte:clamp(1.0625rem,1.0417rem + .0926vw,1.125rem);
+ --t-chapo:clamp(1.1875rem,1.0833rem + .463vw,1.5rem);
+ --t-titre-4:clamp(1.375rem,1.2083rem + .7407vw,1.875rem);
+ --t-titre-3:clamp(1.75rem,1.4167rem + 1.4815vw,2.75rem);
+ --t-titre-2:clamp(2.25rem,1.5rem + 3.3333vw,4.5rem);
+ --t-titre-1:clamp(2.75rem,1.3333rem + 6.2963vw,7rem);
+ --t-chiffre:clamp(3.5rem,2.1667rem + 5.9259vw,7.5rem);
+ /* Cadre, grille, rythme */
+ --pad:clamp(1rem,-.1667rem + 5.1852vw,4.5rem);
+ --ecart:clamp(1rem,.6667rem + 1.4815vw,2rem);
+ --rythme:clamp(5rem,3.6667rem + 5.9259vw,9rem);
+ /* Voiles et grain */
+ --voile-haut:linear-gradient(to bottom,rgba(6,6,7,.94) 0%,rgba(6,6,7,.78) 24%,rgba(6,6,7,.25) 40%,rgba(6,6,7,0) 50%);
+ --voile-fondu:linear-gradient(to top,rgba(6,6,7,1) 0%,rgba(6,6,7,.75) 22%,rgba(6,6,7,0) 55%);
+ --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+ /* Mouvement (4.3) */
+ --d-instant:120ms;--d-court:220ms;--d-moyen:420ms;--d-long:900ms;
+ --ease-sortie:cubic-bezier(.23,1,.32,1);--ease-expo:cubic-bezier(.16,1,.3,1);--ease-glisse:cubic-bezier(.77,0,.175,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
-body{background:var(--black);color:var(--w);font-family:var(--fb);line-height:1.6;overflow-x:hidden;}
-img{max-width:100%;display:block;}
-.wrap{max-width:660px;margin:0 auto;padding-inline:var(--pad);}
-/* Bebas Neue n'existe qu'en 400 : sans font-weight, le navigateur fabrique un faux gras */
-h1,h2{font-family:var(--fd);font-weight:400;letter-spacing:.015em;line-height:.96;text-transform:uppercase;}
-h2{font-size:clamp(27px,7vw,44px);margin-bottom:20px;}
-h3{font-family:var(--fc);font-size:1.04rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:7px;}
-p{font-size:1.01rem;font-weight:400;color:var(--wd);}
-p+p{margin-top:14px;}
-strong{color:var(--w);font-weight:400;}
-/* Comme sur le site 1, le rouge est reserve aux boutons : les titres restent blanc casse */
-.r{color:var(--w);}
-.kick{font-family:var(--fc);font-size:.8rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);margin-bottom:14px;}
+:root{interpolate-size:allow-keywords;}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;scrollbar-color:var(--piste) var(--black);scrollbar-width:thin;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-synthesis-weight:none;}
+body{background:var(--black);color:var(--w);font-family:var(--fb);font-size:var(--t-texte);font-weight:400;line-height:1.65;font-variant-numeric:tabular-nums;overflow-x:clip;}
+::selection{background:var(--red);color:var(--w);}
+img,picture,svg{display:block;max-width:100%;}
+button{font:inherit;color:inherit;}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--w);outline-offset:3px;}
+.visuellement-cache{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.wrap{width:100%;max-width:1400px;margin:0 auto;padding-inline:var(--pad);}
 
-/* ===== QUIZ ===== */
-#quiz{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;}
-/* width:100% : sans elle, les marges auto de .wrap la font retrecir sur les ecrans courts (analyse) */
-#quiz>.wrap{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;width:100%;padding-top:14px;padding-bottom:26px;}
-.qbar{display:flex;align-items:center;gap:12px;margin-bottom:26px;}
-.qlogo{font-family:var(--fd);font-size:1.06rem;letter-spacing:.05em;color:var(--w);white-space:nowrap;text-decoration:none;}
-.qlogo span{color:var(--red);}
-.prog{flex:1;height:3px;background:var(--wf);overflow:hidden;}
-.prog i{display:block;height:100%;width:12%;background:var(--red);transition:width .55s cubic-bezier(.4,0,.2,1);}
-.qcount{font-family:var(--fc);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wq);white-space:nowrap;}
-/* Ecran d'accueil : pas de progression tant que le diagnostic n'a pas commence */
+/* ---------- Typographie : Hubot en capitales, Mona pour la voix, Martian Mono pour les donnees ---------- */
+h1,h2,h3,.qtxt,.dtitle{font-family:var(--fd);font-weight:800;font-stretch:75%;text-transform:uppercase;text-wrap:balance;}
+h2{font-size:var(--t-titre-2);line-height:.95;letter-spacing:0;max-width:18ch;}
+h3{font-size:var(--t-titre-4);line-height:1;letter-spacing:.02em;margin-bottom:12px;}
+p{max-width:66ch;color:var(--wd);text-wrap:pretty;}
+p+p{margin-top:16px;}
+strong{color:var(--w);font-weight:600;}
+.r{color:var(--w);}
+.kick,.badge,.il,.dl,.bt,.plab,.qcount,.faits,.num,.ic{font-family:var(--fm);font-stretch:87.5%;font-weight:400;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;}
+.kick{font-size:var(--t-donnee);line-height:1.4;color:var(--wd);margin-bottom:16px;}
+
+/* ---------- Boutons : rouge plein, balayage plus sombre au survol, appui qui s enfonce ---------- */
+.next,.btp{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 24px;font-family:var(--fd);font-weight:800;font-stretch:75%;font-size:1rem;line-height:1;letter-spacing:.04em;text-transform:uppercase;text-align:center;text-decoration:none;color:var(--w);background:var(--red-btn);border:1px solid var(--red-btn);border-radius:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:scale var(--d-instant) var(--ease-sortie),background-color var(--d-court) var(--ease-sortie),opacity var(--d-court) var(--ease-sortie);}
+.next::before,.btp::before{content:'';position:absolute;inset:-1px;z-index:-1;background:var(--red-dark);transform:scaleX(0);transform-origin:left;transition:transform 320ms var(--ease-sortie);}
+.next:active,.btp:active{scale:.97;background:var(--red-dark);}
+@media (hover:hover) and (pointer:fine){.next:hover::before,.btp:hover::before{transform:scaleX(1);}}
+.next[disabled]{opacity:.45;cursor:not-allowed;scale:1;}
+.next[disabled]::before{display:none;}
+.next.big,.btp{width:100%;}
+.btp .px{display:inline-block;margin-left:14px;padding-left:14px;border-left:1px solid rgba(242,240,235,.45);font-family:var(--fm);font-stretch:87.5%;font-weight:400;font-size:.9375rem;letter-spacing:0;text-transform:none;}
+.prev{display:inline-flex;align-items:center;min-height:44px;background:none;border:none;font-family:var(--fm);font-stretch:87.5%;font-size:var(--t-donnee);color:var(--wd);text-decoration:underline;text-decoration-color:var(--wf3);text-underline-offset:5px;cursor:pointer;transition:color var(--d-court) var(--ease-sortie),text-decoration-color var(--d-court) var(--ease-sortie);}
+.prev:hover{color:var(--w);text-decoration-color:var(--w);}
+.btw{margin-top:32px;}
+.btnote{margin-top:10px;font-size:var(--t-petit);line-height:1.5;color:var(--wd);}
+.cgv{margin-top:6px;font-size:var(--t-petit);line-height:1.5;color:var(--wq);max-width:none;}
+.cgv a{color:var(--wd);text-decoration-color:var(--wf3);text-underline-offset:3px;}
+.cgv a:hover{color:var(--w);text-decoration-color:currentColor;}
+
+/* ---------- Le diagnostic : premier ecran plein cadre, puis sept questions sur le noir ---------- */
+#quiz{position:relative;isolation:isolate;min-height:100svh;display:flex;flex-direction:column;overflow:clip;}
+#quiz>.wrap{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding-top:12px;padding-bottom:28px;}
+.quiz-photo{display:none;position:absolute;inset:0 0 auto 0;height:min(64svh,125vw);z-index:0;overflow:hidden;background:var(--b3);}
+#quiz.est-accueil .quiz-photo{display:block;}
+.quiz-photo picture{width:100%;height:100%;}
+.quiz-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 58%;}
+/* Voile general 0,55 (2.1 : au moins 0,5 sous un titre), voile haut sous la barre, fondu vers le noir en bas */
+.quiz-photo::before{content:'';position:absolute;inset:0;z-index:1;background:var(--voile-haut),linear-gradient(to top,rgba(6,6,7,1) 0%,rgba(6,6,7,.96) 6%,rgba(6,6,7,.55) 34%,rgba(6,6,7,.3) 70%);}
+.quiz-photo::after{content:'';position:absolute;inset:0;z-index:2;background-image:var(--grain);opacity:.06;pointer-events:none;}
+
+.qbar{display:flex;align-items:center;gap:16px;min-height:56px;margin-bottom:28px;}
+.qlogo{flex:none;display:inline-flex;align-items:center;gap:10px;min-height:44px;font-family:var(--fd);font-weight:800;font-stretch:75%;font-size:15px;line-height:1;letter-spacing:.06em;color:var(--w);white-space:nowrap;text-decoration:none;}
+.qlogo span{color:inherit;}
+.qlogo svg{flex:none;width:22px;height:22px;}
+/* Sept segments, un par question : faits en craie, en cours en rouge, a venir en gris piste */
+.prog{flex:1;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;height:3px;}
+.prog i{position:relative;overflow:hidden;background:var(--piste);transition:background-color var(--d-court) var(--ease-sortie);}
+.prog i::after{content:'';position:absolute;inset:0;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform var(--d-moyen) var(--ease-sortie);}
+.prog i.fait{background:rgba(242,240,235,.6);}
+.prog i.actif::after,.prog.plein i::after{transform:none;}
+.qcount{min-width:3.5em;text-align:right;font-size:var(--t-donnee);color:var(--w);white-space:nowrap;}
 .qbar.accueil .prog,.qbar.accueil .qcount{visibility:hidden;}
 
-/* Contenu cale en haut : la question ne saute plus quand la lecture apparait sous la reponse */
-.stage{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding-top:clamp(8px,5vh,48px);}
-.step{display:none;animation:in .45s cubic-bezier(.2,.7,.3,1) both;}
+.stage{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding-top:clamp(8px,6vh,72px);}
+#quiz.est-accueil .stage{justify-content:flex-end;padding-top:min(26svh,52vw);}
+.step{display:none;}
 .step.on{display:block;}
-@keyframes in{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.qtxt{font-size:var(--t-titre-3);line-height:1;letter-spacing:.02em;margin-bottom:14px;}
+.qhint{font-size:var(--t-texte);color:var(--wd);margin-bottom:28px;}
 
-.qtxt{font-family:var(--fd);font-size:clamp(30px,8.4vw,52px);line-height:1.0;text-transform:uppercase;margin-bottom:10px;}
-.qhint{font-size:.95rem;color:var(--wq);margin-bottom:22px;}
-.opts{display:flex;flex-direction:column;gap:10px;}
-.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--b2);border:1px solid var(--wf);color:var(--w);font-family:var(--fb);font-size:1.02rem;font-weight:400;padding:16px 18px;cursor:pointer;transition:border-color .18s,background .18s,transform .1s;}
-.opt:hover{border-color:rgba(217,23,29,.5);background:var(--b3);}
-.opt:active{transform:scale(.985);}
-.opt .dot{width:19px;height:19px;border:1.5px solid rgba(242,237,232,.3);border-radius:50%;flex:none;position:relative;transition:border-color .18s;}
-.opt.sel .dot{border-color:var(--red);}
-.opt.sel .dot::after{content:'';position:absolute;inset:3.5px;background:var(--red);border-radius:50%;}
-.opt.sel{border-color:var(--red);background:rgba(217,23,29,.07);}
-.opt:focus-visible,.next:focus-visible,.prev:focus-visible,.btp:focus-visible,summary:focus-visible{outline:2px solid var(--w);outline-offset:3px;}
+/* Ecran 0 : libelle mono, titre geant, indication, bouton */
+.step[data-step="0"] .qtxt{font-size:var(--t-titre-1);line-height:.95;letter-spacing:0;margin-bottom:20px;}
+.ligne{display:block;overflow:clip;padding-top:.14em;margin-top:-.14em;}
+.ligne>span{display:block;}
+.step[data-step="0"] .qhint{max-width:34ch;margin-bottom:24px;}
+.by{margin-top:14px;font-family:var(--fm);font-stretch:87.5%;font-size:var(--t-donnee);color:var(--wd);}
 
-.insight{margin-top:20px;background:var(--b2);border-left:2px solid var(--red);padding:17px 18px;animation:in .4s .05s both;}
-.insight .il{font-family:var(--fc);font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);margin-bottom:7px;}
-.insight p{font-size:.98rem;}
+/* Reponses : lignes de 56 px, rond qui se remplit de rouge, filet rouge a gauche une fois choisie */
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:center;gap:16px;width:100%;min-height:56px;padding:14px 18px;text-align:left;font-family:var(--fb);font-size:var(--t-texte);line-height:1.35;color:var(--w);background:transparent;border:1px solid var(--wc);border-radius:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background-color var(--d-court) var(--ease-sortie),border-color var(--d-court) var(--ease-sortie),box-shadow var(--d-court) var(--ease-sortie),scale var(--d-instant) var(--ease-sortie);}
+.opt:active{scale:.985;}
+.opt .dot{position:relative;flex:none;width:22px;height:22px;border:1px solid var(--wc);border-radius:50%;transition:border-color var(--d-court) var(--ease-sortie);}
+.opt .dot::after{content:'';position:absolute;inset:5px;border-radius:50%;background:var(--red);transform:scale(0);transition:transform var(--d-court) var(--ease-sortie);}
+@media (hover:hover) and (pointer:fine){.opt:hover{background:var(--b3);border-color:var(--wd);}.opt:hover .dot{border-color:var(--w);}}
+.opt.sel{background:var(--b3);border-color:var(--w);box-shadow:inset 3px 0 0 var(--red);}
+.opt.sel .dot{border-color:var(--w);}
+.opt.sel .dot::after{transform:none;}
 
-.qnav{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px;}
-.next{font-family:var(--fc);font-size:.98rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--red-btn);color:var(--w);border:none;padding:15px 30px;cursor:pointer;transition:background .2s,opacity .2s;}
-.next:hover{background:var(--red-dark);}
-.next[disabled]{opacity:.28;pointer-events:none;}
-.next.big{width:100%;padding:17px 26px;}
-.prev{background:none;border:none;color:var(--wd);font-family:var(--fc);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:8px 0;}
-.prev:hover{color:var(--w);}
-.start{margin-top:4px;}
-.by{margin-top:14px;font-family:var(--fc);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wq);text-align:center;}
+.insight{margin-top:20px;padding:18px 20px;background:var(--b2);border-left:2px solid var(--red);}
+.il{font-size:var(--t-donnee);color:var(--wd);margin-bottom:8px;}
+.insight p{color:var(--w);}
+.qnav{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:28px;}
+.qnav .next{flex:0 0 auto;}
 
-/* lecture des reponses */
-.lab{font-family:var(--fc);font-size:.95rem;letter-spacing:.1em;text-transform:uppercase;color:var(--wd);display:flex;align-items:center;gap:12px;padding:9px 0;opacity:.25;transition:opacity .3s,color .3s;}
-.lab.done{opacity:1;color:var(--w);}
-.lab .tick{width:17px;height:17px;border:1.5px solid var(--wf);border-radius:50%;flex:none;position:relative;}
-.lab.done .tick{border-color:var(--ok);}
-.lab.done .tick::after{content:'';position:absolute;left:5px;top:2px;width:4px;height:9px;border:solid var(--ok);border-width:0 1.6px 1.6px 0;transform:rotate(42deg);}
+/* Lecture des reponses : quatre lignes qui se cochent en craie */
+.labs{margin-top:32px;border-top:1px solid var(--wf);max-width:640px;}
+.lab{display:flex;align-items:center;gap:14px;min-height:56px;border-bottom:1px solid var(--wf);font-family:var(--fm);font-stretch:87.5%;font-size:var(--t-donnee);color:var(--wq);transition:color var(--d-court) var(--ease-sortie);}
+.lab.done{color:var(--w);}
+.lab .tick{flex:none;display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--piste);border-radius:50%;transition:border-color var(--d-court) var(--ease-sortie);}
+.lab .tick svg{width:14px;height:14px;}
+.lab .tick path{fill:none;stroke:var(--ok);stroke-width:2;stroke-linecap:square;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset 300ms var(--ease-sortie);}
+.lab.done .tick{border-color:var(--w);}
+.lab.done .tick path{stroke-dashoffset:0;}
+#stopbox .qhint{margin-top:14px;max-width:52ch;}
 
-/* ===== DIAGNOSTIC ===== */
+/* ---------- Diagnostic et offre ---------- */
 #diag{display:none;}
 #diag.on{display:block;}
-.dhead{position:relative;overflow:hidden;padding-block:44px 34px;}
-.dhead .wrap{position:relative;z-index:2;}
-.badge{display:inline-block;font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);border:1px solid var(--wf3);padding:6px 13px;margin-bottom:16px;}
-.dtitle{font-family:var(--fd);font-size:clamp(30px,8.2vw,52px);line-height:1;text-transform:uppercase;}
-.dcards{display:grid;gap:12px;margin-top:26px;}
-.dcard{background:var(--b2);border:1px solid var(--wf);padding:21px 19px;}
-.dcard .dl{font-family:var(--fc);font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);margin-bottom:9px;}
-.honest{margin-top:18px;font-size:.9rem;color:var(--wd);}
+.dhead{position:relative;padding-block:clamp(48px,8vw,112px) clamp(56px,7vw,96px);border-bottom:1px solid var(--wf);}
+.badge{display:inline-block;font-size:var(--t-donnee);color:var(--w);border:1px solid var(--wf3);padding:6px 12px;margin-bottom:24px;}
+.dtitle{font-size:var(--t-titre-2);line-height:.95;max-width:20ch;}
+.dcards{margin-top:48px;border-top:1px solid var(--wf);}
+.dcard{display:grid;gap:8px;padding-block:24px;border-bottom:1px solid var(--wf);}
+.dl{font-size:var(--t-donnee);color:var(--wd);}
+.dcard p{color:var(--w);}
+.honest{margin-top:24px;font-size:var(--t-petit);color:var(--wd);max-width:62ch;}
 
-/* ===== SECTIONS ===== */
-section.blk{padding-block:52px;}
-.card{background:var(--b2);border:1px solid var(--wf);padding:22px 20px;}
-.grid{display:grid;gap:12px;}
-.num{font-family:var(--fd);font-size:2rem;color:var(--w);line-height:1;margin-bottom:9px;}
-#ego{background:var(--b2);border-block:1px solid var(--wf);}
-.ei{display:flex;gap:14px;align-items:flex-start;}
-.ei+.ei{margin-top:20px;}
-.ei .ic{font-family:var(--fd);font-size:1.4rem;color:var(--wd);line-height:1;flex:none;width:24px;}
-.auth{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;}
-.auth img{width:140px;height:140px;object-fit:cover;border:1px solid var(--wf);flex:none;filter:grayscale(.25);}
-.auth .at{flex:1;min-width:215px;}
-.faits{margin-top:15px;padding-top:14px;border-top:1px solid var(--wf);font-size:.95rem;}
-#prix{background:var(--b2);border-block:1px solid var(--wf);}
-.anchor{background:var(--b3);border:1px solid var(--wf);padding:19px 20px;margin-bottom:24px;}
-.pbox{background:var(--b3);border:1px solid rgba(217,23,29,.3);padding:26px 20px;text-align:center;}
-.pnum{font-family:var(--fd);font-size:clamp(54px,15vw,84px);line-height:.9;}
-.pnum sup{font-size:.38em;vertical-align:super;margin-left:4px;color:var(--w);}
-.plab{font-family:var(--fc);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);margin-top:7px;}
-.incl{list-style:none;display:grid;gap:9px;max-width:420px;margin:20px auto 0;text-align:left;}
-.incl li{display:flex;gap:11px;align-items:flex-start;font-size:.97rem;font-weight:400;color:var(--wd);line-height:1.5;}
-.incl li::before{content:'';flex:none;width:2px;height:14px;margin-top:6px;background:var(--wd);}
-.bump{border:1px dashed rgba(242,237,232,.22);background:var(--wf2);padding:15px 17px;margin-top:20px;text-align:left;}
-.bump .bt{font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);margin-bottom:6px;}
-.guar{margin-top:20px;text-align:left;border-top:1px solid var(--wf);padding-top:18px;}
-.btp{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;font-family:var(--fc);font-size:1rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center;background:var(--red-btn);color:var(--w);padding:16px 22px;text-decoration:none;transition:background .2s;}
-.btp:hover{background:var(--red-dark);}
-.btp .px{padding-left:10px;margin-left:2px;border-left:1px solid rgba(242,237,232,.45);}
-.btw{margin-top:24px;}
-.btnote{font-family:var(--fc);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--wq);text-align:center;margin-top:10px;}
-.cgv{font-size:.85rem;color:var(--wq);text-align:center;margin-top:8px;}
-.cgv a{color:var(--wd);text-underline-offset:3px;}
-.cgv a:focus-visible,footer a:focus-visible{outline:2px solid var(--w);outline-offset:3px;}
-details{border-bottom:1px solid var(--wf);padding:16px 0;}
-summary{font-family:var(--fc);font-size:1rem;font-weight:600;color:var(--w);cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:13px;align-items:flex-start;}
+section.blk{padding-block:var(--rythme);}
+.entete{margin-bottom:48px;}
+.entete h2{margin-bottom:0;}
+.bande{background:var(--b2);}
+
+/* Trois choses : un registre de trois lignes, index mono, titre, texte */
+.registre{border-top:1px solid var(--wf);}
+.registre .card{display:grid;gap:8px 24px;padding-block:28px;border-bottom:1px solid var(--wf);}
+.registre .num{font-size:var(--t-donnee);color:var(--wd);line-height:1.6;}
+.registre h3{margin-bottom:0;}
+
+/* Je ne note pas ton niveau : bande, trois engagements */
+.ei{display:grid;grid-template-columns:40px minmax(0,1fr);gap:0 16px;padding-block:24px;border-top:1px solid var(--wf);}
+.ei:last-child{border-bottom:1px solid var(--wf);}
+.ei .ic{font-size:var(--t-donnee);color:var(--wd);line-height:2;}
+
+/* Trois etapes : pastilles rouges numerotees reliees par la piste */
+.etapes{position:relative;display:grid;gap:40px;}
+.etapes::before{content:'';position:absolute;left:12.5px;top:13px;bottom:13px;width:1px;background:var(--piste);}
+.etapes .card{position:relative;display:grid;grid-template-columns:26px minmax(0,1fr);gap:0 20px;}
+.etapes .num{position:relative;grid-row:1 / span 2;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--red);color:var(--w);font-size:var(--t-micro);font-weight:600;line-height:1;box-shadow:0 0 0 4px var(--black);}
+.etapes h3{margin-top:2px;}
+
+/* Qui regarde ta video : photo de profil en contre-jour, cadre avec grain */
+.auth{display:grid;gap:32px;}
+.cine{position:relative;overflow:hidden;isolation:isolate;background:var(--b3);outline:1px solid rgba(242,240,235,.08);outline-offset:-1px;}
+.cine::after{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.06;pointer-events:none;}
+.auth .cine{aspect-ratio:4 / 5;max-width:440px;}
+.auth .cine img{width:100%;height:100%;object-fit:cover;}
+.auth .at h2{margin-bottom:24px;}
+.faits{margin-top:24px;padding-top:16px;border-top:1px solid var(--wf);font-size:var(--t-donnee);line-height:1.7;color:var(--wd);}
+
+/* Le prix : bande avec grille de telemetrie, prix geant en mono */
+#prix{position:relative;}
+.telemetrie{background-image:repeating-linear-gradient(to right,var(--wf2) 0 1px,transparent 1px calc((100% + var(--ecart)) / 12));background-origin:content-box;background-clip:content-box;}
+.anchor{padding-left:20px;border-left:1px solid var(--wf3);margin-bottom:40px;}
+.pbox{position:relative;background:var(--black);border:1px solid var(--wf);padding:clamp(24px,4vw,48px);}
+.pbox::before{content:'';position:absolute;left:-1px;right:-1px;top:-1px;height:2px;background:var(--red);}
+.pnum{font-family:var(--fm);font-stretch:87.5%;font-weight:400;font-size:var(--t-chiffre);line-height:1;letter-spacing:-.02em;white-space:nowrap;}
+/* Martian Mono donne a la virgule la largeur d un chiffre : on la resserre pour que le prix se lise d un bloc */
+.pnum .virg{display:inline-block;margin-inline:-.2em;}
+.pnum sup{font-size:.38em;vertical-align:.95em;margin-left:6px;letter-spacing:0;}
+.plab{margin-top:12px;font-size:var(--t-donnee);color:var(--wd);}
+.incl{list-style:none;display:grid;gap:12px;margin-top:28px;padding-top:24px;border-top:1px solid var(--wf);}
+.incl li{position:relative;padding-left:24px;color:var(--w);line-height:1.5;}
+.incl li::before{content:'';position:absolute;left:0;top:.62em;width:6px;height:6px;background:var(--wq);}
+.bump{margin-top:28px;padding:20px;border:1px solid var(--wc);}
+.bt{font-size:var(--t-donnee);color:var(--wd);margin-bottom:8px;}
+.guar{margin-top:28px;padding-top:24px;border-top:1px solid var(--wf);}
+.guar h3{font-size:var(--t-titre-4);margin-bottom:8px;}
+
+/* FAQ : filets, signe + qui pivote, ouverture animee */
+.faq{border-top:1px solid var(--wf);}
+details{border-bottom:1px solid var(--wf);}
+summary{list-style:none;cursor:pointer;min-height:44px;display:flex;justify-content:space-between;align-items:center;gap:24px;padding-block:20px;font-family:var(--fc);font-weight:600;font-size:var(--t-chapo);line-height:1.3;color:var(--w);}
 summary::-webkit-details-marker{display:none;}
-summary::after{content:'+';font-family:var(--fd);font-size:1.45rem;color:var(--wd);line-height:.8;flex:none;}
-details[open] summary::after{content:'\2212';}
-details p{margin-top:11px;font-size:.96rem;}
-#final{position:relative;overflow:hidden;text-align:center;}
-footer{border-top:1px solid var(--wf);padding-block:30px;text-align:center;}
-footer p{font-family:var(--fc);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,237,232,.36);}
-footer a{color:var(--wd);text-decoration:none;}
-.flegal{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 20px;margin-top:12px;}
-.flegal li{font-family:var(--fc);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;}
-.sticky{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(7,7,7,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--wf);padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));transform:translateY(120%);transition:transform .3s;}
+summary::after{content:'+';flex:none;font-family:var(--fm);font-stretch:87.5%;font-weight:400;font-size:1.25em;line-height:1;transition:transform var(--d-court) var(--ease-sortie);}
+details[open] summary::after{transform:rotate(45deg);}
+details p{max-width:64ch;padding-bottom:24px;}
+details::details-content{height:0;overflow:clip;transition:height .32s var(--ease-sortie),content-visibility .32s allow-discrete;}
+details[open]::details-content{height:auto;}
+
+/* Final, puis l arrivee : le damier */
+#final h2{max-width:16ch;}
+.final-texte{max-width:34em;margin-top:28px;}
+.damier{height:12px;background:conic-gradient(var(--w) 90deg,var(--black) 90deg 180deg,var(--w) 180deg 270deg,var(--black) 270deg) 0 0 / 12px 12px;}
+footer{padding-block:0 40px;}
+footer .damier{margin-bottom:32px;}
+footer p{max-width:none;font-family:var(--fm);font-stretch:87.5%;font-size:var(--t-micro);line-height:1.8;color:var(--wq);}
+footer p a{color:var(--wd);text-decoration:none;}
+footer p a:hover{color:var(--w);}
+.flegal{list-style:none;display:flex;flex-wrap:wrap;gap:4px 24px;margin-top:16px;}
+.flegal a{display:inline-flex;align-items:center;min-height:44px;font-size:var(--t-petit);color:var(--wd);text-decoration:underline;text-decoration-color:var(--wf3);text-underline-offset:4px;}
+.flegal a:hover{color:var(--w);text-decoration-color:currentColor;}
+
+/* Barre collante (3.13) : bord haut rouge plein, fond voile flou */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:80;background:rgba(6,6,7,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:2px solid var(--red);padding:10px var(--pad) calc(8px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform 320ms var(--ease-sortie);}
 .sticky.on{transform:none;}
-.sticky .in{max-width:660px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.sticky .in{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:16px;}
 .sticky .st{flex:1;min-width:0;}
-.sticky .s1{font-family:var(--fc);font-size:.92rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
-.sticky .s2{font-family:var(--fc);font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:var(--wd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
-.sticky .btp{width:auto;flex:none;padding:12px 18px;font-size:.86rem;letter-spacing:.1em;}
-.sticky .cgv{max-width:660px;margin:6px auto 0;font-size:.78rem;text-align:right;}
-body.diag{padding-bottom:104px;}
-/* Le prix du débrief allonge les boutons de paiement : sous 380 px ils restent sur une seule ligne */
-@media(max-width:379px){.btw .btp{font-size:.94rem;letter-spacing:.07em;padding-inline:12px;}}
-/* Petits telephones : le bouton prend toute la barre, rien n'est tronque */
-@media(max-width:419px){.sticky .st{display:none;}.sticky .btp{flex:1;}.sticky .cgv{text-align:center;}}
-@media(min-width:700px){:root{--pad:32px;}section.blk{padding-block:74px;}.grid.g3{grid-template-columns:repeat(3,1fr);}.btp{width:auto;}.next.big{width:auto;}.by{text-align:left;}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}html{scroll-behavior:auto;}}
+.sticky .s1{font-family:var(--fd);font-weight:800;font-stretch:75%;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
+.sticky .s2{font-family:var(--fm);font-stretch:87.5%;font-size:var(--t-micro);color:var(--wd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;}
+.sticky .btp{width:auto;flex:none;min-height:44px;padding:0 20px;font-size:.9375rem;}
+.sticky .cgv{max-width:1400px;margin:4px auto 0;font-size:var(--t-micro);text-align:right;}
+@media (prefers-reduced-transparency:reduce){.sticky{background:var(--black);-webkit-backdrop-filter:none;backdrop-filter:none;}}
+body.diag{padding-bottom:112px;}
+@media (max-width:379px){.btw .btp{font-size:.9375rem;letter-spacing:.02em;padding-inline:12px;}.btp .px{margin-left:10px;padding-left:10px;}}
+@media (max-width:599px){.sticky .st{display:none;}.sticky .btp{flex:1;}.sticky .cgv{text-align:center;}}
+/* Telephone : le cadre monte d un dixieme pour que le kart reste au-dessus du sur-titre, meme a 360 px */
+@media (max-width:599px){.quiz-photo picture{display:block;position:absolute;left:0;right:0;top:-12%;bottom:12%;width:auto;height:auto;-webkit-mask-image:linear-gradient(to bottom,#000 72%,transparent);mask-image:linear-gradient(to bottom,#000 72%,transparent);}}
+@media (max-width:419px){.qlogo-nom{white-space:normal;max-width:11ch;line-height:1.15;}}
+
+/* ---------- Ordinateur : grille de 12 colonnes, compositions decalees ---------- */
+@media (min-width:600px){.next.big,.btp{width:auto;}}
+/* Tablette : la photo 16:9 en bandeau, le kart reste au-dessus du texte */
+@media (min-width:600px) and (max-width:899px){.quiz-photo{height:56.25vw;}.quiz-photo img{object-position:50% 50%;}#quiz.est-accueil .stage{padding-top:30vw;}}
+@media (min-width:900px){
+ .g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--ecart);}
+ .quiz-photo{inset:0;height:auto;}
+ .quiz-photo img{object-position:40% 50%;}
+ .quiz-photo picture{position:absolute;left:0;right:0;top:-22%;bottom:0;width:auto;height:auto;}
+ .quiz-photo::before{background:var(--voile-haut),linear-gradient(to top,rgba(6,6,7,.96) 0%,rgba(6,6,7,.78) 40%,rgba(6,6,7,.66) 50%,rgba(6,6,7,.3) 72%,rgba(6,6,7,.3) 100%);}
+ #quiz.est-accueil .stage{padding-top:24px;}
+ .step[data-step="0"].on{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:auto 1fr auto;column-gap:var(--ecart);align-items:end;}
+ .step[data-step="0"] .kick{grid-column:1 / 9;grid-row:1;}
+ .step[data-step="0"] .qtxt{grid-column:1 / 9;grid-row:2 / 4;margin-bottom:0;font-size:clamp(2.75rem,1.3333rem + 6.2963vw,6rem);line-height:1;}
+ .step[data-step="0"] .qhint{grid-column:9 / 13;grid-row:2;margin-bottom:24px;}
+ .step[data-step="0"] .start{grid-column:9 / 13;grid-row:3;}
+ .step[data-step="0"] .next.big{width:100%;}
+ .step[data-key].on{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:auto auto 1fr auto auto;column-gap:var(--ecart);}
+ .step[data-key] .qtxt{grid-column:1 / 6;grid-row:1;}
+ .step[data-key] .qhint{grid-column:1 / 6;grid-row:2;}
+ .step[data-key] .opts{grid-column:7 / 13;grid-row:1 / 4;}
+ .step[data-key] .insight{grid-column:7 / 13;grid-row:4;}
+ .step[data-key] .qnav{grid-column:7 / 13;grid-row:5;}
+ .step[data-step="8"],#stopbox{max-width:760px;}
+ .dcard{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--ecart);padding-block:28px;}
+ .dcard .dl{grid-column:1 / 5;}
+ .dcard p{grid-column:5 / 13;}
+ .entete{grid-column:1 / 13;}
+ .registre{grid-column:1 / 13;}
+ .registre .card{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--ecart);align-items:baseline;padding-block:36px;}
+ .registre .num{grid-column:1 / 2;}
+ .registre h3{grid-column:2 / 6;font-size:var(--t-titre-3);}
+ .registre p{grid-column:7 / 13;}
+ #ego .entete{grid-column:1 / 6;align-self:start;position:sticky;top:48px;}
+ #ego .engagements{grid-column:7 / 13;}
+ .etapes{grid-column:1 / 13;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ecart);}
+ .etapes::before{left:13px;right:0;top:12.5px;bottom:auto;width:auto;height:1px;}
+ .etapes .card{grid-template-columns:1fr;}
+ .etapes .num{grid-row:auto;margin-bottom:28px;}
+ .etapes p{max-width:34ch;}
+ .auth{grid-column:1 / 13;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--ecart);align-items:end;}
+ .auth .cine{grid-column:1 / 6;max-width:none;}
+ .auth .at{grid-column:7 / 13;}
+ #prix .g12{grid-template-rows:auto 1fr;}
+ #prix .entete{grid-column:1 / 6;}
+ #prix .pbox{grid-column:7 / 13;grid-row:1 / 3;align-self:start;}
+ #prix .anchor{grid-column:1 / 6;align-self:start;}
+ .faq-g .entete{grid-column:1 / 5;align-self:start;position:sticky;top:48px;}
+ .faq-g .faq{grid-column:6 / 13;}
+ #final .entete{grid-column:1 / 9;margin-bottom:0;}
+ #final .btw{grid-column:9 / 13;align-self:end;margin-top:0;}
+ #final .btw .btp{width:100%;}
+ footer .pied{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;}
+ .flegal{margin-top:0;justify-content:flex-end;}
+}
+
+/* ---------- Mouvement : entrees courtes, coupees par la preference de mouvement reduit ---------- */
+@keyframes photo-entree{from{transform:scale(1.06);}to{transform:none;}}
+@keyframes ligne-entree{from{transform:translateY(105%);}to{transform:none;}}
+@keyframes monte{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+@keyframes etape{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:none;}}
+@keyframes lecture{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+@keyframes marches{from{clip-path:inset(0 100% 0 0);}to{clip-path:inset(0);}}
+@keyframes relief{from{transform:translateY(-6%) scale(1.12);}to{transform:translateY(6%) scale(1.04);}}
+@keyframes volet{from{clip-path:inset(100% 0 0 0);}to{clip-path:inset(0);}}
+@media (prefers-reduced-motion:no-preference){
+ #quiz.est-accueil .quiz-photo picture{animation:photo-entree 1400ms var(--ease-expo) both;}
+ .step[data-step="0"].on .ligne>span{animation:ligne-entree 800ms var(--ease-expo) 150ms both;}
+ .step[data-step="0"].on .ligne+.ligne>span{animation-delay:230ms;}
+ .step[data-step="0"].on .kick,.step[data-step="0"].on .qhint,.step[data-step="0"].on .start{animation:monte 600ms var(--ease-expo) 300ms both;}
+ .step[data-step="0"].on .start{animation-delay:380ms;}
+ .step.on:not([data-step="0"]){animation:etape 260ms var(--ease-sortie) both;}
+ .insight{animation:lecture var(--d-court) var(--ease-sortie) both;}
+ #diag.on .dhead .wrap>*{animation:monte 700ms var(--ease-expo) both;}
+ #diag.on .dhead .wrap>:nth-child(2){animation-delay:80ms;}
+ #diag.on .dhead .wrap>:nth-child(3){animation-delay:200ms;}
+ #diag.on .dhead .wrap>:nth-child(n+4){animation-delay:320ms;}
+ html.js-anim .reveal{transition:opacity 800ms var(--ease-expo),transform 800ms var(--ease-expo),visibility 0s linear 0s;transition-delay:calc(var(--i,0) * 60ms);}
+ html.js-anim .reveal:not(.est-vu){opacity:0;visibility:hidden;transform:translateY(28px);transition:none;}
+ html.js-anim .damier-marches:not(.est-vu){clip-path:inset(0 100% 0 0);}
+ html.js-anim .damier-marches.est-vu{animation:marches 600ms steps(16,end) both;}
+ @supports (animation-timeline:view()){
+  .auth .cine{animation:volet linear both;animation-timeline:view();animation-range:entry 0% entry 90%;}
+  .auth .cine img{animation:relief linear both;animation-timeline:view();}
+ }
+}
+@media (prefers-reduced-motion:no-preference) and (max-width:899px){
+ @keyframes relief{from{transform:translateY(-3%) scale(1.06);}to{transform:translateY(3%) scale(1.02);}}
+}
+/* Compteur du prix : colonnes de chiffres en mono, largeur fixe */
+.compteur-col{display:inline-block;height:1lh;overflow:hidden;vertical-align:top;}
+.compteur-rail{display:block;transition:transform var(--d-long) var(--ease-expo);}
+.compteur-rail>span{display:block;height:1lh;}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}html{scroll-behavior:auto;}}
 </style>
 </head>
 <body>
@@ -173,11 +379,19 @@ body.diag{padding-bottom:104px;}
 <main>
 
 <!-- ============ QUIZ ============ -->
-<section id="quiz">
+<section id="quiz" class="est-accueil">
+  <div class="quiz-photo">
+    <picture>
+      <source type="image/webp" media="(min-width: 600px)" srcset="/photos/piste-95-dos-virage-1600.webp" width="1600" height="900">
+      <source media="(min-width: 600px)" srcset="/photos/piste-95-dos-virage-1600.jpg" width="1600" height="900">
+      <source type="image/webp" srcset="/photos/piste-95-dos-virage-portrait-640.webp 640w, /photos/piste-95-dos-virage-portrait-1280.webp 1280w" sizes="100vw" width="640" height="800">
+      <img src="/photos/piste-95-dos-virage-portrait-640.jpg" srcset="/photos/piste-95-dos-virage-portrait-640.jpg 640w, /photos/piste-95-dos-virage-portrait-1280.jpg 1280w" sizes="100vw" width="640" height="800" alt="{{marque.auteur}}, vu de dos dans son kart numéro 95, au milieu d’un virage à gauche bordé d’un vibreur" fetchpriority="high" decoding="async">
+    </picture>
+  </div>
   <div class="wrap">
     <div class="qbar accueil" id="qbar">
-      <a class="qlogo" href="{{sites.site1}}/" aria-label="{{marque.nom}}, accueil">CLEM <span>KART</span> RACING</a>
-      <div class="prog"><i id="pg"></i></div>
+      <a class="qlogo" href="{{sites.site1}}/" aria-label="{{marque.nom}}, accueil"><svg viewBox="0 0 22 22" width="22" height="22" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg><span class="qlogo-nom">CLEM <span>KART</span> RACING</span></a>
+      <div class="prog" id="pg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="qcount" id="qc">1 / 7</div>
     </div>
 
@@ -185,7 +399,7 @@ body.diag{padding-bottom:104px;}
 
       <div class="step on" data-step="0">
         <div class="kick">Diagnostic pilotage, 7&nbsp;questions, 2&nbsp;minutes</div>
-        <h1 class="qtxt">Tes chronos ne bougent plus.<br><span class="r">Trouvons où sont tes dixièmes.</span></h1>
+        <h1 class="qtxt"><span class="ligne"><span>Tes chronos ne bougent plus.</span></span><span class="ligne"><span class="r">Trouvons où sont tes dixièmes.</span></span></h1>
         <p class="qhint">Sept questions. À la fin, tu sais ce que je regarderais en premier sur tes images. Sans email, sans inscription.</p>
         <div class="start">
           <button type="button" class="next big" data-act="start">Commencer le diagnostic</button>
@@ -270,18 +484,18 @@ body.diag{padding-bottom:104px;}
       <div class="step" data-step="8">
         <div class="kick">Lecture de tes réponses</div>
         <div class="qtxt">Je croise tes réponses.</div>
-        <div style="margin-top:26px;">
-          <div class="lab" id="l1"><span class="tick"></span>Ton profil de roulage</div>
-          <div class="lab" id="l2"><span class="tick"></span>L'origine du plateau</div>
-          <div class="lab" id="l3"><span class="tick"></span>Où tu sens que ça part</div>
-          <div class="lab" id="l4"><span class="tick"></span>Par quoi commencer</div>
+        <div class="labs">
+          <div class="lab" id="l1"><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12.5l5 5L20 6.5"/></svg></span>Ton profil de roulage</div>
+          <div class="lab" id="l2"><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12.5l5 5L20 6.5"/></svg></span>L'origine du plateau</div>
+          <div class="lab" id="l3"><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12.5l5 5L20 6.5"/></svg></span>Où tu sens que ça part</div>
+          <div class="lab" id="l4"><span class="tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12.5l5 5L20 6.5"/></svg></span>Par quoi commencer</div>
         </div>
       </div>
 
       <div class="step" data-step="9" id="stopbox">
         <div class="kick">Je préfère être honnête</div>
         <div class="qtxt" id="stoptitle"></div>
-        <p class="qhint" id="stoptext" style="margin-top:14px;"></p>
+        <p class="qhint" id="stoptext"></p>
         <div class="btw"><a class="btp" id="guideSortie" href="{{sites.site1}}{{routes.guide}}?utm_source=site2&amp;utm_medium=onboard&amp;utm_campaign=sortie" data-extrait-href="{{sites.site1}}{{routes.extrait}}?utm_source=site2&amp;utm_medium=onboard&amp;utm_campaign=sortie" data-extrait-label="{{extrait.appel_courant}}">Voir le guide <span class="px">{{guide.prix_affiche}}</span></a>
           <div class="btnote" id="guideNote">{{lecteurs.phrase}}<br>{{textes.garantie_courte}}</div></div>
         <div class="qnav"><button type="button" class="prev" data-act="back">Revenir en arrière</button><span></span></div>
@@ -295,7 +509,7 @@ body.diag{padding-bottom:104px;}
 <div id="diag">
 
   <div class="dhead">
-      <div class="wrap">
+      <div class="wrap telemetrie">
       <div class="badge">Ton diagnostic</div>
       <div class="dtitle" id="dTitle"></div>
       <div class="dcards">
@@ -310,46 +524,51 @@ body.diag{padding-bottom:104px;}
   </div>
 
   <section class="blk">
-    <div class="wrap">
-      <div class="kick">Ce que tu reçois</div>
-      <h2>Trois choses, sous {{delais.debrief_h}}&nbsp;heures</h2>
-      <div class="grid g3">
-        <div class="card"><div class="num">01</div><h3>La vidéo de débrief</h3><p>Je commente tes images, tour par tour&nbsp;: freinage, trajectoire, remise de gaz, position dans le kart. Ton pilotage sur ton circuit, pas un cours général.</p></div>
-        <div class="card"><div class="num">02</div><h3>Ta fiche de priorités</h3><p>Tes trois priorités, classées par gain de temps. Tu sais par quoi commencer, au lieu de tout vouloir corriger d'un coup.</p></div>
-        <div class="card"><div class="num">03</div><h3>Un objectif unique</h3><p>Une seule chose à travailler à ta prochaine sortie. Une. Dix consignes en tête à l'entrée du virage, ça ne marche pas.</p></div>
+    <div class="wrap g12">
+      <div class="entete reveal"><div class="kick">Ce que tu reçois</div>
+      <h2>Trois choses, sous {{delais.debrief_h}}&nbsp;heures</h2></div>
+      <div class="registre">
+        <div class="card reveal"><div class="num">01</div><h3>La vidéo de débrief</h3><p>Je commente tes images, tour par tour&nbsp;: freinage, trajectoire, remise de gaz, position dans le kart. Ton pilotage sur ton circuit, pas un cours général.</p></div>
+        <div class="card reveal"><div class="num">02</div><h3>Ta fiche de priorités</h3><p>Tes trois priorités, classées par gain de temps. Tu sais par quoi commencer, au lieu de tout vouloir corriger d'un coup.</p></div>
+        <div class="card reveal"><div class="num">03</div><h3>Un objectif unique</h3><p>Une seule chose à travailler à ta prochaine sortie. Une. Dix consignes en tête à l'entrée du virage, ça ne marche pas.</p></div>
       </div>
     </div>
   </section>
 
-  <section class="blk" id="ego">
-    <div class="wrap">
-      <div class="kick">Avant que tu te poses la question</div>
-      <h2>Je ne note pas ton niveau</h2>
-      <div class="ei"><div class="ic">01</div><div><h3>Ta vidéo reste entre toi et moi</h3><p>Elle sert uniquement à ton débrief. Un extrait ne sort dans un de mes contenus que si tu l'as accepté au paiement, et seulement comme tu l'as choisi. Tu changes d'avis&nbsp;? Un email suffit.</p></div></div>
-      <div class="ei"><div class="ic">02</div><div><h3>Ce n'est pas fait pour les pilotes de championnat</h3><p>C'est fait pour le pilote amateur, qu'il sorte deux fois par mois ou deux fois par an. Pas pour un pilote de championnat qui a déjà une équipe et un mécano derrière lui.</p></div></div>
-      <div class="ei"><div class="ic">03</div><div><h3>Je ne cherche pas tes fautes</h3><p>Je cherche où sont tes dixièmes. Ce n'est pas la même chose, et ça ne se dit pas de la même façon.</p></div></div>
-    </div>
-  </section>
-
-  <section class="blk">
-    <div class="wrap">
-      <div class="kick">Comment ça se passe</div>
-      <h2>Trois étapes, rien à installer</h2>
-      <div class="grid g3">
-        <div class="card"><div class="num">01</div><h3>Tu envoies ta vidéo</h3><p>Tu colles le lien de ton onboard au moment du paiement&nbsp;: YouTube (non répertorié) ou Google Drive. Rien à m'envoyer par message, et ta vidéo reste entre toi et moi.</p></div>
-        <div class="card"><div class="num">02</div><h3>Je la regarde</h3><p>Tour par tour, chrono à l'appui. Je remonte du symptôme à la cause.</p></div>
-        <div class="card"><div class="num">03</div><h3>Tu reçois tout</h3><p>Par email, sous {{delais.debrief_h}}&nbsp;heures&nbsp;: la vidéo commentée, ta fiche et ton objectif.</p></div>
+  <section class="blk bande" id="ego">
+    <div class="wrap g12">
+      <div class="entete reveal"><div class="kick">Avant que tu te poses la question</div>
+      <h2>Je ne note pas ton niveau</h2></div>
+      <div class="engagements">
+      <div class="ei reveal"><div class="ic">01</div><div><h3>Ta vidéo reste entre toi et moi</h3><p>Elle sert uniquement à ton débrief. Un extrait ne sort dans un de mes contenus que si tu l'as accepté au paiement, et seulement comme tu l'as choisi. Tu changes d'avis&nbsp;? Un email suffit.</p></div></div>
+      <div class="ei reveal"><div class="ic">02</div><div><h3>Ce n'est pas fait pour les pilotes de championnat</h3><p>C'est fait pour le pilote amateur, qu'il sorte deux fois par mois ou deux fois par an. Pas pour un pilote de championnat qui a déjà une équipe et un mécano derrière lui.</p></div></div>
+      <div class="ei reveal"><div class="ic">03</div><div><h3>Je ne cherche pas tes fautes</h3><p>Je cherche où sont tes dixièmes. Ce n'est pas la même chose, et ça ne se dit pas de la même façon.</p></div></div>
       </div>
     </div>
   </section>
 
   <section class="blk">
-    <div class="wrap">
-      <div class="kick">Qui regarde ta vidéo</div>
-      <h2>{{marque.auteur}}</h2>
+    <div class="wrap g12">
+      <div class="entete reveal"><div class="kick">Comment ça se passe</div>
+      <h2>Trois étapes, rien à installer</h2></div>
+      <div class="etapes">
+        <div class="card reveal"><div class="num">01</div><h3>Tu envoies ta vidéo</h3><p>Tu colles le lien de ton onboard au moment du paiement&nbsp;: YouTube (non répertorié) ou Google Drive. Rien à m'envoyer par message, et ta vidéo reste entre toi et moi.</p></div>
+        <div class="card reveal" style="--i:1"><div class="num">02</div><h3>Je la regarde</h3><p>Tour par tour, chrono à l'appui. Je remonte du symptôme à la cause.</p></div>
+        <div class="card reveal" style="--i:2"><div class="num">03</div><h3>Tu reçois tout</h3><p>Par email, sous {{delais.debrief_h}}&nbsp;heures&nbsp;: la vidéo commentée, ta fiche et ton objectif.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="wrap g12">
       <div class="auth">
-        <img src="/clement.jpg" alt="{{marque.auteur}} au paddock, casque à la main" loading="lazy" width="560" height="560">
-        <div class="at">
+        <div class="cine"><picture>
+          <source type="image/webp" srcset="/photos/pilote-contre-jour-640.webp">
+          <img src="/photos/pilote-contre-jour-640.jpg" alt="{{marque.auteur}} de profil, casque sur la tête, en contre-jour dans la lumière du soir" loading="lazy" decoding="async" width="640" height="800">
+        </picture></div>
+        <div class="at reveal">
+          <div class="kick">Qui regarde ta vidéo</div>
+          <h2>{{marque.auteur}}</h2>
           <p>Pas de mécano, pas de team. J'ai tout appris seul&nbsp;: des essais, des erreurs, et beaucoup de sessions à ne pas comprendre pourquoi le tour d'avant était meilleur.</p>
           <p><strong>Tu en es exactement là.</strong> La différence, c'est que j'ai fini par trouver les mots pour décrire ce que fait le kart. Ces mots, je te les donne sur tes images.</p>
           <p class="faits">{{faits.ligne}}<br>{{lecteurs.phrase}} pour le guide.</p>
@@ -358,16 +577,16 @@ body.diag{padding-bottom:104px;}
     </div>
   </section>
 
-  <section class="blk" id="prix">
-    <div class="wrap">
-      <div class="kick">Le prix</div>
-      <h2>Tu as tout acheté pour aller vite, sauf l'explication</h2>
-      <div class="anchor">
+  <section class="blk bande" id="prix">
+    <div class="wrap g12 telemetrie">
+      <div class="entete reveal"><div class="kick">Le prix</div>
+      <h2>Tu as tout acheté pour aller vite, sauf l'explication</h2></div>
+      <div class="anchor reveal">
         <p>Un train de pneus, une casse, le carburant, l'entretien, les entrées de circuit et la route pour y aller.</p>
         <p>Que ton karting te coûte mille euros par an ou dix mille, le constat est le même. Tu as payé la machine, les consommables et les week-ends. Tout, sauf quelqu'un qui te dise ce qui se passe entre tes mains et le bitume.</p>
       </div>
-      <div class="pbox">
-        <div class="pnum">{{debrief.prix_chiffres}}<sup>€</sup></div>
+      <div class="pbox reveal">
+        <div class="pnum"><span data-compteur>{{debrief.prix_chiffres}}</span><sup>€</sup></div>
         <div class="plab">Débrief complet, livré sous {{delais.debrief_h}}&nbsp;h</div>
         <ul class="incl">
           <li>Ta vidéo commentée, tour par tour</li>
@@ -379,16 +598,17 @@ body.diag{padding-bottom:104px;}
           <div class="bt">Option au moment du paiement</div>
           <p>J'ajoute le guide complet ({{guide.pages}} pages) à <strong>{{debrief.option_guide.prix_affiche}}</strong> au lieu de {{guide.prix_affiche}}, pour travailler entre deux sessions ce que le débrief va te montrer.</p>
         </div>
-        <div class="guar"><div><h3 style="margin-bottom:4px;">Garantie {{garantie_jours}}&nbsp;jours, en plus de tes droits légaux</h3><p>Elle court à partir de la réception de ta vidéo commentée. Si le débrief ne t'apporte rien, tu m'écris dans les {{garantie_jours}}&nbsp;jours et je te rembourse. Sans justification.</p></div></div>
+        <div class="guar"><div><h3>Garantie {{garantie_jours}}&nbsp;jours, en plus de tes droits légaux</h3><p>Elle court à partir de la réception de ta vidéo commentée. Si le débrief ne t'apporte rien, tu m'écris dans les {{garantie_jours}}&nbsp;jours et je te rembourse. Sans justification.</p></div></div>
         <div class="btw"><a class="btp cta" data-cta="prix" href="{{sites.site1}}{{debrief.aller}}?locale=fr">Envoyer ma vidéo <span class="px">{{debrief.prix_affiche}}</span></a><div class="btnote">Paiement sécurisé par Stripe</div><p class="cgv">En commandant, tu acceptes les <a href="{{sites.site1}}{{routes.cgv}}">CGV</a>.</p></div>
       </div>
     </div>
   </section>
 
   <section class="blk">
-    <div class="wrap">
-      <div class="kick">Ce que tu te demandes sûrement</div>
-      <h2>Avant de te décider</h2>
+    <div class="wrap g12 faq-g">
+      <div class="entete reveal"><div class="kick">Ce que tu te demandes sûrement</div>
+      <h2>Avant de te décider</h2></div>
+      <div class="faq">
       <details><summary>Et si ça ne change rien à mes chronos&nbsp;?</summary><p>Je ne vais pas te promettre un chiffre&nbsp;: personne d'honnête ne peut le faire. Ce que je te promets, c'est que tu repartiras en sachant exactement quoi travailler à ta prochaine sortie. Et si le débrief ne t'apporte rien, tu m'écris dans les {{garantie_jours}}&nbsp;jours et je te rembourse. C'est en plus de tes droits légaux.</p></details>
       <details><summary>Quelle vidéo je dois envoyer&nbsp;?</summary><p>Il me faut une image où l'on voit <strong>ce que tu fais</strong>, pas seulement la piste. Le mieux, c'est une caméra fixée sur le <strong>radiateur</strong>, orientée vers toi&nbsp;: on voit tes mains, le volant et la piste devant. Sur le <strong>ponton</strong>, ça marche aussi. En revanche, <strong>oublie le baudrier</strong>&nbsp;: une caméra sur la poitrine ne montre que le bitume qui défile, et je ne vois rien de ton pilotage. Si ta vidéo est inexploitable, je te le dis avant de commencer et je te rembourse.</p></details>
       <details><summary>Je ne roule pas souvent. Ça vaut le coup&nbsp;?</summary><p>C'est justement fait pour ça. Moins tu roules, plus chaque session compte. Arriver avec un objectif précis au lieu de tourner en espérant, c'est ce qui fait bouger le chrono sans rouler davantage. Un pilote qui sort quatre fois dans l'année a plus besoin d'un cap que celui qui roule toutes les semaines.</p></details>
@@ -396,18 +616,19 @@ body.diag{padding-bottom:104px;}
       <details><summary>Et si je suis vraiment lent&nbsp;?</summary><p>Alors il y a beaucoup de dixièmes à récupérer, et c'est une bonne nouvelle. Je n'ai aucun intérêt à te juger&nbsp;: mon travail, c'est de trouver où ils sont. Et personne d'autre ne voit ta vidéo sans ton accord.</p></details>
       <details><summary>Comment je t'envoie mon onboard&nbsp;?</summary><p>Tu colles le lien dans le champ prévu au moment du paiement&nbsp;: YouTube en non répertorié ou Google Drive, avec un lien accessible.</p></details>
       <details><summary>Je reçois quoi, et quand&nbsp;?</summary><p>Une vidéo de débrief commentée sur tes images, une fiche avec tes trois priorités et un objectif unique. Par email, sous {{delais.debrief_h}}&nbsp;heures après réception de ta vidéo.</p></details>
+      </div>
     </div>
   </section>
 
   <section class="blk" id="final">
-    <div class="wrap" style="position:relative;z-index:2;">
-      <h2>Tu peux faire dix sessions<br>de plus en espérant<br>que ça vienne.</h2>
-      <p style="max-width:29em;margin:0 auto;">Ou tu envoies une vidéo que tu as déjà, et sous {{delais.debrief_h}}&nbsp;h, tu sais où sont tes dixièmes.</p>
-      <div class="btw"><a class="btp cta" data-cta="final" href="{{sites.site1}}{{debrief.aller}}?locale=fr">Envoyer ma vidéo <span class="px">{{debrief.prix_affiche}}</span></a><div class="btnote" style="text-align:center;">Livré sous {{delais.debrief_h}}&nbsp;h, vidéo privée<br>{{textes.garantie_courte}}</div><p class="cgv">En commandant, tu acceptes les <a href="{{sites.site1}}{{routes.cgv}}">CGV</a>.</p></div>
+    <div class="wrap g12">
+      <div class="entete reveal"><h2>Tu peux faire dix sessions<br>de plus en espérant<br>que ça vienne.</h2>
+      <p class="final-texte">Ou tu envoies une vidéo que tu as déjà, et sous {{delais.debrief_h}}&nbsp;h, tu sais où sont tes dixièmes.</p></div>
+      <div class="btw reveal"><a class="btp cta" data-cta="final" href="{{sites.site1}}{{debrief.aller}}?locale=fr">Envoyer ma vidéo <span class="px">{{debrief.prix_affiche}}</span></a><div class="btnote">Livré sous {{delais.debrief_h}}&nbsp;h, vidéo privée<br>{{textes.garantie_courte}}</div><p class="cgv">En commandant, tu acceptes les <a href="{{sites.site1}}{{routes.cgv}}">CGV</a>.</p></div>
     </div>
   </section>
 
-  <footer><div class="wrap"><p>{{legal.editeur}}, {{legal.tva}}<br><a href="mailto:{{contact.email}}">{{contact.email}}</a></p><ul class="flegal"><li><a href="{{sites.site1}}{{routes.mentions}}">Mentions légales</a></li><li><a href="{{sites.site1}}{{routes.cgv}}">CGV</a></li><li><a href="{{sites.site1}}{{routes.confidentialite}}">Confidentialité</a></li><li><a href="{{sites.site1}}{{routes.retractation}}">Renoncer au contrat ici</a></li></ul></div></footer>
+  <footer><div class="wrap"><div class="damier damier-marches" aria-hidden="true"></div><div class="pied"><p>{{legal.editeur}}, {{legal.tva}}<br><a href="mailto:{{contact.email}}">{{contact.email}}</a></p><ul class="flegal"><li><a href="{{sites.site1}}{{routes.mentions}}">Mentions légales</a></li><li><a href="{{sites.site1}}{{routes.cgv}}">CGV</a></li><li><a href="{{sites.site1}}{{routes.confidentialite}}">Confidentialité</a></li><li><a href="{{sites.site1}}{{routes.retractation}}">Renoncer au contrat ici</a></li></ul></div></div></footer>
 </div>
 
 </main>
@@ -460,13 +681,21 @@ body.diag{padding-bottom:104px;}
   // Suivi anonyme : sans effet si le script de mesure n'a pas pu se charger.
   function suivre(type, meta){ if(window.ckrTrack) window.ckrTrack(type, meta); }
 
+  // Barre de sept segments : faits en craie, en cours en rouge ; pleine en rouge pendant la lecture
+  var segs=[].slice.call(pg.children), quiz=document.getElementById('quiz');
+  function barre(n){
+    pg.classList.toggle('plein', n>TOTAL);
+    segs.forEach(function(s,i){ s.className = i<n-1 ? 'fait' : (i===n-1 ? 'actif' : ''); });
+  }
+
   function show(n){
     steps.forEach(function(s){s.classList.toggle('on', +s.dataset.step===n);});
     cur=n;
-    if(n>=1 && n<=TOTAL){ qc.textContent=n+' / '+TOTAL; pg.style.width=(12+(n-1)/TOTAL*88)+'%'; }
-    if(n===0){ qc.textContent='1 / '+TOTAL; pg.style.width='12%'; }
+    if(n>=1 && n<=TOTAL){ qc.textContent=n+' / '+TOTAL; barre(n); }
+    if(n===0){ qc.textContent='1 / '+TOTAL; barre(1); }
     qbar.classList.toggle('accueil', n===0);
-    if(n===8){ qc.textContent='Lecture'; pg.style.width='100%'; }
+    quiz.classList.toggle('est-accueil', n===0);
+    if(n===8){ qc.textContent='Lecture'; barre(TOTAL+1); }
     window.scrollTo(0,0);
   }
 
@@ -579,11 +808,13 @@ body.diag{padding-bottom:104px;}
     document.getElementById('diag').classList.add('on');
     document.body.classList.add('diag');
     window.scrollTo(0,0);
-    var s=document.getElementById('sticky'), f=document.getElementById('final'), px=document.getElementById('prix');
+    var s=document.getElementById('sticky'), f=document.getElementById('final'), px=document.getElementById('prix'), cd=document.getElementById('ctaDiag');
     function upd(){
-      var h=window.innerHeight, fb=f.getBoundingClientRect().top, pr=px.getBoundingClientRect();
+      var h=window.innerHeight, fb=f.getBoundingClientRect().top, pr=px.getBoundingClientRect(), cr=cd.getBoundingClientRect();
       var prixVisible=pr.top<h && pr.bottom>0;
-      s.classList.toggle('on', window.scrollY>420 && fb>h*0.8 && !prixVisible);
+      // Un seul bouton rouge a l ecran : la barre reste cachee tant que le bouton du diagnostic est visible
+      var diagVisible=cr.height>0 && cr.top<h && cr.bottom>0;
+      s.classList.toggle('on', window.scrollY>420 && fb>h*0.8 && !prixVisible && !diagVisible);
     }
     window.addEventListener('scroll',upd,{passive:true}); window.addEventListener('resize',upd,{passive:true}); upd();
   }
@@ -655,6 +886,64 @@ body.diag{padding-bottom:104px;}
     document.getElementById('prix').scrollIntoView();
   }
   if(location.hash==='#prix') montrerOffre();
+})();
+</script>
+
+<script>
+/* Prix en grand : la virgule passe dans un span resserre (texte lu identique, sans script elle garde sa largeur) */
+(function(){
+  [].forEach.call(document.querySelectorAll('.pnum [data-compteur]'),function(el){
+    [].slice.call(el.childNodes).forEach(function(n){
+      if(n.nodeType!==3 || n.nodeValue.indexOf(',')<0) return;
+      var morceaux=n.nodeValue.split(','), frag=document.createDocumentFragment();
+      morceaux.forEach(function(m,i){
+        if(i>0){ var v=document.createElement('span'); v.className='virg'; v.textContent=','; frag.appendChild(v); }
+        if(m) frag.appendChild(document.createTextNode(m));
+      });
+      el.replaceChild(frag,n);
+    });
+  });
+})();
+</script>
+
+<script>
+/* Mouvement de la page (aucune bibliotheque) : blocs reveles a l entree dans l ecran, damier d arrivee
+   en marches, prix en compteur. Rien ne tourne avec la preference de mouvement reduit (pas de html.js-anim). */
+(function(){
+  var d=document.documentElement;
+  if(!d.classList.contains('js-anim')) return;
+  window.__ckrRevele=true;
+  var io=new IntersectionObserver(function(entrees){
+    entrees.forEach(function(e){ if(!e.isIntersecting) return; e.target.classList.add('est-vu'); io.unobserve(e.target); });
+  },{rootMargin:'0px 0px -10% 0px'});
+  [].forEach.call(document.querySelectorAll('.reveal,.damier-marches'),function(el){ io.observe(el); });
+
+  // Compteur : chaque chiffre monte de 0 a sa valeur une seule fois, le texte exact reste lu, puis le HTML d origine revient
+  function rail(c){
+    var col=document.createElement('span'); col.className='compteur-col';
+    var r=document.createElement('span'); r.className='compteur-rail';
+    for(var i=0;i<10;i++){ var s=document.createElement('span'); s.textContent=String(i); r.appendChild(s); }
+    col.appendChild(r); return {col:col, rail:r, v:Number(c)};
+  }
+  function defiler(el){
+    var origine=el.innerHTML, texte=el.textContent, rails=[];
+    if(!/\d/.test(texte)) return;
+    var lu=document.createElement('span'); lu.className='visuellement-cache'; lu.textContent=texte;
+    var vue=document.createElement('span'); vue.setAttribute('aria-hidden','true');
+    for(var i=0;i<texte.length;i++){
+      var c=texte.charAt(i);
+      if(c>='0' && c<='9'){ var r=rail(c); rails.push(r); vue.appendChild(r.col); } else if(c===','){ var v=document.createElement('span'); v.className='virg'; v.textContent=c; vue.appendChild(v); } else vue.appendChild(document.createTextNode(c));
+    }
+    el.textContent=''; el.appendChild(lu); el.appendChild(vue);
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      for(var k=rails.length-1, n=0; k>=0; k--, n++){ rails[k].rail.style.transitionDelay=(n*40)+'ms'; rails[k].rail.style.transform='translateY('+(-10*rails[k].v)+'%)'; }
+    }); });
+    setTimeout(function(){ el.innerHTML=origine; }, 900+rails.length*40+120);
+  }
+  var io2=new IntersectionObserver(function(entrees){
+    entrees.forEach(function(e){ if(!e.isIntersecting) return; io2.unobserve(e.target); defiler(e.target); });
+  },{threshold:0.6});
+  [].forEach.call(document.querySelectorAll('[data-compteur]'),function(el){ io2.observe(el); });
 })();
 </script>
 </body>

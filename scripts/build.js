@@ -71,6 +71,9 @@ const EXT_EXCLUES = new Set(['.md', '.tmp']);
 /* tableur-reglages-kart.xlsx : ancienne version du tableur gratuit (onglets avec emoji), plus
    envoyee ni liee nulle part (send-email.js envoie la v2) */
 const FICHIERS_EXCLUS = new Set(['app-preview.html', 'merci-fondateur.html', 'test_write.tmp', 'tableur-reglages-kart.xlsx']);
+/* Gros plans du visage de Clement (direction V5 : aucun visage nulle part) : plus lies nulle part,
+   gardes dans les sources mais jamais mis en ligne (sinon ils restent ouverts a qui connait l adresse) */
+const PHOTOS_RETIREES = /^(clement-(portrait|avatar|sourire|trophee|podium)-\d+\.(jpg|webp)|clement-(640|800)\.(jpg|webp)|clement-(trophee|casque)-nb\.jpg|clement\.jpg|(marques-cockpit-logos|paddock-pre-grille)-\d+\.(jpg|webp))$/;
 
 const BALISE = /\{\{\s*([^{}]+?)\s*\}\}/g;
 
@@ -202,7 +205,7 @@ function copierArbre(src, dist, cfg, stats, exclure, sansPayants) {
     }
     if (!entree.isFile()) continue;
     const ext = path.extname(entree.name).toLowerCase();
-    if (exclure && (EXT_EXCLUES.has(ext) || FICHIERS_EXCLUS.has(entree.name))) { stats.exclus++; continue; }
+    if (exclure && (EXT_EXCLUES.has(ext) || FICHIERS_EXCLUS.has(entree.name) || PHOTOS_RETIREES.test(entree.name))) { stats.exclus++; continue; }
     if (sansPayants && EXT_PAYANTES.has(ext)) { stats.exclus++; continue; }
     if (EXT_TEXTE.has(ext)) {
       const brut = fs.readFileSync(s, 'utf8');

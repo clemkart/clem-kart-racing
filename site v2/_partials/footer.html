@@ -1,13 +1,14 @@
 <!-- Partial footer : pied de page commun. Email en clair, aucun prix, aucun script de masquage.
-     Ni tu ni vous : le meme pied sert aux pilotes et aux marques. La ligne de faits (faits.ligne) n y est plus,
-     sinon elle se lisait deux fois sur /guide et /consulting.
-     Trois colonnes de destinations : les pilotes (Rouler plus vite), les marques (deux besoins distincts), les reseaux.
+     Ni tu ni vous : le meme pied sert aux pilotes et aux marques.
+     Haut du pied : l arrivee, un damier sur toute la largeur du contenu, ou finit la trajectoire.
+     Trois colonnes de destinations : les pilotes (Rouler plus vite), les marques, les reseaux.
      Les quatre liens legaux restent en bas, sur toutes les pages. -->
 <footer class="pied">
   <div class="conteneur">
+    <div class="pied-arrivee" aria-hidden="true"><span class="damier damier-marches"></span></div>
     <div class="pied-grille">
       <div>
-        <p class="pied-marque">Clem <span>Kart</span> Racing</p>
+        <p class="pied-marque"><svg class="symbole" viewBox="0 0 22 22" width="26" height="26" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg>Clem Kart Racing</p>
         <p class="mt-4">Pilote de karting en compétition et créateur de contenu.</p>
         <p class="mt-4"><a class="pied-email" href="mailto:{{contact.email}}">{{contact.email}}</a></p>
       </div>

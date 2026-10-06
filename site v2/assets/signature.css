@@ -1,0 +1,296 @@
+/* ============================================================
+   Clem Kart Racing : signature.css (direction V5, chapitre 3)
+   Ce qui fait reconnaitre le site sur une capture : la trajectoire, les cordes,
+   les pastilles, le circuit du guide, la telemetrie (barre de secteurs, releves
+   en coin, compteurs), le damier, les feux, les cadres photo, les voiles, le grain.
+   Etats de depart des animations : seulement sous html.js-anim (pose par
+   _partials/mouvement.html). Sans cette classe, tout est visible.
+   Mode d emploi des attributs : en tete de assets/mouvement.js.
+   ============================================================ */
+
+/* ---------- 1. La trajectoire (dessinee par mouvement.js dans main[data-trajectoire]) ---------- */
+.trajectoire {
+  position: absolute; inset: 0; z-index: var(--z-trajectoire);
+  width: 100%; height: 100%; max-width: none;
+  overflow: visible; pointer-events: none; fill: none;
+}
+.traj-fantome { stroke: rgba(var(--texte-rgb), 0.18); stroke-width: 1; stroke-dasharray: 2 6; }
+.traj-trace { stroke: var(--rouge); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.traj-tete { fill: var(--rouge); stroke: var(--fond-0); stroke-width: 2; }
+.traj-secteur line { stroke: rgba(var(--texte-rgb), 0.5); stroke-width: 1.5; }
+.traj-secteur text { display: none; fill: var(--texte-2); font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: 11px; dominant-baseline: central; }
+@media (min-width: 900px) {
+  .traj-trace { stroke-width: 2; }
+  .traj-secteur text { display: inline; }
+}
+.trajectoire.est-statique .traj-fantome { display: none; }
+
+/* Corde : disque rouge de 10 px, anneau craie de 1 px separe par 3 px de noir.
+   Eteinte (avant que la tete passe) : l anneau seul, en gris piste. */
+.traj-corde .tc-anneau { fill: var(--fond-0); stroke: var(--gris-piste); stroke-width: 1; transition: stroke var(--d-court) var(--ease-sortie); }
+.traj-corde .tc-disque { fill: var(--rouge); opacity: 0; transform: scale(0.4); transform-box: fill-box; transform-origin: center; transition: transform var(--d-court) var(--ease-sortie), opacity var(--d-court) var(--ease-sortie); }
+.traj-corde .tc-onde { fill: none; stroke: var(--texte); stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.traj-corde.est-allumee .tc-anneau, .trajectoire.est-statique .tc-anneau { stroke: var(--texte); }
+.traj-corde.est-allumee .tc-disque, .trajectoire.est-statique .tc-disque { opacity: 1; transform: none; }
+.traj-corde.est-allumee .tc-onde { animation: corde-onde 400ms var(--ease-sortie) 1; }
+@keyframes corde-onde { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.8); } }
+
+/* Corde en HTML (photos, sommaires) : meme dessin */
+.corde {
+  position: relative; display: inline-block; width: 10px; height: 10px; flex: 0 0 auto;
+  border-radius: 50%; background: var(--rouge);
+  box-shadow: 0 0 0 3px var(--fond-0), 0 0 0 4px var(--texte);
+}
+.corde::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--texte); opacity: 0; pointer-events: none; }
+.corde-eteinte { background: transparent; box-shadow: 0 0 0 3px var(--fond-0), 0 0 0 4px var(--gris-piste); }
+.corde.est-allumee { background: var(--rouge); box-shadow: 0 0 0 3px var(--fond-0), 0 0 0 4px var(--texte); transition: background-color var(--d-court) var(--ease-sortie), box-shadow var(--d-court) var(--ease-sortie); }
+.corde.est-allumee::after { animation: corde-onde 400ms var(--ease-sortie) 1; }
+
+/* ---------- 2. Depart et arrivee : le damier ---------- */
+.damier {
+  display: block; height: 12px;
+  background: conic-gradient(var(--texte) 90deg, var(--fond-0) 90deg 180deg, var(--texte) 180deg 270deg, var(--fond-0) 270deg) 0 0 / 12px 12px;
+}
+/* Ligne de depart : damier de 48 x 12 puis trait rouge jusqu au bord droit du contenu, S1 au-dessus */
+.depart { position: relative; display: flex; align-items: center; margin-top: var(--e-6); }
+.depart .damier { flex: 0 0 48px; width: 48px; }
+.depart-trait { flex: 1 1 auto; height: 2px; background: var(--rouge); transform-origin: left center; }
+.depart-s1 {
+  position: absolute; left: 0; bottom: calc(100% + 6px);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: var(--t-micro); line-height: 1; letter-spacing: 0.04em; color: var(--texte-2);
+}
+/* Apparition en marches (haut du pied, pages merci), une fois, pilotee par interface.js */
+@keyframes damier-marches { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@media (prefers-reduced-motion: no-preference) {
+  html.a-ui .damier-marches:not(.est-vue) { clip-path: inset(0 100% 0 0); }
+  html.a-ui .damier-marches.est-vue { animation: damier-marches 600ms steps(16, end) both; }
+}
+
+/* ---------- 3. Pastilles numerotees (contenu vraiment ordonne) ---------- */
+.virage-num {
+  display: inline-grid; place-items: center; flex: 0 0 auto; width: 26px; height: 26px;
+  border-radius: 50%; background: var(--rouge); color: var(--texte);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: var(--t-micro); line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+.virage-num-grand { width: 32px; height: 32px; }
+.virage-num-eteint { background: var(--fond-3); box-shadow: inset 0 0 0 1px var(--gris-piste); color: var(--texte-2); }
+
+/* ---------- 4. Le circuit du guide : 13 chapitres, 13 virages ---------- */
+.circuit { display: block; width: 100%; height: auto; overflow: visible; }
+.circuit-piste { fill: none; stroke: var(--gris-piste); stroke-width: 14; stroke-linejoin: round; }
+.circuit-trace { fill: none; stroke: var(--rouge); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 2002; stroke-dashoffset: 2002; }
+.circuit-virage circle { fill: var(--fond-3); stroke: var(--gris-piste); stroke-width: 2; transform-box: fill-box; transform-origin: center; transition: fill var(--d-court) var(--ease-sortie), stroke var(--d-court) var(--ease-sortie), transform var(--d-court) var(--ease-sortie); }
+.circuit-virage text { fill: var(--texte-2); font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte); font-size: 14px; text-anchor: middle; dominant-baseline: central; transition: fill var(--d-court) var(--ease-sortie); }
+.circuit-damier rect { fill: var(--texte); }
+.circuit-damier path { fill: var(--fond-0); }
+.circuit-virage.est-allume circle { fill: var(--rouge); stroke: var(--rouge); }
+.circuit-virage.est-allume text { fill: var(--texte); }
+.circuit-virage.est-actif circle { stroke: var(--texte); stroke-width: 3; transform: scale(1.15); }
+/* Chapitres offerts selon la version de l extrait (data-extrait-version sur un parent).
+   --offert est lu par mouvement.js ; les memes selecteurs allument les virages sans script. */
+[data-extrait-version="2"] .circuit-virage[data-virage-num="4"],
+[data-extrait-version="3"] .circuit-virage[data-virage-num="3"],
+[data-extrait-version="3"] .circuit-virage[data-virage-num="4"],
+[data-extrait-version="3"] .circuit-virage[data-virage-num="5"] { --offert: 1; }
+/* Etat dessine (virages offerts allumes, trace jusqu au dernier) : seulement sans mouvement (html sans .js-anim :
+   mouvement reduit, CDN en erreur, ou html.anim-secours : mouvement.js absent au bout de 4 s). Sous .js-anim, le circuit reste vide
+   jusqu a ce que mouvement.js le dessine : jamais dessine, efface puis redessine sur un reseau lent. */
+:is(html:not(.js-anim), html.anim-secours) [data-extrait-version="2"] .circuit:not(.circuit-anime) .circuit-virage[data-virage-num="4"] circle,
+:is(html:not(.js-anim), html.anim-secours) [data-extrait-version="3"] .circuit:not(.circuit-anime) .circuit-virage:is([data-virage-num="3"], [data-virage-num="4"], [data-virage-num="5"]) circle { fill: var(--rouge); stroke: var(--rouge); }
+:is(html:not(.js-anim), html.anim-secours) [data-extrait-version="2"] .circuit:not(.circuit-anime) .circuit-virage[data-virage-num="4"] text,
+:is(html:not(.js-anim), html.anim-secours) [data-extrait-version="3"] .circuit:not(.circuit-anime) .circuit-virage:is([data-virage-num="3"], [data-virage-num="4"], [data-virage-num="5"]) text { fill: var(--texte); }
+/* Trace sans script : du depart jusqu au dernier virage offert (longueurs du chapitre 3.3) */
+:is(html:not(.js-anim), html.anim-secours) [data-extrait-version="2"] .circuit[data-circuit="offerts"]:not(.circuit-anime) .circuit-trace { stroke-dashoffset: 1289; }
+:is(html:not(.js-anim), html.anim-secours) [data-extrait-version="3"] .circuit[data-circuit="offerts"]:not(.circuit-anime) .circuit-trace { stroke-dashoffset: 1161; }
+.circuit[data-circuit="complet"]:not(.circuit-anime) .circuit-trace { stroke-dashoffset: 0; }
+.circuit[data-circuit="complet"]:not(.circuit-anime) .circuit-virage circle { fill: var(--rouge); stroke: var(--rouge); }
+.circuit[data-circuit="complet"]:not(.circuit-anime) .circuit-virage text { fill: var(--texte); }
+
+/* ---------- 5. Telemetrie : la barre de secteurs (bord bas de la navigation, bord haut de la barre d achat) ---------- */
+.secteurs {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; pointer-events: none;
+}
+.secteurs i { position: relative; display: block; overflow: hidden; background: rgba(70, 70, 74, 0.7); }
+.secteurs b { position: absolute; inset: 0; background: var(--rouge); transform-origin: left center; transform: scaleX(var(--s, 0)); }
+/* Repli sans timeline de defilement : interface.js ecrit --progression (0 a 1) sur html */
+.secteurs i:nth-child(1) b { --s: clamp(0, var(--progression, 0) * 3, 1); }
+.secteurs i:nth-child(2) b { --s: clamp(0, var(--progression, 0) * 3 - 1, 1); }
+.secteurs i:nth-child(3) b { --s: clamp(0, var(--progression, 0) * 3 - 2, 1); }
+@keyframes secteur { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@supports (animation-timeline: scroll()) {
+  .secteurs b { animation: secteur linear both; animation-timeline: scroll(root); }
+  .secteurs i:nth-child(1) b { animation-range: 0% 33.333%; }
+  .secteurs i:nth-child(2) b { animation-range: 33.333% 66.666%; }
+  .secteurs i:nth-child(3) b { animation-range: 66.666% 100%; }
+}
+.barre .secteurs { top: 0; bottom: auto; }
+/* C est une barre de progression liee au geste : elle reste avec le mouvement reduit */
+@media (prefers-reduced-motion: reduce) {
+  .secteurs b { animation-duration: auto !important; }
+}
+
+/* ---------- 6. Releves en coin (ordinateur, 1024 px et plus) ---------- */
+.hud {
+  position: fixed; bottom: 16px; z-index: var(--z-hud);
+  display: none; align-items: center; gap: 10px; max-width: 46vw;
+  padding: 6px 10px; background: rgba(6, 6, 7, 0.72);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-micro); line-height: 1.2;
+  color: var(--texte-2); white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity var(--d-court) var(--ease-sortie);
+}
+/* Alignes sur les bords du contenu, hors des couloirs. 100 % = la fenetre sans sa barre de defilement */
+.hud-gauche { left: max(var(--gouttiere-large), calc((100% - var(--conteneur)) / 2 + var(--gouttiere-large))); }
+.hud-droite { right: max(var(--gouttiere-large), calc((100% - var(--conteneur)) / 2 + var(--gouttiere-large))); }
+.hud b { color: var(--texte); font-weight: var(--graisse-forte); }
+.hud-segments { display: inline-grid; grid-template-columns: repeat(3, 22px); gap: 3px; }
+.hud-segments i { display: block; height: 3px; background: var(--gris-piste); }
+.hud-segments i.est-fait { background: rgba(var(--texte-rgb), 0.6); }
+.hud-segments i.est-en-cours { background: var(--rouge); }
+.hud-section { display: inline-block; max-width: 44ch; overflow: hidden; vertical-align: bottom; }
+/* Titre trop long : coupe net, fondu sur les 4 derniers signes (jamais de points de suspension) */
+.hud-section.est-coupe { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 4ch), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 4ch), transparent); }
+.hud.est-visible { opacity: 1; }
+/* Un texte passe sous un cartouche : il s efface le temps du passage (interface.js, hudMasquer).
+   Le releve de droite attend le premier temps de secteur : jamais un chrono bloque a 0:00.0. */
+.hud.est-visible.est-masque, .hud-droite.est-visible.est-en-attente { opacity: 0; }
+.hud-droite { transition-duration: 220ms; }
+@media (min-width: 1024px) { html.a-ui .hud { display: flex; } }
+@media (prefers-reduced-transparency: reduce) { .hud { background: var(--fond-0); -webkit-backdrop-filter: none; backdrop-filter: none; } }
+
+/* ---------- 7. Compteurs qui defilent (interface.js) : colonnes de chiffres en mono, largeur fixe ---------- */
+.compteur-col { display: inline-block; height: 1lh; overflow: hidden; vertical-align: top; }
+.compteur-rail { display: block; transition: transform var(--d-long) var(--ease-expo); }
+.compteur-rail > span { display: block; height: 1lh; }
+/* Un nombre ne se coupe jamais en fin de ligne pendant qu il defile */
+.compteur-nombre { white-space: nowrap; }
+
+/* ---------- 8. Feux de depart (/liens) ----------
+   Cinq feux de 16 px sur un portique : un support noir filete, une poutre grise de 2 px au-dessus
+   et ses deux attaches. Sequence (une fois par session, html.feux-depart pose par interface.js) :
+   un feu toutes les 80 ms, les cinq allumes 350 ms, extinction a 670 ms. A l extinction, le trait
+   de trajectoire se trace sous le nom (500 ms, expo) et la grille part en cascade (250 ms, 40 ms
+   d ecart). Tout est fini a 1,17 s ; rien n est masque, rien ne bloque un clic. */
+.feux { position: relative; display: flex; width: max-content; gap: 8px; padding: 6px 8px; background: #000; border: 1px solid var(--filet); }
+.feux::before { content: ''; position: absolute; top: -9px; left: -10px; right: -10px; height: 2px; background: var(--gris-piste); }
+.feux::after { content: ''; position: absolute; top: -7px; left: 10px; right: 10px; height: 6px; border-inline: 2px solid var(--gris-piste); }
+.feux i { display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--feu-eteint); box-shadow: inset 0 0 0 1px rgba(var(--texte-rgb), 0.18); }
+@keyframes feu-allume { from, to { background: var(--rouge); box-shadow: 0 0 10px 1px rgba(196, 12, 44, 0.6), inset 0 0 0 1px rgba(var(--texte-rgb), 0.25); } }
+@keyframes feu-coupe {
+  from { background: var(--rouge); box-shadow: 0 0 10px 1px rgba(196, 12, 44, 0.6), inset 0 0 0 1px rgba(var(--texte-rgb), 0.25); }
+  to { background: var(--feu-eteint); box-shadow: 0 0 0 0 rgba(196, 12, 44, 0), inset 0 0 0 1px rgba(var(--texte-rgb), 0.18); }
+}
+@keyframes trait-trace { from { transform: scaleX(0); } }
+/* La tete part du debut du trait : 100cqw = la longueur du trait (conteneur de taille, page-liens.css) */
+@keyframes trait-tete { from { transform: translateX(calc(8px - 100cqw)); } }
+@keyframes grille-depart { from { transform: translateY(12px); opacity: 0.4; } }
+@media (prefers-reduced-motion: no-preference) {
+  html.feux-depart .feux i { animation: feu-allume 1ms linear var(--t, 0ms) forwards, feu-coupe 120ms linear 670ms forwards; }
+  html.feux-depart .feux i:nth-child(2) { --t: 80ms; }
+  html.feux-depart .feux i:nth-child(3) { --t: 160ms; }
+  html.feux-depart .feux i:nth-child(4) { --t: 240ms; }
+  html.feux-depart .feux i:nth-child(5) { --t: 320ms; }
+  html.feux-depart .liens-trait::before { animation: trait-trace 500ms var(--ease-expo) 670ms backwards; }
+  html.feux-depart .liens-trait::after { animation: trait-tete 500ms var(--ease-expo) 670ms backwards; }
+  html.feux-depart .liens-boutons > * { animation: grille-depart 250ms var(--ease-sortie) var(--t, 670ms) backwards; }
+  html.feux-depart .liens-boutons > :nth-child(2) { --t: 710ms; }
+  html.feux-depart .liens-boutons > :nth-child(3) { --t: 750ms; }
+  html.feux-depart .liens-boutons > :nth-child(4) { --t: 790ms; }
+  html.feux-depart .liens-boutons > :nth-child(5) { --t: 830ms; }
+}
+
+/* ---------- 9. Cadres photo, objets, voiles, grain ---------- */
+/* Cadre : overflow cache, fond pendant le chargement, contour interieur, grain fixe a 6 % */
+.cine { position: relative; overflow: hidden; isolation: isolate; background: var(--fond-2); outline: 1px solid rgba(var(--texte-rgb), 0.08); outline-offset: -1px; }
+.cine picture { display: block; width: 100%; height: 100%; }
+.cine img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cine::after { content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0.06; background-image: var(--grain); }
+/* Photos de contenu (figures) sur une page a trajectoire : la trajectoire passe dessous, comme sous un pont.
+   Un trait rouge sur une photo collee au bord (le drapeau de « Qui je suis ») brouillerait l image. */
+[data-trajectoire] figure.cine { z-index: var(--z-contenu); }
+/* Objet (couverture, pages du PDF) : pose sur le noir, ombre et contour, jamais de grain */
+.objet { display: block; box-shadow: var(--ombre-objet); outline: 1px solid rgba(var(--texte-rgb), 0.14); outline-offset: -1px; }
+/* Voiles : un calque par voile, au-dessus de l image et sous le grain */
+.voile { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.voile-haut { background-image: var(--voile-haut); }
+.voile-bas { background-image: var(--voile-bas); }
+.voile-fondu { background-image: var(--voile-fondu); }
+.voile-gauche { background-image: var(--voile-gauche); }
+
+/* Grille de telemetrie : douze lignes de 1 px alignees sur les colonnes, derriere les bandes de donnees.
+   A poser sur le .conteneur de la bande ; --telemetrie-debord prolonge les lignes dans les marges de la section. */
+.grille-telemetrie { position: relative; isolation: isolate; }
+.grille-telemetrie::before {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  top: calc(-1 * var(--telemetrie-debord, 0px)); bottom: calc(-1 * var(--telemetrie-debord, 0px));
+  left: var(--gouttiere-large); right: var(--gouttiere-large);
+  background-image: linear-gradient(to right, rgba(var(--texte-rgb), 0.045) 1px, transparent 1px);
+  background-size: calc((100% + var(--grille-ecart)) / 12) 100%;
+}
+
+/* ---------- 10. L entree du premier ecran (seulement sous html.js-anim) ----------
+   En CSS, lancee des le premier rendu : la photo, le chapo, les boutons, le prix, la couverture et
+   la ligne de depart ne dependent JAMAIS des CDN. Seules les lignes du h1 attendent mouvement.js
+   (SplitText) ; s il n est pas la a temps, le titre entre quand meme en CSS (entree-titre-secours,
+   400 ms apres son debut prevu) et mouvement.js le laisse faire.
+   data-t (multiples de 10, de 0 a 700 ms) devient --t ; sinon, le debut par defaut de chaque type. */
+[data-t="0"] { --t: 0ms; } [data-t="10"] { --t: 10ms; } [data-t="20"] { --t: 20ms; } [data-t="30"] { --t: 30ms; } [data-t="40"] { --t: 40ms; } [data-t="50"] { --t: 50ms; }
+[data-t="60"] { --t: 60ms; } [data-t="70"] { --t: 70ms; } [data-t="80"] { --t: 80ms; } [data-t="90"] { --t: 90ms; } [data-t="100"] { --t: 100ms; } [data-t="110"] { --t: 110ms; }
+[data-t="120"] { --t: 120ms; } [data-t="130"] { --t: 130ms; } [data-t="140"] { --t: 140ms; } [data-t="150"] { --t: 150ms; } [data-t="160"] { --t: 160ms; } [data-t="170"] { --t: 170ms; }
+[data-t="180"] { --t: 180ms; } [data-t="190"] { --t: 190ms; } [data-t="200"] { --t: 200ms; } [data-t="210"] { --t: 210ms; } [data-t="220"] { --t: 220ms; } [data-t="230"] { --t: 230ms; }
+[data-t="240"] { --t: 240ms; } [data-t="250"] { --t: 250ms; } [data-t="260"] { --t: 260ms; } [data-t="270"] { --t: 270ms; } [data-t="280"] { --t: 280ms; } [data-t="290"] { --t: 290ms; }
+[data-t="300"] { --t: 300ms; } [data-t="310"] { --t: 310ms; } [data-t="320"] { --t: 320ms; } [data-t="330"] { --t: 330ms; } [data-t="340"] { --t: 340ms; } [data-t="350"] { --t: 350ms; }
+[data-t="360"] { --t: 360ms; } [data-t="370"] { --t: 370ms; } [data-t="380"] { --t: 380ms; } [data-t="390"] { --t: 390ms; } [data-t="400"] { --t: 400ms; } [data-t="410"] { --t: 410ms; }
+[data-t="420"] { --t: 420ms; } [data-t="430"] { --t: 430ms; } [data-t="440"] { --t: 440ms; } [data-t="450"] { --t: 450ms; } [data-t="460"] { --t: 460ms; } [data-t="470"] { --t: 470ms; }
+[data-t="480"] { --t: 480ms; } [data-t="490"] { --t: 490ms; } [data-t="500"] { --t: 500ms; } [data-t="510"] { --t: 510ms; } [data-t="520"] { --t: 520ms; } [data-t="530"] { --t: 530ms; }
+[data-t="540"] { --t: 540ms; } [data-t="550"] { --t: 550ms; } [data-t="560"] { --t: 560ms; } [data-t="570"] { --t: 570ms; } [data-t="580"] { --t: 580ms; } [data-t="590"] { --t: 590ms; }
+[data-t="600"] { --t: 600ms; } [data-t="610"] { --t: 610ms; } [data-t="620"] { --t: 620ms; } [data-t="630"] { --t: 630ms; } [data-t="640"] { --t: 640ms; } [data-t="650"] { --t: 650ms; }
+[data-t="660"] { --t: 660ms; } [data-t="670"] { --t: 670ms; } [data-t="680"] { --t: 680ms; } [data-t="690"] { --t: 690ms; } [data-t="700"] { --t: 700ms; }
+/* --t ne se transmet pas d un element d entree a l autre : sans data-t, le debut par defaut du type */
+[data-entree]:not([data-t]) { --t: initial; }
+@keyframes entree-texte { from { opacity: 0; transform: translateY(16px); } }
+@keyframes entree-objet { from { opacity: 0; transform: translateY(40px) rotate(4deg); } }
+@keyframes entree-photo { from { transform: scale(var(--entree-echelle, 1.12)); } }
+@keyframes entree-damier { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes entree-trait { from { transform: scaleX(0); } }
+@keyframes entree-titre-secours {
+  from { visibility: visible; opacity: 0; transform: translateY(0.3em); }
+  to { visibility: visible; opacity: 1; transform: none; }
+}
+html.js-anim [data-entree="texte"] { animation: entree-texte 600ms var(--ease-expo) var(--t, 300ms) both; }
+html.js-anim [data-entree="objet"] { animation: entree-objet 1000ms var(--ease-expo) var(--t, 200ms) both; }
+html.js-anim [data-entree="photo"] > :is(picture, img) { animation: entree-photo var(--d-hero) var(--ease-expo) var(--t, 0ms) both; }
+html.js-anim [data-entree="depart"] .damier { animation: entree-damier 300ms steps(8, end) var(--t, 700ms) both; }
+html.js-anim [data-entree="depart"] .depart-trait { animation: entree-trait 600ms var(--ease-expo) calc(var(--t, 700ms) + 300ms) both; }
+html.js-anim [data-entree="titre"] { visibility: hidden; animation: entree-titre-secours 700ms var(--ease-expo) calc(var(--t, 150ms) + 400ms) forwards; }
+/* mouvement.js a pris la main (lignes SplitText) : plus de secours */
+html.js-anim [data-entree="titre"].entree-js { animation: none; }
+/* Dessins du premier ecran (virage de /guide, 404) : caches en attendant mouvement.js, avec un secours CSS
+   du meme type que celui du titre : s il n a pas pris la main a 1,2 s, le dessin apparait en fondu et la
+   corde s allume a 1,6 s. mouvement.js pose .dessin-js sur le bloc quand il le joue lui-meme, et laisse
+   faire le secours s il a deja commence. */
+@keyframes entree-dessin-secours {
+  from { visibility: visible; opacity: 0; }
+  to { visibility: visible; opacity: 1; }
+}
+@keyframes corde-secours {
+  to { background: var(--rouge); box-shadow: 0 0 0 3px var(--fond-0), 0 0 0 4px var(--texte); }
+}
+html.js-anim [data-dessin="chargement"] :is([data-trace], [data-apparait]) { visibility: hidden; animation: entree-dessin-secours 700ms var(--ease-expo) 1200ms forwards; }
+html.js-anim [data-dessin] .corde[data-allume]:not(.est-allumee) { background: transparent; box-shadow: 0 0 0 3px var(--fond-0), 0 0 0 4px var(--gris-piste); }
+html.js-anim [data-dessin="chargement"] .corde[data-allume]:not(.est-allumee) { animation: corde-secours 300ms var(--ease-sortie) 1600ms forwards; }
+html.js-anim [data-dessin="chargement"].dessin-js :is([data-trace], [data-apparait], .corde[data-allume]) { animation: none; }
+/* CDN qui ne repond jamais (4 s sans mouvement.js) : les cordes des dessins s allument sans script */
+html.js-anim.anim-secours [data-dessin] .corde[data-allume]:not(.est-allumee) { background: var(--rouge); box-shadow: 0 0 0 3px var(--fond-0), 0 0 0 4px var(--texte); }
+/* Masques des lignes de titre : la zone de decoupe deborde pour les accents des capitales (É, Ê),
+   sans toucher a la mise en page (aucun decalage). mouvement.js retire la decoupe une fois le titre en place. */
+.titre-ligne-mask { overflow-clip-margin: 0.2em; }
+.mot-rempli { transition: none; }
+
+@media print {
+  .trajectoire, .hud, .secteurs, .feux { display: none !important; }
+  .cine::after { display: none; }
+}

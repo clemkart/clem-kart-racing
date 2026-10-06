@@ -1,278 +1,399 @@
 /* ============================================================
-   Clem Kart Racing : page-legal.css
-   Pages legales (body.page-legal) : /mentions-legales, /cgv, /confidentialite, et la fonction
-   de retractation (body.page-retractation). Chargee apres base.css.
-   Aucune valeur brute hors impression : tout vient de tokens.css.
-   Rayons 0 (sauf le disque des choix radio, convention du controle), un seul rouge par ecran : le filet du sommaire sur les pages de texte,
-   le bouton principal sur /retractation/. Aucun degrade, aucune ombre portee.
+   Clem Kart Racing : page-legal.css (direction V5, chapitre 5.8)
+   Pages legales (body.page-legal) : /mentions-legales, /cgv, /confidentialite,
+   et la fonction de retractation (body.page-retractation). Chargee apres base.css et signature.css.
+   Style seulement : le texte juridique ne change jamais ici.
+     1. En-tete : libelle dans le rail de gauche, titre geant, date en mono.
+     2. Sommaire : un rail de lecture, la corde marque l article lu.
+     3. Corps : colonnes 4 a 11, Mona a interligne 1,7, titres Hubot, numeros en mono.
+     4. Fiches (listes de definitions), encadre legal, formulaire type.
+     5. Fonction de retractation : formulaire du chapitre 3.11.
+     6. Impression.
+   Pas de trajectoire. Barre de secteurs (navigation) et releves en coin (partial hud).
+   Rayon 0 partout, sauf les reperes ronds (corde, bouton radio). Un seul rouge.
    ============================================================ */
 
-/* ---------- 1. En-tete : titre sur les colonnes 4 a 11, une seule entree animee ---------- */
-body.page-legal .legal-hero { padding-block: var(--e-8) var(--e-6); }
-body.page-legal .legal-titre { display: grid; gap: var(--e-4); justify-items: start; }
-body.page-legal .legal-hero h1 { font-size: var(--t-4); max-width: 16ch; }
-body.page-legal .legal-date { font-size: var(--t--1); color: var(--texte-2); }
+/* ---------- 1. En-tete ---------- */
+body.page-legal .legal-hero { padding-block: clamp(3rem, 1.5rem + 5vw, 6.5rem) 0; }
+body.page-legal .legal-titre { display: grid; gap: var(--e-4); justify-items: start; align-content: start; }
+body.page-legal .legal-titre .libelle { color: var(--texte-2); }
+body.page-legal .legal-hero h1 { font-size: var(--t-titre-1); line-height: var(--interligne-titre); max-width: 14ch; }
+body.page-legal .legal-date {
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-donnee);
+  color: var(--texte-2);
+}
+/* Sous l en-tete : un filet sur toute la largeur du contenu, ouvert par un trait rouge de 32 px */
+body.page-legal .legal-hero > .grille { position: relative; padding-bottom: clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
+body.page-legal .legal-hero > .grille::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--filet);
+}
+body.page-legal .legal-hero > .grille::before {
+  content: ''; position: absolute; left: 0; bottom: 0; width: 32px; height: 2px; background: var(--rouge); z-index: 1;
+}
+/* Entree : le titre monte de 24 px (base.css, classe .entree) ; la date suit d un souffle */
+@media (prefers-reduced-motion: no-preference) {
+  body.page-legal .legal-titre.entree { animation: none; }
+  body.page-legal .legal-titre.entree > * { animation: entree 700ms var(--ease-expo) both; }
+  body.page-legal .legal-titre.entree > :nth-child(2) { animation-delay: 60ms; }
+  body.page-legal .legal-titre.entree > :nth-child(n + 3) { animation-delay: 140ms; }
+}
 
 @media (min-width: 900px) {
-  body.page-legal .legal-titre { grid-column: 4 / span 8; }
+  /* Le libelle tient le rail de gauche (celui du sommaire), le titre et la date les colonnes 4 a 12 */
+  body.page-legal .legal-titre { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; row-gap: var(--e-4); }
+  body.page-legal .legal-titre > * { grid-column: 4 / -1; }
+  body.page-legal .legal-titre > .libelle { grid-column: 1 / span 3; grid-row: 1; align-self: start; padding-top: 0.6em; }
+  body.page-legal .legal-titre > h1 { grid-row: 1; }
   body.page-legal .legal-nav { grid-column: 1 / span 3; }
   body.page-legal .legal-corps { grid-column: 4 / span 8; }
 }
 
-/* ---------- 2. Sommaire : liste d ancres sous le titre sur telephone, collant a gauche sur ordinateur ---------- */
-body.page-legal .legal-nav {
-  padding-block: var(--e-4);
-  border-block: var(--bordure);
-}
+/* ---------- 2. Sommaire : un rail de lecture ----------
+   Un filet vertical court le long des entrees ; l article lu (aria-current, pose par le script de la page)
+   passe en craie et recoit une corde de 6 px posee sur le rail. */
+body.page-legal .legal-nav { padding-block: var(--e-6) var(--e-5); border-bottom: var(--bordure); }
 body.page-legal .legal-nav-titre {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t--2);
-  color: var(--texte-3);
-  margin-bottom: var(--e-3);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal);
+  font-size: var(--t-micro); letter-spacing: 0.04em; color: var(--texte-2);
+  margin-bottom: var(--e-4);
 }
-body.page-legal .legal-nav-liste { counter-reset: article; display: grid; gap: var(--e-1); }
+body.page-legal .legal-nav-liste { position: relative; counter-reset: article; display: grid; gap: 0; }
+body.page-legal .legal-nav-liste::before {
+  content: ''; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 1px; background: var(--filet-fort);
+}
 body.page-legal .legal-nav-liste li { counter-increment: article; max-width: none; }
 body.page-legal .legal-nav-liste a {
+  position: relative;
   display: grid;
-  grid-template-columns: 3ch minmax(0, 1fr);
+  grid-template-columns: 3.2ch minmax(0, 1fr);
   gap: var(--e-2);
-  padding: var(--e-1) 0 var(--e-1) var(--e-3);
-  border-left: 2px solid transparent;
-  font-size: var(--t--1);
-  line-height: var(--interligne-serre);
+  align-items: baseline;
+  min-height: 32px;
+  padding: 6px 0 6px var(--e-5);
+  font-size: var(--t-petit);
+  line-height: 1.3;
   color: var(--texte-2);
   text-decoration: none;
-  transition: color var(--duree-vite) var(--courbe), border-color var(--duree-vite) var(--courbe);
+  transition: color var(--d-court) var(--ease-sortie);
 }
 body.page-legal .legal-nav-liste a::before {
-  content: counter(article) '.';
-  font-family: var(--police-mono);
-  font-size: var(--t--2);
-  font-variant-numeric: tabular-nums;
+  content: counter(article, decimal-leading-zero);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); font-variant-numeric: tabular-nums;
   color: var(--texte-3);
+  transition: color var(--d-court) var(--ease-sortie);
+}
+/* La corde : disque rouge, anneau craie separe par du noir ; elle apparait a l echelle 1 */
+body.page-legal .legal-nav-liste a::after {
+  content: ''; position: absolute; left: 2px; top: calc(6px + 0.65em - 3px);
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--rouge); box-shadow: 0 0 0 2px var(--fond-0), 0 0 0 3px var(--texte);
+  opacity: 0; transform: scale(0.4);
+  transition: opacity var(--d-court) var(--ease-sortie), transform var(--d-court) var(--ease-sortie);
 }
 body.page-legal .legal-nav-liste a:hover { color: var(--texte); }
-/* Le filet rouge du titre lu : seul rouge de la page, il tient lieu de filet de depart */
-body.page-legal .legal-nav-liste a[aria-current="true"] { color: var(--texte); border-left-color: var(--rouge); }
+/* Le sommaire defile dans son propre cadre : le contour de focus se pose a l interieur pour ne pas etre coupe */
+body.page-legal .legal-nav-liste a:focus-visible { outline-offset: -2px; }
+body.page-legal .legal-nav-liste a[aria-current="true"] { color: var(--texte); }
+body.page-legal .legal-nav-liste a[aria-current="true"]::before { color: var(--texte); }
+body.page-legal .legal-nav-liste a[aria-current="true"]::after { opacity: 1; transform: none; }
+
+/* Telephone : deux colonnes sous le titre, non colle */
+@media (max-width: 899px) {
+  body.page-legal .legal-nav-liste { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--e-4); }
+  body.page-legal .legal-nav-liste::before { display: none; }
+  body.page-legal .legal-nav-liste a { padding: 10px 0; min-height: var(--zone-touche); align-items: baseline; }
+  body.page-legal .legal-nav-liste a::after { display: none; }
+}
+@media (max-width: 380px) {
+  body.page-legal .legal-nav-liste { grid-template-columns: minmax(0, 1fr); }
+}
 
 @media (min-width: 900px) {
   body.page-legal .legal-nav {
     position: sticky;
-    top: calc(var(--nav-h) + var(--e-5));
+    top: calc(var(--nav-h) + var(--e-6));
     align-self: start;
-    max-height: calc(100vh - var(--nav-h) - var(--e-6));
+    /* Place laissee en bas pour les releves en coin */
+    max-height: calc(100svh - var(--nav-h) - var(--e-6) - 72px);
     overflow-y: auto;
-    padding-top: 0;
-    border-block: 0;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    padding-block: var(--e-7) 0;
+    padding-right: var(--e-5);
+    border-bottom: 0;
   }
+  body.page-legal .legal-nav::-webkit-scrollbar { display: none; }
 }
 
-/* ---------- 3. Colonne de lecture : flux regulier, titres d article espaces ---------- */
-body.page-legal .legal-corps { padding-bottom: var(--e-9); min-width: 0; }
+/* ---------- 3. Corps : une colonne de lecture ---------- */
+body.page-legal .legal-corps { padding-block: var(--e-7) var(--e-10); min-width: 0; }
 body.page-legal .legal-corps > * + * { margin-top: var(--e-4); }
 body.page-legal .legal-corps p,
 body.page-legal .legal-corps li,
-body.page-legal .legal-corps dd { line-height: var(--interligne-texte); }
-body.page-legal .legal-corps a { color: var(--texte); text-decoration-color: var(--filet-fort); }
+body.page-legal .legal-corps dd { font-size: var(--t-texte); line-height: 1.7; max-width: 68ch; }
+body.page-legal .legal-corps p,
+body.page-legal .legal-corps li { color: var(--texte); }
+body.page-legal .legal-corps strong { color: var(--texte); }
+/* Les classes du socle gardent leur corps et leur couleur dans la colonne de lecture */
+body.page-legal .legal-corps p.libelle { font-size: var(--t-donnee); line-height: 1.4; color: var(--texte-2); }
+body.page-legal .legal-corps p.secondaire { color: var(--texte-2); }
+body.page-legal .legal-corps p.retractation-erreur,
+body.page-legal .legal-corps p.retractation-erreur-generale,
+body.page-legal .legal-corps p.form-aide { font-size: var(--t-petit); line-height: 1.5; }
+body.page-legal .legal-corps p.form-aide { color: var(--texte-2); }
+body.page-legal .legal-corps a { color: var(--texte); text-decoration-color: var(--filet-champ); text-underline-offset: 0.2em; }
 body.page-legal .legal-corps a:hover { text-decoration-color: var(--texte); }
 body.page-legal .legal-corps a.bouton { text-decoration: none; }
 body.page-legal .legal-corps .bouton { margin-top: var(--e-2); }
 
-body.page-legal .legal-intro { font-size: var(--t-1); line-height: 1.45; }
+body.page-legal .legal-corps p.legal-intro { font-size: var(--t-chapo); line-height: 1.5; max-width: 52ch; color: var(--texte); }
 
+/* Titres d article : Hubot, un filet au-dessus, le numero en mono craie dans une colonne fixe */
 body.page-legal .legal-corps h2 {
-  font-size: var(--t-2);
-  line-height: var(--interligne-serre);
+  display: grid;
+  grid-template-columns: 3.2ch minmax(0, 1fr);
+  column-gap: var(--e-3);
+  align-items: baseline;
+  font-size: var(--t-titre-4);
+  line-height: 1;
+  letter-spacing: 0.02em;
   padding-top: var(--e-5);
   border-top: var(--bordure);
-  scroll-margin-top: calc(var(--nav-h) + var(--e-4));
+  scroll-margin-top: 8px; /* + la marge de defilement du html (navigation + 16 px, base.css) */
 }
 body.page-legal .legal-corps > h2,
-body.page-legal .legal-corps > * + h2 { margin-top: var(--e-8); }
+body.page-legal .legal-corps > * + h2 { margin-top: var(--e-9); }
 body.page-legal .legal-corps > h2:first-child { margin-top: 0; }
+body.page-legal .legal-corps > h2 + * { margin-top: var(--e-5); }
+body.page-legal .legal-num {
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-normal);
+  font-size: 0.62em; letter-spacing: 0; color: var(--texte);
+}
 /* Un seul filet entre deux blocs : le titre qui suit une fiche reprend son filet de bas */
 body.page-legal .legal-dl:has(+ h2) { border-bottom: 0; }
-/* Telephone : le sommaire ferme deja sur un filet, le premier titre ne l ouvre pas une seconde fois */
-@media (max-width: 899px) {
-  body.page-legal .legal-corps > h2:first-child { border-top: 0; padding-top: 0; }
-}
-body.page-legal .legal-num { color: var(--texte-3); margin-right: 0.3em; }
 
 body.page-legal .legal-corps h3 {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
+  font-family: var(--police-texte);
+  font-weight: var(--graisse-forte);
+  font-stretch: 100%;
+  font-size: var(--t-chapo);
+  line-height: 1.3;
   letter-spacing: 0;
   text-transform: none;
+  color: var(--texte);
 }
-body.page-legal .legal-corps > * + h3 { margin-top: var(--e-6); }
+body.page-legal .legal-corps > * + h3 { margin-top: var(--e-7); }
 body.page-legal .legal-corps > h2 + h3 { margin-top: var(--e-5); }
+body.page-legal .legal-corps > h3 + * { margin-top: var(--e-3); }
 
-/* Listes du texte juridique (sans classe) : puces et numeros dans la colonne, jamais dans la marge */
+/* Listes du texte juridique (sans classe) : puce carree de 6 px, numeros en mono, dans la colonne */
 body.page-legal .legal-corps ul:not([class]),
-body.page-legal .legal-corps ol:not([class]) { padding-left: 1.25em; display: grid; gap: var(--e-2); }
-body.page-legal .legal-corps li::marker { color: var(--texte-2); }
+body.page-legal .legal-corps ol:not([class]) { display: grid; gap: var(--e-3); }
+body.page-legal .legal-corps ul:not([class]) > li { position: relative; padding-left: var(--e-5); list-style: none; }
+body.page-legal .legal-corps ul:not([class]) > li::before {
+  content: ''; position: absolute; left: 0; top: 0.72em; width: 6px; height: 6px; background: var(--texte-3);
+}
+body.page-legal .legal-corps ol:not([class]) { padding-left: 2.2em; }
+body.page-legal .legal-corps ol:not([class]) > li::marker {
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-size: var(--t-donnee); color: var(--texte-2);
+}
 
 /* Un numero, un telephone, un SIREN ne se coupent jamais en fin de ligne */
 .insecable { white-space: nowrap; }
 
-/* ---------- 4. Fiches (vendeur, editeur, garantie commerciale, donnees) : terme a gauche, valeur a droite ---------- */
+/* ---------- 4. Fiches, encadre legal, formulaire type ---------- */
+/* Fiches (editeur, vendeur, garantie commerciale, donnees) : terme en mono a gauche, valeur a droite */
 body.page-legal .legal-dl { display: grid; border-bottom: var(--bordure); }
 body.page-legal .legal-dl dt {
-  padding-top: var(--e-3);
+  padding-top: var(--e-4);
   border-top: var(--bordure);
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t--1);
-  color: var(--texte-2); /* 62 % : environ 7:1 sur le fond */
+  font-family: var(--police-mono);
+  font-stretch: var(--largeur-mono);
+  font-weight: var(--graisse-normal);
+  font-size: var(--t-donnee);
+  line-height: 1.5;
+  color: var(--texte-2);
 }
-body.page-legal .legal-dl dd { padding-block: var(--e-1) var(--e-3); max-width: var(--mesure); overflow-wrap: anywhere; }
+body.page-legal .legal-dl dd { padding-block: var(--e-1) var(--e-4); overflow-wrap: anywhere; color: var(--texte); }
 @media (min-width: 600px) {
   /* Pas d ecart de colonne : le filet de chaque ligne court sans trou du terme a la valeur */
-  body.page-legal .legal-dl { grid-template-columns: minmax(10ch, 14rem) minmax(0, 1fr); column-gap: 0; }
+  body.page-legal .legal-dl { grid-template-columns: minmax(10ch, 15rem) minmax(0, 1fr); column-gap: 0; }
   body.page-legal .legal-dl dt,
-  body.page-legal .legal-dl dd { border-top: var(--bordure); padding-block: var(--e-3); }
-  body.page-legal .legal-dl dt { padding-right: var(--e-5); }
+  body.page-legal .legal-dl dd { border-top: var(--bordure); padding-block: var(--e-4); }
+  body.page-legal .legal-dl dt { padding-right: var(--e-5); padding-top: calc(var(--e-4) + 0.2em); }
 }
 
-/* ---------- 5. Encadre legal de garantie (annexe de l article D211-3) : un seul cadre, fond 1, filet fort ---------- */
+/* Encadre legal de garantie (annexe de l article D211-3) : une plaque, un trait rouge en haut a gauche */
 body.page-legal .legal-encadre {
-  max-width: calc(var(--mesure) + 2 * var(--e-5));
-  padding: var(--e-5);
-  border: 1px solid var(--filet-fort);
+  position: relative;
+  max-width: calc(68ch + 2 * var(--e-6));
+  padding: var(--e-6);
+  border: var(--bordure);
   background: var(--fond-1);
-  font-size: var(--t-0);
 }
+body.page-legal .legal-encadre::before {
+  content: ''; position: absolute; top: -1px; left: -1px; width: 32px; height: 2px; background: var(--rouge);
+}
+body.page-legal .legal-encadre p { font-size: var(--t-texte); }
 body.page-legal .legal-encadre p + p { margin-top: var(--e-3); }
-body.page-legal .legal-encadre-titre {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle-fort);
-  font-size: var(--t-1);
-  line-height: var(--interligne-serre);
+body.page-legal .legal-encadre p.legal-encadre-titre {
+  font-family: var(--police-texte);
+  font-weight: var(--graisse-forte);
+  font-size: var(--t-chapo);
+  line-height: 1.3;
+  color: var(--texte);
 }
 body.page-legal .legal-encadre p.legal-encadre-titre + p { margin-top: var(--e-4); }
+@media (max-width: 599px) { body.page-legal .legal-encadre { padding: var(--e-5); } }
 
-/* ---------- 6. Formulaire type de retractation : police des chiffres, lignes a remplir ---------- */
+/* Formulaire type de retractation : la police des donnees, des lignes a remplir */
 body.page-legal .legal-formulaire {
-  padding: var(--e-5);
+  max-width: calc(68ch + 2 * var(--e-6));
+  padding: var(--e-6);
   border: 1px solid var(--filet-fort);
   font-family: var(--police-mono);
-  font-size: var(--t--1);
-  line-height: 1.7;
+  font-stretch: var(--largeur-mono);
 }
-body.page-legal .legal-formulaire p { max-width: none; }
+body.page-legal .legal-corps .legal-formulaire p { max-width: none; font-size: var(--t-donnee); line-height: 1.75; color: var(--texte-2); }
 body.page-legal .legal-formulaire p + p { margin-top: var(--e-3); }
-body.page-legal .legal-formulaire strong { letter-spacing: var(--espacement-libelle); }
+body.page-legal .legal-formulaire strong { font-weight: var(--graisse-forte); letter-spacing: 0.04em; color: var(--texte); }
 body.page-legal .legal-formulaire .a-remplir::after {
   content: '';
   display: block;
   height: var(--e-5);
-  border-bottom: 1px dotted var(--filet-fort);
+  border-bottom: 1px dotted var(--filet-champ);
 }
+@media (max-width: 599px) { body.page-legal .legal-formulaire { padding: var(--e-5); } }
 
-/* ---------- 7. Fonction de retractation (/retractation/) ---------- */
+/* ---------- 5. Fonction de retractation (/retractation/) ---------- */
 body.page-retractation [hidden] { display: none !important; }
 html:not(.avec-js) body.page-retractation .js-seulement { display: none !important; }
-body.page-retractation .retractation-explication { margin-top: var(--e-2); }
-body.page-retractation .retractation-explication li { max-width: var(--mesure); }
+body.page-retractation .legal-hero > .grille { padding-bottom: var(--e-8); }
+body.page-retractation .retractation-explication { margin-top: var(--e-2); gap: var(--e-3); }
+body.page-retractation .retractation-explication li { max-width: 58ch; color: var(--texte-2); }
 body.page-retractation .retractation-sans-js { padding-left: var(--e-3); border-left: 2px solid var(--filet-fort); }
 body.page-retractation .legal-titre .bouton { margin-top: var(--e-4); }
+body.page-retractation .legal-corps { padding-top: var(--e-7); }
 
+/* Le formulaire : un panneau fond 1 (chapitre 3.11), libelles au-dessus, champs de 56 px */
 body.page-retractation .retractation-formulaire {
+  position: relative;
   display: grid;
   gap: var(--e-5);
-  max-width: 560px;
-  padding-top: var(--e-6);
-  border-top: var(--bordure);
+  max-width: 640px;
+  padding: var(--e-6);
+  background: var(--fond-1);
+  border: var(--bordure);
+}
+body.page-retractation .retractation-formulaire::before {
+  content: ''; position: absolute; top: -1px; left: -1px; width: 32px; height: 2px; background: var(--rouge);
+}
+@media (max-width: 599px) { body.page-retractation .retractation-formulaire { padding: var(--e-5); } }
+@media (prefers-reduced-motion: no-preference) {
+  body.page-retractation .retractation-formulaire:not([hidden]) { animation: entree 520ms var(--ease-expo) both; }
 }
 body.page-retractation .retractation-formulaire h2,
-body.page-retractation .retractation-confirmation h2 { font-size: var(--t-3); }
+body.page-retractation .retractation-confirmation h2 {
+  display: block; font-size: var(--t-titre-3); line-height: var(--interligne-titre); letter-spacing: 0.02em;
+}
 body.page-retractation .legal-corps .retractation-formulaire h2,
-body.page-retractation .legal-corps .retractation-confirmation h2 { padding-top: 0; border-top: 0; }
+body.page-retractation .legal-corps .retractation-confirmation h2 { padding-top: 0; border-top: 0; margin-top: 0; }
+body.page-retractation .legal-corps .retractation-formulaire > * + * { margin-top: 0; }
 body.page-retractation .champ .form-aide { margin-top: 0; }
-body.page-retractation .retractation-facultatif { text-transform: none; letter-spacing: 0; color: var(--texte-3); }
-body.page-retractation .champ textarea[aria-invalid="true"] { border-color: var(--erreur); }
+body.page-retractation .retractation-facultatif { font-weight: var(--graisse-normal); text-transform: none; letter-spacing: 0; color: var(--texte-2); }
+body.page-retractation .champ textarea { min-height: 140px; }
 
-/* Choix du produit : trois lignes pleine largeur, la case suit le texte */
-body.page-retractation .retractation-choix { border: 0; min-width: 0; display: grid; gap: var(--e-2); }
+/* Choix du produit : trois lignes de 56 px, le bouton radio du socle (point rouge dans un cercle craie) */
+body.page-retractation .retractation-choix { border: 0; min-width: 0; display: grid; gap: var(--e-2); padding: 0; margin: 0; }
 body.page-retractation .retractation-choix legend {
-  font-family: var(--police-libelle);
-  font-weight: var(--graisse-libelle);
-  font-size: var(--t--1);
-  letter-spacing: var(--espacement-libelle);
-  text-transform: uppercase;
-  color: var(--texte-2);
+  padding: 0;
   margin-bottom: var(--e-2);
+  font-family: var(--police-texte);
+  font-weight: var(--graisse-moyenne);
+  font-size: var(--t-petit);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--texte);
 }
 body.page-retractation .choix {
   display: flex;
   align-items: center;
   gap: var(--e-3);
-  min-height: var(--bouton-h-petit);
+  min-height: var(--champ-h);
   padding: var(--e-2) var(--e-4);
   background: var(--fond-2);
-  border: 1px solid var(--filet-fort);
+  border: 1px solid var(--filet-champ);
+  font-size: var(--t-texte);
+  color: var(--texte);
   cursor: pointer;
-  transition: border-color var(--duree-vite) var(--courbe);
+  transition: border-color var(--d-court) var(--ease-sortie), box-shadow var(--d-court) var(--ease-sortie);
 }
-body.page-retractation .choix:hover,
-body.page-retractation .choix:has(input:checked) { border-color: var(--texte); }
-/* Disque redessine : 20 px comme les cases de /journee-piste et /marques, point plein a l etat choisi */
-body.page-retractation .choix input[type="radio"] {
-  appearance: none;
-  -webkit-appearance: none;
-  flex: 0 0 auto;
-  width: 20px;
-  height: 20px;
-  margin: 0;
-  border: 1px solid var(--filet-fort);
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  transition: background-color var(--duree-vite) var(--courbe), border-color var(--duree-vite) var(--courbe);
-}
-body.page-retractation .choix input[type="radio"]:checked {
-  border-color: var(--texte);
-  background: var(--texte);
-  box-shadow: inset 0 0 0 5px var(--fond-2);
-}
-body.page-retractation .choix input[type="radio"]:focus-visible { outline: 2px solid var(--texte); outline-offset: 3px; }
-body.page-retractation .retractation-choix[aria-invalid="true"] .choix { border-color: var(--erreur); }
+body.page-retractation .choix:hover { border-color: var(--texte); }
+body.page-retractation .choix:has(input:checked) { border-color: var(--texte); box-shadow: inset 3px 0 0 var(--rouge); }
+body.page-retractation .choix:has(input:focus-visible) { outline: var(--focus); outline-offset: 2px; }
+body.page-retractation .choix input[type="radio"]:focus-visible { outline: none; }
+body.page-retractation .retractation-choix[aria-invalid="true"] .choix { border-color: var(--rouge); }
 
-/* Erreurs : texte blanc casse, le rouge porte par un filet de 2 px (jamais de texte rouge) */
-body.page-retractation .retractation-erreur,
-body.page-retractation .retractation-erreur-generale {
-  padding-left: var(--e-3);
-  border-left: 2px solid var(--erreur);
-  font-size: var(--t--1);
+/* Erreurs : texte craie, le rouge porte par une marque (jamais de texte rouge) */
+body.page-retractation .retractation-erreur {
+  display: flex; align-items: baseline; gap: var(--e-2);
+  font-size: var(--t-petit);
   color: var(--texte);
 }
-body.page-retractation .retractation-erreur-generale { padding-block: var(--e-3); background: var(--fond-1); }
+body.page-retractation .retractation-erreur::before {
+  content: ''; flex: 0 0 auto; width: 8px; height: 8px; background: var(--rouge); transform: translateY(-1px);
+}
+body.page-retractation .retractation-erreur-generale {
+  padding: var(--e-3) var(--e-4);
+  border-left: 2px solid var(--rouge);
+  background: var(--fond-2);
+  font-size: var(--t-petit);
+  color: var(--texte);
+}
+body.page-retractation .champ input[aria-invalid="true"],
+body.page-retractation .champ textarea[aria-invalid="true"] { border: 2px solid var(--rouge); box-shadow: none; }
 
-/* Demande recue : filet vert d etat, la seule couleur autre que le rouge du site */
+/* Demande recue : une plaque, une coche craie de 24 px devant le titre */
 body.page-retractation .retractation-confirmation {
   display: grid;
   gap: var(--e-3);
   justify-items: start;
-  padding: var(--e-6) var(--e-5);
+  max-width: 640px;
+  padding: var(--e-6);
   background: var(--fond-1);
-  border-left: 2px solid var(--ok);
-  scroll-margin-top: calc(var(--nav-h) + var(--e-4));
+  border: var(--bordure);
+  scroll-margin-top: 8px; /* + la marge de defilement du html (navigation + 16 px, base.css) */
 }
 body.page-retractation .retractation-confirmation:focus { outline: none; }
+body.page-retractation .retractation-confirmation:focus-visible { outline: var(--focus); outline-offset: var(--focus-decalage); }
+body.page-retractation .legal-corps .retractation-confirmation > * + * { margin-top: 0; }
+body.page-retractation .retractation-confirmation h2 { display: flex; align-items: center; gap: var(--e-3); }
+body.page-retractation .retractation-confirmation h2::before {
+  content: ''; flex: 0 0 auto; width: 24px; height: 24px;
+  background: no-repeat center / 24px 24px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23F2F0EB' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: no-preference) {
+  body.page-retractation .retractation-confirmation:not([hidden]) { animation: entree 520ms var(--ease-expo) both; }
+}
 body.page-retractation .retractation-confirmation p + p { margin-top: 0; }
-body.page-retractation .retractation-renvoi { margin-top: var(--e-7); font-size: var(--t--1); color: var(--texte-2); }
+body.page-retractation .retractation-renvoi { margin-top: var(--e-7); }
+body.page-retractation .legal-corps p.retractation-renvoi { font-size: var(--t-petit); color: var(--texte-2); }
 
-/* ---------- 8. Impression : texte noir sur blanc, sommaire masque, cadres gris ---------- */
+/* ---------- 6. Impression : texte noir sur blanc, sommaire masque, cadres gris ---------- */
 @media print {
   body.page-legal .legal-nav { display: none !important; }
   body.page-legal .legal-titre,
+  body.page-legal .legal-titre > *,
   body.page-legal .legal-corps { grid-column: 1 / -1; }
+  body.page-legal .legal-titre { display: block; }
   body.page-legal .legal-hero { padding-block: 0 12pt; }
+  body.page-legal .legal-hero > .grille { padding-bottom: 12pt; }
+  body.page-legal .legal-hero > .grille::before,
+  body.page-legal .legal-hero > .grille::after,
+  body.page-legal .legal-encadre::before { display: none; }
   body.page-legal .legal-hero .libelle { display: none; }
-  body.page-legal .legal-corps { padding-bottom: 0; }
+  body.page-legal .legal-corps { padding-block: 0; }
   body.page-legal .legal,
   body.page-legal .legal * { color: #000 !important; background: #fff !important; }
   body.page-legal .legal-corps h2,

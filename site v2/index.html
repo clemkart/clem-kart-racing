@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 {{partial:head}}
+{{partial:mouvement}}
 <title>Clem Kart Racing, pilote de karting : comprendre pourquoi tu vas vite</title>
 <meta name="description" content="Clément Daniel. {{faits.ligne}} Un guide de pilotage karting, une analyse de ta vidéo onboard, une journée de consulting en piste, et un extrait gratuit pour commencer.">
 <link rel="canonical" href="{{sites.url}}/">
@@ -14,146 +15,155 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Clément Daniel dans son kart Redspeed numéro 695 sous un ciel bleu">
 <meta name="twitter:image" content="{{sites.url}}/photos/og-image.jpg">
-<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/piste-695-ciel-960.webp 960w, /photos/piste-695-ciel-1600.webp 1600w, /photos/piste-695-ciel-2400.webp 2400w" imagesizes="(min-width: 900px) 60vw, 100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(max-width: 899px)" imagesrcset="/photos/piste-25-file-portrait-640.webp 640w, /photos/piste-25-file-portrait-1280.webp 1280w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 900px)" imagesrcset="/photos/piste-25-file-960.webp 960w, /photos/piste-25-file-1600.webp 1600w, /photos/piste-25-file-2400.webp 2400w" imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="/assets/page-accueil.css">
 </head>
 <body class="page-accueil">
 {{partial:nav}}
 
-<main id="contenu">
+<main id="contenu" data-trajectoire>
 
-  <!-- Section 1 : hero scinde 5/7, texte a gauche, photo collee au bord droit, la plaque mord sur la photo -->
-  <section class="hero" data-hero aria-labelledby="hero-titre">
-    <div class="conteneur grille hero-grille">
-      <div class="col-5 hero-texte">
-        <h1 id="hero-titre" class="titre-hero hero-titre">
-          <span class="hero-ligne entree">Les rapides n’ont pas un truc en plus.</span>
-          <span class="hero-ligne entree entree-2">Ils font les mêmes erreurs que toi.</span>
-          <span class="hero-ligne entree entree-3"><span class="plaque-titre">Eux savent lesquelles.</span></span>
-        </h1>
-        <p class="chapo hero-chapo entree entree-3">
+  <!-- Ecran 1 : l affiche. Le kart 25 file plein cadre sous deux voiles ; titre condense geant en haut,
+       chapo et actions en bas, puis la ligne de depart d ou part la trajectoire.
+       En quittant l ecran, l ecran de cinema s eloigne (data-affiche). -->
+  <section class="affiche" data-hero data-affiche aria-labelledby="hero-titre">
+    <div class="affiche-cine cine" data-entree="photo" data-affiche-cadre>
+      <picture>
+        <source media="(max-width: 899px)" type="image/webp" srcset="/photos/piste-25-file-portrait-640.webp 640w, /photos/piste-25-file-portrait-1280.webp 1280w" sizes="100vw" width="640" height="800">
+        <source media="(max-width: 899px)" srcset="/photos/piste-25-file-portrait-640.jpg 640w, /photos/piste-25-file-portrait-1280.jpg 1280w" sizes="100vw" width="640" height="800">
+        <source type="image/webp" srcset="/photos/piste-25-file-960.webp 960w, /photos/piste-25-file-1600.webp 1600w, /photos/piste-25-file-2400.webp 2400w" sizes="100vw">
+        <img src="/photos/piste-25-file-1600.jpg" srcset="/photos/piste-25-file-960.jpg 960w, /photos/piste-25-file-1600.jpg 1600w, /photos/piste-25-file-2400.jpg 2400w" sizes="100vw" width="1600" height="900" alt="Clément Daniel lancé à pleine vitesse dans son kart rouge numéro 25, l’arrière-plan filé par la vitesse, au circuit du Mans" fetchpriority="high" decoding="async" data-affiche-image>
+      </picture>
+      <span class="voile affiche-voile-haut" aria-hidden="true"></span>
+      <span class="voile affiche-voile-bas" aria-hidden="true"></span>
+    </div>
+    <div class="conteneur affiche-haut" data-affiche-texte>
+      <h1 id="hero-titre" class="affiche-titre">
+        <span class="affiche-ligne affiche-amorce" data-entree="titre">Les rapides n’ont pas un truc en plus.</span>
+        <span class="affiche-ligne affiche-amorce" data-entree="titre" data-t="230">Ils font les mêmes erreurs que toi.</span>
+        <span class="affiche-ligne affiche-chute" data-entree="titre" data-t="300" data-duree="900">Eux savent lesquelles.</span>
+      </h1>
+    </div>
+    <div class="conteneur affiche-bas" data-affiche-texte>
+      <div class="affiche-rangee">
+        <p class="chapo affiche-chapo" data-entree="texte">
           Je m’appelle Clément. Je fais de la compétition en karting.<br>
           Je t’aide à comprendre ce que ton kart te dit, pour refaire tes bons tours exprès.
         </p>
-        <div class="hero-actions entree entree-3">
-          <a class="bouton bouton-principal" href="{{routes.guide}}" data-cta="hero">Voir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+        <div class="affiche-actions" data-entree="texte">
+          <a class="bouton bouton-principal" href="{{routes.guide}}" data-cta="hero" data-aimant>Voir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+          <p class="affiche-sous"><a class="lien-texte" href="{{routes.onboard}}" data-cta="hero-diagnostic">Ou commence par le diagnostic gratuit : 7 questions, 2 minutes, sans email</a></p>
         </div>
-        <p class="hero-sous entree entree-3">
-          <a class="lien-texte" href="{{routes.onboard}}" data-cta="hero-diagnostic">Ou commence par le diagnostic gratuit : 7 questions, 2 minutes, sans email</a>
-        </p>
       </div>
-      <div class="hero-photo hero-photo-bord entree entree-photo">
-        <picture>
-          <source type="image/webp" srcset="/photos/piste-695-ciel-960.webp 960w, /photos/piste-695-ciel-1600.webp 1600w, /photos/piste-695-ciel-2400.webp 2400w" sizes="(min-width: 900px) 60vw, 100vw">
-          <img src="/photos/piste-695-ciel-1600.jpg" srcset="/photos/piste-695-ciel-960.jpg 960w, /photos/piste-695-ciel-1600.jpg 1600w, /photos/piste-695-ciel-2400.jpg 2400w" sizes="(min-width: 900px) 60vw, 100vw" width="1600" height="900" alt="Clément Daniel dans son kart Redspeed numéro 695, vu de profil en contre-plongée sous un ciel bleu chargé de nuages, sur la grille du circuit du Mans" fetchpriority="high" decoding="async">
-        </picture>
-      </div>
+      <div class="depart" aria-hidden="true" data-entree="depart"><span class="depart-s1">S1</span><span class="damier"></span><span class="depart-trait"></span></div>
     </div>
   </section>
 
-  <!-- Section 2 : filet de depart puis la ligne de preuves. Chaque chiffre vient de la config et a sa source
-       (audience : export Meta ; lecteurs : ventes du guide). Aucun compteur anime. -->
-  <section class="faits section-fond-1 filet-depart" aria-label="Qui parle">
+  <!-- Ecran 2 : la bande de chronometrage. Chaque chiffre vient de la config et a sa source
+       (audience : export Meta ; lecteurs : ventes du guide). Compteurs a la premiere apparition, sur les quantites
+       seulement (vues, lecteurs) : une annee ou une anciennete ne defile jamais comme un compteur. -->
+  <section class="faits" aria-label="Qui parle">
     <div class="conteneur">
       <ul class="preuves-ligne">
         <li><span class="preuve-chiffre">{{faits.anciennete}}</span></li>
         <li><span class="preuve-chiffre">{{faits.titre_court}}</span></li>
-        <li><span class="preuve-chiffre">{{audience.vues_affiche}} vues</span> <span class="preuve-detail">sur {{audience.reels}} Reels Instagram, {{audience.periode}}</span></li>
-        <li><span class="preuve-chiffre">{{lecteurs.affiche}} lecteurs</span> <span class="preuve-detail">du guide</span></li>
+        <li><span class="preuve-chiffre" data-compteur>{{audience.vues_affiche}} vues</span> <span class="preuve-detail">sur {{audience.reels}} Reels Instagram, {{audience.periode}}</span></li>
+        <li><span class="preuve-chiffre" data-compteur>{{lecteurs.affiche}} lecteurs</span> <span class="preuve-detail">du guide</span></li>
       </ul>
     </div>
   </section>
 
-  <!-- Section 3 : les trois offres en registre, trois lignes separees par un filet, jamais trois cartes.
-       Chaque ligne ouvre sur le meme cadre 3:2 : le haut de la couverture du guide (guide/couverture-registre), la vue cockpit, la photo du consulting.
-       Boutons en contour : le bouton rouge du hero est encore visible quand cette section arrive (un seul rouge par ecran). -->
-  <section class="section offres" aria-labelledby="offres-titre">
+  <!-- Ecran 3 : trois plans. Sur ordinateur, le visuel de chaque offre reste colle pendant que son texte defile,
+       puis le suivant prend la place. Un rouge par ecran : quand on compare les offres, le bouton rouge du premier
+       ecran est loin ; le guide (le produit principal, l achat immediat) a donc le sien, les deux autres restent en contour. -->
+  <section class="section offres" data-scene="offres" aria-labelledby="offres-titre">
     <div class="conteneur">
-      <h2 id="offres-titre" class="offres-titre reveal">Trois façons de travailler avec moi</h2>
+      <h2 id="offres-titre" class="offres-titre" data-virage="g">Trois façons de travailler avec moi</h2>
 
-      <div class="registre">
+      <div class="offres-plans">
 
-        <article class="registre-ligne reveal" aria-labelledby="offre-guide-titre">
-          <div class="registre-objet">
-            <a class="visuel-registre" href="{{routes.guide}}" tabindex="-1" aria-hidden="true">
+        <article class="offre" aria-labelledby="offre-guide-titre">
+          <div class="offre-visuel">
+            <a class="offre-cadre offre-cadre-objet" href="{{routes.guide}}" tabindex="-1" aria-hidden="true" data-volet="article" data-relief="article">
               <picture>
-                <source type="image/webp" srcset="/guide/couverture-registre-640.webp 640w, /guide/couverture-registre-1280.webp 1280w" sizes="(min-width: 900px) 180px, (min-width: 600px) 420px, calc(100vw - 32px)">
-                <img src="/guide/couverture-registre-640.jpg" srcset="/guide/couverture-registre-640.jpg 640w, /guide/couverture-registre-1280.jpg 1280w" sizes="(min-width: 900px) 180px, (min-width: 600px) 420px, calc(100vw - 32px)" width="640" height="427" alt="Le haut de la couverture du guide {{guide.titre}} : guide de pilotage karting" loading="lazy" decoding="async">
+                <source type="image/webp" srcset="/guide/couverture-640.webp 640w, /guide/couverture-1280.webp 1280w" sizes="(min-width: 1100px) 340px, 64vw">
+                <img class="objet" src="/guide/couverture-640.png" srcset="/guide/couverture-640.png 640w, /guide/couverture-1280.png 1280w" sizes="(min-width: 1100px) 340px, 64vw" width="640" height="906" alt="Couverture du guide {{guide.titre}}, par {{marque.auteur}}" loading="lazy" decoding="async">
               </picture>
             </a>
           </div>
-          <div class="registre-texte">
+          <div class="offre-texte">
             <h3 id="offre-guide-titre">Le guide : {{guide.titre}}</h3>
             <p>
               Tu sais faire un bon tour. Tu ne sais pas encore pourquoi il était bon.<br>
               Ce guide t’explique ce qui produit la vitesse dans un kart : les mains, le frein, la rotation, la remise de gaz, le grip.<br>
               Tu lis ce soir. Tu testes à ta prochaine session.
             </p>
-          </div>
-          <ul class="registre-faits" aria-label="Ce que tu reçois">
-            <li><span class="chrono">{{guide.format}}, {{guide.pages}} pages, {{guide.chapitres}} chapitres</span></li>
-            <li>Accès immédiat</li>
-            <li>Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux</li>
-          </ul>
-          <div class="registre-action">
-            <a class="bouton bouton-fantome" href="{{routes.guide}}" data-cta="offre-guide">Voir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
-            <span class="bouton-sous">{{lecteurs.phrase}}</span>
+            <ul class="offre-faits reveal" aria-label="Ce que tu reçois">
+              <li><span class="chrono">{{guide.format}}, {{guide.pages}} pages, {{guide.chapitres}} chapitres</span></li>
+              <li>Accès immédiat</li>
+              <li>Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux</li>
+            </ul>
+            <div class="offre-action">
+              <a class="bouton bouton-principal" href="{{routes.guide}}" data-cta="offre-guide">Voir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+              <span class="bouton-sous">{{lecteurs.phrase}}</span>
+            </div>
           </div>
         </article>
 
-        <article class="registre-ligne reveal" aria-labelledby="offre-debrief-titre">
-          <div class="registre-objet">
-            <a class="visuel-registre" href="{{routes.onboard_offre}}" tabindex="-1" aria-hidden="true">
+        <article class="offre" aria-labelledby="offre-debrief-titre">
+          <div class="offre-visuel">
+            <a class="offre-cadre cine" href="{{routes.onboard_offre}}" tabindex="-1" aria-hidden="true" data-volet="article" data-relief="article">
               <picture>
-                <source type="image/webp" srcset="/photos/marques-cockpit-logos-640.webp 640w, /photos/marques-cockpit-logos-1280.webp 1280w" sizes="(min-width: 900px) 180px, (min-width: 600px) 420px, calc(100vw - 32px)">
-                <img src="/photos/marques-cockpit-logos-640.jpg" srcset="/photos/marques-cockpit-logos-640.jpg 640w, /photos/marques-cockpit-logos-1280.jpg 1280w" sizes="(min-width: 900px) 180px, (min-width: 600px) 420px, calc(100vw - 32px)" width="640" height="427" alt="{{marque.auteur}} s’installe dans son kart Redspeed numéro 95, vue sur le cockpit et le volant" loading="lazy" decoding="async">
+                <source type="image/webp" srcset="/photos/cockpit-volant-640.webp 640w, /photos/cockpit-volant-1280.webp 1280w" sizes="(min-width: 1100px) 40vw, (min-width: 600px) 560px, calc(100vw - 32px)">
+                <img src="/photos/cockpit-volant-640.jpg" srcset="/photos/cockpit-volant-640.jpg 640w, /photos/cockpit-volant-1280.jpg 1280w" sizes="(min-width: 1100px) 40vw, (min-width: 600px) 560px, calc(100vw - 32px)" width="640" height="800" alt="{{marque.auteur}} installé dans son kart, casque et visière iridescente, les mains sur le volant" loading="lazy" decoding="async">
               </picture>
             </a>
           </div>
-          <div class="registre-texte">
+          <div class="offre-texte">
             <h3 id="offre-debrief-titre">L’analyse de ton onboard</h3>
             <p>
               Tu m’envoies une vidéo que tu as déjà.<br>
               Je la regarde tour par tour et je te renvoie une vidéo commentée, tes 3 priorités et un seul objectif pour ta prochaine sortie.<br>
               Ta vidéo reste entre toi et moi.
             </p>
-          </div>
-          <ul class="registre-faits" aria-label="Ce que tu reçois">
-            <li>Vidéo commentée, livrée sous <span class="chrono">{{delais.debrief_h}} h</span></li>
-            <li><span class="chrono">3 priorités</span> et un objectif</li>
-            <li>Garantie <span class="chrono">{{garantie_jours}} jours</span> après réception, en plus de tes droits légaux</li>
-          </ul>
-          <div class="registre-action">
-            <a class="bouton bouton-fantome" href="{{routes.onboard_offre}}" data-cta="offre-debrief">Envoyer ma vidéo <span class="chrono">{{debrief.prix_affiche}}</span></a>
-            <span class="bouton-sous">Paiement sécurisé par Stripe</span>
+            <ul class="offre-faits reveal" aria-label="Ce que tu reçois">
+              <li>Vidéo commentée, livrée sous <span class="chrono">{{delais.debrief_h}} h</span></li>
+              <li><span class="chrono">3 priorités</span> et un objectif</li>
+              <li>Garantie <span class="chrono">{{garantie_jours}} jours</span> après réception, en plus de tes droits légaux</li>
+            </ul>
+            <div class="offre-action">
+              <a class="bouton bouton-fantome" href="{{routes.onboard_offre}}" data-cta="offre-debrief">Envoyer ma vidéo <span class="chrono">{{debrief.prix_affiche}}</span></a>
+              <span class="bouton-sous">Paiement sécurisé par Stripe</span>
+            </div>
           </div>
         </article>
 
-        <article class="registre-ligne reveal" aria-labelledby="offre-journee-titre">
-          <div class="registre-objet">
-            <a class="visuel-registre" href="{{routes.journee}}" tabindex="-1" aria-hidden="true">
+        <article class="offre" aria-labelledby="offre-journee-titre">
+          <div class="offre-visuel">
+            <a class="offre-cadre cine" href="{{routes.journee}}" tabindex="-1" aria-hidden="true" data-volet="article" data-relief="article">
               <picture>
-                <source type="image/webp" srcset="/photos/piste-795-public-960.webp 960w, /photos/piste-795-public-1600.webp 1600w" sizes="(min-width: 900px) 180px, (min-width: 600px) 420px, calc(100vw - 32px)">
-                <img src="/photos/piste-795-public-960.jpg" srcset="/photos/piste-795-public-960.jpg 960w, /photos/piste-795-public-1600.jpg 1600w" sizes="(min-width: 900px) 180px, (min-width: 600px) 420px, calc(100vw - 32px)" width="960" height="640" alt="{{marque.auteur}} en course dans son kart bleu et blanc numéro 795, devant une tribune pleine de spectateurs" loading="lazy" decoding="async">
+                <source type="image/webp" srcset="/photos/piste-795-public-portrait-640.webp 640w, /photos/piste-795-public-portrait-1280.webp 1280w" sizes="(min-width: 1100px) 40vw, (min-width: 600px) 560px, calc(100vw - 32px)">
+                <img src="/photos/piste-795-public-portrait-640.jpg" srcset="/photos/piste-795-public-portrait-640.jpg 640w, /photos/piste-795-public-portrait-1280.jpg 1280w" sizes="(min-width: 1100px) 40vw, (min-width: 600px) 560px, calc(100vw - 32px)" width="640" height="800" alt="{{marque.auteur}} en course dans son kart bleu et blanc numéro 795, devant une tribune pleine de spectateurs" loading="lazy" decoding="async">
               </picture>
             </a>
           </div>
-          <div class="registre-texte">
+          <div class="offre-texte">
             <h3 id="offre-journee-titre">{{journee.titre}}</h3>
             <p>
               Une journée avec moi sur ton circuit, ton pilotage et ton kart.<br>
               Je regarde, je filme, je lis tes chronos. Entre chaque session, on corrige une chose à la fois.<br>
               Tu demandes une date, je confirme et je t’envoie le devis.
             </p>
-          </div>
-          <ul class="registre-faits" aria-label="Ce que tu reçois">
-            <li><span class="chrono">{{journee.prix_affiche}}</span> {{journee.unite}}</li>
-            <li>Sur devis, rien à payer en ligne</li>
-            <li>Réponse sous <span class="chrono">{{journee.reponse_h}} h</span></li>
-          </ul>
-          <div class="registre-action">
-            <a class="bouton bouton-fantome" href="{{routes.journee}}" data-cta="offre-journee">Demander une date</a>
-            <span class="bouton-sous">Tu choisis la date, je te réponds avec un devis</span>
+            <ul class="offre-faits reveal" aria-label="Ce que tu reçois">
+              <li><span class="chrono">{{journee.prix_affiche}}</span> {{journee.unite}}</li>
+              <li>Sur devis, rien à payer en ligne</li>
+              <li>Réponse sous <span class="chrono">{{journee.reponse_h}} h</span></li>
+            </ul>
+            <div class="offre-action">
+              <a class="bouton bouton-fantome" href="{{routes.journee}}" data-cta="offre-journee">Demander une date</a>
+              <span class="bouton-sous">Tu choisis la date, je te réponds avec un devis</span>
+            </div>
           </div>
         </article>
 
@@ -161,42 +171,42 @@
     </div>
   </section>
 
-  <!-- Section 4 : messages recus, trois colonnes des 900 px (meme composant que /guide), filet vertical rouge, aucune etoile -->
+  <!-- Ecran 4 : messages recus. Trois colonnes en decalage sur ordinateur, une bande a glisser du doigt
+       sur telephone (role region : interface.js la rend accessible au clavier quand elle deborde). -->
   <section class="section messages-recus" aria-labelledby="messages-titre">
-    <div class="conteneur reveal">
-        <h2 id="messages-titre">Messages reçus de lecteurs, reproduits tels quels</h2>
-        <div class="quotes quotes-trois">
-          <blockquote class="quote-colonne">
-            <p>« J’ai appris beaucoup et comme je suis visuel, ça fonctionne très bien. Je me suis vraiment amélioré en compétition, un podium le week-end dernier. Merci de tes conseils. »</p>
-            <footer class="mono">Pilote en compétition</footer>
-          </blockquote>
-          <blockquote class="quote-colonne">
-            <p>« Franchement, c’est hyper bien fait. Bravo. Et je pense encore lire les exos, c’est une super idée. »</p>
-            <footer class="mono">Lecteur du guide</footer>
-          </blockquote>
-          <blockquote class="quote-colonne">
-            <p>« Vraiment neuf, ça fait du bien à lire. Les concepts sont bien expliqués et c’est applicable rapidement. »</p>
-            <footer class="mono">Lecteur du guide</footer>
-          </blockquote>
-        </div>
-        <p class="mention quotes-mention">Sans étoiles, sans note. Ce sont des messages reçus, pas des avis notés.</p>
+    <div class="conteneur">
+      <h2 id="messages-titre" class="messages-titre" data-virage="d">Messages reçus de lecteurs, reproduits tels quels</h2>
+      <div class="quotes quotes-trois" role="region" aria-labelledby="messages-titre">
+        <blockquote class="quote-colonne reveal">
+          <p>« J’ai appris beaucoup et comme je suis visuel, ça fonctionne très bien. Je me suis vraiment amélioré en compétition, un podium le week-end dernier. Merci de tes conseils. »</p>
+          <footer class="mono">Pilote en compétition</footer>
+        </blockquote>
+        <blockquote class="quote-colonne reveal" style="--i: 1">
+          <p>« Franchement, c’est hyper bien fait. Bravo. Et je pense encore lire les exos, c’est une super idée. »</p>
+          <footer class="mono">Lecteur du guide</footer>
+        </blockquote>
+        <blockquote class="quote-colonne reveal" style="--i: 2">
+          <p>« Vraiment neuf, ça fait du bien à lire. Les concepts sont bien expliqués et c’est applicable rapidement. »</p>
+          <footer class="mono">Lecteur du guide</footer>
+        </blockquote>
+      </div>
+      <p class="mention quotes-mention">Sans étoiles, sans note. Ce sont des messages reçus, pas des avis notés.</p>
     </div>
   </section>
 
-  <!-- Section 5 : qui je suis, scinde mini, photo petite a gauche, texte a droite, aucun bouton -->
+  <!-- Ecran 5 : qui je suis. Photo de dos au drapeau, collee au bord gauche de l ecran sur toute la hauteur
+       de la section ; les lignes se remplissent mot a mot pendant la lecture. Aucun bouton. -->
   <section class="section qui" id="qui" aria-labelledby="qui-titre">
-    <div class="conteneur grille qui-grille">
-      <div class="col-4 reveal">
-        <figure class="photo photo-portrait qui-photo">
-          <picture>
-            <source type="image/webp" srcset="/photos/clement-drapeau-640.webp 640w, /photos/clement-drapeau-1280.webp 1280w" sizes="(min-width: 900px) 400px, calc(100vw - 32px)">
-            <img src="/photos/clement-drapeau-640.jpg" srcset="/photos/clement-drapeau-640.jpg 640w, /photos/clement-drapeau-1280.jpg 1280w" sizes="(min-width: 900px) 400px, calc(100vw - 32px)" width="640" height="800" alt="Clément Daniel de dos sur la grille du circuit du Mans, le grand drapeau français sur l’épaule, à la RMCIT 2023" loading="lazy" decoding="async">
-          </picture>
-        </figure>
-      </div>
-      <div class="qui-texte reveal reveal-decale-1">
-        <h2 id="qui-titre">Qui je suis</h2>
-        <p class="qui-lignes">
+    <figure class="qui-photo cine" data-volet data-relief>
+      <picture>
+        <source type="image/webp" srcset="/photos/clement-drapeau-640.webp 640w, /photos/clement-drapeau-1280.webp 1280w" sizes="(min-width: 900px) 45vw, 100vw">
+        <img src="/photos/clement-drapeau-640.jpg" srcset="/photos/clement-drapeau-640.jpg 640w, /photos/clement-drapeau-1280.jpg 1280w" sizes="(min-width: 900px) 45vw, 100vw" width="640" height="800" alt="Clément Daniel de dos sur la grille du circuit du Mans, le grand drapeau français sur l’épaule, à la RMCIT 2023" loading="lazy" decoding="async">
+      </picture>
+    </figure>
+    <div class="conteneur qui-grille">
+      <div class="qui-texte">
+        <h2 id="qui-titre" data-virage="g">Qui je suis</h2>
+        <p class="qui-lignes" data-remplissage>
           Pas de mécano, pas de team. J’ai tout appris seul, session après session.<br>
           Longtemps, je ne comprenais pas pourquoi le tour d’avant était meilleur.<br>
           Le jour où j’ai trouvé les mots pour décrire ce que fait le kart, tout a changé. Ces mots, je te les donne.
@@ -206,43 +216,64 @@
     </div>
   </section>
 
-  <!-- Section 6 : gratuit, bande, le seul libelle en capitales de la page -->
-  <section class="section-fond-2 gratuit" aria-labelledby="gratuit-titre">
-    <div class="conteneur grille gratuit-grille">
-      <div class="col-5 gratuit-texte reveal">
+  <!-- Ecran 6 : gratuit. Bande de telemetrie : texte a gauche, carte du circuit a droite (13 chapitres,
+       13 virages) ; les chapitres offerts s allument quand le trace les atteint. Le seul libelle de la page. -->
+  <section class="section gratuit" aria-labelledby="gratuit-titre">
+    <div class="conteneur gratuit-grille grille-telemetrie">
+      <div class="gratuit-texte">
         <p class="libelle">Gratuit</p>
-        <h2 id="gratuit-titre">Commence sans rien dépenser</h2>
+        <h2 id="gratuit-titre" data-virage="d">Commence sans rien dépenser</h2>
         <p class="gratuit-promesse">{{extrait.promesse_courante}}.</p>
         <p>
           Tu les reçois par email, tout de suite.<br>
           Pas de réglage de carburation, pas de promesse de chrono.
         </p>
-        <p><a class="bouton bouton-fantome" href="{{routes.extrait}}" data-cta="accueil-gratuit">{{extrait.appel_courant}}</a></p>
+        <p class="gratuit-action"><a class="bouton bouton-fantome" href="{{routes.extrait}}" data-cta="accueil-gratuit">{{extrait.appel_courant}}</a></p>
       </div>
-      <div class="gratuit-numeraux reveal reveal-decale-1" data-extrait-version="{{extrait.version}}" aria-label="Les chapitres offerts">
-        <ul class="numeraux" data-si-version="2">
-          <li class="numeral numeral-2"><span class="numeral-chiffre">Intro</span><span class="mono">L’introduction complète</span></li>
-          <li class="numeral numeral-2"><span class="numeral-chiffre">04</span><span class="mono">Le freinage dégressif</span></li>
-        </ul>
-        <ul class="numeraux" data-si-version="3">
-          <li class="numeral numeral-2"><span class="numeral-chiffre">03</span><span class="mono">Les mains du pilote</span></li>
-          <li class="numeral numeral-2"><span class="numeral-chiffre">04</span><span class="mono">Le freinage dégressif</span></li>
-          <li class="numeral numeral-2"><span class="numeral-chiffre">05</span><span class="mono">La rotation</span></li>
-        </ul>
+      <div class="gratuit-carte" data-extrait-version="{{extrait.version}}">
+        <svg class="circuit" viewBox="-32 -32 812 537" width="812" height="537" aria-hidden="true" focusable="false" data-circuit="offerts">
+          <path class="circuit-piste" d="M201 395 L558 443 L673 380 L632 283 L718 205 L654 94 L539 142 L450 49 L346 97 L253 30 L134 68 L30 164 L108 268 L45 376 Z"/>
+          <path class="circuit-trace" d="M201 395 L558 443 L673 380 L632 283 L718 205 L654 94 L539 142 L450 49 L346 97 L253 30 L134 68 L30 164 L108 268 L45 376 Z"/>
+          <g class="circuit-damier" transform="translate(201 395) rotate(7.4)"><rect x="-12" y="-7" width="24" height="14"/><path d="M-12 -7h6v7h-6zM0 -7h6v7h-6zM-6 0h6v7h-6zM6 0h6v7h-6z"/></g>
+          <g class="circuit-virage" data-virage-num="1"><circle cx="558" cy="443" r="17"/><text x="558" y="443">1</text></g>
+          <g class="circuit-virage" data-virage-num="2"><circle cx="673" cy="380" r="17"/><text x="673" y="380">2</text></g>
+          <g class="circuit-virage" data-virage-num="3"><circle cx="632" cy="283" r="17"/><text x="632" y="283">3</text></g>
+          <g class="circuit-virage" data-virage-num="4"><circle cx="718" cy="205" r="17"/><text x="718" y="205">4</text></g>
+          <g class="circuit-virage" data-virage-num="5"><circle cx="654" cy="94" r="17"/><text x="654" y="94">5</text></g>
+          <g class="circuit-virage" data-virage-num="6"><circle cx="539" cy="142" r="17"/><text x="539" y="142">6</text></g>
+          <g class="circuit-virage" data-virage-num="7"><circle cx="450" cy="49" r="17"/><text x="450" y="49">7</text></g>
+          <g class="circuit-virage" data-virage-num="8"><circle cx="346" cy="97" r="17"/><text x="346" y="97">8</text></g>
+          <g class="circuit-virage" data-virage-num="9"><circle cx="253" cy="30" r="17"/><text x="253" y="30">9</text></g>
+          <g class="circuit-virage" data-virage-num="10"><circle cx="134" cy="68" r="17"/><text x="134" y="68">10</text></g>
+          <g class="circuit-virage" data-virage-num="11"><circle cx="30" cy="164" r="17"/><text x="30" y="164">11</text></g>
+          <g class="circuit-virage" data-virage-num="12"><circle cx="108" cy="268" r="17"/><text x="108" y="268">12</text></g>
+          <g class="circuit-virage" data-virage-num="13"><circle cx="45" cy="376" r="17"/><text x="45" y="376">13</text></g>
+        </svg>
+        <div class="gratuit-legende" role="group" aria-label="Les chapitres offerts">
+          <ul class="numeraux" data-si-version="2">
+            <li class="numeral numeral-intro"><span class="numeral-chiffre">Intro</span><span class="mono">L’introduction complète</span></li>
+            <li class="numeral"><span class="numeral-chiffre">04</span><span class="mono">Le freinage dégressif</span></li>
+          </ul>
+          <ul class="numeraux" data-si-version="3">
+            <li class="numeral"><span class="numeral-chiffre">03</span><span class="mono">Les mains du pilote</span></li>
+            <li class="numeral"><span class="numeral-chiffre">04</span><span class="mono">Le freinage dégressif</span></li>
+            <li class="numeral"><span class="numeral-chiffre">05</span><span class="mono">La rotation</span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Section 7 : et ensuite, quatre portes pleine largeur separees par des filets.
+  <!-- Ecran 7 : et ensuite. Quatre portes en lignes de classement ; au survol un aplat rouge balaie la ligne.
        Le consulting n y est plus : il est dans les offres. Les marques ont deux portes, une par besoin. -->
   <section class="section ensuite" aria-labelledby="ensuite-titre">
-    <div class="conteneur reveal">
-      <h2 id="ensuite-titre">Et ensuite</h2>
+    <div class="conteneur">
+      <h2 id="ensuite-titre" data-virage="g">Et ensuite</h2>
       <ul class="portes">
-        <li><a href="{{reseaux.instagram}}" target="_blank" rel="noopener"><span>Mes vidéos sur Instagram</span><span class="mono" aria-hidden="true">&rarr;</span></a></li>
-        <li><a href="{{reseaux.youtube}}" target="_blank" rel="noopener"><span>Mes vidéos sur YouTube</span><span class="mono" aria-hidden="true">&rarr;</span></a></li>
-        <li><a href="{{routes.marques_reseaux}}"><span>Des vidéos pour votre marque</span><span class="mono" aria-hidden="true">&rarr;</span></a></li>
-        <li><a href="{{routes.marques_saison}}"><span>Sponsoriser ma saison</span><span class="mono" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="{{reseaux.instagram}}" target="_blank" rel="noopener"><span class="porte-libelle">Mes vidéos sur Instagram</span><span class="mono porte-fleche" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="{{reseaux.youtube}}" target="_blank" rel="noopener"><span class="porte-libelle">Mes vidéos sur YouTube</span><span class="mono porte-fleche" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="{{routes.marques_reseaux}}"><span class="porte-libelle">Des vidéos pour votre marque</span><span class="mono porte-fleche" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="{{routes.marques_saison}}"><span class="porte-libelle">Sponsoriser ma saison</span><span class="mono porte-fleche" aria-hidden="true">&rarr;</span></a></li>
       </ul>
     </div>
   </section>
@@ -250,5 +281,6 @@
 </main>
 
 {{partial:footer}}
+{{partial:hud}}
 </body>
 </html>
