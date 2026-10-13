@@ -14,7 +14,8 @@
   },
   "guide": {
     "titre": "Comprendre comment rouler plus vite",
-    "format": "PDF",
+    "format": "Livre digital",
+    "format_note": "Jamais le mot PDF sur une page de vente (demande de Clement du 13/10/2026) : on ecrit livre digital. PDF reste dans les pages legales et les pages de livraison, ou il decrit le fichier.",
     "pages": 59,
     "chapitres": 13,
     "prix": 16.99,
@@ -25,7 +26,7 @@
     },
     "aller": "/aller/guide",
     "merci": "/merci-guide",
-    "resume_ligne": "PDF · 59 pages · 13 chapitres · Accès immédiat"
+    "resume_ligne": "Livre digital · 59 pages · 13 chapitres · Accès immédiat"
   },
   "debrief": {
     "titre": "Analyse de ton onboard",
@@ -85,8 +86,14 @@
     ],
     "note": "Offre ouverte le 01/10/2026 sur décision de Clément, qui connaît et assume le risque juridique (Digital product/consulting-en-piste/CADRE-LEGAL.md). Depuis le 13/10/2026, aucun prix affiché sur le site (décision de Clément : 150 € hors déplacement faisait un mauvais ancrage) : la page demande le circuit et la date, Clément envoie une estimation tout compris par email. Le champ prix sert au devis seulement. Aucun paiement en ligne : demande sur la page, puis devis (modèle : Digital product/consulting-en-piste/DEVIS-MODELE.html). Les titres coach, coaching, entraîneur, moniteur, éducateur et professeur ne décrivent jamais Clément (tests/run-demande.js). statut = liste_attente remet la sous-ligne de liste d’attente sur /liens et l’accueil.",
     "sous_ligne_liste_attente": "Liste d’attente, pas encore ouverte",
-    "sous_ligne_ouverte": "Une journée avec moi sur ton circuit · pilotage et kart",
-    "sous_titre": "Une journée avec moi sur ton circuit. Je regarde, je filme, je lis tes chronos. Entre chaque session, on travaille ton pilotage et ton kart.",
+    "sous_ligne_ouverte": "Une journée sur mesure, sur ton circuit",
+    "sous_titre": "Une journée sur mesure, sur ton circuit. Je te regarde rouler, je lis tes chronos et ton onboard, et on travaille l’endroit où tu perds du temps.",
+    "camera": {
+      "prix": 20,
+      "prix_affiche": "20 €",
+      "note": "La caméra embarquée est indispensable. Clément ne filme pas : si le pilote n’en a pas, il apporte la sienne, forfait en plus (13/10/2026)."
+    },
+    "cadre_note": "Journée de pilotage sur mesure : comprendre le style du pilote, où il perd du temps en général et sur cette piste. Les réglages ne sont pas la priorité et ne sont pas promis : souvent Clément n’y touche pas (13/10/2026).",
     "reponse_h": 24,
     "anciennes_routes": [
       "/journee-piste",
@@ -118,7 +125,7 @@
   "textes": {
     "garantie_courte": "Garantie 7 jours, en plus de tes droits légaux",
     "garantie_longue": "Garantie 7 jours, en plus de tes droits légaux. Tu lis. Si ça ne t’apporte rien, un email dans les 7 jours et je te rembourse. Sans justification, sans formulaire.",
-    "sous_bouton_guide": "Téléchargement immédiat · PDF · Garantie 7 jours",
+    "sous_bouton_guide": "Livre digital · Téléchargement immédiat · Garantie 7 jours",
     "confiance": "Paiement sécurisé par Stripe · Garantie 7 jours en plus de tes droits légaux · Débrief livré sous 72 h"
   },
   "contact": {
@@ -128,11 +135,11 @@
   },
   "faits": {
     "afficher_titre": true,
-    "avec_titre": "8 ans de compétition. Champion régional 2023. Je roule en NSK et en RMCIT. Je t’aide à rouler plus vite, sans promesse miracle.",
-    "sans_titre": "8 ans de compétition en karting. Je roule en NSK et en RMCIT. Je t’aide à rouler plus vite, sans promesse miracle.",
+    "avec_titre": "8 ans de compétition. Champion régional 2023. J’ai roulé en NSK et en RMCIT. Je t’aide à rouler plus vite, sans promesse miracle.",
+    "sans_titre": "8 ans de compétition en karting. J’ai roulé en NSK et en RMCIT. Je t’aide à rouler plus vite, sans promesse miracle.",
     "titre_court": "Champion régional 2023",
-    "series": "Pilote NSK et RMCIT",
-    "series_note": "Clément est champion régional 2023, et pilote (pas champion) en NSK et en RMCIT : le titre et les séries ne sont jamais écrits dans la même énumération.",
+    "series": "A couru en NSK et en RMCIT",
+    "series_note": "Clément est champion régional 2023, et pilote (pas champion) en NSK et en RMCIT : le titre et les séries ne sont jamais écrits dans la même énumération. Clément ne roule plus aujourd’hui (13/10/2026) : toujours au passé, jamais « je roule encore ».",
     "date": "2026-09",
     "anciennete": "8 ans de compétition"
   },

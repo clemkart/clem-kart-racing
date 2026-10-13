@@ -475,8 +475,8 @@ body.diag{padding-bottom:112px;}
         <div class="qtxt">Tu as des images onboard&nbsp;?</div>
         <div class="qhint">Dernière question. Le placement de la caméra compte plus que sa qualité.</div>
         <div class="opts">
-          <button type="button" class="opt" data-v="souvent" data-i="Parfait, tu as déjà tout ce qu'il faut. Vérifie juste une chose&nbsp;: la caméra doit te montrer, toi. L'idéal, c'est de la fixer sur le radiateur, ou à défaut sur le ponton, tournée vers toi. Sur un baudrier, je ne vois que le bitume qui défile."><span class="dot"></span><span>Oui, à chaque session</span></button>
-          <button type="button" class="opt" data-v="parfois" data-i="Une seule session suffit, même en essais libres. Le seul vrai critère&nbsp;: qu'on voie ce que tu fais. Caméra sur le radiateur ou le ponton, tournée vers toi. Pas sur un baudrier, sinon je ne vois que le bitume."><span class="dot"></span><span>De temps en temps</span></button>
+          <button type="button" class="opt" data-v="souvent" data-i="Parfait, tu as déjà tout ce qu'il faut. Vérifie juste une chose&nbsp;: je dois voir la piste, ton volant et tes pédales. L'idéal, c'est de la fixer sur le radiateur, ou à défaut sur le casque. Sur un baudrier, je ne vois que le bitume qui défile."><span class="dot"></span><span>Oui, à chaque session</span></button>
+          <button type="button" class="opt" data-v="parfois" data-i="Une seule session suffit, même en essais libres. Le seul vrai critère&nbsp;: qu'on voie ce que tu fais. Caméra sur le radiateur, ou à défaut sur le casque. Pas sur un baudrier, sinon je ne vois que le bitume."><span class="dot"></span><span>De temps en temps</span></button>
           <button type="button" class="opt" data-v="jamais" data-stop="nocam" data-i="Sans images, je ne peux rien faire. Continue, je te dis quoi filmer et comment."><span class="dot"></span><span>Jamais filmé</span></button>
         </div>
       </div>
@@ -610,7 +610,7 @@ body.diag{padding-bottom:112px;}
       <h2>Avant de te décider</h2></div>
       <div class="faq">
       <details><summary>Et si ça ne change rien à mes chronos&nbsp;?</summary><p>Je ne vais pas te promettre un chiffre&nbsp;: personne d'honnête ne peut le faire. Ce que je te promets, c'est que tu repartiras en sachant exactement quoi travailler à ta prochaine sortie. Et si le débrief ne t'apporte rien, tu m'écris dans les {{garantie_jours}}&nbsp;jours et je te rembourse. C'est en plus de tes droits légaux.</p></details>
-      <details><summary>Quelle vidéo je dois envoyer&nbsp;?</summary><p>Il me faut une image où l'on voit <strong>ce que tu fais</strong>, pas seulement la piste. Le mieux, c'est une caméra fixée sur le <strong>radiateur</strong>, orientée vers toi&nbsp;: on voit tes mains, le volant et la piste devant. Sur le <strong>ponton</strong>, ça marche aussi. En revanche, <strong>oublie le baudrier</strong>&nbsp;: une caméra sur la poitrine ne montre que le bitume qui défile, et je ne vois rien de ton pilotage. Si ta vidéo est inexploitable, je te le dis avant de commencer et je te rembourse.</p></details>
+      <details><summary>Quelle vidéo je dois envoyer&nbsp;?</summary><p>Il me faut une image où l'on voit la piste et <strong>ce que tu fais</strong> avec le volant et les pédales. Le mieux, c'est une caméra fixée sur le <strong>radiateur</strong>&nbsp;: c'est exactement ce qu'elle montre. Sur le <strong>casque</strong>, ça marche aussi. En revanche, <strong>oublie le baudrier</strong>&nbsp;: une caméra sur la poitrine ne montre que le bitume qui défile, et je ne vois rien de ton pilotage. Si ta vidéo est inexploitable, je te le dis avant de commencer et je te rembourse.</p></details>
       <details><summary>Je ne roule pas souvent. Ça vaut le coup&nbsp;?</summary><p>C'est justement fait pour ça. Moins tu roules, plus chaque session compte. Arriver avec un objectif précis au lieu de tourner en espérant, c'est ce qui fait bouger le chrono sans rouler davantage. Un pilote qui sort quatre fois dans l'année a plus besoin d'un cap que celui qui roule toutes les semaines.</p></details>
       <details><summary>Quelle différence avec le guide&nbsp;?</summary><p>Le guide donne la grille de lecture. Le débrief l'applique à tes images. Le guide explique comment ça marche, le débrief te dit ce que toi, tu fais.</p></details>
       <details><summary>Et si je suis vraiment lent&nbsp;?</summary><p>Alors il y a beaucoup de dixièmes à récupérer, et c'est une bonne nouvelle. Je n'ai aucun intérêt à te juger&nbsp;: mon travail, c'est de trouver où ils sont. Et personne d'autre ne voit ta vidéo sans ton accord.</p></details>
@@ -773,7 +773,7 @@ body.diag{padding-bottom:112px;}
       sortie.setAttribute('href', sortieGuide.href);
       sortie.innerHTML=sortieGuide.html;
       sortieNote.hidden=false;
-      x.textContent='Sans onboard, il n\'y a rien à débriefer. Une caméra d\'occasion suffit largement. Fixe-la sur le radiateur ou le ponton, tournée vers toi, pour qu\'on voie tes mains et la piste. Évite le baudrier\u00a0: on n\'y voit que le bitume. Filme une session et reviens. En attendant, le guide te donne déjà de quoi travailler.';
+      x.textContent='Sans onboard, il n\'y a rien à débriefer. Une caméra d\'occasion suffit largement. Fixe-la sur le radiateur, pour qu\'on voie la piste, ton volant et tes pédales. Évite le baudrier\u00a0: on n\'y voit que le bitume. Filme une session et reviens. En attendant, le guide te donne déjà de quoi travailler.';
     }
     stopAt=cur;
     lastStop=kind;
@@ -853,7 +853,7 @@ body.diag{padding-bottom:112px;}
       non:'Tant que tu ne sais pas pourquoi ton meilleur tour était bon, tu ne le reproduis pas\u00a0: tu attends qu\'il revienne. C\'est exactement ce qui donne l\'impression de stagner alors que tu roules bien par moments.'
     };
     var zoneC={
-      frein:'Ton point de freinage, et surtout ton relâché de frein. Chez l\'amateur, les dixièmes sont rarement dans la force appliquée. Ils sont dans la façon de relâcher, et dans ce que le kart fait juste après.',
+      frein:'Ton point de freinage, et surtout ton relâché de frein. Chez l\'amateur, les dixièmes sont rarement dans la force appliquée. Ils sont dans la façon de relâcher le frein, et dans ce que le kart fait juste après.',
       traj:'Ce qui se passe avant ton point de corde. Une trajectoire fausse est presque toujours la conséquence d\'une entrée mal préparée, pas d\'une erreur de visée.',
       gaz:'Le moment exact où tu remets les gaz, et ce que fait l\'arrière à cet instant. Ta vitesse en sortie de virage décide de toute la ligne droite suivante.',
       nsp:'Le tour complet, pour te donner d\'abord le vocabulaire. On ne corrige pas ce qu\'on ne sait pas nommer\u00a0: je commence par mettre des mots sur ce que fait ton kart.'
