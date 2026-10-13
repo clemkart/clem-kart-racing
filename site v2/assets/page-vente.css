@@ -98,7 +98,8 @@
 .page-vente h2 + * { margin-top: var(--e-5); }
 .page-vente .vente-bloc p { color: var(--texte-2); }
 .page-vente .vente-bloc .liste li { color: var(--texte); }
-.page-vente .vente-bloc .liste li span { display: block; color: var(--texte-2); }
+.page-vente .vente-bloc :is(.liste, .vente-etapes, .vente-quotes, .vente-rassure) + p,
+.page-vente .vente-bloc p + :is(.liste, .vente-etapes, .vente-rassure, .vente-quotes) { margin-top: var(--e-5); }
 
 /* Etapes numerotees : le numero en mono, comme un tour chronometre */
 .page-vente .vente-etapes { display: grid; gap: var(--e-5); counter-reset: etape; }
@@ -109,17 +110,17 @@
   font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
   font-size: var(--t-donnee); line-height: 1.6; color: var(--texte);
 }
-.page-vente .vente-etapes strong { display: block; font-weight: var(--graisse-forte); color: var(--texte); }
 
-/* « Si tu hesites » : une case de grille (bord haut et bord gauche), ce qui rassure ecrit en clair */
+/* « Si tu hesites » : une case de grille (bord haut et bord gauche). Des phrases, pas une liste a puces :
+   Clement raconte ce qui se passe quand on clique, dans l ordre. */
 .page-vente .vente-rassure {
   display: grid; gap: var(--e-5);
   padding: var(--e-5) var(--e-4);
   border-top: 1px solid var(--filet-champ); border-left: 1px solid var(--filet-champ);
   background: var(--vente-case-fond);
 }
-.page-vente .vente-rassure li { max-width: none; color: var(--texte-2); }
-.page-vente .vente-rassure strong { display: block; margin-bottom: var(--e-1); font-weight: var(--graisse-forte); color: var(--texte); }
+.page-vente .vente-rassure p { margin: 0; max-width: none; color: var(--texte-2); }
+.page-vente .vente-rassure p:first-child { color: var(--texte); }
 .page-vente .vente-rassure a { color: var(--texte); }
 
 /* Messages recus */

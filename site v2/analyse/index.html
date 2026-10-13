@@ -18,9 +18,9 @@
 <body class="page-vente page-vente-analyse">
 <!-- Petite page de vente de l analyse d onboard, atteinte depuis la case P2 de /liens (13/10/2026).
      Avant, la case menait au milieu de la longue page du site 2 (/onboard/#prix) : le visiteur arrivait
-     sur un prix sans rien avoir lu. Ici : ce qu il recoit, comment ca se passe, ce qui rassure, le bouton.
-     Le diagnostic gratuit du site 2 reste propose en lien texte, en bas.
-     Tout ce qui est ecrit vient de la config ou de la page /onboard/ : rien d invente. -->
+     sur un prix sans rien avoir lu. Ici : ce qu il recoit, comment ca se passe, ce qui le fait hesiter
+     (etre juge, sa video, le paiement), le bouton. Le diagnostic gratuit du site 2 reste en lien texte, en bas.
+     Texte a la premiere personne, dans la voix de Clement, avec ses mots de la page /onboard/ : rien d invente. -->
 <main id="contenu" class="vente-page">
 
   <a class="vente-retour" href="{{routes.liens}}" aria-label="Retour aux liens de {{marque.auteur}}"><svg class="symbole" viewBox="0 0 22 22" width="16" height="16" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg>{{marque.auteur}}</a>
@@ -40,7 +40,7 @@
       <h1 class="vente-titre" style="--i: 1">Envoie ta vidéo. Je te dis où tu perds du temps.</h1>
       <span class="vente-trait" style="--i: 2" aria-hidden="true"></span>
       <p class="vente-chapo" style="--i: 2">Tu roules, tu t’appliques, et le chrono ne descend plus. De l’intérieur du kart, on ne voit pas ce qu’on fait.</p>
-      <p style="--i: 3">Je regarde ton onboard tour par tour et je te réponds en vidéo, sur tes images. Tu repars avec trois priorités, pas vingt conseils.</p>
+      <p style="--i: 3">Moi, je le vois sur tes images. Je regarde ton onboard tour par tour et je te réponds en vidéo, avec trois choses à travailler, dans l’ordre.</p>
       <div class="vente-action" style="--i: 4">
         <a class="bouton bouton-principal bouton-large" href="{{debrief.aller}}?locale=fr" data-cta="vente-haut" data-zone="hero">Envoyer ma vidéo <span class="chrono">{{debrief.prix_affiche}}</span></a>
         <ul class="vente-points">
@@ -56,10 +56,11 @@
       <p class="vente-secteur" aria-hidden="true">S1</p>
       <h2 id="recois-titre">Ce que tu reçois</h2>
       <ul class="liste liste-coches">
-        <li>Ta vidéo commentée. <span>Tes images, tour par tour : freinage, trajectoire, remise de gaz, position dans le kart. Ton pilotage sur ton circuit, pas un cours général.</span></li>
-        <li>Tes trois priorités. <span>Classées par gain de temps. Tu sais par quoi commencer, au lieu de tout vouloir corriger d’un coup.</span></li>
-        <li>Un seul objectif pour ta prochaine sortie. <span>Dix consignes en tête à l’entrée du virage, ça ne marche pas.</span></li>
+        <li>Une vidéo où je commente tes images, tour par tour : ton freinage, ta trajectoire, ta remise de gaz, ta position dans le kart.</li>
+        <li>Une fiche avec tes trois priorités, classées par gain de temps. Tu sais par quoi commencer.</li>
+        <li>Un seul objectif pour ta prochaine sortie. Dix consignes en tête à l’entrée du virage, ça ne marche pas.</li>
       </ul>
+      <p>Je parle de ton pilotage, sur ton circuit, pas du pilotage en général.</p>
       <p class="mention">Au paiement, tu peux ajouter le livre de pilotage à {{debrief.option_guide.prix_affiche}} au lieu de {{guide.prix_affiche}}.</p>
     </section>
 
@@ -67,39 +68,39 @@
       <p class="vente-secteur" aria-hidden="true">S2</p>
       <h2 id="etapes-titre">Comment ça se passe</h2>
       <ol class="vente-etapes">
-        <li><strong>Tu colles le lien de ta vidéo.</strong>Au moment du paiement : YouTube en non répertorié, ou Google Drive. Rien à installer.</li>
-        <li><strong>Je la regarde.</strong>Tour par tour, chrono à l’appui. Je remonte du symptôme à la cause.</li>
-        <li><strong>Tu reçois tout par email.</strong>Sous <span class="insecable">{{delais.debrief_h}} h</span> après réception de ta vidéo.</li>
+        <li>Au moment du paiement, tu colles le lien de ta vidéo : YouTube en non répertorié, ou Google Drive. Tu n’as rien à installer.</li>
+        <li>Je la regarde tour par tour, chrono à l’appui, et je remonte du symptôme à la cause.</li>
+        <li>Sous <span class="insecable">{{delais.debrief_h}} h</span>, tu reçois par email la vidéo commentée, ta fiche et ton objectif.</li>
       </ol>
-      <p>Quelle vidéo ? Une caméra fixée sur le radiateur ou sur le ponton, tournée vers toi : je dois voir tes mains et le volant. Une caméra sur la poitrine ne montre que le bitume. Si ta vidéo est inexploitable, je te le dis avant de commencer et je te rembourse.</p>
+      <p>Pour la caméra : il me faut une image où on voit ce que tu fais, pas seulement la piste. Le mieux, c’est de la fixer sur le radiateur, tournée vers toi. On voit tes mains, le volant et la piste devant. Sur le ponton, ça marche aussi. Sur la poitrine, non : on ne voit que le bitume qui défile.</p>
+      <p>Et si ta vidéo est inexploitable, je te le dis avant de commencer et je te rembourse.</p>
     </section>
 
     <section class="vente-bloc" aria-labelledby="hesite-titre">
       <p class="vente-secteur" aria-hidden="true">S3</p>
       <h2 id="hesite-titre">Si tu hésites</h2>
-      <p>C’est normal. Voilà ce qui se passe vraiment, sans surprise.</p>
-      <ul class="vente-rassure">
-        <li><strong>Ta vidéo reste entre toi et moi.</strong>Elle sert uniquement à ton analyse. Un extrait ne sort dans mes contenus que si tu l’as accepté au paiement. Tu changes d’avis ? Un email suffit.</li>
-        <li><strong>Je ne note pas ton niveau.</strong>Je ne cherche pas tes fautes, je cherche où sont tes dixièmes. Lent ou rapide, c’est le même travail.</li>
-        <li><strong>Je ne te promets pas un chrono.</strong>Personne d’honnête ne peut le faire. Je te promets que tu sauras exactement quoi travailler à ta prochaine sortie.</li>
-        <li><strong>Tu peux être remboursé.</strong>Si l’analyse ne t’apporte rien, tu m’écris dans les <span class="insecable">{{garantie_jours}} jours</span> après l’avoir reçue et je te rembourse. Sans justification. C’est en plus de tes droits légaux.</li>
-        <li><strong>Je ne vois jamais ta carte.</strong>Le paiement passe par Stripe, une plateforme de paiement sécurisée. Tu paies une fois, {{debrief.prix_affiche}}, sans abonnement et sans compte à créer.</li>
-        <li><strong>C’est moi qui réponds.</strong><a href="mailto:{{contact.email}}">{{contact.email}}</a>, sous <span class="insecable">{{delais.reponse_email_h}} h</span>. {{legal.editeur}}, SIREN {{legal.siren}}, entreprise déclarée en France.</li>
-      </ul>
+      <p>Envoyer sa vidéo à quelqu’un qui va la regarder en détail, je comprends que ça fasse hésiter.</p>
+      <div class="vente-rassure">
+        <p>Je ne note pas ton niveau. Lent ou rapide, mon travail est le même : trouver où sont tes dixièmes. S’il y en a beaucoup à récupérer, c’est une bonne nouvelle.</p>
+        <p>Ta vidéo reste entre toi et moi. Elle sert à ton analyse, et à rien d’autre. Un extrait ne sort dans mes contenus que si tu l’as accepté au paiement, et tu peux changer d’avis par un simple email.</p>
+        <p>Le paiement passe par Stripe : je ne vois jamais ta carte. Tu paies {{debrief.prix_affiche}} une fois, sans abonnement et sans compte à créer.</p>
+        <p>Je ne peux pas te promettre un chrono, personne d’honnête ne le peut. Si l’analyse ne t’apporte rien, tu m’écris dans les <span class="insecable">{{garantie_jours}} jours</span> après l’avoir reçue et je te rembourse, sans avoir à te justifier. Cette garantie s’ajoute à tes droits légaux.</p>
+        <p>Une question avant ? Écris-moi à <a href="mailto:{{contact.email}}">{{contact.email}}</a> : c’est moi qui réponds, sous <span class="insecable">{{delais.reponse_email_h}} h</span>. Mon entreprise est déclarée en France ({{legal.editeur}}, SIREN {{legal.siren}}).</p>
+      </div>
     </section>
 
     <section class="vente-bloc" aria-labelledby="auteur-titre">
       <p class="vente-secteur" aria-hidden="true">S4</p>
       <h2 id="auteur-titre">Qui regarde ta vidéo</h2>
-      <p>Je m’appelle Clément Daniel. Pas de mécano, pas de team : j’ai tout appris seul.</p>
-      <p>J’ai passé des années à ne pas comprendre pourquoi le tour d’avant était meilleur. Aujourd’hui, c’est exactement ce que je cherche sur tes images.</p>
+      <p>Moi, Clément, et personne d’autre.</p>
+      <p>Je n’ai ni mécano ni team : tout ce que je sais, je l’ai appris seul. J’ai passé des années à ne pas comprendre pourquoi mon tour d’avant était meilleur, et c’est ce que je cherche maintenant sur tes images.</p>
       <p class="vente-faits">{{faits.anciennete}} · {{faits.titre_court}} · {{faits.series}}</p>
     </section>
 
     <section class="vente-bloc" aria-labelledby="final-titre">
       <p class="vente-secteur" aria-hidden="true">Arrivée</p>
-      <h2 id="final-titre">Moins tu roules, plus chaque session compte.</h2>
-      <p>Arrive à ta prochaine sortie avec un objectif précis, au lieu de tourner en espérant que ça vienne.</p>
+      <h2 id="final-titre">À ta prochaine sortie, tu sais quoi travailler.</h2>
+      <p>C’est encore plus vrai si tu roules peu : moins tu as de sessions, plus chacune compte.</p>
       <div class="vente-action">
         <a class="bouton bouton-principal bouton-large" href="{{debrief.aller}}?locale=fr" data-cta="vente-bas" data-zone="final">Envoyer ma vidéo <span class="chrono">{{debrief.prix_affiche}}</span></a>
         <ul class="vente-points">
@@ -110,8 +111,8 @@
         <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
       </div>
       <div class="vente-autres">
-        <p>Tu préfères d’abord faire le point ? <a href="{{routes.onboard}}" data-cta="vente-diagnostic">Fais le diagnostic gratuit</a>.</p>
-        <p>Tu veux comprendre avant de te faire analyser ? <a href="{{routes.livre}}" data-cta="vente-livre">Le livre de pilotage karting</a>.</p>
+        <p>Tu préfères d’abord faire le point tout seul ? <a href="{{routes.onboard}}" data-cta="vente-diagnostic">Fais le diagnostic gratuit</a>.</p>
+        <p>Tu veux comprendre avant de te faire analyser ? <a href="{{routes.livre}}" data-cta="vente-livre">Le livre de pilotage karting</a> donne la grille de lecture, l’analyse l’applique à tes images.</p>
       </div>
     </section>
 
