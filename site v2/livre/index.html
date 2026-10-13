@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Le livre de pilotage karting · {{guide.titre}}</title>
+<meta name="description" content="Un livre de pilotage karting en {{guide.format}}, {{guide.pages}} pages, pour comprendre pourquoi tes bons tours sont bons, et les refaire. Par {{marque.auteur}}. {{textes.garantie_courte}}.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="{{sites.url}}{{routes.guide}}">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Le livre de pilotage karting · {{guide.titre}}">
+<meta property="og:description" content="Un livre de pilotage karting en {{guide.format}}, {{guide.pages}} pages, pour comprendre pourquoi tes bons tours sont bons, et les refaire.">
+<meta property="og:url" content="{{sites.url}}{{routes.livre}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-guide.jpg">
+<meta name="twitter:image" content="{{sites.url}}/photos/og-guide.jpg">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/cockpit-volant-640.webp 640w, /photos/cockpit-volant-1280.webp 1280w" imagesizes="(min-width: 900px) 52vw, 100vw" fetchpriority="high">
+<link rel="stylesheet" href="/assets/page-vente.css">
+</head>
+<body class="page-vente page-vente-livre">
+<!-- Petite page de vente du livre, atteinte depuis la case P1 de /liens (13/10/2026).
+     Pour un visiteur deja chaud, souvent sur telephone : une colonne, aucun menu, deux boutons rouges
+     (en haut, en bas), le prix dans le bouton. La longue page /guide reste la page de reference (sommaire, FAQ) :
+     celle-ci est en noindex et son canonical pointe vers /guide.
+     Le mot « guide » devient « livre de pilotage karting » (demande de Clement) ; « numerique » et « PDF »
+     restent toujours a cote, pour que personne n attende un livre par la poste.
+     Tout ce qui est ecrit est vrai et vient de la config ou de /guide : aucun chiffre, aucun message invente. -->
+<main id="contenu" class="vente-page">
+
+  <a class="vente-retour" href="{{routes.liens}}" aria-label="Retour aux liens de {{marque.auteur}}"><svg class="symbole" viewBox="0 0 22 22" width="16" height="16" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg>{{marque.auteur}}</a>
+
+  <div class="vente-photo cine">
+    <picture>
+      <source type="image/webp" srcset="/photos/cockpit-volant-640.webp 640w, /photos/cockpit-volant-1280.webp 1280w" sizes="(min-width: 900px) 52vw, 100vw" width="640" height="800">
+      <img src="/photos/cockpit-volant-640.jpg" srcset="/photos/cockpit-volant-640.jpg 640w, /photos/cockpit-volant-1280.jpg 1280w" sizes="(min-width: 900px) 52vw, 100vw" width="640" height="800" alt="Clément Daniel installé dans son kart, casque et visière iridescente, les mains sur le volant" fetchpriority="high" decoding="async">
+    </picture>
+    <span class="voile vente-voile-haut" aria-hidden="true"></span>
+    <span class="voile vente-voile-bas" aria-hidden="true"></span>
+  </div>
+
+  <div class="vente-colonne">
+    <header class="vente-tete">
+      <p class="vente-sur">Livre de pilotage karting · {{guide.format}}, {{guide.pages}} pages</p>
+      <h1 class="vente-titre" style="--i: 1">{{guide.titre}}</h1>
+      <span class="vente-trait" style="--i: 2" aria-hidden="true"></span>
+      <p class="vente-chapo" style="--i: 2">Tu sors un bon tour, et tu ne sais pas pourquoi. Le tour d’après, il a disparu.</p>
+      <p style="--i: 3">J’ai écrit ce livre pour ça : t’expliquer simplement ce qui se passe dans le kart, pour que tes bons tours ne soient plus un hasard.</p>
+      <div class="vente-action" style="--i: 4">
+        <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="vente-haut" data-zone="hero">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+        <ul class="vente-points">
+          <li>Paiement unique</li>
+          <li>Téléchargement immédiat</li>
+          <li>Garantie <span class="insecable">{{garantie_jours}} jours</span></li>
+        </ul>
+        <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+      </div>
+    </header>
+
+    <section class="vente-bloc" aria-labelledby="recois-titre">
+      <p class="vente-secteur" aria-hidden="true">S1</p>
+      <h2 id="recois-titre">Ce que tu reçois</h2>
+      <ul class="liste liste-coches">
+        <li>Le livre en {{guide.format}} : {{guide.pages}} pages, {{guide.chapitres}} chapitres. <span>Tu le lis sur ton téléphone, ta tablette ou ton ordinateur.</span></li>
+        <li>Les schémas et 6 exercices. <span>À faire dès ta prochaine session.</span></li>
+        <li>Mon tableur de réglages. <span>Tu notes ce que tu changes sur le kart, le livre t’explique pourquoi ça marche.</span></li>
+        <li>Tout, tout de suite. <span>Le téléchargement s’ouvre juste après le paiement.</span></li>
+      </ul>
+      <p class="mention">C’est un livre numérique : rien n’arrive par la poste, tu l’as en main en une minute.</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="hesite-titre">
+      <p class="vente-secteur" aria-hidden="true">S2</p>
+      <h2 id="hesite-titre">Si tu hésites à payer en ligne</h2>
+      <p>C’est normal. Voilà comment ça se passe, sans surprise.</p>
+      <ul class="vente-rassure">
+        <li><strong>Je ne vois jamais ta carte.</strong>Le paiement passe par Stripe, une plateforme de paiement sécurisée. Moi, je reçois seulement la confirmation.</li>
+        <li><strong>Tu paies une fois.</strong>{{guide.prix_affiche}}, sans abonnement et sans compte à créer.</li>
+        <li><strong>Tu peux être remboursé.</strong>Tu lis. Si ça ne t’apporte rien, tu m’écris dans les <span class="insecable">{{garantie_jours}} jours</span> et je te rembourse. Sans justification, sans formulaire. C’est en plus de tes droits légaux.</li>
+        <li><strong>C’est moi qui réponds.</strong>Une question, un souci de téléchargement : <a href="mailto:{{contact.email}}">{{contact.email}}</a>. Je réponds sous <span class="insecable">{{delais.reponse_email_h}} h</span>.</li>
+        <li><strong>Une entreprise déclarée, en France.</strong>{{legal.editeur}}, SIREN {{legal.siren}}. Tout est écrit dans les <a href="{{routes.mentions}}">mentions légales</a>.</li>
+      </ul>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="lecteurs-titre">
+      <p class="vente-secteur" aria-hidden="true">S3</p>
+      <h2 id="lecteurs-titre">Ce que m’ont écrit des lecteurs</h2>
+      <div class="vente-quotes">
+        <blockquote>
+          <p>« J’ai appris beaucoup et comme je suis visuel, ça fonctionne très bien. Je me suis vraiment amélioré en compétition, un podium le week-end dernier. Merci de tes conseils. »</p>
+          <footer>Pilote en compétition</footer>
+        </blockquote>
+        <blockquote>
+          <p>« Vraiment neuf, ça fait du bien à lire. Les concepts sont bien expliqués et c’est applicable rapidement. »</p>
+          <footer>Lecteur</footer>
+        </blockquote>
+        <blockquote>
+          <p>« Franchement, c’est hyper bien fait. Bravo. Et je pense encore lire les exos, c’est une super idée. »</p>
+          <footer>Lecteur</footer>
+        </blockquote>
+      </div>
+      <p class="mention">{{lecteurs.phrase}}. Messages reproduits tels quels, prénoms retirés tant que je n’ai pas leur accord écrit.</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="auteur-titre">
+      <p class="vente-secteur" aria-hidden="true">S4</p>
+      <h2 id="auteur-titre">Qui l’a écrit</h2>
+      <p>Je m’appelle Clément Daniel. Pas de mécano, pas de team : j’ai tout appris seul.</p>
+      <p>J’ai passé des années à ne pas comprendre pourquoi le tour d’avant était meilleur. Ce livre, c’est ce que j’aurais voulu lire au début. Sans jargon, sans théorie creuse.</p>
+      <p>Je ne te promets pas un chrono. Je te promets que tu sauras quoi travailler.</p>
+      <p class="vente-faits">{{faits.anciennete}} · {{faits.titre_court}} · {{faits.series}}</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="final-titre">
+      <p class="vente-secteur" aria-hidden="true">Arrivée</p>
+      <h2 id="final-titre">Tu le lis ce soir, tu l’essaies à ta prochaine session.</h2>
+      <div class="vente-action">
+        <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="vente-bas" data-zone="final">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+        <ul class="vente-points">
+          <li>Paiement sécurisé par Stripe</li>
+          <li>Garantie <span class="insecable">{{garantie_jours}} jours</span></li>
+        </ul>
+        <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+      </div>
+      <div class="vente-autres">
+        <p>Pas encore sûr ? <a href="{{routes.extrait}}" data-cta="vente-extrait">{{extrait.appel_courant}}</a>, par email, sans rien payer.</p>
+        <p>Tu veux tout voir avant ? <a href="{{routes.guide}}" data-cta="vente-sommaire">Le sommaire complet, chapitre par chapitre</a>.</p>
+        <p>Tu ne roules qu’en location ? Le kart change à chaque session : commence par l’extrait gratuit et garde ton argent.</p>
+      </div>
+    </section>
+
+    <p class="mention vente-fin"><a href="{{routes.mentions}}">Mentions légales</a> <a href="{{routes.cgv}}">CGV</a> <a href="{{routes.confidentialite}}">Confidentialité</a> <a href="{{routes.retractation}}">Renoncer au contrat ici</a></p>
+  </div>
+
+</main>
+</body>
+</html>

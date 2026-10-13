@@ -6,7 +6,7 @@
     "tests/run-prix.js fait echouer la mise en ligne si un prix, un lien Stripe, un lien Gumroad ou gmail.com traine ailleurs qu ici."
   ],
   "version": 1,
-  "mis_a_jour": "2026-09-30",
+  "mis_a_jour": "2026-10-13",
   "marque": {
     "nom": "Clem Kart Racing",
     "auteur": "Clément Daniel",
@@ -83,7 +83,7 @@
       "liste_attente",
       "ouverte"
     ],
-    "note": "Offre ouverte le 01/10/2026 sur décision de Clément, qui connaît et assume le risque juridique (Digital product/consulting-en-piste/CADRE-LEGAL.md). Prix affiché depuis cette config, aucun paiement en ligne : demande de date sur la page, puis devis (modèle : Digital product/consulting-en-piste/DEVIS-MODELE.html). Les titres coach, coaching, entraîneur, moniteur, éducateur et professeur ne décrivent jamais Clément (tests/run-demande.js). statut = liste_attente remet la sous-ligne de liste d’attente sur /liens et l’accueil.",
+    "note": "Offre ouverte le 01/10/2026 sur décision de Clément, qui connaît et assume le risque juridique (Digital product/consulting-en-piste/CADRE-LEGAL.md). Depuis le 13/10/2026, aucun prix affiché sur le site (décision de Clément : 150 € hors déplacement faisait un mauvais ancrage) : la page demande le circuit et la date, Clément envoie une estimation tout compris par email. Le champ prix sert au devis seulement. Aucun paiement en ligne : demande sur la page, puis devis (modèle : Digital product/consulting-en-piste/DEVIS-MODELE.html). Les titres coach, coaching, entraîneur, moniteur, éducateur et professeur ne décrivent jamais Clément (tests/run-demande.js). statut = liste_attente remet la sous-ligne de liste d’attente sur /liens et l’accueil.",
     "sous_ligne_liste_attente": "Liste d’attente, pas encore ouverte",
     "sous_ligne_ouverte": "Une journée avec moi sur ton circuit · pilotage et kart",
     "sous_titre": "Une journée avec moi sur ton circuit. Je regarde, je filme, je lis tes chronos. Entre chaque session, on travaille ton pilotage et ton kart.",
@@ -128,9 +128,11 @@
   },
   "faits": {
     "afficher_titre": true,
-    "avec_titre": "8 ans de compétition, champion régional 2023, NSK et Rotax Max. Je t’aide à rouler plus vite, sans promesse miracle.",
-    "sans_titre": "8 ans de compétition en karting, NSK et Rotax Max. Je t’aide à rouler plus vite, sans promesse miracle.",
+    "avec_titre": "8 ans de compétition. Champion régional 2023. Je roule en NSK et en RMCIT. Je t’aide à rouler plus vite, sans promesse miracle.",
+    "sans_titre": "8 ans de compétition en karting. Je roule en NSK et en RMCIT. Je t’aide à rouler plus vite, sans promesse miracle.",
     "titre_court": "Champion régional 2023",
+    "series": "Pilote NSK et RMCIT",
+    "series_note": "Clément est champion régional 2023, et pilote (pas champion) en NSK et en RMCIT : le titre et les séries ne sont jamais écrits dans la même énumération.",
     "date": "2026-09",
     "anciennete": "8 ans de compétition"
   },
@@ -164,6 +166,8 @@
     "accueil": "/",
     "liens": "/liens",
     "guide": "/guide",
+    "livre": "/livre",
+    "analyse": "/analyse",
     "onboard": "/onboard/",
     "extrait": "/extrait",
     "extrait_page": "/extrait-guide.html",

@@ -191,7 +191,7 @@ const phrasesFautives = (texte) => texte.split(/(?<=[.?!])\s+/).filter((p) => MO
     .replace(/<[^>]+>/g, ' ');
   const pageJ = lirePage('site v2', 'consulting', 'index.html');
   check('page : l ancien dossier journee-piste n existe plus (sinon la 301 est ignoree)', !fs.existsSync(path.join(RACINE, 'site v2', 'journee-piste')));
-  check('page : titre, prix et unite lus dans la config', pageJ.includes('<h1>{{journee.titre}}</h1>') && pageJ.includes('{{journee.prix_affiche}}') && pageJ.includes('{{journee.unite}}'));
+  check('page : titre lu dans la config, aucun prix affiche (estimation par email, decision du 13/10)', pageJ.includes('<h1>{{journee.titre}}</h1>') && !pageJ.includes('{{journee.prix') && /Sur estimation/.test(pageJ));
   check('page : aucun prix ni delai en dur (150 €, 24 h)', !/150\s*(€|euros)/.test(pageJ) && !/\b24\s*h\b/.test(texteVisible(pageJ)));
   check('page : bouton principal « Demander une date » vers le formulaire de la page', /<a class="bouton bouton-principal" href="#demande"[^>]*>Demander une date<\/a>/.test(pageJ) && pageJ.includes('id="demande"'));
   const formJ = (pageJ.match(/<form[\s\S]*?<\/form>/) || [''])[0];
@@ -210,7 +210,7 @@ const phrasesFautives = (texte) => texte.split(/(?<=[.?!])\s+/).filter((p) => MO
     check('dist/ absent : lance « node scripts/build.js » avant ce test', false);
   } else {
     const construite = lirePage('dist', 'consulting', 'index.html');
-    check('dist : le prix et l unite sont publies', normal(construite).includes(normal(J.prix_affiche)) && construite.includes(J.unite));
+    check('dist : aucun prix publie, la page annonce une estimation par email', !normal(construite).includes(normal(J.prix_affiche)) && /Sur estimation/.test(construite));
     check('dist : aucun titre interdit dans le texte visible', !TITRES.test(texteVisible(construite)), (texteVisible(construite).match(TITRES) || [''])[0]);
     const publiques = ['index.html', path.join('liens', 'index.html'), path.join('consulting', 'index.html')];
     check('dist : aucun titre interdit sur l accueil, les liens et la page du consulting', publiques.every((p) => !TITRES.test(texteVisible(lirePage('dist', p)))), publiques.map((p) => (texteVisible(lirePage('dist', p)).match(TITRES) || [''])[0]).join(' | '));

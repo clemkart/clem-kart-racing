@@ -120,6 +120,10 @@
 .consulting-prix { display: grid; gap: var(--e-6); align-content: start; }
 .consulting-prix .chrono-grand { gap: var(--e-3); }
 .consulting-prix .chrono-grand .mono { max-width: 26ch; line-height: 1.5; }
+/* Plus de prix affiche (13/10) : « Sur estimation » en titre, la precision en mono dessous */
+.consulting-prix-estime { display: grid; gap: var(--e-3); }
+.consulting-prix-estime strong { font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre); font-size: var(--t-titre-2); line-height: 1; text-transform: uppercase; color: var(--texte); }
+.consulting-prix-estime .mono { max-width: 26ch; line-height: 1.5; color: var(--texte-2); }
 .consulting-prix-note { color: var(--texte-2); max-width: 40ch; padding-top: var(--e-5); border-top: var(--bordure); }
 .consulting-prix-detail { display: grid; gap: var(--e-4); align-content: start; }
 .consulting-prix-detail h3 { font-size: var(--t-titre-4); }

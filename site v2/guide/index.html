@@ -4,7 +4,7 @@
 {{partial:head}}
 {{partial:mouvement}}
 <title>Comprendre comment rouler plus vite : le guide de pilotage karting | {{marque.nom}}</title>
-<meta name="description" content="Un guide PDF de {{guide.pages}} pages pour comprendre pourquoi tes bons tours sont bons, et les refaire. Par {{marque.auteur}}. {{faits.ligne}} {{textes.garantie_courte}}.">
+<meta name="description" content="Un livre de pilotage karting en PDF, {{guide.pages}} pages, pour comprendre pourquoi tes bons tours sont bons, et les refaire. Par {{marque.auteur}}. {{faits.ligne}} {{textes.garantie_courte}}.">
 <link rel="canonical" href="{{sites.url}}{{routes.guide}}">
 <meta property="og:type" content="product">
 <meta property="og:title" content="Comprendre comment rouler plus vite : le guide de pilotage karting">
@@ -74,7 +74,7 @@
           <p class="chrono hero-resume" data-entree="texte" data-t="340">{{guide.format}}, {{guide.pages}} pages, {{guide.chapitres}} chapitres, accès immédiat</p>
           <div class="hero-actions" data-entree="texte" data-t="380">
             <div class="hero-achat">
-              <a class="bouton bouton-principal" href="{{guide.aller}}" data-aimant data-cta="hero" data-zone="hero">Obtenir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+              <a class="bouton bouton-principal" href="{{guide.aller}}" data-aimant data-cta="hero" data-zone="hero">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
               <p class="hero-sous hero-garantie">Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</p>
               <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
             </div>
@@ -130,7 +130,7 @@
       </div>
 
       <div class="feuilleter-suite reveal">
-        <a class="bouton bouton-fantome" href="{{guide.aller}}" data-cta="feuilleter" data-zone="feuilleter">Obtenir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+        <a class="bouton bouton-fantome" href="{{guide.aller}}" data-cta="feuilleter" data-zone="feuilleter">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
         <span class="bouton-sous">Accès immédiat après le paiement. Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</span>
         <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
       </div>
@@ -421,7 +421,7 @@
         <div class="auteur-texte">
           <h2 id="auteur-titre" data-virage="g">Qui l’a écrit</h2>
           <p class="reveal">Je m’appelle Clément Daniel. Pas de mécano, pas de team : j’ai tout appris seul.<br>J’ai passé des années à ne pas comprendre pourquoi le tour d’avant était meilleur.<br>Ce guide, c’est ce que j’aurais voulu lire au début. Sans jargon, sans théorie creuse.</p>
-          <p class="chrono chrono-ligne reveal" style="--i: 1">{{faits.anciennete}} · {{faits.titre_court}} · NSK et Rotax Max</p>
+          <p class="chrono chrono-ligne reveal" style="--i: 1">{{faits.anciennete}} · {{faits.titre_court}} · {{faits.series}}</p>
         </div>
       </div>
     </div>
@@ -451,7 +451,7 @@
             <li>L’accès tout de suite après le paiement, sur la page qui suit.</li>
           </ul>
           <div class="prix-action">
-            <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-aimant data-cta="prix" data-zone="prix">Obtenir le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+            <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-aimant data-cta="prix" data-zone="prix">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
             <span class="bouton-sous">Paiement sécurisé par Stripe, accès immédiat après le paiement.</span>
             <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
           </div>
@@ -517,7 +517,7 @@
           <h2 id="final-titre" class="final-titre" data-virage="d" data-revele="non" data-remplissage>Tu peux faire dix sessions de plus en espérant que ça vienne.</h2>
           <p class="chapo reveal">Ou tu lis ce soir, et à ta prochaine session tu sais quoi tester.<br>Une chose à la fois. Le guide te dit laquelle.</p>
           <div class="final-action reveal" style="--i: 1">
-            <a class="bouton bouton-principal" href="{{guide.aller}}" data-aimant data-cta="final" data-zone="final">Je prends le guide <span class="chrono">{{guide.prix_affiche}}</span></a>
+            <a class="bouton bouton-principal" href="{{guide.aller}}" data-aimant data-cta="final" data-zone="final">Je prends le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
             <span class="bouton-sous">Accès immédiat après le paiement. Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</span>
             <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
           </div>
@@ -530,12 +530,12 @@
 
 <!-- Barre collante : apparait quand le premier ecran est sorti, se cache devant le prix et le bouton final.
      Son bord haut est la barre de secteurs (progression de la lecture). -->
-<div class="barre" role="region" aria-label="Obtenir le guide">
+<div class="barre" role="region" aria-label="Obtenir le livre">
   <div class="secteurs" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
   <div class="conteneur barre-inner">
     <p class="barre-texte">Le guide <span class="chrono">{{guide.prix_affiche}}</span></p>
     <div class="barre-achat">
-      <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="barre" data-zone="barre">Obtenir le guide</a>
+      <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="barre" data-zone="barre">Obtenir le livre</a>
       <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
     </div>
   </div>

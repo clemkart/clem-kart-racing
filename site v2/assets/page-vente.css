@@ -1,0 +1,180 @@
+/* ============================================================
+   Clem Kart Racing : page-vente.css (13/10/2026)
+   Petites pages de vente atteintes depuis /liens : /livre et /analyse.
+   Meme cadre que /liens : bande photo sur telephone, panneau fixe a droite sur ordinateur,
+   une seule colonne de lecture. Aucun menu, aucune bibliotheque, aucun mouvement au defilement.
+   Un seul bouton rouge par ecran. Tout est lisible et cliquable sans JavaScript.
+   ============================================================ */
+.page-vente {
+  --vente-photo-h: clamp(190px, 30svh, 300px);
+  --vente-remontee: 48px;
+  --vente-case-fond: rgba(14, 14, 16, 0.72);
+}
+
+/* ---------- 1. La photo ---------- */
+.page-vente .vente-photo {
+  z-index: var(--z-photo);
+  height: var(--vente-photo-h);
+  background: var(--fond-0);
+  outline: 0;
+}
+.page-vente .vente-photo img { object-position: var(--vente-cadrage, 50% 38%); }
+.page-vente .vente-voile-haut { background-image: linear-gradient(to bottom, rgba(6, 6, 7, 0.6) 0%, rgba(6, 6, 7, 0) 36%); }
+.page-vente .vente-voile-bas { background-image: var(--voile-fondu); }
+
+/* Retour vers la page de liens : en haut a gauche, sur la photo */
+.page-vente .vente-retour {
+  position: absolute; z-index: var(--z-contenu); top: var(--e-4); left: var(--gouttiere);
+  display: inline-flex; align-items: center; gap: var(--e-2);
+  min-height: 44px; padding-right: var(--e-3);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--texte); text-decoration: none;
+}
+.page-vente .vente-retour .symbole { width: 16px; height: 16px; }
+.page-vente .vente-retour:hover { text-decoration: underline; text-underline-offset: 0.3em; }
+
+/* ---------- 2. La colonne ---------- */
+.page-vente .vente-colonne {
+  position: relative; z-index: var(--z-contenu);
+  margin-top: calc(-1 * var(--vente-remontee));
+  padding: 0 var(--gouttiere) var(--e-9);
+}
+.page-vente .vente-colonne p,
+.page-vente .vente-colonne li { max-width: 34em; }
+
+.page-vente .vente-sur {
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); line-height: 1.4; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--texte-2);
+}
+.page-vente .vente-titre {
+  margin-top: var(--e-3); max-width: none;
+  font-size: clamp(2.375rem, 10.5vw, 3.75rem);
+  line-height: 0.92; letter-spacing: 0;
+}
+/* Le trait de trajectoire sous le titre : meme signature que sous le nom de /liens */
+.page-vente .vente-trait {
+  position: relative; display: block; width: 96px; height: 8px; margin-top: var(--e-4);
+}
+.page-vente .vente-trait::before,
+.page-vente .vente-trait::after { content: ''; position: absolute; top: 50%; }
+.page-vente .vente-trait::before {
+  left: 0; right: 4px; height: 2px; margin-top: -1px;
+  background: linear-gradient(to right, rgba(var(--rouge-rgb), 0.35), var(--rouge) 40%);
+}
+.page-vente .vente-trait::after {
+  right: 0; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%;
+  background: var(--rouge); box-shadow: 0 0 0 3px var(--fond-0);
+}
+.page-vente .vente-chapo {
+  margin-top: var(--e-5);
+  font-size: var(--t-chapo); line-height: var(--interligne-chapo); color: var(--texte);
+}
+.page-vente .vente-chapo + p { color: var(--texte-2); }
+
+/* Le bouton, ce qu il y a dessous */
+.page-vente .vente-action { margin-top: var(--e-6); }
+.page-vente .vente-action .bouton { min-height: 60px; }
+.page-vente .vente-points {
+  display: flex; flex-wrap: wrap; gap: var(--e-1) var(--e-4); margin-top: var(--e-3);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); line-height: 1.5; letter-spacing: 0.02em; color: var(--texte-2);
+}
+.page-vente .vente-points li { max-width: none; }
+
+/* ---------- 3. Les blocs ---------- */
+.page-vente .vente-bloc { margin-top: var(--e-8); }
+.page-vente .vente-secteur {
+  display: flex; align-items: center; gap: var(--e-3);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: var(--t-micro); line-height: 1; letter-spacing: 0.06em; color: var(--texte-2);
+}
+.page-vente .vente-secteur::after { content: ''; flex: 1 1 auto; height: 1px; background: var(--filet); }
+.page-vente h2 {
+  margin-top: var(--e-4); max-width: none;
+  font-size: clamp(1.75rem, 7vw, 2.375rem); line-height: 1; letter-spacing: 0.01em;
+}
+.page-vente h2 + * { margin-top: var(--e-5); }
+.page-vente .vente-bloc p { color: var(--texte-2); }
+.page-vente .vente-bloc .liste li { color: var(--texte); }
+.page-vente .vente-bloc .liste li span { display: block; color: var(--texte-2); }
+
+/* Etapes numerotees : le numero en mono, comme un tour chronometre */
+.page-vente .vente-etapes { display: grid; gap: var(--e-5); counter-reset: etape; }
+.page-vente .vente-etapes li { position: relative; padding-left: 3.25rem; counter-increment: etape; color: var(--texte-2); }
+.page-vente .vente-etapes li::before {
+  content: "0" counter(etape);
+  position: absolute; left: 0; top: 0.15em;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: var(--t-donnee); line-height: 1.6; color: var(--texte);
+}
+.page-vente .vente-etapes strong { display: block; font-weight: var(--graisse-forte); color: var(--texte); }
+
+/* « Si tu hesites » : une case de grille (bord haut et bord gauche), ce qui rassure ecrit en clair */
+.page-vente .vente-rassure {
+  display: grid; gap: var(--e-5);
+  padding: var(--e-5) var(--e-4);
+  border-top: 1px solid var(--filet-champ); border-left: 1px solid var(--filet-champ);
+  background: var(--vente-case-fond);
+}
+.page-vente .vente-rassure li { max-width: none; color: var(--texte-2); }
+.page-vente .vente-rassure strong { display: block; margin-bottom: var(--e-1); font-weight: var(--graisse-forte); color: var(--texte); }
+.page-vente .vente-rassure a { color: var(--texte); }
+
+/* Messages recus */
+.page-vente .vente-quotes { display: grid; gap: var(--e-5); }
+.page-vente .vente-quotes blockquote { margin: 0; padding-left: var(--e-4); border-left: 1px solid var(--filet-fort); }
+.page-vente .vente-quotes p { color: var(--texte); }
+.page-vente .vente-quotes footer {
+  margin-top: var(--e-2);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); letter-spacing: 0.04em; text-transform: uppercase; color: var(--texte-3);
+}
+.page-vente .vente-faits {
+  margin-top: var(--e-4);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); line-height: 1.6; letter-spacing: 0.04em; text-transform: uppercase; color: var(--texte-2);
+}
+
+/* Les autres chemins : liens texte, jamais un second bouton rouge */
+.page-vente .vente-autres { display: grid; gap: var(--e-3); margin-top: var(--e-6); font-size: var(--t-petit); color: var(--texte-2); }
+.page-vente .vente-autres a { color: var(--texte); }
+
+.page-vente .vente-fin { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-4); margin-top: var(--e-8); max-width: none; }
+.page-vente .vente-fin a { color: var(--texte-3); }
+.page-vente .vente-fin a:hover { color: var(--texte); }
+.page-vente .insecable { white-space: nowrap; }
+
+/* ---------- 4. Entree : la tete de page monte de 12 px, une fois ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .page-vente .vente-tete > * { animation: vente-entree 640ms var(--ease-expo) both; animation-delay: calc(var(--i, 0) * 70ms + 80ms); }
+  @keyframes vente-entree { from { opacity: 0; transform: translateY(12px); } }
+}
+
+/* ---------- 5. Tablette ---------- */
+@media (min-width: 600px) {
+  .page-vente { --vente-photo-h: clamp(280px, 40svh, 440px); }
+  .page-vente .vente-colonne { max-width: calc(600px + 2 * var(--gouttiere-large)); padding-inline: var(--gouttiere-large); }
+  .page-vente .vente-retour { left: var(--gouttiere-large); }
+  .page-vente .vente-rassure { padding: var(--e-6) var(--e-5); }
+}
+
+/* ---------- 6. Ordinateur : panneau photo fixe a droite, colonne a gauche ---------- */
+@media (min-width: 900px) {
+  .page-vente { --vente-photo-g: max(48vw, calc(var(--bord-contenu) + 460px)); }
+  .page-vente .vente-photo {
+    position: fixed; top: 0; right: 0; bottom: 0; left: var(--vente-photo-g);
+    height: auto;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%);
+    mask-image: linear-gradient(to right, transparent 0, #000 22%);
+  }
+  .page-vente .vente-voile-bas { background-image: linear-gradient(to top, rgba(6, 6, 7, 0.7) 0%, rgba(6, 6, 7, 0) 40%); }
+  .page-vente .vente-colonne {
+    margin-top: 0;
+    width: calc(var(--vente-photo-g) - 24px); max-width: calc(600px + var(--bord-contenu) + var(--gouttiere-large));
+    padding: calc(var(--e-9) + var(--e-5)) var(--gouttiere-large) var(--e-10) var(--bord-contenu);
+  }
+  .page-vente .vente-retour { left: var(--bord-contenu); top: var(--e-5); }
+  .page-vente .vente-titre { font-size: clamp(3rem, 4.6vw, 4.5rem); }
+}

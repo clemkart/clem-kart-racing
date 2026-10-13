@@ -2,13 +2,13 @@
 <html lang="fr">
 <head>
 {{partial:head}}
-<title>{{marque.nom}} · Le guide, l’analyse d’onboard, le consulting en piste</title>
-<meta name="description" content="{{marque.auteur}}, pilote de karting. Le guide « {{guide.titre}} », l’analyse de ton onboard, le consulting en piste, les marques. Tout part d’ici.">
+<title>{{marque.nom}} · Le livre de pilotage, l’analyse d’onboard, le consulting en piste</title>
+<meta name="description" content="{{marque.auteur}}, pilote de karting. Le livre de pilotage « {{guide.titre}} », l’analyse de ton onboard, le consulting en piste, les marques. Tout part d’ici.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{sites.url}}{{routes.liens}}">
 <meta property="og:type" content="profile">
-<meta property="og:title" content="{{marque.nom}} · Le guide, l’analyse d’onboard, le consulting en piste">
-<meta property="og:description" content="{{marque.auteur}}, pilote de karting. Le guide « {{guide.titre}} », l’analyse de ton onboard, le consulting en piste, les marques. Tout part d’ici.">
+<meta property="og:title" content="{{marque.nom}} · Le livre de pilotage, l’analyse d’onboard, le consulting en piste">
+<meta property="og:description" content="{{marque.auteur}}, pilote de karting. Le livre de pilotage « {{guide.titre}} », l’analyse de ton onboard, le consulting en piste, les marques. Tout part d’ici.">
 <meta property="og:url" content="{{sites.url}}{{routes.liens}}">
 <meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
 <meta name="twitter:image" content="{{sites.url}}/photos/og-image.jpg">
@@ -19,12 +19,14 @@
 <!-- Page de liens des bios Instagram, TikTok et YouTube (direction V5, 5.2) : aucune navigation,
      aucun formulaire, aucune bibliotheque. Aucun lien Facebook tant que reseaux.facebook est vide dans la config.
      Les cinq liens sont de vrais liens. site.js propage les UTM et envoie bio_click (attribut data-bio).
-     Ordre : le guide (seule case rouge, la pole), l analyse d onboard (directement sur l offre, sans le quiz),
+     Aucun prix sur cette page (decision du 13/10) : chaque case mene a une petite page de vente (/livre, /analyse)
+     ou a la page du consulting, qui annoncent le prix au bon moment.
+     Ordre : le livre de pilotage (seule case rouge, la pole), l analyse d onboard,
      le consulting en piste, les marques (vouvoiement), le site. L extrait gratuit reste en lien texte dessous.
      Photo : piste-25-contre-jour (4:5), Clement de face dans son kart, casque et visiere baissee : aucun visage.
      Telephone : bande photo de 40svh, le nom remonte de 64 px dessus, les feux en haut a gauche de la bande.
      Ordinateur : photo en panneau fixe a droite (42 % jusqu au bord), colonne de 540 px a gauche.
-     Les cinq liens forment une grille de depart : P2 et P4 decales a gauche, meme bord droit (prix et fleches
+     Les cinq liens forment une grille de depart : P2 et P4 decales a gauche, meme bord droit (fleches
      en une colonne), position P1 a P5 ecrite par CSS (data-position).
      Mouvement (interface.js, une fois par session) : les feux s allument un par un, restent allumes, s eteignent ;
      a l extinction le trait rouge se trace sous le nom et la grille part en cascade. Fini avant 1,2 s.
@@ -52,21 +54,18 @@
     </header>
 
     <nav class="liens-boutons" aria-label="Mes liens">
-      <a class="lien-bio lien-bio-principal" href="{{routes.guide}}" data-bio="guide" data-bouton="guide" data-position="1">
-        <span class="lien-bio-titre">Le guide</span>
-        <span class="lien-bio-prix">{{guide.prix_affiche}}</span>
-        <span class="lien-bio-sous">{{guide.titre}} · {{guide.format}}</span>
+      <a class="lien-bio lien-bio-principal" href="{{routes.livre}}" data-bio="guide" data-bouton="guide" data-position="1">
+        <span class="lien-bio-titre">Le livre de pilotage karting</span>
+        <span class="lien-bio-sous">{{guide.titre}} · {{guide.format}}, {{guide.pages}} pages</span>
         <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>
-      <a class="lien-bio" href="{{routes.onboard_offre}}" data-bio="onboard" data-bouton="onboard" data-position="2">
+      <a class="lien-bio" href="{{routes.analyse}}" data-bio="onboard" data-bouton="onboard" data-position="2">
         <span class="lien-bio-titre">Analyse de ton onboard</span>
-        <span class="lien-bio-prix">{{debrief.prix_affiche}}</span>
         <span class="lien-bio-sous">Ta vidéo commentée et 3 priorités, sous <span class="insecable">{{delais.debrief_h}} h</span></span>
         <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>
       <a class="lien-bio" href="{{routes.journee}}" data-bio="journee" data-bouton="journee" data-position="3">
         <span class="lien-bio-titre">{{journee.titre}}</span>
-        <span class="lien-bio-prix">{{journee.prix_affiche}}</span>
         <span class="lien-bio-sous">{{journee.sous_ligne}}</span>
         <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>

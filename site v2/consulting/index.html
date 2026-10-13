@@ -4,12 +4,12 @@
 {{partial:head}}
 {{partial:mouvement}}
 <title>{{journee.titre}} · Une journée avec moi sur ton circuit · {{marque.nom}}</title>
-<meta name="description" content="{{journee.sous_titre}} {{journee.prix_affiche}} {{journee.unite}}, sur devis. Demande ta date en deux minutes.">
+<meta name="description" content="{{journee.sous_titre}} Prix sur estimation, selon ton circuit. Demande ta date en deux minutes.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{{sites.url}}{{routes.journee}}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{journee.titre}} · {{marque.nom}}">
-<meta property="og:description" content="{{journee.sous_titre}} {{journee.prix_affiche}} {{journee.unite}}, sur devis.">
+<meta property="og:description" content="{{journee.sous_titre}} Prix sur estimation, selon ton circuit.">
 <meta property="og:url" content="{{sites.url}}{{routes.journee}}">
 <meta property="og:image" content="{{sites.url}}/photos/piste-795-public-1600.jpg">
 <meta name="twitter:image" content="{{sites.url}}/photos/piste-795-public-1600.jpg">
@@ -43,7 +43,7 @@
         <p class="chapo" data-entree="texte" data-t="420">{{journee.sous_titre}}</p>
         <div class="consulting-action" data-entree="texte" data-t="500">
           <a class="bouton bouton-principal" href="#demande" data-aimant data-cta="hero" data-zone="hero" data-demande>Demander une date</a>
-          <p class="consulting-prix-ligne"><span class="chrono">{{journee.prix_affiche}}</span> {{journee.unite}}. Rien à payer en ligne : tu reçois le devis avant de dire oui.</p>
+          <p class="consulting-prix-ligne">Le prix dépend de ton circuit. Dis-moi où et quand : je t’envoie une estimation tout compris par email, sous <span class="chrono">{{journee.reponse_h}} h</span>. Rien à payer en ligne.</p>
         </div>
       </div>
       <div class="depart" aria-hidden="true" data-entree="depart"><span class="depart-s1">S1</span><span class="damier"></span><span class="depart-trait"></span></div>
@@ -184,8 +184,8 @@
       </div>
       <div class="grille">
         <div class="col-5 consulting-prix reveal">
-          <p class="chrono-grand"><strong data-compteur>{{journee.prix_affiche}}</strong><span class="mono">{{journee.unite}}</span></p>
-          <p class="consulting-prix-note">Les frais de déplacement sont calculés sur devis, selon la distance depuis le Morbihan : kilomètres, péages, et une nuit sur place si le circuit est loin. Tu connais le total avant de dire oui.</p>
+          <p class="consulting-prix-estime"><strong>Sur estimation</strong><span class="mono">Tout compris, envoyée par email sous {{journee.reponse_h}} h</span></p>
+          <p class="consulting-prix-note">Le prix compte la journée et ma route jusqu’à ton circuit : carburant, péages, et une nuit sur place si c’est loin. Je calcule tout et je t’envoie le total par email. Tu le connais avant de dire oui.</p>
         </div>
         <div class="col-6 consulting-prix-detail reveal reveal-decale-1">
           <h3>Ce qui est compris</h3>
@@ -223,7 +223,7 @@
           <p class="demande-chapo">Deux minutes. Je lis chaque demande moi-même.</p>
           <ol class="liste-numeros consulting-etapes reveal">
             <li><span>Tu remplis le formulaire : ton circuit, ta date, ton kart.</span></li>
-            <li><span>Je te réponds sous <span class="chrono">{{journee.reponse_h}} h</span> avec un devis : la journée, les frais de déplacement, le total.</span></li>
+            <li><span>Je te réponds sous <span class="chrono">{{journee.reponse_h}} h</span> par email, avec une estimation : la journée et ma route jusqu’à ton circuit, en un seul total.</span></li>
             <li><span>Tu valides le devis. On fixe la date et on prépare la journée.</span></li>
             <li><span>On roule.</span></li>
           </ol>
@@ -364,7 +364,7 @@
 <div class="barre" role="region" aria-label="Demander une date">
   <div class="secteurs" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
   <div class="conteneur barre-inner">
-    <p class="barre-texte">{{journee.titre}} <span class="chrono">{{journee.prix_affiche}}</span></p>
+    <p class="barre-texte">{{journee.titre}}</p>
     <a class="bouton bouton-principal" href="#demande" data-cta="barre" data-zone="barre" data-demande>Demander une date</a>
   </div>
 </div>

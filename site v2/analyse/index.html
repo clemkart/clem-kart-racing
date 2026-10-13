@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Analyse de ton onboard · {{marque.nom}}</title>
+<meta name="description" content="Envoie ta vidéo embarquée de karting. {{marque.auteur}} la commente tour par tour et te donne trois priorités, sous {{delais.debrief_h}} h. {{textes.garantie_courte}}.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="{{sites.url}}{{routes.analyse}}">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Analyse de ton onboard · {{marque.nom}}">
+<meta property="og:description" content="Envoie ta vidéo embarquée de karting. {{marque.auteur}} la commente tour par tour et te donne trois priorités, sous {{delais.debrief_h}} h.">
+<meta property="og:url" content="{{sites.url}}{{routes.analyse}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
+<meta name="twitter:image" content="{{sites.url}}/photos/og-image.jpg">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/cockpit-dessus-640.webp 640w, /photos/cockpit-dessus-1280.webp 1280w" imagesizes="(min-width: 900px) 52vw, 100vw" fetchpriority="high">
+<link rel="stylesheet" href="/assets/page-vente.css">
+</head>
+<body class="page-vente page-vente-analyse">
+<!-- Petite page de vente de l analyse d onboard, atteinte depuis la case P2 de /liens (13/10/2026).
+     Avant, la case menait au milieu de la longue page du site 2 (/onboard/#prix) : le visiteur arrivait
+     sur un prix sans rien avoir lu. Ici : ce qu il recoit, comment ca se passe, ce qui rassure, le bouton.
+     Le diagnostic gratuit du site 2 reste propose en lien texte, en bas.
+     Tout ce qui est ecrit vient de la config ou de la page /onboard/ : rien d invente. -->
+<main id="contenu" class="vente-page">
+
+  <a class="vente-retour" href="{{routes.liens}}" aria-label="Retour aux liens de {{marque.auteur}}"><svg class="symbole" viewBox="0 0 22 22" width="16" height="16" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg>{{marque.auteur}}</a>
+
+  <div class="vente-photo cine">
+    <picture>
+      <source type="image/webp" srcset="/photos/cockpit-dessus-640.webp 640w, /photos/cockpit-dessus-1280.webp 1280w" sizes="(min-width: 900px) 52vw, 100vw" width="640" height="800">
+      <img src="/photos/cockpit-dessus-640.jpg" srcset="/photos/cockpit-dessus-640.jpg 640w, /photos/cockpit-dessus-1280.jpg 1280w" sizes="(min-width: 900px) 52vw, 100vw" width="640" height="800" alt="Vue plongeante sur Clément Daniel dans son kart, les mains sur le volant, comme une caméra embarquée" fetchpriority="high" decoding="async">
+    </picture>
+    <span class="voile vente-voile-haut" aria-hidden="true"></span>
+    <span class="voile vente-voile-bas" aria-hidden="true"></span>
+  </div>
+
+  <div class="vente-colonne">
+    <header class="vente-tete">
+      <p class="vente-sur">Analyse de ton onboard · Livrée sous <span class="insecable">{{delais.debrief_h}} h</span></p>
+      <h1 class="vente-titre" style="--i: 1">Envoie ta vidéo. Je te dis où tu perds du temps.</h1>
+      <span class="vente-trait" style="--i: 2" aria-hidden="true"></span>
+      <p class="vente-chapo" style="--i: 2">Tu roules, tu t’appliques, et le chrono ne descend plus. De l’intérieur du kart, on ne voit pas ce qu’on fait.</p>
+      <p style="--i: 3">Je regarde ton onboard tour par tour et je te réponds en vidéo, sur tes images. Tu repars avec trois priorités, pas vingt conseils.</p>
+      <div class="vente-action" style="--i: 4">
+        <a class="bouton bouton-principal bouton-large" href="{{debrief.aller}}?locale=fr" data-cta="vente-haut" data-zone="hero">Envoyer ma vidéo <span class="chrono">{{debrief.prix_affiche}}</span></a>
+        <ul class="vente-points">
+          <li>Paiement unique</li>
+          <li>Réponse sous <span class="insecable">{{delais.debrief_h}} h</span></li>
+          <li>Garantie <span class="insecable">{{garantie_jours}} jours</span></li>
+        </ul>
+        <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+      </div>
+    </header>
+
+    <section class="vente-bloc" aria-labelledby="recois-titre">
+      <p class="vente-secteur" aria-hidden="true">S1</p>
+      <h2 id="recois-titre">Ce que tu reçois</h2>
+      <ul class="liste liste-coches">
+        <li>Ta vidéo commentée. <span>Tes images, tour par tour : freinage, trajectoire, remise de gaz, position dans le kart. Ton pilotage sur ton circuit, pas un cours général.</span></li>
+        <li>Tes trois priorités. <span>Classées par gain de temps. Tu sais par quoi commencer, au lieu de tout vouloir corriger d’un coup.</span></li>
+        <li>Un seul objectif pour ta prochaine sortie. <span>Dix consignes en tête à l’entrée du virage, ça ne marche pas.</span></li>
+      </ul>
+      <p class="mention">Au paiement, tu peux ajouter le livre de pilotage à {{debrief.option_guide.prix_affiche}} au lieu de {{guide.prix_affiche}}.</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="etapes-titre">
+      <p class="vente-secteur" aria-hidden="true">S2</p>
+      <h2 id="etapes-titre">Comment ça se passe</h2>
+      <ol class="vente-etapes">
+        <li><strong>Tu colles le lien de ta vidéo.</strong>Au moment du paiement : YouTube en non répertorié, ou Google Drive. Rien à installer.</li>
+        <li><strong>Je la regarde.</strong>Tour par tour, chrono à l’appui. Je remonte du symptôme à la cause.</li>
+        <li><strong>Tu reçois tout par email.</strong>Sous <span class="insecable">{{delais.debrief_h}} h</span> après réception de ta vidéo.</li>
+      </ol>
+      <p>Quelle vidéo ? Une caméra fixée sur le radiateur ou sur le ponton, tournée vers toi : je dois voir tes mains et le volant. Une caméra sur la poitrine ne montre que le bitume. Si ta vidéo est inexploitable, je te le dis avant de commencer et je te rembourse.</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="hesite-titre">
+      <p class="vente-secteur" aria-hidden="true">S3</p>
+      <h2 id="hesite-titre">Si tu hésites</h2>
+      <p>C’est normal. Voilà ce qui se passe vraiment, sans surprise.</p>
+      <ul class="vente-rassure">
+        <li><strong>Ta vidéo reste entre toi et moi.</strong>Elle sert uniquement à ton analyse. Un extrait ne sort dans mes contenus que si tu l’as accepté au paiement. Tu changes d’avis ? Un email suffit.</li>
+        <li><strong>Je ne note pas ton niveau.</strong>Je ne cherche pas tes fautes, je cherche où sont tes dixièmes. Lent ou rapide, c’est le même travail.</li>
+        <li><strong>Je ne te promets pas un chrono.</strong>Personne d’honnête ne peut le faire. Je te promets que tu sauras exactement quoi travailler à ta prochaine sortie.</li>
+        <li><strong>Tu peux être remboursé.</strong>Si l’analyse ne t’apporte rien, tu m’écris dans les <span class="insecable">{{garantie_jours}} jours</span> après l’avoir reçue et je te rembourse. Sans justification. C’est en plus de tes droits légaux.</li>
+        <li><strong>Je ne vois jamais ta carte.</strong>Le paiement passe par Stripe, une plateforme de paiement sécurisée. Tu paies une fois, {{debrief.prix_affiche}}, sans abonnement et sans compte à créer.</li>
+        <li><strong>C’est moi qui réponds.</strong><a href="mailto:{{contact.email}}">{{contact.email}}</a>, sous <span class="insecable">{{delais.reponse_email_h}} h</span>. {{legal.editeur}}, SIREN {{legal.siren}}, entreprise déclarée en France.</li>
+      </ul>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="auteur-titre">
+      <p class="vente-secteur" aria-hidden="true">S4</p>
+      <h2 id="auteur-titre">Qui regarde ta vidéo</h2>
+      <p>Je m’appelle Clément Daniel. Pas de mécano, pas de team : j’ai tout appris seul.</p>
+      <p>J’ai passé des années à ne pas comprendre pourquoi le tour d’avant était meilleur. Aujourd’hui, c’est exactement ce que je cherche sur tes images.</p>
+      <p class="vente-faits">{{faits.anciennete}} · {{faits.titre_court}} · {{faits.series}}</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="final-titre">
+      <p class="vente-secteur" aria-hidden="true">Arrivée</p>
+      <h2 id="final-titre">Moins tu roules, plus chaque session compte.</h2>
+      <p>Arrive à ta prochaine sortie avec un objectif précis, au lieu de tourner en espérant que ça vienne.</p>
+      <div class="vente-action">
+        <a class="bouton bouton-principal bouton-large" href="{{debrief.aller}}?locale=fr" data-cta="vente-bas" data-zone="final">Envoyer ma vidéo <span class="chrono">{{debrief.prix_affiche}}</span></a>
+        <ul class="vente-points">
+          <li>Paiement sécurisé par Stripe</li>
+          <li>Vidéo privée</li>
+          <li>Garantie <span class="insecable">{{garantie_jours}} jours</span></li>
+        </ul>
+        <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
+      </div>
+      <div class="vente-autres">
+        <p>Tu préfères d’abord faire le point ? <a href="{{routes.onboard}}" data-cta="vente-diagnostic">Fais le diagnostic gratuit</a>.</p>
+        <p>Tu veux comprendre avant de te faire analyser ? <a href="{{routes.livre}}" data-cta="vente-livre">Le livre de pilotage karting</a>.</p>
+      </div>
+    </section>
+
+    <p class="mention vente-fin"><a href="{{routes.mentions}}">Mentions légales</a> <a href="{{routes.cgv}}">CGV</a> <a href="{{routes.confidentialite}}">Confidentialité</a> <a href="{{routes.retractation}}">Renoncer au contrat ici</a></p>
+  </div>
+
+</main>
+</body>
+</html>
