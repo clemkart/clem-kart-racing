@@ -21,13 +21,28 @@ function urlTable(table, params) {
 }
 
 // Insertion d'une ou plusieurs lignes. ignorerDoublons : un conflit sur la clé primaire est ignoré (rejeu sans erreur).
-async function inserer(table, lignes, { ignorerDoublons = false, timeoutMs } = {}) {
-  const prefer = ['return=minimal'];
+// renvoyer : renvoie les lignes réellement insérées ([] si toutes existaient déjà, avec ignorerDoublons).
+async function inserer(table, lignes, { ignorerDoublons = false, renvoyer = false, timeoutMs } = {}) {
+  const prefer = [renvoyer ? 'return=representation' : 'return=minimal'];
   if (ignorerDoublons) prefer.push('resolution=ignore-duplicates');
-  await requete('Supabase', urlTable(table), {
+  const reponse = await requete('Supabase', urlTable(table), {
     method: 'POST',
-    headers: entetes({ 'Content-Type': 'application/json', Prefer: prefer.join(',') }),
+    headers: entetes({ 'Content-Type': 'application/json', Prefer: prefer.join(','), ...(renvoyer ? { Accept: 'application/json' } : {}) }),
     body: JSON.stringify(lignes),
+    timeoutMs,
+  });
+  if (!renvoyer) return undefined;
+  return Array.isArray(reponse) ? reponse : [];
+}
+
+// Suppression des lignes qui correspondent aux filtres (jamais sans filtre).
+async function supprimer(table, filtres, { timeoutMs } = {}) {
+  const params = new URLSearchParams();
+  for (const [colonne, condition] of Object.entries(filtres || {})) params.append(colonne, condition);
+  if (![...params.keys()].length) throw new Error('Supabase : suppression sans filtre refusée');
+  await requete('Supabase', urlTable(table, params), {
+    method: 'DELETE',
+    headers: entetes({ Prefer: 'return=minimal' }),
     timeoutMs,
   });
 }
@@ -82,4 +97,4 @@ async function urlSignee(chemin, nomTelechargement, { bucket = 'produits', expir
   return url;
 }
 
-module.exports = { urlBase, inserer, lire, mettreAJour, urlSignee };
+module.exports = { urlBase, inserer, supprimer, lire, mettreAJour, urlSignee };

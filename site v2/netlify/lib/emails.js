@@ -2,8 +2,9 @@
 // Modèles d'emails : HTML en tableaux avec styles en ligne (ni flexbox ni variables CSS) + version texte brut.
 // Tout contenu venant du client (prénom, champs, message) est échappé dans le HTML.
 //
-// Site 1 (V4, 30/09/2026) : seuls les emails de la fonction de rétractation sont publiés (accusé de réception
-// au client, copie interne). Les modèles de livraison du paquet « livraison-phase2 » (guide, débrief,
+// Site 1 (V4, 30/09/2026) : emails de la fonction de rétractation (accusé de réception au client, copie interne)
+// et, depuis le 28/10/2026, ceux du webhook Stripe pour le débrief (commande interne, confirmation client,
+// alerte). Les autres modèles de livraison du paquet « livraison-phase2 » (guide, débrief,
 // remboursement, alertes du webhook Stripe) arrivent avec le lot 3 : ils écrivaient des prix et des délais
 // en dur, ils devront les lire dans config/offres.json avant d'entrer dans ce dépôt.
 
@@ -32,6 +33,8 @@ const gras = (texte) => ({ type: 'gras', texte: String(texte == null ? '' : text
 const p = (contenu, ton = 'texte') => ({ type: 'p', segments: [].concat(contenu), ton });
 const titre = (texte) => ({ type: 'titre', texte });
 const tableau = (lignes) => ({ type: 'tableau', lignes });
+const lien = (texte, url) => ({ type: 'lien', texte: String(texte == null ? '' : texte), url });
+const bouton = (texte, url, style) => ({ type: 'bouton', texte, url, style });
 
 function salutation(prenom) {
   return prenom ? `Salut ${prenom},` : 'Salut,';
@@ -187,13 +190,14 @@ function blocTexte(bloc) {
 // ---------- Assemblage ----------
 
 // client = true : pied légal avec le lien de rétractation (obligatoire sur chaque email client).
-function composer({ sujet, preheader, blocs, client = true, tags = [] }) {
+// piedInterne : pied d'un email interne (par défaut celui de la fonction de rétractation).
+function composer({ sujet, preheader, blocs, client = true, tags = [], piedInterne = PIED_INTERNE }) {
   const liste = blocs.filter(Boolean);
   const urlRetractation = client ? `${urlSite()}/retractation/` : '';
   const piedHtml = client
     ? `${echapperHtml(MENTION_LEGALE)}<br><a href="${echapperHtml(urlRetractation)}" style="color:${C.discret};text-decoration:underline;">${echapperHtml(LIBELLE_RETRACTATION)}</a>`
-    : echapperHtml(PIED_INTERNE);
-  const piedTexte = client ? `${MENTION_LEGALE}\n${LIBELLE_RETRACTATION} : ${urlRetractation}` : PIED_INTERNE;
+    : echapperHtml(piedInterne);
+  const piedTexte = client ? `${MENTION_LEGALE}\n${LIBELLE_RETRACTATION} : ${urlRetractation}` : piedInterne;
   return {
     sujet,
     html: gabarit({ sujet, preheader, corpsHtml: liste.map(blocHtml).join('\n'), piedHtml }),
@@ -253,9 +257,90 @@ function emailCopieRetractation({ nom, email, reference, produitLibelle, message
   });
 }
 
+// ---------- Emails du webhook Stripe (débrief onboard) ----------
+
+const PIED_WEBHOOK = 'Email interne envoyé par le webhook Stripe (stripe-webhook).';
+
+// Commande de débrief pour Clément : tout ce qu'il faut pour livrer, sans ouvrir Stripe.
+// lienVideo est saisi par le client : cliquable seulement s'il commence par https:// (segmentHtml s'en charge).
+function emailDebriefInterne({ nom, email, lienVideo, circuitKart, usageLibelle, montant, optionGuide, optionDeduite,
+  commandeLe, echeance, lienDashboard, sessionId, guideAEnvoyer }) {
+  const nomAffiche = String(nom || '').replace(/\s+/g, ' ').trim().slice(0, 80) || email || 'client sans nom';
+  return composer({
+    client: false,
+    piedInterne: PIED_WEBHOOK,
+    sujet: `Nouveau débrief : ${nomAffiche}`,
+    preheader: `À livrer avant le ${echeance}.`,
+    tags: ['interne', 'debrief'],
+    blocs: [
+      titre('Nouveau débrief'),
+      p(['À livrer avant le ', gras(echeance), ' (heure de Paris).']),
+      bouton('Ouvrir la vidéo', lienVideo),
+      tableau([
+        ['Client', nom || '(non renseigné)'],
+        ['Email', email || '(non renseigné)'],
+        ['Vidéo', lienVideo ? lien(lienVideo, lienVideo) : '(aucun lien)'],
+        ['Circuit et kart', circuitKart || '(non renseigné)'],
+        ["Accord d'utilisation", usageLibelle],
+        ['Montant payé', montant],
+        ['Option guide', `${optionGuide ? 'Oui' : 'Non'}${optionDeduite ? ' (déduit du montant payé)' : ''}`],
+        ['Commandé le', `${commandeLe} (heure de Paris)`],
+        ['À livrer avant le', `${echeance} (heure de Paris)`],
+        ['Paiement Stripe', lienDashboard ? lien('Ouvrir dans le Dashboard', lienDashboard) : sessionId],
+      ]),
+      guideAEnvoyer
+        ? p([gras('Option guide à envoyer à la main : '), 'les adresses du guide et du tableur ne sont pas réglées dans Netlify (GUIDE_PDF_URL, TABLEUR_URL). Le client a lu « sous 24 h ».'])
+        : null,
+      p('La confirmation est partie au client.', 'attenue'),
+    ],
+  });
+}
+
+// Confirmation au client : vidéo reçue, date limite du débrief, et les fichiers du guide s'il l'a pris.
+// fichiers : { guide, tableur } (URL https) ou null ; sans fichiers, l'option guide garde la promesse de Stripe.
+function emailDebriefClient({ prenom, lienVideo, echeance, optionGuide, fichiers, delaiGuideH }) {
+  return composer({
+    sujet: 'Ta vidéo est bien reçue',
+    preheader: `Ton débrief arrive avant le ${echeance}.`,
+    tags: ['debrief', 'confirmation'],
+    blocs: [
+      titre('Vidéo bien reçue'),
+      p(salutation(prenom)),
+      p("Merci pour ta commande. J'ai bien reçu le lien de ta vidéo onboard :"),
+      lienVideo ? p(lien(lienVideo, lienVideo)) : null,
+      p(['Ton débrief arrive par email avant le ', gras(echeance), ' (heure de Paris) : ta vidéo commentée sur tes images, tes trois priorités et ton objectif à travailler.']),
+      p("Si ce lien ne s'ouvre pas sans compte (vidéo privée, mauvais lien), réponds à cet email avec le bon : sans accès à la vidéo, je ne peux rien analyser."),
+      optionGuide && fichiers ? p([gras('Ton guide'), " : tu l'as ajouté à ta commande, le voici avec ton tableur de réglages."]) : null,
+      optionGuide && fichiers ? bouton('Télécharger le guide', fichiers.guide) : null,
+      optionGuide && fichiers ? bouton('Télécharger le tableur', fichiers.tableur, 'secondaire') : null,
+      optionGuide && fichiers ? p('Garde cet email : ces deux liens te servent à les retélécharger.', 'attenue') : null,
+      optionGuide && !fichiers ? p(`Ton guide et ton tableur de réglages arrivent par email sous ${delaiGuideH} h.`) : null,
+      p('Clément'),
+    ],
+  });
+}
+
+// Alerte interne : la confirmation client n'est pas partie (la commande, elle, est arrivée).
+function emailAlerteDebrief({ nom, email, raison }) {
+  return composer({
+    client: false,
+    piedInterne: PIED_WEBHOOK,
+    sujet: `Confirmation non envoyée : ${String(nom || email || 'débrief').replace(/\s+/g, ' ').slice(0, 80)}`,
+    tags: ['interne', 'debrief', 'alerte'],
+    blocs: [
+      titre('Confirmation non envoyée'),
+      p(["L'email « Nouveau débrief » est arrivé, mais la confirmation au client a échoué : ", gras(raison || 'erreur inconnue'), '.']),
+      p(['Écris-lui à la main : ', gras(email || '(email inconnu)'), '.']),
+    ],
+  });
+}
+
 module.exports = {
   MENTION_LEGALE,
   LIBELLE_RETRACTATION,
   emailAccuseRetractation,
   emailCopieRetractation,
+  emailDebriefInterne,
+  emailDebriefClient,
+  emailAlerteDebrief,
 };
