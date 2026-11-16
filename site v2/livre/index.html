@@ -12,10 +12,10 @@
 <meta property="og:url" content="{{sites.url}}{{routes.livre}}">
 <meta property="og:image" content="{{sites.url}}/photos/og-guide.jpg">
 <meta name="twitter:image" content="{{sites.url}}/photos/og-guide.jpg">
-<link rel="preload" as="image" type="image/webp" imagesrcset="/photos/cockpit-volant-640.webp 640w, /photos/cockpit-volant-1280.webp 1280w" imagesizes="(min-width: 900px) 52vw, 100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 900px)" imagesrcset="/photos/cockpit-volant-640.webp 640w, /photos/cockpit-volant-1280.webp 1280w" imagesizes="(min-width: 900px) 52vw, 100vw" fetchpriority="high">
 <link rel="stylesheet" href="/assets/page-vente.css">
 </head>
-<body class="page-vente page-vente-livre">
+<body class="page-vente page-vente-livre vente-avec-video">
 <!-- Petite page de vente du livre, atteinte depuis la case P1 de /liens (13/10/2026).
      Pour un visiteur deja chaud, venu d une bio Instagram ou TikTok, sur telephone : une colonne, aucun menu,
      deux boutons rouges (en haut, en bas), le prix dans le bouton. La longue page /guide reste la page de
@@ -43,9 +43,22 @@
       <p class="vente-sur">Livre digital de pilotage karting · {{guide.pages}} pages</p>
       <h1 class="vente-titre" style="--i: 1">{{guide.titre}}</h1>
       <span class="vente-trait" style="--i: 2" aria-hidden="true"></span>
-      <p class="vente-chapo" style="--i: 2">Tu sors parfois un tour qui te surprend, sans savoir d’où il vient. Le tour d’après, tu ne le retrouves pas.</p>
-      <p style="--i: 3">Ce livre t’explique ce qui s’est passé dans ce tour-là, pour que tu puisses le refaire exprès.</p>
-      <div class="vente-action" style="--i: 4">
+      <!-- Video de vente (Short YouTube vertical). Rien de YouTube ne se charge avant le clic : on montre la
+           miniature et un bouton lecture. A la fin de la video, un ecran d achat remplace les suggestions YouTube. -->
+      <div class="vente-video" data-video="VWK_aoAEZRE" style="--i: 2">
+        <button type="button" class="vente-video-lancer" aria-label="Regarder la vidéo de présentation du livre">
+          <img src="https://i.ytimg.com/vi/VWK_aoAEZRE/oar2.jpg" width="1080" height="1920" alt="" decoding="async" fetchpriority="high">
+          <span class="vente-video-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+          <span class="vente-video-label">Regarde avant d’acheter</span>
+        </button>
+        <div class="vente-video-fin" hidden>
+          <p class="vente-video-fin-titre">Prêt à comprendre tes bons tours ?</p>
+          <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="video-fin" data-zone="video">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+          <button type="button" class="vente-video-revoir">Revoir la vidéo</button>
+        </div>
+        <noscript><a href="https://www.youtube.com/shorts/VWK_aoAEZRE">Voir la vidéo sur YouTube</a></noscript>
+      </div>
+      <div class="vente-action" style="--i: 3">
         <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="vente-haut" data-zone="hero">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
         <ul class="vente-points">
           <li>Paiement unique</li>
@@ -54,6 +67,8 @@
         </ul>
         <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
       </div>
+      <p class="vente-chapo" style="--i: 4">Tu sors parfois un tour qui te surprend, sans savoir d’où il vient. Le tour d’après, tu ne le retrouves pas.</p>
+      <p style="--i: 5">Ce livre t’explique ce qui s’est passé dans ce tour-là, pour que tu puisses le refaire exprès.</p>
     </header>
 
     <section class="vente-bloc" aria-labelledby="dedans-titre">
@@ -137,6 +152,11 @@
     <p class="mention vente-fin"><a href="{{routes.mentions}}">Mentions légales</a> <a href="{{routes.cgv}}">CGV</a> <a href="{{routes.confidentialite}}">Confidentialité</a> <a href="{{routes.retractation}}">Renoncer au contrat ici</a></p>
   </div>
 
+  <div class="vente-barre" aria-hidden="true">
+    <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="barre" data-zone="barre" tabindex="-1">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+  </div>
+
 </main>
+<script src="/assets/page-vente.js" defer></script>
 </body>
 </html>

@@ -179,3 +179,68 @@
   .page-vente .vente-retour { left: var(--bord-contenu); top: var(--e-5); }
   .page-vente .vente-titre { font-size: clamp(3rem, 4.6vw, 4.5rem); }
 }
+
+/* ---------- 7. Video de vente (/livre) : Short YouTube vertical, charge seulement au clic ---------- */
+.page-vente .vente-video {
+  position: relative; overflow: hidden;
+  width: min(100%, calc(56svh * 9 / 16)); aspect-ratio: 9 / 16;
+  margin-top: var(--e-5);
+  background: var(--fond-2); outline: 1px solid rgba(var(--texte-rgb), 0.08);
+}
+.page-vente .vente-video-lancer,
+.page-vente .vente-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.page-vente .vente-video-lancer { padding: 0; background: none; color: var(--texte); cursor: pointer; }
+.page-vente .vente-video-lancer[hidden] { display: none; }
+.page-vente .vente-video-lancer img { width: 100%; height: 100%; object-fit: cover; }
+.page-vente .vente-video-play {
+  position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--rouge-bouton); box-shadow: 0 0 0 8px rgba(var(--rouge-rgb), 0.25);
+  transition: transform var(--d-court) var(--ease-sortie);
+}
+.page-vente .vente-video-play svg { margin-left: 4px; }
+.page-vente .vente-video-lancer:hover .vente-video-play { transform: scale(1.06); }
+.page-vente .vente-video-lancer:focus-visible { outline: 2px solid var(--texte); outline-offset: -4px; }
+.page-vente .vente-video-label {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: var(--e-7) var(--e-4) var(--e-4);
+  background: linear-gradient(to top, rgba(6, 6, 7, 0.85), rgba(6, 6, 7, 0));
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); letter-spacing: 0.06em; text-transform: uppercase; text-align: left;
+}
+/* Fin de la video : un ecran d achat a la place des suggestions YouTube */
+.page-vente .vente-video-fin {
+  position: absolute; inset: 0; z-index: 2;
+  display: grid; align-content: center; justify-items: center; gap: var(--e-4);
+  padding: var(--e-5); background: rgba(6, 6, 7, 0.92); text-align: center;
+}
+.page-vente .vente-video-fin[hidden] { display: none; }
+.page-vente .vente-video-fin-titre {
+  max-width: 12em;
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: 1.75rem; line-height: 1; text-transform: uppercase; color: var(--texte);
+}
+.page-vente .vente-video-revoir {
+  min-height: 44px; padding: 0 var(--e-3);
+  background: none; border: 0; color: var(--texte-2); font: inherit; font-size: var(--t-petit);
+  text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer;
+}
+
+/* Avec la video, sur telephone : plus de bande photo, la video est l image de la page */
+@media (max-width: 899px) {
+  .page-vente.vente-avec-video .vente-photo { display: none; }
+  .page-vente.vente-avec-video .vente-colonne { margin-top: 0; padding-top: 72px; padding-bottom: calc(var(--e-9) + 80px); }
+  .page-vente.vente-avec-video .vente-video { margin-inline: auto; }
+}
+
+/* Barre d achat fixe en bas, telephone seulement (montree par page-vente.js) */
+.page-vente .vente-barre {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-barre);
+  padding: var(--e-3) var(--gouttiere) calc(var(--e-3) + env(safe-area-inset-bottom));
+  background: rgba(6, 6, 7, 0.94); border-top: 1px solid var(--filet);
+  transform: translateY(110%); visibility: hidden;
+  transition: transform var(--duree) var(--ease-sortie), visibility 0s linear var(--duree);
+}
+.page-vente .vente-barre.est-visible { transform: none; visibility: visible; transition: transform var(--duree) var(--ease-sortie); }
+.page-vente .vente-barre .bouton { min-height: 52px; }
+@media (min-width: 900px) { .page-vente .vente-barre { display: none; } }
