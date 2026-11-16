@@ -886,6 +886,8 @@ body.diag{padding-bottom:112px;}
     document.getElementById('prix').scrollIntoView();
   }
   if(location.hash==='#prix') montrerOffre();
+  /* Venu de la case « test » de /liens : on saute l'accueil, la question 1 s'affiche tout de suite */
+  if(location.hash==='#test'){ suivre('diag_start'); show(1); }
 })();
 </script>
 
