@@ -244,3 +244,28 @@
 .page-vente .vente-barre.est-visible { transform: none; visibility: visible; transition: transform var(--duree) var(--ease-sortie); }
 .page-vente .vente-barre .bouton { min-height: 52px; }
 @media (min-width: 900px) { .page-vente .vente-barre { display: none; } }
+
+/* ---------- 8. Argumentaire de /livre (16/11/2026) ---------- */
+/* La preuve sous le bouton du haut : le nombre de lecteurs, en mono */
+.page-vente .vente-preuve {
+  margin-top: var(--e-4);
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono);
+  font-size: var(--t-micro); line-height: 1.5; letter-spacing: 0.04em; text-transform: uppercase; color: var(--texte-2);
+}
+/* Les trois idees recues : la phrase entre guillemets barree d un trait rouge, la realite dessous */
+.page-vente .vente-mythes { display: grid; gap: var(--e-5); margin-top: var(--e-6); counter-reset: mythe; }
+.page-vente .vente-mythes li {
+  position: relative; padding: var(--e-4) var(--e-4) var(--e-4) var(--e-5);
+  border-left: 2px solid var(--rouge); background: var(--vente-case-fond);
+}
+.page-vente .vente-mythes li p { color: var(--texte-2); }
+.page-vente .vente-mythes .vente-mythe {
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: 1.375rem; line-height: 1.05; text-transform: uppercase; color: var(--texte);
+  text-decoration: line-through; text-decoration-color: rgba(var(--rouge-rgb), 0.8); text-decoration-thickness: 2px;
+}
+.page-vente .vente-mythes .vente-mythe + p { margin-top: var(--e-3); }
+.page-vente .vente-bloc :is(.liste, .vente-mythes) + p,
+.page-vente .vente-bloc p + p { margin-top: var(--e-4); }
+.page-vente .vente-bloc .faq { margin-top: var(--e-5); }
+.page-vente .vente-bloc .faq p { color: var(--texte-2); }

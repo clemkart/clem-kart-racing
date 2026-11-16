@@ -16,15 +16,15 @@
 <link rel="stylesheet" href="/assets/page-vente.css">
 </head>
 <body class="page-vente page-vente-livre vente-avec-video">
-<!-- Petite page de vente du livre, atteinte depuis la case P1 de /liens (13/10/2026).
-     Pour un visiteur deja chaud, venu d une bio Instagram ou TikTok, sur telephone : une colonne, aucun menu,
-     deux boutons rouges (en haut, en bas), le prix dans le bouton. La longue page /guide reste la page de
-     reference (sommaire, FAQ) : celle-ci est en noindex et son canonical pointe vers /guide.
-     Texte ecrit a la premiere personne, dans la voix de Clement, avec ses mots du site et du livre :
-     la difference avec ses videos (ce que le visiteur connait deja), un exemple tire du livre,
-     puis ce qui se passe vraiment quand on paie. Aucun fait, chiffre ou message invente.
-     On ecrit « livre digital », jamais « PDF » (demande de Clement) : personne ne doit attendre un colis,
-     et personne n aime payer « un PDF ». On dit « freinage degressif », jamais « relache » tout seul. -->
+<!-- Page de vente du livre, atteinte depuis la case P1 de /liens. Visiteur chaud, venu d une bio, sur telephone.
+     Video de vente en haut, puis l argumentaire dans l ordre (16/11/2026) :
+     1. le probleme (« tu fais tout ce qu on t a dit, le chrono ne bouge pas »),
+     2. les trois idees recues qui ralentissent (tirees de la page /guide et du livre),
+     3. le declic (la maitrise, dans l ordre du virage), 4. ce que le livre fait comprendre, chapitre par chapitre,
+     5. les preuves, 6. l offre et son prix ramene a un pneu, 7. ce qui rassure avant de payer en ligne,
+     8. l auteur, 9. trois questions, 10. le dernier bouton.
+     Aucun fait, chiffre ou message invente. « Livre digital », jamais « PDF ». « Freinage degressif »,
+     jamais « relache » tout seul. Un seul bouton rouge par ecran (haut, offre, bas, barre fixe sur telephone). -->
 <main id="contenu" class="vente-page">
 
   <a class="vente-retour" href="{{routes.liens}}" aria-label="Retour aux liens de {{marque.auteur}}"><svg class="symbole" viewBox="0 0 22 22" width="16" height="16" aria-hidden="true" focusable="false"><path d="M2 20C2 9 9 2 20 2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.6" cy="7.6" r="2.6" fill="#C40C2C"/></svg>{{marque.auteur}}</a>
@@ -32,7 +32,7 @@
   <div class="vente-photo cine">
     <picture>
       <source type="image/webp" srcset="/photos/cockpit-volant-640.webp 640w, /photos/cockpit-volant-1280.webp 1280w" sizes="(min-width: 900px) 52vw, 100vw" width="640" height="800">
-      <img src="/photos/cockpit-volant-640.jpg" srcset="/photos/cockpit-volant-640.jpg 640w, /photos/cockpit-volant-1280.jpg 1280w" sizes="(min-width: 900px) 52vw, 100vw" width="640" height="800" alt="Clément Daniel installé dans son kart, casque et visière iridescente, les mains sur le volant" fetchpriority="high" decoding="async">
+      <img src="/photos/cockpit-volant-640.jpg" srcset="/photos/cockpit-volant-640.jpg 640w, /photos/cockpit-volant-1280.jpg 1280w" sizes="(min-width: 900px) 52vw, 100vw" width="640" height="800" alt="Clément Daniel installé dans son kart, casque et visière iridescente, les mains sur le volant" decoding="async">
     </picture>
     <span class="voile vente-voile-haut" aria-hidden="true"></span>
     <span class="voile vente-voile-bas" aria-hidden="true"></span>
@@ -62,49 +62,59 @@
         <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="vente-haut" data-zone="hero">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
         <ul class="vente-points">
           <li>Paiement unique</li>
-          <li>Téléchargement immédiat</li>
-          <li>Garantie <span class="insecable">{{garantie_jours}} jours</span></li>
+          <li>Accès immédiat</li>
+          <li>Remboursé sous <span class="insecable">{{garantie_jours}} jours</span> si ça ne t’apporte rien</li>
         </ul>
         <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
       </div>
-      <p class="vente-chapo" style="--i: 4">Tu sors parfois un tour qui te surprend, sans savoir d’où il vient. Le tour d’après, tu ne le retrouves pas.</p>
-      <p style="--i: 5">Ce livre t’explique ce qui s’est passé dans ce tour-là, pour que tu puisses le refaire exprès.</p>
+      <p class="vente-preuve" style="--i: 4">{{lecteurs.phrase}}.</p>
     </header>
 
-    <section class="vente-bloc" aria-labelledby="dedans-titre">
+    <section class="vente-bloc" aria-labelledby="probleme-titre">
       <p class="vente-secteur" aria-hidden="true">S1</p>
-      <h2 id="dedans-titre">Ce qu’il y a dedans</h2>
-      <p>Si tu regardes mes vidéos, tu connais le principe : une idée à la fois, en une minute. Le livre les met dans l’ordre, du premier virage au dernier, et t’explique pourquoi elles marchent ensemble.</p>
-      <p>Un exemple. Tu te dis sûrement « je dois freiner plus tard ». Sauf qu’en freinant plus tard, tu arrives en survitesse : tu perds la maîtrise du kart et tu n’arrives plus à le faire pivoter. Tu perds dans le virage ce que tu croyais gagner au freinage. Le livre est rempli de ce genre de choses.</p>
-      <p>Il part de zéro : comment un kart tourne, ce que font tes mains, ce que fait ton pied. Il sert autant si tu débutes que si tu roules depuis des années et que ton chrono ne bouge plus.</p>
+      <h2 id="probleme-titre">Tu fais tout ce qu’on t’a dit. Le chrono ne bouge pas.</h2>
+      <p>Tu as sûrement entendu les trois mêmes conseils au bord de la piste. Freine plus tard. Braque plus fort. Suis la trajectoire idéale.</p>
+      <p>Ce sont justement eux qui te ralentissent.</p>
+      <ol class="vente-mythes">
+        <li>
+          <p class="vente-mythe">« Je dois freiner plus tard. »</p>
+          <p>Freiner plus tard, c’est arriver en survitesse. Tu perds la maîtrise du kart et tu n’arrives plus à le faire pivoter. Tu perds dans le virage ce que tu croyais gagner au freinage.</p>
+        </li>
+        <li>
+          <p class="vente-mythe">« Je dois braquer plus fort. »</p>
+          <p>Le volant est un capteur. Plus tu serres et plus tu braques, plus tu satures le châssis. Il ne respire plus, et il tourne moins.</p>
+        </li>
+        <li>
+          <p class="vente-mythe">« Je dois suivre la trajectoire idéale. »</p>
+          <p>Elle n’existe pas. C’est le grip qui dicte la trajectoire, et il change à chaque session.</p>
+        </li>
+      </ol>
     </section>
 
-    <section class="vente-bloc" aria-labelledby="recois-titre">
+    <section class="vente-bloc" aria-labelledby="declic-titre">
       <p class="vente-secteur" aria-hidden="true">S2</p>
-      <h2 id="recois-titre">Ce que tu reçois</h2>
-      <ul class="liste liste-coches">
-        <li>Le livre digital : {{guide.pages}} pages, {{guide.chapitres}} chapitres, à lire sur ton téléphone, ta tablette ou ton ordinateur.</li>
-        <li>Les schémas, et 6 exercices à faire dès ta prochaine session.</li>
-        <li>Mon tableur de réglages : tu notes ce que tu changes sur le kart, le livre t’explique pourquoi ça marche.</li>
-      </ul>
-      <p class="mention">C’est un livre digital. Rien n’arrive par la poste : tu le télécharges juste après le paiement.</p>
+      <h2 id="declic-titre">La vitesse vient de la maîtrise.</h2>
+      <p>Un kart n’a ni suspension ni assistance. Rien ne masque une erreur. Pour aller vite, il ne suffit pas d’attaquer plus fort : il faut comprendre ce que le kart te demande, et à quel moment.</p>
+      <p>C’est ce que fait ce livre. Il reprend le virage dans l’ordre où il se joue : tes mains, le freinage dégressif, la rotation, le moment où tu remets les gaz. Ce que tu vois par morceaux dans mes vidéos, tu le comprends enfin d’un bout à l’autre.</p>
     </section>
 
-    <section class="vente-bloc" aria-labelledby="hesite-titre">
+    <section class="vente-bloc" aria-labelledby="comprendre-titre">
       <p class="vente-secteur" aria-hidden="true">S3</p>
-      <h2 id="hesite-titre">Si tu hésites à payer en ligne</h2>
-      <p>Acheter en ligne à quelqu’un que tu ne connais que par ses vidéos, je comprends que ça fasse réfléchir. Alors voilà exactement ce qui se passe quand tu cliques.</p>
-      <div class="vente-rassure">
-        <p>Tu arrives sur une page de paiement Stripe. C’est Stripe qui gère ta carte : moi, je ne vois jamais ton numéro. Tu paies {{guide.prix_affiche}} une fois. Il n’y a pas d’abonnement derrière, et tu n’as pas de compte à créer.</p>
-        <p>Juste après, une page te donne le livre et le tableur. Tu les télécharges et tu les gardes. Tu reçois aussi le reçu Stripe par email, et si tu perds le lien un jour, tu m’écris et je te le renvoie.</p>
-        <p>Si tu le lis et que ça ne t’apporte rien, tu m’écris dans les <span class="insecable">{{garantie_jours}} jours</span> et je te rembourse. Je ne te demande pas pourquoi, et il n’y a pas de formulaire à remplir. Cette garantie s’ajoute à tes droits légaux.</p>
-        <p>Une question avant, un souci après ? Écris-moi à <a href="mailto:{{contact.email}}">{{contact.email}}</a> : c’est moi qui réponds, sous <span class="insecable">{{delais.reponse_email_h}} h</span>. Mon entreprise est déclarée en France ({{legal.editeur}}, SIREN {{legal.siren}}), tout est dans les <a href="{{routes.mentions}}">mentions légales</a>.</p>
-      </div>
+      <h2 id="comprendre-titre">Ce que tu vas comprendre</h2>
+      <ul class="liste liste-coches">
+        <li>Pourquoi serrer le volant te coûte du temps, et ce que tes mains doivent faire à la place.</li>
+        <li>Comment doser ton freinage dégressif pour que le kart pivote au lieu de refuser de tourner.</li>
+        <li>Pourquoi remettre les gaz une fois la rotation finie te fait sortir plus vite du virage.</li>
+        <li>Comment lire le grip du jour, puisque ta trajectoire en dépend.</li>
+        <li>Comment analyser tes sessions et t’entraîner, avec 6 exercices à faire dès ta prochaine sortie.</li>
+        <li>Les 10 fondements du pilotage karting, réunis dans le dernier chapitre.</li>
+      </ul>
+      <p>{{guide.chapitres}} chapitres, {{guide.pages}} pages. Le livre part de zéro : comment un kart tourne, ce que font tes mains, ce que fait ton pied. Il sert autant si tu débutes que si tu roules depuis des années et que ton chrono ne bouge plus.</p>
     </section>
 
     <section class="vente-bloc" aria-labelledby="lecteurs-titre">
       <p class="vente-secteur" aria-hidden="true">S4</p>
-      <h2 id="lecteurs-titre">Ce que des lecteurs m’ont écrit</h2>
+      <h2 id="lecteurs-titre">Ce que m’ont écrit des lecteurs</h2>
       <div class="vente-quotes">
         <blockquote>
           <p>« J’ai appris beaucoup et comme je suis visuel, ça fonctionne très bien. Je me suis vraiment amélioré en compétition, un podium le week-end dernier. Merci de tes conseils. »</p>
@@ -119,33 +129,81 @@
           <footer>Lecteur</footer>
         </blockquote>
       </div>
-      <p class="mention">{{lecteurs.phrase}}. Ces messages sont reproduits tels quels. J’ai retiré les prénoms tant que je n’ai pas leur accord écrit.</p>
+      <p class="mention">Messages reproduits tels quels. J’ai retiré les prénoms tant que je n’ai pas leur accord écrit.</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="offre-titre">
+      <p class="vente-secteur" aria-hidden="true">S5</p>
+      <h2 id="offre-titre">Ce que tu reçois pour {{guide.prix_affiche}}</h2>
+      <ul class="liste liste-coches">
+        <li>Le livre digital : {{guide.pages}} pages, {{guide.chapitres}} chapitres, à lire sur ton téléphone, ta tablette ou ton ordinateur.</li>
+        <li>Les schémas, et 6 exercices pour ta prochaine session.</li>
+        <li>Mon tableur de réglages : tu notes ce que tu changes sur le kart, le livre t’explique pourquoi ça marche.</li>
+      </ul>
+      <p>Moins cher qu’un seul pneu de kart. Et contrairement au pneu, ça ne s’use pas : tu le relis avant chaque roulage.</p>
+      <div class="vente-action">
+        <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="vente-offre" data-zone="offre">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+        <ul class="vente-points">
+          <li>Paiement unique</li>
+          <li>Rien n’arrive par la poste : tu le télécharges tout de suite</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="hesite-titre">
+      <p class="vente-secteur" aria-hidden="true">S6</p>
+      <h2 id="hesite-titre">Si tu hésites à payer en ligne</h2>
+      <p>Acheter à quelqu’un que tu ne connais que par ses vidéos, je comprends que ça fasse réfléchir. Alors voilà exactement ce qui se passe quand tu cliques.</p>
+      <div class="vente-rassure">
+        <p>Tu arrives sur une page de paiement Stripe. C’est Stripe qui gère ta carte : moi, je ne vois jamais ton numéro. Tu paies {{guide.prix_affiche}} une fois. Il n’y a pas d’abonnement derrière, et tu n’as pas de compte à créer.</p>
+        <p>Juste après, une page te donne le livre et le tableur, et je te les envoie aussi par email. Tu reçois le reçu Stripe en même temps.</p>
+        <p>Si tu le lis et que ça ne t’apporte rien, tu m’écris dans les <span class="insecable">{{garantie_jours}} jours</span> et je te rembourse. Je ne te demande pas pourquoi, et il n’y a pas de formulaire à remplir. Cette garantie s’ajoute à tes droits légaux.</p>
+        <p>Une question avant, un souci après ? Écris-moi à <a href="mailto:{{contact.email}}">{{contact.email}}</a> : c’est moi qui réponds, sous <span class="insecable">{{delais.reponse_email_h}} h</span>. Mon entreprise est déclarée en France ({{legal.editeur}}, SIREN {{legal.siren}}), tout est dans les <a href="{{routes.mentions}}">mentions légales</a>.</p>
+      </div>
     </section>
 
     <section class="vente-bloc" aria-labelledby="auteur-titre">
-      <p class="vente-secteur" aria-hidden="true">S5</p>
+      <p class="vente-secteur" aria-hidden="true">S7</p>
       <h2 id="auteur-titre">Qui l’a écrit</h2>
-      <p>Moi, Clément. Je n’ai ni mécano ni team : tout ce que je sais, je l’ai appris seul, et j’ai passé des années à ne pas comprendre pourquoi mon tour d’avant était meilleur.</p>
-      <p>Ce livre, c’est celui que j’aurais voulu lire à ce moment-là.</p>
-      <p>Je ne peux pas te promettre un chrono, personne d’honnête ne le peut. Ce que tu auras en le fermant, c’est une idée claire de ce que tu dois travailler.</p>
+      <p>Moi, Clément. Je n’ai eu ni mécano ni team : tout ce que je sais, je l’ai appris seul, et j’ai passé des années à ne pas comprendre pourquoi mon tour d’avant était meilleur.</p>
+      <p>Ce livre, c’est celui que j’aurais voulu lire à ce moment-là. Je ne peux pas te promettre un chrono, personne d’honnête ne le peut. Ce que tu auras en le fermant, c’est une idée claire de ce que tu dois travailler.</p>
       <p class="vente-faits">{{faits.anciennete}} · {{faits.titre_court}} · {{faits.series}}</p>
+    </section>
+
+    <section class="vente-bloc" aria-labelledby="questions-titre">
+      <p class="vente-secteur" aria-hidden="true">S8</p>
+      <h2 id="questions-titre">Trois questions qu’on me pose</h2>
+      <div class="faq">
+        <details>
+          <summary>Je débute. C’est trop technique pour moi ?</summary>
+          <p>Non. Le livre part de zéro et explique chaque idée avant de s’en servir. Si tu roules avec ton propre kart, tu as le niveau pour le lire.</p>
+        </details>
+        <details>
+          <summary>Je roule en location. Ça marche pour moi ?</summary>
+          <p>Le pilotage, oui. La lecture du kart, moins : en location, le kart change à chaque session. Si tu ne roules qu’en location, commence par <a href="{{routes.extrait}}">l’extrait gratuit</a> et garde ton argent.</p>
+        </details>
+        <details>
+          <summary>C’est différent de tes vidéos ?</summary>
+          <p>Mes vidéos montrent une idée à la fois, en une minute. Le livre les met dans l’ordre, du premier virage au dernier, et t’explique pourquoi elles marchent ensemble.</p>
+        </details>
+      </div>
     </section>
 
     <section class="vente-bloc" aria-labelledby="final-titre">
       <p class="vente-secteur" aria-hidden="true">Arrivée</p>
       <h2 id="final-titre">Tu le lis ce soir, tu l’essaies à ta prochaine session.</h2>
+      <p>Tu peux aussi faire dix sessions de plus en espérant que ça vienne. Le livre te fait gagner ce temps-là.</p>
       <div class="vente-action">
         <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-cta="vente-bas" data-zone="final">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
         <ul class="vente-points">
           <li>Paiement sécurisé par Stripe</li>
-          <li>Garantie <span class="insecable">{{garantie_jours}} jours</span></li>
+          <li>Remboursé sous <span class="insecable">{{garantie_jours}} jours</span> si ça ne t’apporte rien</li>
         </ul>
         <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
       </div>
       <div class="vente-autres">
         <p>Pas encore décidé ? <a href="{{routes.extrait}}" data-cta="vente-extrait">{{extrait.appel_courant}}</a> : je te l’envoie par email, sans rien payer.</p>
-        <p>Tu veux voir le sommaire avant ? <a href="{{routes.guide}}" data-cta="vente-sommaire">Il est ici, chapitre par chapitre</a>.</p>
-        <p>Tu ne roules qu’en location ? Le kart change à chaque session, alors commence par l’extrait gratuit et garde ton argent.</p>
+        <p>Tu veux voir le sommaire complet ? <a href="{{routes.guide}}" data-cta="vente-sommaire">Il est ici, chapitre par chapitre</a>.</p>
       </div>
     </section>
 
