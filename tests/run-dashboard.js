@@ -12,6 +12,7 @@ const iso = (dAgo, h = 12) => new Date(Date.now() - dAgo * DAY + h * 3600000 - 1
 
 let events = [];
 let sales = [];
+let premierEvenement = null; // date du tout premier evenement (requete a part)
 // Faux Stripe : liste de sessions de paiement, ou panne (status != 200).
 let stripe = { status: 200, sessions: [] };
 const urlsAppelees = [];
@@ -25,7 +26,17 @@ global.fetch = async (url) => {
     const corps = stripe.status === 200 ? { object: 'list', data: stripe.sessions, has_more: false } : { error: { message: 'panne simulee' } };
     return new Response(JSON.stringify(corps), { status: stripe.status, headers: { 'Content-Type': 'application/json' } });
   }
-  return new Response(JSON.stringify(u.includes('/sales') ? sales : events), {
+  // Comme PostgREST : au plus 1 000 lignes, limit/offset respectes, requete du premier evenement.
+  let lignes = u.includes('/sales') ? sales : events;
+  if (u.includes('select=created_at&order=created_at.asc&limit=1')) {
+    lignes = premierEvenement ? [{ created_at: premierEvenement }] : lignes.slice().sort((x, y) => x.created_at < y.created_at ? -1 : 1).slice(0, 1);
+  } else {
+    const q = new URL(u).searchParams;
+    const off = Number(q.get('offset') || 0);
+    const lim = Math.min(Number(q.get('limit') || 1000), 1000);
+    lignes = lignes.slice(off, off + lim);
+  }
+  return new Response(JSON.stringify(lignes), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }
   });
@@ -410,6 +421,127 @@ const ev = (o) => Object.assign({
   delete process.env.STRIPE_READ_KEY;
   stripe = { status: 200, sessions: [] };
 
+  section('parcours video -> achat');
+  process.env.STRIPE_READ_KEY = 'rk_test_lecture';
+  const hierP = Math.floor((Date.now() - DAY) / 1000);
+  const venteGuide = (ref) => ({
+    id: 'cs_' + Math.random().toString(36).slice(2), object: 'checkout.session', created: hierP,
+    status: 'complete', payment_status: 'paid', livemode: true, amount_total: 1699, currency: 'eur',
+    client_reference_id: ref, payment_link: (require('../config/offres.json').guide.stripe || {}).plink,
+    customer_details: { email: 'acheteur@example.com', name: 'Paul Acheteur' },
+    line_items: { object: 'list', data: [{ description: 'Comprendre comment rouler plus vite', amount_total: 1699, quantity: 1 }] },
+    payment_intent: { id: 'pi_g', latest_charge: { id: 'ch_g', refunded: false, amount_refunded: 0 } }
+  });
+  const mc = { source: 'manychat', utm_source: 'manychat', utm_medium: 'dm', utm_campaign: 'guide' };
+  events = [
+    // Visite A : ManyChat, video v12, lit tout, voit le prix, clique, achete
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', path: '/livre/', meta: { utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'lecture', path: '/livre/', meta: { pct: 25, utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'lecture', path: '/livre/', meta: { pct: 90, utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'prix_vu', path: '/livre/', meta: { zone: 'offre', utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'cta_vu', path: '/livre/', meta: { cta: 'vente-haut', utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'stripe_click', path: '/livre/', meta: { cta: 'vente-haut', route: '/aller/guide', utm_content: 'v12' } }, mc)),
+    // Visite B : ManyChat, video v12, lit a 25 % et part
+    ev(Object.assign({ session_id: 'bbbbbbbb-2222-4000-8000-000000000002', path: '/livre/', meta: { utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'bbbbbbbb-2222-4000-8000-000000000002', type: 'lecture', path: '/livre/', meta: { pct: 25, utm_content: 'v12' } }, mc)),
+    // Visite C : bio TikTok, page de liens seulement
+    ev({ session_id: 'cccccccc-3333-4000-8000-000000000003', path: '/liens', source: 'tiktok', utm_source: 'tiktok', utm_medium: 'bio' }),
+  ];
+  sales = [];
+  stripe = { status: 200, sessions: [
+    venteGuide('s1-livre-sid-aaaaaaaa1111'),
+    venteGuide(null),
+  ] };
+  ({ data } = await appel(30));
+  const pc = data.parcours;
+  check('parcours present', pc && Array.isArray(pc.etapes) && pc.etapes.length === 9, JSON.stringify(pc && pc.etapes));
+  const etapeP = (cle) => (pc.etapes.find(e => e.cle === cle) || {}).valeur;
+  check('3 visites', etapeP('visites') === 3, etapeP('visites'));
+  check('2 ouvrent la page du livre', etapeP('livre') === 2, etapeP('livre'));
+  check('2 lisent 25 %, 1 lit 90 % (le palier 90 compte aussi 50)', etapeP('lecture_25') === 2 && etapeP('lecture_50') === 1 && etapeP('lecture_90') === 1);
+  check('1 prix vu, 1 bouton vu, 1 clic', etapeP('prix_vu') === 1 && etapeP('bouton_vu') === 1 && etapeP('clic_achat') === 1);
+  check('1 achat relie a sa visite', etapeP('ventes') === 1 && pc.ventes.reliees === 1 && pc.ventes.non_reliees === 1, JSON.stringify(pc.ventes));
+  const v12 = pc.par_video.find(x => x.video === 'v12');
+  check('video v12 : 2 visites, 1 achat, 50 % de conversion, 16,99 EUR', v12 && v12.visites === 2 && v12.ventes === 1 && v12.conversion === 50 && v12.revenu_cents === 1699, JSON.stringify(v12));
+  check('visite sans code video regroupee a part', pc.par_video.some(x => x.video === '(sans code vidéo)' && x.visites === 1));
+  const srcMc = pc.par_source.find(x => x.source === 'manychat');
+  check('source manychat : 2 visites, 1 achat', srcMc && srcMc.visites === 2 && srcMc.ventes === 1, JSON.stringify(srcMc));
+  check('parcours : aucune donnee client', !JSON.stringify(pc).includes('acheteur@example.com') && !JSON.stringify(pc).includes('Paul'));
+  delete process.env.STRIPE_READ_KEY;
+  stripe = { status: 200, sessions: [] };
+
+  section('periode precedente : CA et ventes du debrief');
+  process.env.STRIPE_READ_KEY = 'rk_test_lecture';
+  const OFF = require('../config/offres.json');
+  const ilYa = (j) => Math.floor((Date.now() - j * DAY) / 1000);
+  const sess = (j, plink, montant, desc, rembourse = 0) => ({
+    id: 'cs_' + Math.random().toString(36).slice(2), object: 'checkout.session', created: ilYa(j),
+    status: 'complete', payment_status: 'paid', livemode: true, amount_total: montant, currency: 'eur', payment_link: plink,
+    line_items: { object: 'list', data: [{ description: desc, amount_total: montant, quantity: 1 }] },
+    payment_intent: { id: 'pi', latest_charge: { id: 'ch', refunded: false, amount_refunded: rembourse } }
+  });
+  events = [ev({ created_at: iso(40), session_id: 'old' }), ev({ session_id: 'new' })];
+  sales = [{ created_at: iso(45), price_cents: 1699, quantity: 1, currency: 'EUR', product_name: 'Guide' }];
+  stripe = { status: 200, sessions: [
+    sess(1, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+    sess(1, OFF.debrief.stripe.plink, 2999, 'Débrief onboard'),
+    sess(40, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+    sess(42, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite', 500),
+    sess(41, OFF.debrief.stripe.plink, 2999, 'Débrief onboard'),
+  ] };
+  ({ data } = await appel(30));
+  const P = data.previous, T = data.totals;
+  check('precedente : ventes du guide = 1 Gumroad + 2 Stripe', P.ventes === 3, P.ventes);
+  check('precedente : CA du guide = 1699 + 1699 + (1699 - 500)', P.revenu_cents === 4597, P.revenu_cents);
+  check('precedente : CA total = guide + debrief', P.revenu_total_cents === 4597 + 2999, P.revenu_total_cents);
+  check('precedente : ventes_total = guide + debrief (4)', P.ventes_total === 4 && P.ventes_debrief === 1, JSON.stringify([P.ventes_total, P.ventes_debrief]));
+  check('courante : ventes_total = guide + debrief (2), ventes reste le guide (1)', T.ventes_total === 2 && T.ventes === 1 && T.ventes_debrief === 1, JSON.stringify([T.ventes_total, T.ventes, T.ventes_debrief]));
+  check('courante : CA total = 1699 + 2999', T.revenu_total_cents === 4698, T.revenu_total_cents);
+  delete process.env.STRIPE_READ_KEY;
+  stripe = { status: 200, sessions: [] };
+
+  section('periode fixe (since = 1er du mois)');
+  process.env.STRIPE_READ_KEY = 'rk_test_lecture';
+  const since10 = Date.now() - 10 * DAY + 60000; // + 1 minute : l'ancien calcul arrondissait a 11
+  events = [ev({ created_at: iso(5), session_id: 'cur' }), ev({ created_at: iso(15), session_id: 'prev' }), ev({ created_at: iso(25), session_id: 'trop-vieux' })];
+  sales = [];
+  stripe = { status: 200, sessions: [
+    sess(5, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+    sess(15, OFF.debrief.stripe.plink, 2999, 'Débrief onboard'),
+    sess(25, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+  ] };
+  r = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'secret', days: 30, since: since10 }) });
+  const F = JSON.parse(r.body);
+  check('since : periode courante = depuis since (1 visiteur, 1 livre, 1699)', F.totals.visiteurs === 1 && F.totals.ventes_total === 1 && F.totals.revenu_total_cents === 1699, JSON.stringify([F.totals.visiteurs, F.totals.ventes_total, F.totals.revenu_total_cents]));
+  check('since : periode precedente = meme duree juste avant (1 debrief, 2999)', F.previous.ventes_total === 1 && F.previous.revenu_total_cents === 2999, JSON.stringify([F.previous.ventes_total, F.previous.revenu_total_cents]));
+  check('since : bornes renvoyees', F.period_since === new Date(since10).toISOString() && F.period_days === 10, JSON.stringify([F.period_since, F.period_days]));
+  r = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'secret', days: 30, since: Date.now() + DAY }) });
+  for (let k = 0; k < 20; k++) {
+    const r2 = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'secret', days: 30, since: Date.now() - 10 * DAY }) });
+    if (JSON.parse(r2.body).period_days !== 10) { check('since pile 10 jours : toujours 10 (20 essais)', false, JSON.parse(r2.body).period_days); break; }
+    if (k === 19) check('since pile 10 jours : toujours 10 (20 essais)', true);
+  }
+  check('since dans le futur : ignore, 30 jours glissants', JSON.parse(r.body).period_days === 30);
+  delete process.env.STRIPE_READ_KEY;
+  stripe = { status: 200, sessions: [] };
+
+  section('lecture paginee et debut du suivi');
+  events = [];
+  for (let k = 0; k < 2500; k++) events.push(ev({ created_at: iso(k < 2400 ? 20 : 1), session_id: 'pg' + k }));
+  sales = [];
+  premierEvenement = new Date(Date.now() - 200 * DAY).toISOString();
+  urlsAppelees.length = 0;
+  ({ data } = await appel(30));
+  check('2 500 evenements lus en 3 pages (plafond PostgREST de 1 000)', data.totals.visiteurs === 2500, data.totals.visiteurs);
+  check('les jours recents ne sautent plus', data.by_day.find(j => j.date === iso(1).slice(0, 10)).visiteurs === 100);
+  check('3 pages demandees avec offset', urlsAppelees.filter(u => /site_events.*offset=/.test(u)).length === 3, urlsAppelees.filter(u => /offset=/.test(u)).length);
+  check('tracking_since = tout premier evenement (pas le premier de la fenetre)', data.tracking_since === premierEvenement.slice(0, 10), data.tracking_since);
+  check('previous_partial faux quand le suivi est plus ancien que la periode precedente', data.previous_partial === false);
+  check('jours_couverts = 30 sur 30 jours', data.jours_couverts === 30, data.jours_couverts);
+  ({ data } = await appel(3650));
+  check('« Tout » : jours_couverts = 200 (depuis le premier evenement), period_days reste 3650', data.jours_couverts === 200 && data.period_days === 3650, JSON.stringify([data.jours_couverts, data.period_days]));
+  premierEvenement = null;
+
   section('robustesse');
   events = []; sales = [];
   ({ data } = await appel(7));
@@ -419,6 +551,7 @@ const ev = (o) => Object.assign({
   check('aucune donnee -> dates nulles', data.dates.premiere_vente === null && data.dates.meilleur_jour === null);
   check('aucune donnee -> campagnes vides', data.by_campaign.length === 0);
   check('aucune donnee -> page de liens a zero sans planter', data.liens && data.liens.visiteurs === 0 && data.liens.taux_clic === 0 && data.liens.par_bouton.length === 0);
+  check('aucune donnee -> parcours a zero sans planter', data.parcours && data.parcours.etapes.every(e => e.valeur === 0) && data.parcours.par_video.length === 0);
   check('aucune donnee -> taux de remboursement a zero', data.remboursements && data.remboursements.taux === 0);
 
   console.log(`\n${pass} tests OK, ${fail} echecs`);

@@ -1,6 +1,8 @@
 // =============================================
 // Clem Kart Racing : Dashboard analytics (lecture/agregation)
-// POST { password, days } -> JSON des metriques du site sur la periode demandee.
+// POST { password, days, since? } -> JSON des metriques du site sur la periode demandee.
+// since (ms, optionnel) : debut de periode fixe, ex. le 1er du mois a minuit (Paris). La
+// periode precedente a alors la meme duree, juste avant (du 1er au 24 -> les 24 jours d'avant).
 // Protege par DASHBOARD_PASSWORD. Lecture Supabase via REST (service_role), sans SDK.
 // Ventes Stripe (guide et debrief) : lecture directe de Stripe (STRIPE_READ_KEY, cle
 // restreinte en lecture). Le guide et le debrief sont separes grace aux identifiants
@@ -315,7 +317,7 @@ function estExtraitGratuit(s) {
 
 function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
   const daySales = new Map(); // 'YYYY-MM-DD' -> nb ventes
-  let curVentes = 0, curRevenueCents = 0, prevVentes = 0, d24Ventes = 0, currency = '';
+  let curVentes = 0, curRevenueCents = 0, prevVentes = 0, prevRevenueCents = 0, d24Ventes = 0, currency = '';
   // Dates calculees sur TOUT l'historique recupere, pas seulement la periode affichee :
   // « ma premiere vente » ne doit pas changer parce qu'on regarde 7 jours.
   let firstSaleDate = null, lastSaleDate = null;
@@ -348,10 +350,11 @@ function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
       if (day) daySales.set(day, (daySales.get(day) || 0) + 1);
     } else if (ts >= prevStart) {
       prevVentes++;
+      prevRevenueCents += amount;
     }
   }
 
-  return { curVentes, curRevenueCents, prevVentes, d24Ventes, daySales, currency, firstSaleDate, lastSaleDate,
+  return { curVentes, curRevenueCents, prevVentes, prevRevenueCents, d24Ventes, daySales, currency, firstSaleDate, lastSaleDate,
            curExtraits, prevExtraits, d24Extraits, curRembourses };
 }
 
@@ -402,7 +405,7 @@ function produitStripe(s) {
 }
 
 function produitVide() {
-  return { ventes: 0, ventes_prev: 0, ventes_lecteur: 0, options_guide: 0, revenu_cents: 0, currency: '',
+  return { ventes: 0, ventes_prev: 0, revenu_prev_cents: 0, ventes_lecteur: 0, options_guide: 0, revenu_cents: 0, currency: '',
            premiere_vente: null, derniere_vente: null, rembourses: 0, rembourses_partiels: 0,
            parSource: new Map(), parJour: new Map() };
 }
@@ -412,7 +415,8 @@ function produitVide() {
 // Remboursement partiel : la vente reste, le montant rembourse sort du CA.
 // Aucune donnee client (email, nom, lien video) ne sort de cette fonction.
 function aggregateStripe(sessions, curStart, prevStart, sourceParSession) {
-  const out = { guide: produitVide(), debrief: produitVide(), payees: 0, rembourses: 0, partiels: 0 };
+  // liees : ventes de la periode avec leur cle de visite (ou null), pour le parcours video -> achat
+  const out = { guide: produitVide(), debrief: produitVide(), payees: 0, rembourses: 0, partiels: 0, liees: [] };
   for (const s of sessions || []) {
     if (!s || s.status !== 'complete' || s.payment_status !== 'paid' || s.livemode === false) continue;
     const p = produitStripe(s);
@@ -433,7 +437,11 @@ function aggregateStripe(sessions, curStart, prevStart, sourceParSession) {
       if (!cible.derniere_vente || jour > cible.derniere_vente) cible.derniere_vente = jour;
     }
     if (ts < curStart) {
-      if (ts >= prevStart) cible.ventes_prev++;
+      // Periode precedente : meme regle que la courante (remboursement partiel deduit du CA)
+      if (ts >= prevStart) {
+        cible.ventes_prev++;
+        cible.revenu_prev_cents += Math.max(0, (s.amount_total || 0) - ((charge && charge.amount_refunded) || 0));
+      }
       continue;
     }
 
@@ -451,15 +459,124 @@ function aggregateStripe(sessions, curStart, prevStart, sourceParSession) {
     const lien = /-sid-([A-Za-z0-9]{1,32})$/.exec(s.client_reference_id || '');
     const source = (lien && sourceParSession.get(lien[1].slice(0, 12))) || 'non reliée';
     cible.parSource.set(source, (cible.parSource.get(source) || 0) + 1);
+    out.liees.push({ cle: lien ? lien[1].slice(0, 12) : null, produit: p.produit, cents: Math.max(0, (s.amount_total || 0) - rembourse) });
   }
   return out;
 }
 
+// ---------- Parcours video -> achat ----------
+// Une visite = un identifiant de visite (sessionStorage, un onglet). Sa source, sa campagne et
+// son code video (utm_content) sont ceux de son premier evenement. Chaque etape dit si la
+// visite l'a atteinte au moins une fois. Une vente Stripe est rattachee a sa visite grace au
+// client_reference_id (« ...-sid-XXXXXXXXXXXX »), pose par site.js (site 1) et le site 2.
+const PAGE_LIVRE = cheminNormalise(ROUTES.livre || '/livre');
+const ETAPES_PARCOURS = [
+  ['visites', 'Visites'],
+  ['livre', 'Page du livre ouverte'],
+  ['lecture_25', 'Lu à 25 %'],
+  ['lecture_50', 'Lu à 50 %'],
+  ['lecture_90', 'Lu à 90 %'],
+  ['prix_vu', 'Prix vu'],
+  ['bouton_vu', "Bouton d'achat vu"],
+  ['clic_achat', 'Clic vers le paiement'],
+  ['ventes', 'Achat'],
+];
+const SANS_CODE = '(sans code vidéo)';
+
+function nouvelleVisite(r, ts) {
+  const m = r.meta || {};
+  return {
+    debut: ts, source: r.source || 'autre',
+    campagne: campaignLabel(r),
+    video: typeof m.utm_content === 'string' ? m.utm_content : null,
+    livre: false, lecture_25: false, lecture_50: false, lecture_90: false,
+    prix_vu: false, bouton_vu: false, clic_achat: false, ventes: 0, revenu_cents: 0,
+  };
+}
+
+function noterEtape(v, r, site) {
+  const type = r.type;
+  const m = r.meta || {};
+  if (!v.video && typeof m.utm_content === 'string') v.video = m.utm_content;
+  if (!v.campagne) v.campagne = campaignLabel(r);
+  if (type === 'pageview' && site === 'site1' && cheminNormalise(r.path) === PAGE_LIVRE) v.livre = true;
+  else if (type === 'lecture') {
+    const p = Number(m.pct) || 0;
+    if (p >= 25) v.lecture_25 = true;
+    if (p >= 50) v.lecture_50 = true;
+    if (p >= 90) v.lecture_90 = true;
+  } else if (type === 'prix_vu') v.prix_vu = true;
+  else if (type === 'cta_vu') v.bouton_vu = true;
+  else if (type === 'stripe_click' || type === 'gumroad_click') v.clic_achat = true;
+}
+
+function ligneVide() {
+  const l = { revenu_cents: 0 };
+  for (const [cle] of ETAPES_PARCOURS) l[cle] = 0;
+  return l;
+}
+function ajouterVisite(l, v, compterVisite) {
+  if (compterVisite) {
+    l.visites++;
+    for (const [cle] of ETAPES_PARCOURS) if (cle !== 'visites' && cle !== 'ventes' && v[cle]) l[cle]++;
+  }
+  l.ventes += v.ventes;
+  l.revenu_cents += v.revenu_cents;
+}
+function finirLigne(l) {
+  // Achats pour 100 visites : le chiffre qui dit si une source ou une video rapporte.
+  l.conversion = pct(l.ventes, l.visites);
+  return l;
+}
+
+function construireParcours(visites, liees, curStart, statutStripe) {
+  // Ventes -> visites (toutes periodes lues : une visite d'hier peut acheter aujourd'hui)
+  let reliees = 0;
+  for (const vente of liees || []) {
+    const v = vente.cle ? visites.get(vente.cle) : null;
+    if (!v) continue;
+    v.ventes++;
+    v.revenu_cents += vente.cents;
+    reliees++;
+  }
+  const total = ligneVide();
+  const parSource = new Map();
+  const parVideo = new Map();
+  for (const v of visites.values()) {
+    const dansPeriode = v.debut >= curStart;
+    if (!dansPeriode && !v.ventes) continue;
+    ajouterVisite(total, v, dansPeriode);
+    if (!parSource.has(v.source)) parSource.set(v.source, ligneVide());
+    ajouterVisite(parSource.get(v.source), v, dansPeriode);
+    const code = v.video || SANS_CODE;
+    if (!parVideo.has(code)) parVideo.set(code, ligneVide());
+    ajouterVisite(parVideo.get(code), v, dansPeriode);
+  }
+  const etapes = ETAPES_PARCOURS.map(([cle, label], i) => {
+    const n = total[cle];
+    const precedent = i ? total[ETAPES_PARCOURS[i - 1][0]] : n;
+    return { cle, label, valeur: n, pct_precedente: i ? pct(n, precedent) : 100, pct_depart: pct(n, total.visites) };
+  });
+  const trier = (m, nom) => [...m.entries()]
+    .map(([k, l]) => Object.assign({ [nom]: k }, finirLigne(l)))
+    .sort((a, b) => b.visites - a.visites || b.ventes - a.ventes);
+  const nbVentes = (liees || []).length;
+  return {
+    etapes,
+    total: finirLigne(total),
+    par_source: trier(parSource, 'source'),
+    par_video: trier(parVideo, 'video').slice(0, 30),
+    ventes: { total: nbVentes, reliees, non_reliees: nbVentes - reliees, stripe: statutStripe },
+  };
+}
+
 // Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
-function aggregate(rows, days, salesRows, stripeLu) {
+// premierTs : date du tout premier evenement enregistre (lue a part, toutes periodes).
+function aggregate(rows, days, salesRows, stripeLu, since, premierTs) {
   const now = Date.now();
-  const curStart = now - days * DAY_MS;
-  const prevStart = now - 2 * days * DAY_MS;
+  const fixe = Number.isFinite(since) && since < now;
+  const curStart = fixe ? since : now - days * DAY_MS;
+  const prevStart = fixe ? since - (now - since) : now - 2 * days * DAY_MS;
   const dayStart = now - DAY_MS; // pour les deltas 24h
 
   // Periode courante
@@ -479,6 +596,8 @@ function aggregate(rows, days, salesRows, stripeLu) {
   const campaigns = new Map();
   // Toutes periodes : visite -> source, pour relier une vente Stripe a son origine.
   const sourceParSession = new Map();
+  // Toutes periodes : cle de visite -> parcours (etapes atteintes, source, code video)
+  const visites = new Map();
 
   // Page de liens (bio) : vues, clics par bouton et par plateforme, en visiteurs uniques
   const liens = {
@@ -525,6 +644,10 @@ function aggregate(rows, days, salesRows, stripeLu) {
     if (sid) {
       const cle = cleSession(sid);
       if (cle && !sourceParSession.has(cle)) sourceParSession.set(cle, r.source || 'autre');
+      if (cle) {
+        if (!visites.has(cle)) visites.set(cle, nouvelleVisite(r, ts));
+        noterEtape(visites.get(cle), r, site);
+      }
     }
 
     // --- deltas 24h (independants de la periode) ---
@@ -601,9 +724,20 @@ function aggregate(rows, days, salesRows, stripeLu) {
   cur.currency = salesAgg.currency || st.guide.currency || 'EUR';
   cur.taux_achat = cur.visiteurs ? +((cur.ventes / cur.visiteurs) * 100).toFixed(2) : 0;
   prev.ventes = salesAgg.prevVentes + st.guide.ventes_prev;
+  prev.ventes_guide_stripe = st.guide.ventes_prev;
+  prev.ventes_guide_gumroad = salesAgg.prevVentes;
+  prev.revenu_cents = salesAgg.prevRevenueCents + st.guide.revenu_prev_cents;
+  prev.currency = cur.currency;
 
   // ---------- Ventes Stripe du debrief, CA total ----------
+  // `ventes` reste « ventes du guide » (entonnoir et taux d'achat de dashboard.html).
+  // `ventes_total` = guide + debrief, a utiliser avec `revenu_total_cents` (Pit Wall).
   cur.revenu_total_cents = cur.revenu_cents + st.debrief.revenu_cents;
+  cur.ventes_debrief = st.debrief.ventes;
+  cur.ventes_total = cur.ventes + st.debrief.ventes;
+  prev.revenu_total_cents = prev.revenu_cents + st.debrief.revenu_prev_cents;
+  prev.ventes_debrief = st.debrief.ventes_prev;
+  prev.ventes_total = prev.ventes + st.debrief.ventes_prev;
 
   // ---------- Remboursements (Stripe guide + debrief, Gumroad historique) ----------
   const rembourses = st.rembourses + salesAgg.curRembourses;
@@ -620,8 +754,13 @@ function aggregate(rows, days, salesRows, stripeLu) {
 
   // Transparence : le suivi ne demarre que depuis earliestTs. Si la periode precedente
   // remonte avant cette date, la comparaison est partielle (pas assez d'historique).
-  const tracking_since = earliestTs ? new Date(earliestTs).toISOString().slice(0, 10) : null;
-  const previous_partial = earliestTs === null ? true : earliestTs > prevStart;
+  // Le premier evenement de la fenetre lue n'est pas le debut du suivi : la fenetre commence
+  // forcement apres. On prend la date lue a part (premierTs) quand elle existe.
+  const debutSuivi = Number.isFinite(premierTs) ? Math.min(premierTs, earliestTs ?? premierTs) : earliestTs;
+  const tracking_since = debutSuivi ? new Date(debutSuivi).toISOString().slice(0, 10) : null;
+  const previous_partial = debutSuivi === null ? true : debutSuivi > prevStart;
+  // Jours reellement couverts par la periode courante (sur « Tout », period_days vaut 3650).
+  const jours_couverts = debutSuivi === null ? 0 : Math.max(1, Math.round((now - Math.max(curStart, debutSuivi)) / DAY_MS));
 
   // Courbe (jours remplis, max MAX_DAY_POINTS points). « ventes » = guide + debrief.
   const dayCount = Math.min(days, MAX_DAY_POINTS);
@@ -752,6 +891,9 @@ function aggregate(rows, days, salesRows, stripeLu) {
 
   return {
     period_days: days,
+    period_since: new Date(curStart).toISOString(),
+    jours_couverts,
+    period_previous_since: new Date(prevStart).toISOString(),
     tracking_since,
     previous_partial,
     tests_ignores: testsIgnores,
@@ -762,6 +904,7 @@ function aggregate(rows, days, salesRows, stripeLu) {
     remboursements,
     funnel,
     funnel_extrait,
+    parcours: construireParcours(visites, st.liees, curStart, lu.statut),
     liens: construireLiens(liens),
     debrief,
     dates,
@@ -955,6 +1098,34 @@ function noterEchec(ip) {
   else e.nombre += 1;
 }
 
+// ---------- Lecture Supabase paginee ----------
+// PostgREST renvoie au plus 1 000 lignes par requete (max-rows), quel que soit `limit`. Le tri
+// etant ascendant, ce sont les jours RECENTS qui sautaient. On lit donc par pages de 1 000.
+const PAGE_LIGNES = 1000;
+const PAGES_MAX = 200; // 200 000 lignes au plus par ouverture du dashboard
+function enTetesSupabase() {
+  return { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` };
+}
+async function lireJson(url) {
+  const res = await fetch(url, { headers: enTetesSupabase() });
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  return res.json();
+}
+async function lireToutesLesPages(url) {
+  const lignes = [];
+  try {
+    for (let page = 0; page < PAGES_MAX; page++) {
+      const lot = await lireJson(`${url}&limit=${PAGE_LIGNES}&offset=${page * PAGE_LIGNES}`);
+      if (!Array.isArray(lot)) return { ok: false, detail: 'reponse inattendue', lignes };
+      lignes.push(...lot);
+      if (lot.length < PAGE_LIGNES) break;
+    }
+    return { ok: true, lignes };
+  } catch (e) {
+    return { ok: false, detail: e.message, lignes };
+  }
+}
+
 exports.handler = async (event) => {
   const headers = buildHeaders(event);
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
@@ -982,9 +1153,19 @@ exports.handler = async (event) => {
   if (!Number.isFinite(days) || days < 1) days = DEFAULT_DAYS;
   if (days > MAX_DAYS) days = MAX_DAYS;
 
+  // Debut de periode fixe (Pit Wall : le 1er du mois). Refuse s'il est dans le futur ou
+  // plus vieux que MAX_DAYS : on retombe alors sur les jours glissants.
+  let since = Number(body.since);
+  if (!Number.isFinite(since) || since >= Date.now() || since < Date.now() - MAX_DAYS * DAY_MS) since = null;
+  // Arrondi (pas plafond) : « du 1er au 24 a 19 h » = 24 jours, et quelques ms de calcul ne
+  // font pas passer 10 jours a 11. La fenetre lue, elle, est calculee depuis since (plus bas).
+  if (since !== null) days = Math.max(1, Math.round((Date.now() - since) / DAY_MS));
+
   try {
     // On recupere 2x la periode (courante + precedente) pour la comparaison, plafonne.
-    const fetchDays = Math.min(days * 2, 4000);
+    const fetchDays = since !== null
+      ? Math.min(Math.ceil((2 * (Date.now() - since)) / DAY_MS) + 1, 7400)
+      : Math.min(days * 2, 4000);
     const sinceMs = Date.now() - fetchDays * DAY_MS;
     const sinceISO = new Date(sinceMs).toISOString();
     // Les colonnes UTM doivent etre demandees : sans elles, le panneau Campagnes restait vide.
@@ -992,8 +1173,7 @@ exports.handler = async (event) => {
       `${SUPABASE_URL}/rest/v1/site_events` +
       `?select=created_at,type,source,device,session_id,path,meta,utm_source,utm_medium,utm_campaign` +
       `&created_at=gte.${encodeURIComponent(sinceISO)}` +
-      `&order=created_at.asc` +
-      `&limit=100000`;
+      `&order=created_at.asc,id.asc`;
 
     // Les remboursements Gumroad (is_refund) sont lus aussi : ils nourrissent le taux de remboursement.
     const salesUrl =
@@ -1001,31 +1181,30 @@ exports.handler = async (event) => {
       `?select=created_at,product_name,price_cents,quantity,currency,raw,is_refund` +
       `&created_at=gte.${encodeURIComponent(sinceISO)}` +
       `&is_test=eq.false` +
-      `&order=created_at.asc&limit=100000`;
+      `&order=created_at.asc,id.asc`;
 
-    const [res, salesRes, stripeLu] = await Promise.all([
-      fetch(url, { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }),
+    // Tout premier evenement enregistre : vrai debut du suivi (tracking_since, previous_partial).
+    const premierUrl = `${SUPABASE_URL}/rest/v1/site_events?select=created_at&order=created_at.asc&limit=1`;
+
+    const [lu, ventesLues, stripeLu, premier] = await Promise.all([
+      lireToutesLesPages(url),
       // Ventes = amelioration optionnelle : si la table "sales" n'existe pas encore
       // (SQL pas encore execute), on ne veut pas casser le reste du dashboard.
-      fetch(salesUrl, { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }).catch((e) => e),
+      lireToutesLesPages(salesUrl),
       lireStripe(sinceMs),
+      lireJson(premierUrl).catch(() => null),
     ]);
 
-    if (!res.ok) {
-      console.error('dashboard-data read failed:', res.status, await res.text());
+    if (!lu.ok) {
+      console.error('dashboard-data read failed:', lu.detail);
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Lecture Supabase echouee.' }) };
     }
-
     let salesRows = [];
-    if (salesRes instanceof Response && salesRes.ok) {
-      salesRows = await salesRes.json();
-    } else {
-      const detail = salesRes instanceof Response ? `${salesRes.status} ${await salesRes.text()}` : salesRes.message;
-      console.error('dashboard-data sales read failed (degrade sans ventes):', detail);
-    }
+    if (ventesLues.ok) salesRows = ventesLues.lignes;
+    else console.error('dashboard-data sales read failed (degrade sans ventes):', ventesLues.detail);
 
-    const rows = await res.json();
-    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows, days, salesRows, stripeLu)) };
+    const premierTs = Array.isArray(premier) && premier[0] ? Date.parse(premier[0].created_at) : NaN;
+    return { statusCode: 200, headers, body: JSON.stringify(aggregate(lu.lignes, days, salesRows, stripeLu, since, premierTs)) };
   } catch (e) {
     console.error('dashboard-data failed:', e.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'Erreur serveur.' }) };
