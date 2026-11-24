@@ -459,6 +459,36 @@ const ev = (o) => Object.assign({
   delete process.env.STRIPE_READ_KEY;
   stripe = { status: 200, sessions: [] };
 
+  section('periode precedente : CA et ventes du debrief');
+  process.env.STRIPE_READ_KEY = 'rk_test_lecture';
+  const OFF = require('../config/offres.json');
+  const ilYa = (j) => Math.floor((Date.now() - j * DAY) / 1000);
+  const sess = (j, plink, montant, desc, rembourse = 0) => ({
+    id: 'cs_' + Math.random().toString(36).slice(2), object: 'checkout.session', created: ilYa(j),
+    status: 'complete', payment_status: 'paid', livemode: true, amount_total: montant, currency: 'eur', payment_link: plink,
+    line_items: { object: 'list', data: [{ description: desc, amount_total: montant, quantity: 1 }] },
+    payment_intent: { id: 'pi', latest_charge: { id: 'ch', refunded: false, amount_refunded: rembourse } }
+  });
+  events = [ev({ created_at: iso(40), session_id: 'old' }), ev({ session_id: 'new' })];
+  sales = [{ created_at: iso(45), price_cents: 1699, quantity: 1, currency: 'EUR', product_name: 'Guide' }];
+  stripe = { status: 200, sessions: [
+    sess(1, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+    sess(1, OFF.debrief.stripe.plink, 2999, 'Débrief onboard'),
+    sess(40, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+    sess(42, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite', 500),
+    sess(41, OFF.debrief.stripe.plink, 2999, 'Débrief onboard'),
+  ] };
+  ({ data } = await appel(30));
+  const P = data.previous, T = data.totals;
+  check('precedente : ventes du guide = 1 Gumroad + 2 Stripe', P.ventes === 3, P.ventes);
+  check('precedente : CA du guide = 1699 + 1699 + (1699 - 500)', P.revenu_cents === 4597, P.revenu_cents);
+  check('precedente : CA total = guide + debrief', P.revenu_total_cents === 4597 + 2999, P.revenu_total_cents);
+  check('precedente : ventes_total = guide + debrief (4)', P.ventes_total === 4 && P.ventes_debrief === 1, JSON.stringify([P.ventes_total, P.ventes_debrief]));
+  check('courante : ventes_total = guide + debrief (2), ventes reste le guide (1)', T.ventes_total === 2 && T.ventes === 1 && T.ventes_debrief === 1, JSON.stringify([T.ventes_total, T.ventes, T.ventes_debrief]));
+  check('courante : CA total = 1699 + 2999', T.revenu_total_cents === 4698, T.revenu_total_cents);
+  delete process.env.STRIPE_READ_KEY;
+  stripe = { status: 200, sessions: [] };
+
   section('robustesse');
   events = []; sales = [];
   ({ data } = await appel(7));

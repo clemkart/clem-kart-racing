@@ -315,7 +315,7 @@ function estExtraitGratuit(s) {
 
 function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
   const daySales = new Map(); // 'YYYY-MM-DD' -> nb ventes
-  let curVentes = 0, curRevenueCents = 0, prevVentes = 0, d24Ventes = 0, currency = '';
+  let curVentes = 0, curRevenueCents = 0, prevVentes = 0, prevRevenueCents = 0, d24Ventes = 0, currency = '';
   // Dates calculees sur TOUT l'historique recupere, pas seulement la periode affichee :
   // « ma premiere vente » ne doit pas changer parce qu'on regarde 7 jours.
   let firstSaleDate = null, lastSaleDate = null;
@@ -348,10 +348,11 @@ function aggregateSales(salesRows, now, curStart, prevStart, dayStart) {
       if (day) daySales.set(day, (daySales.get(day) || 0) + 1);
     } else if (ts >= prevStart) {
       prevVentes++;
+      prevRevenueCents += amount;
     }
   }
 
-  return { curVentes, curRevenueCents, prevVentes, d24Ventes, daySales, currency, firstSaleDate, lastSaleDate,
+  return { curVentes, curRevenueCents, prevVentes, prevRevenueCents, d24Ventes, daySales, currency, firstSaleDate, lastSaleDate,
            curExtraits, prevExtraits, d24Extraits, curRembourses };
 }
 
@@ -402,7 +403,7 @@ function produitStripe(s) {
 }
 
 function produitVide() {
-  return { ventes: 0, ventes_prev: 0, ventes_lecteur: 0, options_guide: 0, revenu_cents: 0, currency: '',
+  return { ventes: 0, ventes_prev: 0, revenu_prev_cents: 0, ventes_lecteur: 0, options_guide: 0, revenu_cents: 0, currency: '',
            premiere_vente: null, derniere_vente: null, rembourses: 0, rembourses_partiels: 0,
            parSource: new Map(), parJour: new Map() };
 }
@@ -434,7 +435,11 @@ function aggregateStripe(sessions, curStart, prevStart, sourceParSession) {
       if (!cible.derniere_vente || jour > cible.derniere_vente) cible.derniere_vente = jour;
     }
     if (ts < curStart) {
-      if (ts >= prevStart) cible.ventes_prev++;
+      // Periode precedente : meme regle que la courante (remboursement partiel deduit du CA)
+      if (ts >= prevStart) {
+        cible.ventes_prev++;
+        cible.revenu_prev_cents += Math.max(0, (s.amount_total || 0) - ((charge && charge.amount_refunded) || 0));
+      }
       continue;
     }
 
@@ -715,9 +720,20 @@ function aggregate(rows, days, salesRows, stripeLu) {
   cur.currency = salesAgg.currency || st.guide.currency || 'EUR';
   cur.taux_achat = cur.visiteurs ? +((cur.ventes / cur.visiteurs) * 100).toFixed(2) : 0;
   prev.ventes = salesAgg.prevVentes + st.guide.ventes_prev;
+  prev.ventes_guide_stripe = st.guide.ventes_prev;
+  prev.ventes_guide_gumroad = salesAgg.prevVentes;
+  prev.revenu_cents = salesAgg.prevRevenueCents + st.guide.revenu_prev_cents;
+  prev.currency = cur.currency;
 
   // ---------- Ventes Stripe du debrief, CA total ----------
+  // `ventes` reste « ventes du guide » (entonnoir et taux d'achat de dashboard.html).
+  // `ventes_total` = guide + debrief, a utiliser avec `revenu_total_cents` (Pit Wall).
   cur.revenu_total_cents = cur.revenu_cents + st.debrief.revenu_cents;
+  cur.ventes_debrief = st.debrief.ventes;
+  cur.ventes_total = cur.ventes + st.debrief.ventes;
+  prev.revenu_total_cents = prev.revenu_cents + st.debrief.revenu_prev_cents;
+  prev.ventes_debrief = st.debrief.ventes_prev;
+  prev.ventes_total = prev.ventes + st.debrief.ventes_prev;
 
   // ---------- Remboursements (Stripe guide + debrief, Gumroad historique) ----------
   const rembourses = st.rembourses + salesAgg.curRembourses;
