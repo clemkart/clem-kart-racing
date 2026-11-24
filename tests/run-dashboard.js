@@ -489,6 +489,26 @@ const ev = (o) => Object.assign({
   delete process.env.STRIPE_READ_KEY;
   stripe = { status: 200, sessions: [] };
 
+  section('periode fixe (since = 1er du mois)');
+  process.env.STRIPE_READ_KEY = 'rk_test_lecture';
+  const since10 = Date.now() - 10 * DAY;
+  events = [ev({ created_at: iso(5), session_id: 'cur' }), ev({ created_at: iso(15), session_id: 'prev' }), ev({ created_at: iso(25), session_id: 'trop-vieux' })];
+  sales = [];
+  stripe = { status: 200, sessions: [
+    sess(5, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+    sess(15, OFF.debrief.stripe.plink, 2999, 'Débrief onboard'),
+    sess(25, OFF.guide.stripe.plink, 1699, 'Comprendre comment rouler plus vite'),
+  ] };
+  r = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'secret', days: 30, since: since10 }) });
+  const F = JSON.parse(r.body);
+  check('since : periode courante = depuis since (1 visiteur, 1 livre, 1699)', F.totals.visiteurs === 1 && F.totals.ventes_total === 1 && F.totals.revenu_total_cents === 1699, JSON.stringify([F.totals.visiteurs, F.totals.ventes_total, F.totals.revenu_total_cents]));
+  check('since : periode precedente = meme duree juste avant (1 debrief, 2999)', F.previous.ventes_total === 1 && F.previous.revenu_total_cents === 2999, JSON.stringify([F.previous.ventes_total, F.previous.revenu_total_cents]));
+  check('since : bornes renvoyees', F.period_since === new Date(since10).toISOString() && F.period_days === 10, JSON.stringify([F.period_since, F.period_days]));
+  r = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'secret', days: 30, since: Date.now() + DAY }) });
+  check('since dans le futur : ignore, 30 jours glissants', JSON.parse(r.body).period_days === 30);
+  delete process.env.STRIPE_READ_KEY;
+  stripe = { status: 200, sessions: [] };
+
   section('robustesse');
   events = []; sales = [];
   ({ data } = await appel(7));

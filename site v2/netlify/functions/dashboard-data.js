@@ -1,6 +1,8 @@
 // =============================================
 // Clem Kart Racing : Dashboard analytics (lecture/agregation)
-// POST { password, days } -> JSON des metriques du site sur la periode demandee.
+// POST { password, days, since? } -> JSON des metriques du site sur la periode demandee.
+// since (ms, optionnel) : debut de periode fixe, ex. le 1er du mois a minuit (Paris). La
+// periode precedente a alors la meme duree, juste avant (du 1er au 24 -> les 24 jours d'avant).
 // Protege par DASHBOARD_PASSWORD. Lecture Supabase via REST (service_role), sans SDK.
 // Ventes Stripe (guide et debrief) : lecture directe de Stripe (STRIPE_READ_KEY, cle
 // restreinte en lecture). Le guide et le debrief sont separes grace aux identifiants
@@ -569,10 +571,11 @@ function construireParcours(visites, liees, curStart, statutStripe) {
 }
 
 // Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
-function aggregate(rows, days, salesRows, stripeLu) {
+function aggregate(rows, days, salesRows, stripeLu, since) {
   const now = Date.now();
-  const curStart = now - days * DAY_MS;
-  const prevStart = now - 2 * days * DAY_MS;
+  const fixe = Number.isFinite(since) && since < now;
+  const curStart = fixe ? since : now - days * DAY_MS;
+  const prevStart = fixe ? since - (now - since) : now - 2 * days * DAY_MS;
   const dayStart = now - DAY_MS; // pour les deltas 24h
 
   // Periode courante
@@ -882,6 +885,8 @@ function aggregate(rows, days, salesRows, stripeLu) {
 
   return {
     period_days: days,
+    period_since: new Date(curStart).toISOString(),
+    period_previous_since: new Date(prevStart).toISOString(),
     tracking_since,
     previous_partial,
     tests_ignores: testsIgnores,
@@ -1113,6 +1118,12 @@ exports.handler = async (event) => {
   if (!Number.isFinite(days) || days < 1) days = DEFAULT_DAYS;
   if (days > MAX_DAYS) days = MAX_DAYS;
 
+  // Debut de periode fixe (Pit Wall : le 1er du mois). Refuse s'il est dans le futur ou
+  // plus vieux que MAX_DAYS : on retombe alors sur les jours glissants.
+  let since = Number(body.since);
+  if (!Number.isFinite(since) || since >= Date.now() || since < Date.now() - MAX_DAYS * DAY_MS) since = null;
+  if (since !== null) days = Math.max(1, Math.ceil((Date.now() - since) / DAY_MS));
+
   try {
     // On recupere 2x la periode (courante + precedente) pour la comparaison, plafonne.
     const fetchDays = Math.min(days * 2, 4000);
@@ -1156,7 +1167,7 @@ exports.handler = async (event) => {
     }
 
     const rows = await res.json();
-    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows, days, salesRows, stripeLu)) };
+    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows, days, salesRows, stripeLu, since)) };
   } catch (e) {
     console.error('dashboard-data failed:', e.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'Erreur serveur.' }) };
