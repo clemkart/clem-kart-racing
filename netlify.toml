@@ -41,6 +41,20 @@
 # dist/_redirects, lu par Netlify avant ce fichier. /cgv et /confidentialite sont de vraies
 # pages (cgv.html, confidentialite.html) : aucune redirection.
 
+# En-tetes de securite sur tout le site. Pas de CSP pour l'instant (YouTube, Stripe, polices :
+# a regler a part). Ce bloc est AVANT les regles par page : Netlify ajoute les valeurs dans
+# l'ordre du fichier, et le navigateur garde la DERNIERE valeur de Referrer-Policy, donc
+# « no-referrer » des pages merci et retractation reste celle qui s'applique.
+# SAMEORIGIN (pas DENY) : le site peut s'afficher dans ses propres cadres, personne d'autre.
+# Permissions-Policy ne coupe ni autoplay ni fullscreen : la video YouTube de /livre en a besoin.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), usb=()"
+
 # Pages de confirmation d'achat et page de retractation : jamais indexees, et l'adresse
 # (qui peut porter un session_id Stripe) ne part jamais vers un autre site dans le Referer.
 # Deux motifs par page : avec et sans barre finale.

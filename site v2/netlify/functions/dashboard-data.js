@@ -571,7 +571,8 @@ function construireParcours(visites, liees, curStart, statutStripe) {
 }
 
 // Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
-function aggregate(rows, days, salesRows, stripeLu, since) {
+// premierTs : date du tout premier evenement enregistre (lue a part, toutes periodes).
+function aggregate(rows, days, salesRows, stripeLu, since, premierTs) {
   const now = Date.now();
   const fixe = Number.isFinite(since) && since < now;
   const curStart = fixe ? since : now - days * DAY_MS;
@@ -753,8 +754,13 @@ function aggregate(rows, days, salesRows, stripeLu, since) {
 
   // Transparence : le suivi ne demarre que depuis earliestTs. Si la periode precedente
   // remonte avant cette date, la comparaison est partielle (pas assez d'historique).
-  const tracking_since = earliestTs ? new Date(earliestTs).toISOString().slice(0, 10) : null;
-  const previous_partial = earliestTs === null ? true : earliestTs > prevStart;
+  // Le premier evenement de la fenetre lue n'est pas le debut du suivi : la fenetre commence
+  // forcement apres. On prend la date lue a part (premierTs) quand elle existe.
+  const debutSuivi = Number.isFinite(premierTs) ? Math.min(premierTs, earliestTs ?? premierTs) : earliestTs;
+  const tracking_since = debutSuivi ? new Date(debutSuivi).toISOString().slice(0, 10) : null;
+  const previous_partial = debutSuivi === null ? true : debutSuivi > prevStart;
+  // Jours reellement couverts par la periode courante (sur « Tout », period_days vaut 3650).
+  const jours_couverts = debutSuivi === null ? 0 : Math.max(1, Math.round((now - Math.max(curStart, debutSuivi)) / DAY_MS));
 
   // Courbe (jours remplis, max MAX_DAY_POINTS points). « ventes » = guide + debrief.
   const dayCount = Math.min(days, MAX_DAY_POINTS);
@@ -886,6 +892,7 @@ function aggregate(rows, days, salesRows, stripeLu, since) {
   return {
     period_days: days,
     period_since: new Date(curStart).toISOString(),
+    jours_couverts,
     period_previous_since: new Date(prevStart).toISOString(),
     tracking_since,
     previous_partial,
@@ -1091,6 +1098,34 @@ function noterEchec(ip) {
   else e.nombre += 1;
 }
 
+// ---------- Lecture Supabase paginee ----------
+// PostgREST renvoie au plus 1 000 lignes par requete (max-rows), quel que soit `limit`. Le tri
+// etant ascendant, ce sont les jours RECENTS qui sautaient. On lit donc par pages de 1 000.
+const PAGE_LIGNES = 1000;
+const PAGES_MAX = 200; // 200 000 lignes au plus par ouverture du dashboard
+function enTetesSupabase() {
+  return { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` };
+}
+async function lireJson(url) {
+  const res = await fetch(url, { headers: enTetesSupabase() });
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  return res.json();
+}
+async function lireToutesLesPages(url) {
+  const lignes = [];
+  try {
+    for (let page = 0; page < PAGES_MAX; page++) {
+      const lot = await lireJson(`${url}&limit=${PAGE_LIGNES}&offset=${page * PAGE_LIGNES}`);
+      if (!Array.isArray(lot)) return { ok: false, detail: 'reponse inattendue', lignes };
+      lignes.push(...lot);
+      if (lot.length < PAGE_LIGNES) break;
+    }
+    return { ok: true, lignes };
+  } catch (e) {
+    return { ok: false, detail: e.message, lignes };
+  }
+}
+
 exports.handler = async (event) => {
   const headers = buildHeaders(event);
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
@@ -1122,11 +1157,15 @@ exports.handler = async (event) => {
   // plus vieux que MAX_DAYS : on retombe alors sur les jours glissants.
   let since = Number(body.since);
   if (!Number.isFinite(since) || since >= Date.now() || since < Date.now() - MAX_DAYS * DAY_MS) since = null;
-  if (since !== null) days = Math.max(1, Math.ceil((Date.now() - since) / DAY_MS));
+  // Arrondi (pas plafond) : « du 1er au 24 a 19 h » = 24 jours, et quelques ms de calcul ne
+  // font pas passer 10 jours a 11. La fenetre lue, elle, est calculee depuis since (plus bas).
+  if (since !== null) days = Math.max(1, Math.round((Date.now() - since) / DAY_MS));
 
   try {
     // On recupere 2x la periode (courante + precedente) pour la comparaison, plafonne.
-    const fetchDays = Math.min(days * 2, 4000);
+    const fetchDays = since !== null
+      ? Math.min(Math.ceil((2 * (Date.now() - since)) / DAY_MS) + 1, 7400)
+      : Math.min(days * 2, 4000);
     const sinceMs = Date.now() - fetchDays * DAY_MS;
     const sinceISO = new Date(sinceMs).toISOString();
     // Les colonnes UTM doivent etre demandees : sans elles, le panneau Campagnes restait vide.
@@ -1134,8 +1173,7 @@ exports.handler = async (event) => {
       `${SUPABASE_URL}/rest/v1/site_events` +
       `?select=created_at,type,source,device,session_id,path,meta,utm_source,utm_medium,utm_campaign` +
       `&created_at=gte.${encodeURIComponent(sinceISO)}` +
-      `&order=created_at.asc` +
-      `&limit=100000`;
+      `&order=created_at.asc,id.asc`;
 
     // Les remboursements Gumroad (is_refund) sont lus aussi : ils nourrissent le taux de remboursement.
     const salesUrl =
@@ -1143,31 +1181,30 @@ exports.handler = async (event) => {
       `?select=created_at,product_name,price_cents,quantity,currency,raw,is_refund` +
       `&created_at=gte.${encodeURIComponent(sinceISO)}` +
       `&is_test=eq.false` +
-      `&order=created_at.asc&limit=100000`;
+      `&order=created_at.asc,id.asc`;
 
-    const [res, salesRes, stripeLu] = await Promise.all([
-      fetch(url, { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }),
+    // Tout premier evenement enregistre : vrai debut du suivi (tracking_since, previous_partial).
+    const premierUrl = `${SUPABASE_URL}/rest/v1/site_events?select=created_at&order=created_at.asc&limit=1`;
+
+    const [lu, ventesLues, stripeLu, premier] = await Promise.all([
+      lireToutesLesPages(url),
       // Ventes = amelioration optionnelle : si la table "sales" n'existe pas encore
       // (SQL pas encore execute), on ne veut pas casser le reste du dashboard.
-      fetch(salesUrl, { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }).catch((e) => e),
+      lireToutesLesPages(salesUrl),
       lireStripe(sinceMs),
+      lireJson(premierUrl).catch(() => null),
     ]);
 
-    if (!res.ok) {
-      console.error('dashboard-data read failed:', res.status, await res.text());
+    if (!lu.ok) {
+      console.error('dashboard-data read failed:', lu.detail);
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Lecture Supabase echouee.' }) };
     }
-
     let salesRows = [];
-    if (salesRes instanceof Response && salesRes.ok) {
-      salesRows = await salesRes.json();
-    } else {
-      const detail = salesRes instanceof Response ? `${salesRes.status} ${await salesRes.text()}` : salesRes.message;
-      console.error('dashboard-data sales read failed (degrade sans ventes):', detail);
-    }
+    if (ventesLues.ok) salesRows = ventesLues.lignes;
+    else console.error('dashboard-data sales read failed (degrade sans ventes):', ventesLues.detail);
 
-    const rows = await res.json();
-    return { statusCode: 200, headers, body: JSON.stringify(aggregate(rows, days, salesRows, stripeLu, since)) };
+    const premierTs = Array.isArray(premier) && premier[0] ? Date.parse(premier[0].created_at) : NaN;
+    return { statusCode: 200, headers, body: JSON.stringify(aggregate(lu.lignes, days, salesRows, stripeLu, since, premierTs)) };
   } catch (e) {
     console.error('dashboard-data failed:', e.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'Erreur serveur.' }) };

@@ -12,6 +12,7 @@ const iso = (dAgo, h = 12) => new Date(Date.now() - dAgo * DAY + h * 3600000 - 1
 
 let events = [];
 let sales = [];
+let premierEvenement = null; // date du tout premier evenement (requete a part)
 // Faux Stripe : liste de sessions de paiement, ou panne (status != 200).
 let stripe = { status: 200, sessions: [] };
 const urlsAppelees = [];
@@ -25,7 +26,17 @@ global.fetch = async (url) => {
     const corps = stripe.status === 200 ? { object: 'list', data: stripe.sessions, has_more: false } : { error: { message: 'panne simulee' } };
     return new Response(JSON.stringify(corps), { status: stripe.status, headers: { 'Content-Type': 'application/json' } });
   }
-  return new Response(JSON.stringify(u.includes('/sales') ? sales : events), {
+  // Comme PostgREST : au plus 1 000 lignes, limit/offset respectes, requete du premier evenement.
+  let lignes = u.includes('/sales') ? sales : events;
+  if (u.includes('select=created_at&order=created_at.asc&limit=1')) {
+    lignes = premierEvenement ? [{ created_at: premierEvenement }] : lignes.slice().sort((x, y) => x.created_at < y.created_at ? -1 : 1).slice(0, 1);
+  } else {
+    const q = new URL(u).searchParams;
+    const off = Number(q.get('offset') || 0);
+    const lim = Math.min(Number(q.get('limit') || 1000), 1000);
+    lignes = lignes.slice(off, off + lim);
+  }
+  return new Response(JSON.stringify(lignes), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }
   });
@@ -491,7 +502,7 @@ const ev = (o) => Object.assign({
 
   section('periode fixe (since = 1er du mois)');
   process.env.STRIPE_READ_KEY = 'rk_test_lecture';
-  const since10 = Date.now() - 10 * DAY;
+  const since10 = Date.now() - 10 * DAY + 60000; // + 1 minute : l'ancien calcul arrondissait a 11
   events = [ev({ created_at: iso(5), session_id: 'cur' }), ev({ created_at: iso(15), session_id: 'prev' }), ev({ created_at: iso(25), session_id: 'trop-vieux' })];
   sales = [];
   stripe = { status: 200, sessions: [
@@ -505,9 +516,31 @@ const ev = (o) => Object.assign({
   check('since : periode precedente = meme duree juste avant (1 debrief, 2999)', F.previous.ventes_total === 1 && F.previous.revenu_total_cents === 2999, JSON.stringify([F.previous.ventes_total, F.previous.revenu_total_cents]));
   check('since : bornes renvoyees', F.period_since === new Date(since10).toISOString() && F.period_days === 10, JSON.stringify([F.period_since, F.period_days]));
   r = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'secret', days: 30, since: Date.now() + DAY }) });
+  for (let k = 0; k < 20; k++) {
+    const r2 = await dash.handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ password: 'secret', days: 30, since: Date.now() - 10 * DAY }) });
+    if (JSON.parse(r2.body).period_days !== 10) { check('since pile 10 jours : toujours 10 (20 essais)', false, JSON.parse(r2.body).period_days); break; }
+    if (k === 19) check('since pile 10 jours : toujours 10 (20 essais)', true);
+  }
   check('since dans le futur : ignore, 30 jours glissants', JSON.parse(r.body).period_days === 30);
   delete process.env.STRIPE_READ_KEY;
   stripe = { status: 200, sessions: [] };
+
+  section('lecture paginee et debut du suivi');
+  events = [];
+  for (let k = 0; k < 2500; k++) events.push(ev({ created_at: iso(k < 2400 ? 20 : 1), session_id: 'pg' + k }));
+  sales = [];
+  premierEvenement = new Date(Date.now() - 200 * DAY).toISOString();
+  urlsAppelees.length = 0;
+  ({ data } = await appel(30));
+  check('2 500 evenements lus en 3 pages (plafond PostgREST de 1 000)', data.totals.visiteurs === 2500, data.totals.visiteurs);
+  check('les jours recents ne sautent plus', data.by_day.find(j => j.date === iso(1).slice(0, 10)).visiteurs === 100);
+  check('3 pages demandees avec offset', urlsAppelees.filter(u => /site_events.*offset=/.test(u)).length === 3, urlsAppelees.filter(u => /offset=/.test(u)).length);
+  check('tracking_since = tout premier evenement (pas le premier de la fenetre)', data.tracking_since === premierEvenement.slice(0, 10), data.tracking_since);
+  check('previous_partial faux quand le suivi est plus ancien que la periode precedente', data.previous_partial === false);
+  check('jours_couverts = 30 sur 30 jours', data.jours_couverts === 30, data.jours_couverts);
+  ({ data } = await appel(3650));
+  check('« Tout » : jours_couverts = 200 (depuis le premier evenement), period_days reste 3650', data.jours_couverts === 200 && data.period_days === 3650, JSON.stringify([data.jours_couverts, data.period_days]));
+  premierEvenement = null;
 
   section('robustesse');
   events = []; sales = [];
