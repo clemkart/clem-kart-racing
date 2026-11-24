@@ -95,6 +95,21 @@ let ip = 0;
   r = await envoi({ type: 'bio_click', path: '/liens', session_id: 's11', meta: { bouton: 'guide', position: 1 }, referrer: 'https://l.instagram.com/' });
   check('bio_click sans UTM : source depuis le referrer', r.ligne && r.ligne.source === 'instagram', r.ligne && r.ligne.source);
 
+  section('parcours video -> achat (/livre)');
+  for (const type of ['lecture', 'prix_vu', 'cta_vu', 'video_play', 'video_fin']) {
+    const { ligne } = await envoi({ type, path: '/livre/', session_id: 'p1', meta: { pct: 50, cta: 'vente-haut' } });
+    check(`type ${type} accepte`, ligne && ligne.type === type);
+  }
+  r = await envoi({ type: 'lecture', path: '/livre/', session_id: 'p2', meta: { pct: 90.7, hack: { x: 1 } } });
+  check('lecture : pct entier, objet jete', r.ligne && r.ligne.meta && r.ligne.meta.pct === 90 && !('hack' in r.ligne.meta), JSON.stringify(r.ligne && r.ligne.meta));
+  r = await envoi({ type: 'pageview', path: '/livre/', session_id: 'p3', utm_source: 'manychat', utm_medium: 'dm', utm_campaign: 'guide', utm_content: 'v12-freinage' });
+  check('utm_content range dans meta (aucune colonne a creer)', r.ligne && r.ligne.meta && r.ligne.meta.utm_content === 'v12-freinage' && !('utm_content' in r.ligne), JSON.stringify(r.ligne));
+  check('ManyChat reconnu comme source', r.ligne && r.ligne.source === 'manychat', r.ligne && r.ligne.source);
+  r = await envoi({ type: 'pageview', path: '/livre/', session_id: 'p4', utm_content: '<script>alert(1)</script>' });
+  check('utm_content nettoye (lettres, chiffres, - _ . seulement)', r.ligne && r.ligne.meta && r.ligne.meta.utm_content === 'scriptalert1script', JSON.stringify(r.ligne && r.ligne.meta));
+  r = await envoi({ type: 'pageview', path: '/livre/', session_id: 'p5' });
+  check('sans utm_content : meta reste vide', r.ligne && r.ligne.meta === null, JSON.stringify(r.ligne && r.ligne.meta));
+
   section('format du corps');
   r = await envoi({ type: 'diag_start', site: SITE2, path: '/onboard/', session_id: 's8' }, { base64: true });
   check('corps encode en base64 par Netlify : lu correctement', r.ligne && r.ligne.type === 'diag_start');

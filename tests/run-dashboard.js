@@ -410,6 +410,55 @@ const ev = (o) => Object.assign({
   delete process.env.STRIPE_READ_KEY;
   stripe = { status: 200, sessions: [] };
 
+  section('parcours video -> achat');
+  process.env.STRIPE_READ_KEY = 'rk_test_lecture';
+  const hierP = Math.floor((Date.now() - DAY) / 1000);
+  const venteGuide = (ref) => ({
+    id: 'cs_' + Math.random().toString(36).slice(2), object: 'checkout.session', created: hierP,
+    status: 'complete', payment_status: 'paid', livemode: true, amount_total: 1699, currency: 'eur',
+    client_reference_id: ref, payment_link: (require('../config/offres.json').guide.stripe || {}).plink,
+    customer_details: { email: 'acheteur@example.com', name: 'Paul Acheteur' },
+    line_items: { object: 'list', data: [{ description: 'Comprendre comment rouler plus vite', amount_total: 1699, quantity: 1 }] },
+    payment_intent: { id: 'pi_g', latest_charge: { id: 'ch_g', refunded: false, amount_refunded: 0 } }
+  });
+  const mc = { source: 'manychat', utm_source: 'manychat', utm_medium: 'dm', utm_campaign: 'guide' };
+  events = [
+    // Visite A : ManyChat, video v12, lit tout, voit le prix, clique, achete
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', path: '/livre/', meta: { utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'lecture', path: '/livre/', meta: { pct: 25, utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'lecture', path: '/livre/', meta: { pct: 90, utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'prix_vu', path: '/livre/', meta: { zone: 'offre', utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'cta_vu', path: '/livre/', meta: { cta: 'vente-haut', utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'aaaaaaaa-1111-4000-8000-000000000001', type: 'stripe_click', path: '/livre/', meta: { cta: 'vente-haut', route: '/aller/guide', utm_content: 'v12' } }, mc)),
+    // Visite B : ManyChat, video v12, lit a 25 % et part
+    ev(Object.assign({ session_id: 'bbbbbbbb-2222-4000-8000-000000000002', path: '/livre/', meta: { utm_content: 'v12' } }, mc)),
+    ev(Object.assign({ session_id: 'bbbbbbbb-2222-4000-8000-000000000002', type: 'lecture', path: '/livre/', meta: { pct: 25, utm_content: 'v12' } }, mc)),
+    // Visite C : bio TikTok, page de liens seulement
+    ev({ session_id: 'cccccccc-3333-4000-8000-000000000003', path: '/liens', source: 'tiktok', utm_source: 'tiktok', utm_medium: 'bio' }),
+  ];
+  sales = [];
+  stripe = { status: 200, sessions: [
+    venteGuide('s1-livre-sid-aaaaaaaa1111'),
+    venteGuide(null),
+  ] };
+  ({ data } = await appel(30));
+  const pc = data.parcours;
+  check('parcours present', pc && Array.isArray(pc.etapes) && pc.etapes.length === 9, JSON.stringify(pc && pc.etapes));
+  const etapeP = (cle) => (pc.etapes.find(e => e.cle === cle) || {}).valeur;
+  check('3 visites', etapeP('visites') === 3, etapeP('visites'));
+  check('2 ouvrent la page du livre', etapeP('livre') === 2, etapeP('livre'));
+  check('2 lisent 25 %, 1 lit 90 % (le palier 90 compte aussi 50)', etapeP('lecture_25') === 2 && etapeP('lecture_50') === 1 && etapeP('lecture_90') === 1);
+  check('1 prix vu, 1 bouton vu, 1 clic', etapeP('prix_vu') === 1 && etapeP('bouton_vu') === 1 && etapeP('clic_achat') === 1);
+  check('1 achat relie a sa visite', etapeP('ventes') === 1 && pc.ventes.reliees === 1 && pc.ventes.non_reliees === 1, JSON.stringify(pc.ventes));
+  const v12 = pc.par_video.find(x => x.video === 'v12');
+  check('video v12 : 2 visites, 1 achat, 50 % de conversion, 16,99 EUR', v12 && v12.visites === 2 && v12.ventes === 1 && v12.conversion === 50 && v12.revenu_cents === 1699, JSON.stringify(v12));
+  check('visite sans code video regroupee a part', pc.par_video.some(x => x.video === '(sans code vidéo)' && x.visites === 1));
+  const srcMc = pc.par_source.find(x => x.source === 'manychat');
+  check('source manychat : 2 visites, 1 achat', srcMc && srcMc.visites === 2 && srcMc.ventes === 1, JSON.stringify(srcMc));
+  check('parcours : aucune donnee client', !JSON.stringify(pc).includes('acheteur@example.com') && !JSON.stringify(pc).includes('Paul'));
+  delete process.env.STRIPE_READ_KEY;
+  stripe = { status: 200, sessions: [] };
+
   section('robustesse');
   events = []; sales = [];
   ({ data } = await appel(7));
@@ -419,6 +468,7 @@ const ev = (o) => Object.assign({
   check('aucune donnee -> dates nulles', data.dates.premiere_vente === null && data.dates.meilleur_jour === null);
   check('aucune donnee -> campagnes vides', data.by_campaign.length === 0);
   check('aucune donnee -> page de liens a zero sans planter', data.liens && data.liens.visiteurs === 0 && data.liens.taux_clic === 0 && data.liens.par_bouton.length === 0);
+  check('aucune donnee -> parcours a zero sans planter', data.parcours && data.parcours.etapes.every(e => e.valeur === 0) && data.parcours.par_video.length === 0);
   check('aucune donnee -> taux de remboursement a zero', data.remboursements && data.remboursements.taux === 0);
 
   console.log(`\n${pass} tests OK, ${fail} echecs`);

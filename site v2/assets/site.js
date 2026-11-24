@@ -51,7 +51,8 @@
     }
     var q = new URLSearchParams(location.search);
     if (q.get('utm_source')) {
-      utm = { utm_source: q.get('utm_source'), utm_medium: q.get('utm_medium'), utm_campaign: q.get('utm_campaign') };
+      /* utm_content = code de la video (ex. ManyChat « Guide » sous la video v12) */
+      utm = { utm_source: q.get('utm_source'), utm_medium: q.get('utm_medium'), utm_campaign: q.get('utm_campaign'), utm_content: q.get('utm_content') };
       sessionStorage.setItem(CLE_UTM, JSON.stringify(utm));
     } else {
       utm = JSON.parse(sessionStorage.getItem(CLE_UTM) || '{}') || {};
@@ -69,6 +70,7 @@
         utm_source: utm.utm_source || null,
         utm_medium: utm.utm_medium || null,
         utm_campaign: utm.utm_campaign || null,
+        utm_content: utm.utm_content || null,
         session_id: sid,
         meta: meta || null
       });
@@ -91,6 +93,15 @@
     if (!href || href.charAt(0) === '#') return false;
     if (/^(mailto:|tel:|javascript:)/i.test(href)) return false;
     try { return new URL(a.href).origin === location.origin; } catch (e) { return false; }
+  }
+  /* Identifiant de visite transmis a Stripe (client_reference_id) : « s1-livre-sid-XXXXXXXXXXXX ».
+     12 caracteres aleatoires, ni nom ni email : il relie une vente a sa source et a sa video
+     sans rien dire de l acheteur. Meme format que le site 2 (lu par dashboard-data.js). */
+  function referenceStripe() {
+    var cle = String(sid || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 12);
+    if (!cle) return '';
+    var page = (location.pathname || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 20) || 'accueil';
+    return 's1-' + page + '-sid-' + cle;
   }
   function estPorteStripe(a) {
     return /^\/aller\//.test(a.pathname || '');
@@ -118,16 +129,18 @@
         position += 1;
         a.setAttribute('data-bio-position', String(position));
         if (!estPorteStripe(a)) {
-          ajouterParams(a, { utm_source: plateforme, utm_medium: plateforme ? 'bio' : '', utm_campaign: a.getAttribute('data-bio') });
+          ajouterParams(a, { utm_source: plateforme, utm_medium: plateforme ? 'bio' : '', utm_campaign: a.getAttribute('data-bio'), utm_content: utm.utm_content });
+        } else {
+          ajouterParams(a, { locale: 'fr', client_reference_id: referenceStripe() });
         }
         continue;
       }
       if (estPorteStripe(a)) {
-        /* Les portes vers Stripe ne recoivent aucun UTM : seulement la langue */
-        ajouterParams(a, { locale: 'fr' });
+        /* Les portes vers Stripe ne recoivent aucun UTM : la langue et l identifiant de visite */
+        ajouterParams(a, { locale: 'fr', client_reference_id: referenceStripe() });
         continue;
       }
-      ajouterParams(a, { utm_source: utm.utm_source, utm_medium: utm.utm_medium, utm_campaign: utm.utm_campaign });
+      ajouterParams(a, { utm_source: utm.utm_source, utm_medium: utm.utm_medium, utm_campaign: utm.utm_campaign, utm_content: utm.utm_content });
     }
   }
 

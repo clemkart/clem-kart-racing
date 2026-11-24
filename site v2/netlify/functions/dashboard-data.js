@@ -412,7 +412,8 @@ function produitVide() {
 // Remboursement partiel : la vente reste, le montant rembourse sort du CA.
 // Aucune donnee client (email, nom, lien video) ne sort de cette fonction.
 function aggregateStripe(sessions, curStart, prevStart, sourceParSession) {
-  const out = { guide: produitVide(), debrief: produitVide(), payees: 0, rembourses: 0, partiels: 0 };
+  // liees : ventes de la periode avec leur cle de visite (ou null), pour le parcours video -> achat
+  const out = { guide: produitVide(), debrief: produitVide(), payees: 0, rembourses: 0, partiels: 0, liees: [] };
   for (const s of sessions || []) {
     if (!s || s.status !== 'complete' || s.payment_status !== 'paid' || s.livemode === false) continue;
     const p = produitStripe(s);
@@ -451,8 +452,115 @@ function aggregateStripe(sessions, curStart, prevStart, sourceParSession) {
     const lien = /-sid-([A-Za-z0-9]{1,32})$/.exec(s.client_reference_id || '');
     const source = (lien && sourceParSession.get(lien[1].slice(0, 12))) || 'non reliée';
     cible.parSource.set(source, (cible.parSource.get(source) || 0) + 1);
+    out.liees.push({ cle: lien ? lien[1].slice(0, 12) : null, produit: p.produit, cents: Math.max(0, (s.amount_total || 0) - rembourse) });
   }
   return out;
+}
+
+// ---------- Parcours video -> achat ----------
+// Une visite = un identifiant de visite (sessionStorage, un onglet). Sa source, sa campagne et
+// son code video (utm_content) sont ceux de son premier evenement. Chaque etape dit si la
+// visite l'a atteinte au moins une fois. Une vente Stripe est rattachee a sa visite grace au
+// client_reference_id (« ...-sid-XXXXXXXXXXXX »), pose par site.js (site 1) et le site 2.
+const PAGE_LIVRE = cheminNormalise(ROUTES.livre || '/livre');
+const ETAPES_PARCOURS = [
+  ['visites', 'Visites'],
+  ['livre', 'Page du livre ouverte'],
+  ['lecture_25', 'Lu à 25 %'],
+  ['lecture_50', 'Lu à 50 %'],
+  ['lecture_90', 'Lu à 90 %'],
+  ['prix_vu', 'Prix vu'],
+  ['bouton_vu', "Bouton d'achat vu"],
+  ['clic_achat', 'Clic vers le paiement'],
+  ['ventes', 'Achat'],
+];
+const SANS_CODE = '(sans code vidéo)';
+
+function nouvelleVisite(r, ts) {
+  const m = r.meta || {};
+  return {
+    debut: ts, source: r.source || 'autre',
+    campagne: campaignLabel(r),
+    video: typeof m.utm_content === 'string' ? m.utm_content : null,
+    livre: false, lecture_25: false, lecture_50: false, lecture_90: false,
+    prix_vu: false, bouton_vu: false, clic_achat: false, ventes: 0, revenu_cents: 0,
+  };
+}
+
+function noterEtape(v, r, site) {
+  const type = r.type;
+  const m = r.meta || {};
+  if (!v.video && typeof m.utm_content === 'string') v.video = m.utm_content;
+  if (!v.campagne) v.campagne = campaignLabel(r);
+  if (type === 'pageview' && site === 'site1' && cheminNormalise(r.path) === PAGE_LIVRE) v.livre = true;
+  else if (type === 'lecture') {
+    const p = Number(m.pct) || 0;
+    if (p >= 25) v.lecture_25 = true;
+    if (p >= 50) v.lecture_50 = true;
+    if (p >= 90) v.lecture_90 = true;
+  } else if (type === 'prix_vu') v.prix_vu = true;
+  else if (type === 'cta_vu') v.bouton_vu = true;
+  else if (type === 'stripe_click' || type === 'gumroad_click') v.clic_achat = true;
+}
+
+function ligneVide() {
+  const l = { revenu_cents: 0 };
+  for (const [cle] of ETAPES_PARCOURS) l[cle] = 0;
+  return l;
+}
+function ajouterVisite(l, v, compterVisite) {
+  if (compterVisite) {
+    l.visites++;
+    for (const [cle] of ETAPES_PARCOURS) if (cle !== 'visites' && cle !== 'ventes' && v[cle]) l[cle]++;
+  }
+  l.ventes += v.ventes;
+  l.revenu_cents += v.revenu_cents;
+}
+function finirLigne(l) {
+  // Achats pour 100 visites : le chiffre qui dit si une source ou une video rapporte.
+  l.conversion = pct(l.ventes, l.visites);
+  return l;
+}
+
+function construireParcours(visites, liees, curStart, statutStripe) {
+  // Ventes -> visites (toutes periodes lues : une visite d'hier peut acheter aujourd'hui)
+  let reliees = 0;
+  for (const vente of liees || []) {
+    const v = vente.cle ? visites.get(vente.cle) : null;
+    if (!v) continue;
+    v.ventes++;
+    v.revenu_cents += vente.cents;
+    reliees++;
+  }
+  const total = ligneVide();
+  const parSource = new Map();
+  const parVideo = new Map();
+  for (const v of visites.values()) {
+    const dansPeriode = v.debut >= curStart;
+    if (!dansPeriode && !v.ventes) continue;
+    ajouterVisite(total, v, dansPeriode);
+    if (!parSource.has(v.source)) parSource.set(v.source, ligneVide());
+    ajouterVisite(parSource.get(v.source), v, dansPeriode);
+    const code = v.video || SANS_CODE;
+    if (!parVideo.has(code)) parVideo.set(code, ligneVide());
+    ajouterVisite(parVideo.get(code), v, dansPeriode);
+  }
+  const etapes = ETAPES_PARCOURS.map(([cle, label], i) => {
+    const n = total[cle];
+    const precedent = i ? total[ETAPES_PARCOURS[i - 1][0]] : n;
+    return { cle, label, valeur: n, pct_precedente: i ? pct(n, precedent) : 100, pct_depart: pct(n, total.visites) };
+  });
+  const trier = (m, nom) => [...m.entries()]
+    .map(([k, l]) => Object.assign({ [nom]: k }, finirLigne(l)))
+    .sort((a, b) => b.visites - a.visites || b.ventes - a.ventes);
+  const nbVentes = (liees || []).length;
+  return {
+    etapes,
+    total: finirLigne(total),
+    par_source: trier(parSource, 'source'),
+    par_video: trier(parVideo, 'video').slice(0, 30),
+    ventes: { total: nbVentes, reliees, non_reliees: nbVentes - reliees, stripe: statutStripe },
+  };
 }
 
 // Agrege les lignes brutes en metriques pretes a afficher, pour une periode de `days` jours.
@@ -479,6 +587,8 @@ function aggregate(rows, days, salesRows, stripeLu) {
   const campaigns = new Map();
   // Toutes periodes : visite -> source, pour relier une vente Stripe a son origine.
   const sourceParSession = new Map();
+  // Toutes periodes : cle de visite -> parcours (etapes atteintes, source, code video)
+  const visites = new Map();
 
   // Page de liens (bio) : vues, clics par bouton et par plateforme, en visiteurs uniques
   const liens = {
@@ -525,6 +635,10 @@ function aggregate(rows, days, salesRows, stripeLu) {
     if (sid) {
       const cle = cleSession(sid);
       if (cle && !sourceParSession.has(cle)) sourceParSession.set(cle, r.source || 'autre');
+      if (cle) {
+        if (!visites.has(cle)) visites.set(cle, nouvelleVisite(r, ts));
+        noterEtape(visites.get(cle), r, site);
+      }
     }
 
     // --- deltas 24h (independants de la periode) ---
@@ -762,6 +876,7 @@ function aggregate(rows, days, salesRows, stripeLu) {
     remboursements,
     funnel,
     funnel_extrait,
+    parcours: construireParcours(visites, st.liees, curStart, lu.statut),
     liens: construireLiens(liens),
     debrief,
     dates,

@@ -37,7 +37,24 @@ const ALLOWED_TYPES = new Set([
   'diag_exit',       // sortie honnete affichee (meta.kind = loc|nocam, meta.step)
   'diag_result',     // diagnostic affiche (reponses anonymes, aucune donnee personnelle)
   'faq_open',        // question de la FAQ ouverte (meta.q = 1..7)
+  // Page de vente /livre (assets/page-vente.js) : jusqu'ou on lit avant d'acheter
+  'lecture',         // palier de lecture atteint (meta.pct = 25 | 50 | 90)
+  'prix_vu',         // bloc de l'offre et du prix reste une seconde a l'ecran
+  'cta_vu',          // bouton d'achat apparu a l'ecran (meta.cta, meta.zone)
+  'video_play',      // video de vente lancee (meta.video). Envoyes depuis la V8 mais jetes jusqu'ici.
+  'video_fin',       // video de vente vue jusqu'au bout (meta.video)
 ]);
+
+// Evenements dont les meta sont bornees une a une (valeurs courtes, nombres entiers).
+const META_BORNEES = new Set(['bio_click', 'stripe_click', 'lecture', 'prix_vu', 'cta_vu', 'video_play', 'video_fin']);
+
+// Code de la video (utm_content, pose dans les liens ManyChat) : lettres, chiffres, - _ . seulement.
+function codeVideo(v) {
+  const c = clip(v, 64);
+  if (!c) return null;
+  const propre = c.replace(/[^A-Za-z0-9_.-]/g, '').slice(0, 40);
+  return propre || null;
+}
 
 // Clefs de meta connues pour les evenements de la V4. Les autres clefs sont gardees telles
 // quelles (le dashboard ignore ce qu'il ne connait pas), seules les valeurs sont bornees :
@@ -50,7 +67,7 @@ function borner(valeur) {
   return null;
 }
 function nettoyerMeta(type, meta) {
-  if (type !== 'bio_click' && type !== 'stripe_click') return meta;
+  if (!META_BORNEES.has(type)) return meta;
   const propre = {};
   for (const [clef, valeur] of Object.entries(meta)) {
     const v = borner(valeur);
@@ -199,6 +216,11 @@ exports.handler = async (event) => {
       const str = JSON.stringify(data.meta);
       if (str.length <= MAX_META_CHARS) meta = nettoyerMeta(type, data.meta);
     }
+
+    // utm_content (code de la video) : range dans meta, la table n'a pas de colonne pour lui
+    // (aucune migration SQL a lancer).
+    const utmContent = codeVideo(data.utm_content);
+    if (utmContent) meta = { ...(meta || {}), utm_content: utmContent };
 
     // Site d'origine : seulement s'il est connu, jamais une valeur libre venue du navigateur.
     const site = siteLabel(data.site);
