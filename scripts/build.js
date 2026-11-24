@@ -241,6 +241,19 @@ function ecrireRedirects(cfg, dist) {
     `${cfg.debrief.aller}  ${cfg.debrief.stripe.url}  302`,
   ];
 
+  /* Plan d action du diagnostic : deux portes (sans camera, avec camera). Elles ne sont ecrites que lorsque
+     Stripe est pret (diagnostic.stripe.pret = oui et les deux adresses renseignees) : avant, la page n affiche
+     pas le bouton de paiement. */
+  const diag = cfg.diagnostic || {};
+  const diagStripe = diag.stripe || {};
+  if (diagStripe.pret === 'oui') {
+    const lienStripe = /^https:\/\/buy\.stripe\.com\//;
+    if (!lienStripe.test(diagStripe.url || '') || !lienStripe.test(diagStripe.url_camera || '')) {
+      echec('diagnostic.stripe.pret vaut oui mais url ou url_camera ne sont pas des liens buy.stripe.com');
+    }
+    lignes.push(`${diag.aller}  ${diagStripe.url}  302`, `${diag.aller_camera}  ${diagStripe.url_camera}  302`);
+  }
+
   /* /onboard/ vit sur le site 2 tant que la page n est pas dans "site v2/" (lot 3). 302 : temporaire. */
   if (!pageExiste(r.onboard)) {
     const onboard = r.onboard.replace(/\/$/, '');

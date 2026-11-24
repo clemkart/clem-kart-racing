@@ -12,7 +12,7 @@
 
 [build]
   publish = "dist"
-  command = "node scripts/build.js && npm run test:prix && npm run test:gratuit && npm run test:fonts && npm run test:demande && npm run test:track && npm run test:dashboard && npm run test:typo && npm run test:coach && npm run test:schemas && npm run test:retractation"
+  command = "node scripts/build.js && npm run test:prix && npm run test:gratuit && npm run test:fonts && npm run test:demande && npm run test:track && npm run test:dashboard && npm run test:typo && npm run test:coach && npm run test:schemas && npm run test:retractation && npm run test:diagnostic"
   functions = "site v2/netlify/functions"
 
 [build.environment]

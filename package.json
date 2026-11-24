@@ -19,6 +19,7 @@
     "test:coach": "node tests/run-coach.js",
     "test:schemas": "node tests/run-schemas.js",
     "test:retractation": "node --test tests/livraison/",
-    "test": "npm run test:prix && npm run test:fonts && npm run test:gratuit && npm run test:dashboard && npm run test:track && npm run test:demande && npm run test:typo && npm run test:coach && npm run test:schemas && npm run test:retractation"
+    "test:diagnostic": "node tests/run-diagnostic.js",
+    "test": "npm run test:prix && npm run test:fonts && npm run test:gratuit && npm run test:dashboard && npm run test:track && npm run test:demande && npm run test:typo && npm run test:coach && npm run test:schemas && npm run test:retractation && npm run test:diagnostic"
   }
 }

@@ -1,0 +1,213 @@
+/* ============================================================
+   Clem Kart Racing : verre.css (refonte « verre », 24/11/2026)
+   Chargee en DERNIER sur toutes les pages (partial verre). Elle repeint le site
+   sans toucher au HTML : palette du tableau de bord, fond a halos, decor fixe
+   (decor.js : circuit dessine au defilement, engrenages), panneaux de verre,
+   boutons, navigation flottante.
+   Regle de lecture : « body:not(#v) » sert seulement a passer devant les feuilles
+   de page, qui ciblent souvent « .page-x .bloc ». Aucun !important.
+   ============================================================ */
+
+/* ---------- 1. Palette, formes, matiere ---------- */
+:root {
+  --fond-0: #050506;
+  --fond-1: #0B0B0D;
+  --fond-2: #131316;
+  --fond-3: #1B1B1F;
+  --rouge: #E10600;
+  --rouge-bouton: #DC140A;      /* craie dessus : 4,5:1 au point le plus clair du degrade */
+  --rouge-survol: #B00500;
+  --rouge-rgb: 225, 6, 0;
+  --rouge-vif: #FF3B30;         /* lueurs, jamais un texte */
+  --rayon: 14px;
+  --rayon-carte: 24px;
+  --rayon-grand: 28px;
+  /* Le verre : un reflet en coin, une teinte tres legere, un flou qui sature ce qui passe derriere */
+  --verre: radial-gradient(130% 90% at 0% 0%, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 46%), linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025) 45%, rgba(255, 255, 255, 0.05));
+  --verre-flou: blur(20px) saturate(185%) brightness(1.08);
+  --verre-bord: rgba(255, 255, 255, 0.13);
+  --verre-ombre: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 1px 0 0 rgba(255, 255, 255, 0.07), inset -1px -1px 0 rgba(255, 90, 80, 0.16), inset 0 0 36px rgba(255, 255, 255, 0.03), 0 24px 60px -34px rgba(0, 0, 0, 0.9);
+  --verre-rouge: linear-gradient(135deg, #DC140A, #8A0400);
+  --verre-rouge-ombre: inset 0 1px 0 rgba(255, 255, 255, 0.38), 0 14px 34px -12px rgba(225, 6, 0, 0.85);
+  --ease-ressort: cubic-bezier(0.2, 0.9, 0.25, 1.15);
+}
+
+/* ---------- 2. Fond et decor ---------- */
+html {
+  background:
+    radial-gradient(70% 45% at 88% 4%, rgba(225, 6, 0, 0.22), transparent 70%),
+    radial-gradient(60% 40% at 2% 96%, rgba(225, 6, 0, 0.16), transparent 70%),
+    radial-gradient(45% 30% at 50% 50%, rgba(255, 59, 48, 0.05), transparent 70%),
+    var(--fond-0);
+  background-attachment: fixed;
+}
+body { background: transparent; }
+body:not(#v) :is(.section-fond-1, .section-fond-2) { background: transparent; }
+
+.decor { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; contain: strict; opacity: 0; transition: opacity 900ms var(--ease-sortie); }
+.decor.est-pret { opacity: 1; }
+.decor-defs { position: absolute; }
+.decor-circuit { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; fill: none; stroke-linecap: round; }
+.dc-fantome { stroke: rgba(255, 255, 255, 0.08); stroke-width: 1.5; stroke-dasharray: 2 8; }
+.dc-halo { stroke: rgba(225, 6, 0, 0.08); stroke-width: 34; }
+.dc-lueur { stroke: rgba(255, 59, 48, 0.15); stroke-width: 9; }
+.dc-trace { stroke: var(--rouge-vif); stroke-width: 2; opacity: 0.6; }
+.decor-tete {
+  position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: #FFE2DD;
+  box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.35), 0 0 22px 8px rgba(255, 59, 48, 0.6), 0 0 60px 20px rgba(225, 6, 0, 0.35);
+}
+.decor-meca { position: absolute; right: -58px; top: 60%; width: 218px; height: 144px; opacity: 0.42; }
+.decor-roue { position: absolute; overflow: visible; max-width: none; }
+.decor-roue path { fill: url(#dc-metal); stroke: rgba(255, 255, 255, 0.4); stroke-width: 0.8; }
+.decor-roue circle { fill: none; stroke: rgba(255, 255, 255, 0.25); stroke-width: 1.2; }
+.dr-1 { left: 0; top: 0; width: 144px; height: 144px; }
+.dr-2 { left: 122px; top: 24px; width: 96px; height: 96px; transform: rotate(22.5deg); }
+.dr-2 path { fill: url(#dc-braise); stroke: rgba(255, 160, 150, 0.6); }
+@media (max-width: 899px) {
+  .dc-halo { stroke-width: 20; stroke: rgba(225, 6, 0, 0.06); }
+  .dc-lueur { stroke-width: 6; stroke: rgba(255, 59, 48, 0.1); }
+  .dc-trace { stroke-width: 1.5; opacity: 0.42; }
+  .decor-meca { right: -96px; top: 64%; opacity: 0.2; scale: 0.8; transform-origin: right center; }
+}
+/* L ancien trait de trajectoire laisse la place au circuit du decor : les cordes et les reperes restent */
+.trajectoire :is(.traj-trace, .traj-tete, .traj-fantome) { display: none; }
+
+/* ---------- 3. Les panneaux de verre ---------- */
+body:not(#v) :is(
+  .verre, .notice, .form-envoye, .merci-suite, .plaque-bloc, .offre-cadre, .bloc-prix, .sommaire-carte,
+  .formule, .bloc-formulaire, .legal-encadre, .quote-colonne, .registre-ligne, .gratuit, .faq details,
+  .extrait-envoye, .tableur-envoye, .marques-comptable, .retractation-formulaire, .retractation-confirmation,
+  .lien-bio, .bouton-fantome, .hud
+) {
+  background: var(--verre);
+  border: 1px solid var(--verre-bord);
+  border-radius: var(--rayon-carte);
+  -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou);
+  box-shadow: var(--verre-ombre);
+}
+@media (prefers-reduced-transparency: reduce) {
+  body:not(#v) :is(.verre, .notice, .form-envoye, .merci-suite, .plaque-bloc, .offre-cadre, .bloc-prix, .sommaire-carte, .formule, .bloc-formulaire, .legal-encadre, .quote-colonne, .registre-ligne, .gratuit, .faq details, .extrait-envoye, .tableur-envoye, .marques-comptable, .retractation-formulaire, .retractation-confirmation, .lien-bio, .bouton-fantome, .hud) {
+    background: var(--fond-2); -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+}
+.plaque-bloc::before, .quote-colonne::before { left: 24px; top: -1px; border-radius: 2px; }
+.notice { border-left-width: 1px; }
+
+/* ---------- 4. Boutons ---------- */
+.bouton { border-radius: var(--rayon); transition: scale var(--d-instant) var(--ease-sortie), translate var(--d-court) var(--ease-ressort), filter var(--d-court) var(--ease-sortie), border-color var(--d-court) var(--ease-sortie), box-shadow var(--d-court) var(--ease-sortie); }
+.bouton-principal { background: var(--verre-rouge); border-color: rgba(255, 120, 110, 0.5); box-shadow: var(--verre-rouge-ombre); }
+.bouton-principal::before { background: linear-gradient(135deg, #B00500, #6E0300); }
+.bouton-principal:active { background: var(--verre-rouge); }
+body:not(#v) .bouton-fantome { border-radius: var(--rayon); }
+@media (hover: hover) and (pointer: fine) {
+  .bouton:hover { translate: 0 -2px; }
+  body:not(#v) .bouton-fantome:hover { border-color: rgba(255, 90, 80, 0.6); box-shadow: var(--verre-ombre), 0 18px 40px -22px rgba(225, 6, 0, 0.7); }
+}
+.bouton[disabled], .bouton[aria-disabled="true"] { translate: none; }
+
+/* ---------- 5. Navigation : une barre de verre flottante ---------- */
+.nav::before, .nav.nav-pleine::before {
+  inset: 6px 8px 0; border-radius: 18px;
+  background: var(--verre), rgba(5, 5, 6, 0.74);
+  border: 1px solid var(--verre-bord);
+  -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%);
+  box-shadow: var(--verre-ombre);
+}
+.nav.est-ouverte::before { background: var(--fond-0); }
+.nav-inner { padding-top: 6px; }
+.nav .secteurs { left: 24px; right: 24px; bottom: 4px; border-radius: 2px; overflow: hidden; }
+.nav-menu-bouton { border-radius: 12px; border-color: var(--verre-bord); }
+@media (max-width: 1099px) {
+  .nav-liens { background: rgba(5, 5, 6, 0.86); -webkit-backdrop-filter: blur(26px) saturate(160%); backdrop-filter: blur(26px) saturate(160%); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .nav::before, .nav.nav-pleine::before { background: var(--fond-0); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nav-liens { background: var(--fond-0); }
+}
+
+/* ---------- 6. Barre d achat : flottante, en verre ---------- */
+.barre {
+  left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); min-height: var(--barre-h); padding-bottom: 0;
+  border-radius: 20px; background: var(--verre), rgba(5, 5, 6, 0.6); border: 1px solid var(--verre-bord);
+  -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou); box-shadow: var(--verre-ombre);
+  transform: translateY(calc(100% + 24px));
+}
+.barre .secteurs { left: 24px; right: 24px; top: 4px; border-radius: 2px; overflow: hidden; }
+body.a-barre { padding-bottom: calc(var(--barre-h) + 16px); }
+
+/* ---------- 7. Questions, citations, rangees ---------- */
+.faq { border-top: 0; display: grid; gap: 10px; }
+.faq details { border-bottom: 0; padding-inline: 20px; }
+body:not(#v) .faq details { border-radius: 18px; }
+.faq summary::after { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--verre-bord); background: rgba(255, 255, 255, 0.06); font-size: 1em; }
+.faq details[open] { border-color: rgba(255, 90, 80, 0.4); }
+.quote-colonne { padding: var(--e-5); }
+.registre { gap: 14px; }
+.registre-ligne, .registre-ligne:last-child { border-top: 1px solid var(--verre-bord); border-bottom: 1px solid var(--verre-bord); padding: var(--e-5); transition: translate var(--d-court) var(--ease-ressort), border-color var(--d-court) var(--ease-sortie), box-shadow var(--d-court) var(--ease-sortie); }
+@media (hover: hover) and (pointer: fine) {
+  body:not(#v) .registre-ligne:hover { translate: 0 -4px; border-color: rgba(255, 60, 48, 0.55); box-shadow: var(--verre-ombre), 0 26px 60px -30px rgba(225, 6, 0, 0.55); }
+}
+
+/* ---------- 8. Formulaires ---------- */
+.champ input, .champ textarea, .champ select { background: rgba(0, 0, 0, 0.38); border-color: rgba(255, 255, 255, 0.22); }
+.champ input:focus, .champ textarea:focus, .champ select:focus { border-color: var(--rouge-vif); box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.3); }
+form input[type="checkbox"] { border-radius: 7px; }
+
+/* ---------- 9. Photos et objets ---------- */
+.photo, figure.cine, .planche, .objet { border-radius: 20px; }
+.planche { overflow: hidden; }
+
+/* ---------- 10. Releves en coin ---------- */
+body:not(#v) .hud { border-radius: 99px; padding: 8px 14px; }
+
+/* ---------- 11. Page de liens ---------- */
+.liens-boutons { gap: 12px; }
+body:not(#v) .lien-bio { min-height: 66px; border-radius: 20px; transition: translate var(--d-court) var(--ease-ressort), border-color var(--d-court) var(--ease-sortie), box-shadow var(--d-court) var(--ease-sortie); }
+body:not(#v) .lien-bio:hover { translate: 0 -3px; border-color: rgba(255, 60, 48, 0.55); }
+body:not(#v) .lien-bio-principal { background: var(--verre-rouge); border-color: rgba(255, 120, 110, 0.5); box-shadow: var(--verre-rouge-ombre); }
+
+/* ---------- 12. Mouvement reduit ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .decor, .bouton, .lien-bio, .registre-ligne { transition: none; }
+  .decor-tete { display: none; }
+}
+
+/* ---------- 13. Pages de vente (/livre, /analyse) : chaque secteur est un panneau de verre ---------- */
+body:not(#v).page-vente .vente-bloc {
+  margin-top: var(--e-5); padding: var(--e-5) 20px var(--e-6);
+  background: var(--verre); border: 1px solid var(--verre-bord); border-radius: var(--rayon-carte);
+  -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou); box-shadow: var(--verre-ombre);
+}
+.page-vente .vente-tete + .vente-bloc { margin-top: var(--e-7); }
+/* Dans un panneau, jamais de verre sur du verre : les cases deviennent des puits sombres */
+body:not(#v) .vente-bloc :is(.faq details, .vente-rassure, .vente-mythes li) {
+  background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 16px;
+  -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+body:not(#v) .vente-bloc .vente-mythes li { border-left: 2px solid var(--rouge-vif); }
+.page-vente .vente-quotes blockquote { border-left-color: var(--rouge-vif); }
+.page-vente .vente-video { border-radius: var(--rayon-carte); outline: 0; border: 1px solid var(--verre-bord); box-shadow: var(--verre-ombre), 0 30px 70px -36px rgba(225, 6, 0, 0.6); }
+.page-vente .vente-photo { border-radius: 0 0 var(--rayon-grand) var(--rayon-grand); overflow: hidden; }
+.page-vente .vente-barre {
+  left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); padding: 6px;
+  border: 1px solid var(--verre-bord); border-radius: 22px; background: var(--verre), rgba(5, 5, 6, 0.6);
+  -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou); box-shadow: var(--verre-ombre);
+  transform: translateY(calc(100% + 24px));
+}
+.page-vente .vente-barre .bouton { border-radius: 16px; }
+@media (min-width: 900px) {
+  .page-vente .vente-photo { border-radius: var(--rayon-grand) 0 0 var(--rayon-grand); }
+  body:not(#v).page-vente .vente-bloc { padding: var(--e-6) var(--e-6) var(--e-7); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  body:not(#v).page-vente .vente-bloc, .page-vente .vente-barre { background: var(--fond-2); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* ---------- 14. Pied de page : un grand panneau, cases et choix arrondis ---------- */
+.pied-grille {
+  padding: var(--e-6) var(--e-5); border: 1px solid var(--verre-bord); border-radius: var(--rayon-grand);
+  background: var(--verre); -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou); box-shadow: var(--verre-ombre);
+}
+.pied-bas { border-top: 0; }
+body:not(#v) :is(.projet, .choix) { border-radius: 16px; }
+@media (prefers-reduced-transparency: reduce) { .pied-grille { background: var(--fond-2); -webkit-backdrop-filter: none; backdrop-filter: none; } }

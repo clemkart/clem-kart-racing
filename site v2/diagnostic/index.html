@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+{{partial:head}}
+<title>Diagnostic de pilotage karting gratuit · {{marque.nom}}</title>
+<meta name="description" content="25 questions sur ta façon de piloter, dans l’ordre d’un virage. À la fin, tes 3 premiers points à travailler. Gratuit, 4 minutes.">
+<link rel="canonical" href="{{sites.url}}{{routes.diagnostic}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Diagnostic de pilotage karting gratuit · {{marque.nom}}">
+<meta property="og:description" content="25 questions sur ta façon de piloter, dans l’ordre d’un virage. À la fin, tes 3 premiers points à travailler.">
+<meta property="og:url" content="{{sites.url}}{{routes.diagnostic}}">
+<meta property="og:image" content="{{sites.url}}/photos/og-image.jpg">
+<meta name="twitter:image" content="{{sites.url}}/photos/og-image.jpg">
+<link rel="stylesheet" href="/assets/page-diagnostic.css">
+{{partial:verre}}
+</head>
+<body class="page-diagnostic" data-page="diagnostic">
+
+<!-- Le fond (feux qui passent), les degrades des engrenages -->
+<div class="dg-fond" id="dg-fond" aria-hidden="true"></div>
+<svg class="dg-defs" aria-hidden="true"><defs>
+  <linearGradient id="dg-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".92"/><stop offset=".5" stop-color="#C9C6C0" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity=".24"/></linearGradient>
+  <linearGradient id="dg-braise" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF6A5E"/><stop offset="1" stop-color="#B00500"/></linearGradient>
+</defs></svg>
+
+<div class="dg-coque">
+  <!-- Telephone : le bandeau de progression. Ordinateur : la colonne de gauche. Remplis par diagnostic.js. -->
+  <header class="tete vr" id="dg-tete" hidden>
+    <div class="roue"><svg class="anneau" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><circle class="av" cx="24" cy="24" r="21"/></svg><span data-gear></span></div>
+    <div class="tete-txt"><strong data-etape></strong><span data-num></span></div>
+    <span class="pct" data-pct></span>
+  </header>
+  <aside class="rail vr" aria-label="Progression du diagnostic">
+    <p class="marque"><a href="{{routes.accueil}}">{{marque.nom}}</a></p>
+    <div class="roue"><svg class="anneau" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><circle class="av" cx="24" cy="24" r="21"/></svg><span data-gear></span><span class="pct" data-pct></span></div>
+    <ol class="etapes" id="dg-etapes"></ol>
+    <p class="mini">Tes réponses restent entre toi et moi.</p>
+  </aside>
+
+  <main id="contenu">
+    <!-- Les prix, le delai, la garantie et les portes viennent de config/offres.json : rien n est ecrit dans le script. -->
+    <div id="diag"
+      data-prix="{{diagnostic.prix_affiche}}"
+      data-livre="{{debrief.option_guide.prix_affiche}}"
+      data-livre-plein="{{guide.prix_affiche}}"
+      data-onboard="{{equitable.debrief_lecteur.prix_affiche}}"
+      data-onboard-plein="{{debrief.prix_affiche}}"
+      data-delai="{{diagnostic.delai_affiche}}"
+      data-garantie="{{textes.garantie_courte}}"
+      data-pret="{{diagnostic.stripe.pret}}"
+      data-envoi="{{diagnostic.fonction}}"
+      data-accueil="{{routes.accueil}}"
+      data-confidentialite="{{routes.confidentialite}}"
+      data-cgv="{{routes.cgv}}"></div>
+    <noscript>
+      <div class="dg-noscript vr">
+        <p>Le diagnostic a besoin de JavaScript pour poser ses questions. Active-le dans ton navigateur, ou écris-moi : <a href="mailto:{{contact.email}}">{{contact.email}}</a>.</p>
+      </div>
+    </noscript>
+  </main>
+</div>
+
+<!-- Les deux portes vers le paiement du plan d action. site.js leur ajoute la langue et l identifiant de visite ;
+     diagnostic.js relit leur adresse pour le bouton du resultat (sans camera, ou avec). Jamais visibles. -->
+<a id="dg-porte" href="{{diagnostic.aller}}" hidden tabindex="-1" aria-hidden="true">Plan d’action</a>
+<a id="dg-porte-camera" href="{{diagnostic.aller_camera}}" hidden tabindex="-1" aria-hidden="true">Plan d’action</a>
+
+{{partial:footer-merci}}
+
+<script src="/assets/diagnostic-donnees.js" defer></script>
+<script src="/assets/diagnostic.js" defer></script>
+</body>
+</html>

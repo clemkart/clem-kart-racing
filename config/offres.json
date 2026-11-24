@@ -6,7 +6,7 @@
     "tests/run-prix.js fait echouer la mise en ligne si un prix, un lien Stripe, un lien Gumroad ou gmail.com traine ailleurs qu ici."
   ],
   "version": 1,
-  "mis_a_jour": "2026-10-13",
+  "mis_a_jour": "2026-11-24",
   "marque": {
     "nom": "Clem Kart Racing",
     "auteur": "Clément Daniel",
@@ -101,6 +101,26 @@
     ],
     "note_route": "routes.journee est l adresse de la page (/consulting). Chaque adresse de anciennes_routes y mene en 301, ecrite par scripts/build.js dans _redirects : liens deja donnes en bio, en message ou en story."
   },
+  "diagnostic": {
+    "titre": "Diagnostic de pilotage",
+    "plan_titre": "Plan d’action personnalisé",
+    "resume_ligne": "25 questions, tes 3 premiers points à travailler, gratuit",
+    "prix": 24.99,
+    "prix_affiche": "24,99 €",
+    "prix_chiffres": "24,99",
+    "delai_affiche": "24 à 48 h",
+    "aller": "/aller/plan",
+    "aller_camera": "/aller/plan-camera",
+    "fonction": "/.netlify/functions/diagnostic",
+    "stripe": {
+      "pret": "non",
+      "url": "",
+      "plink": "",
+      "url_camera": "",
+      "plink_camera": ""
+    },
+    "note": "Diagnostic gratuit (25 questions), puis plan d action ecrit a la main par Clement, sans IA, envoye par email sous 24 a 48 h. Options au paiement (dans Stripe) : livre digital a debrief.option_guide.prix_affiche, analyse d onboard a equitable.debrief_lecteur.prix_affiche. Tant que stripe.pret vaut non, la page n affiche pas le bouton de paiement et le build n ecrit pas les portes /aller/plan."
+  },
   "lecteurs": {
     "nombre": 79,
     "date": "2026-09-23",
@@ -194,7 +214,8 @@
     "retractation": "/retractation/",
     "onboard_offre": "/onboard/#prix",
     "marques_reseaux": "/marques#reseaux",
-    "marques_saison": "/marques#saison"
+    "marques_saison": "/marques#saison",
+    "diagnostic": "/diagnostic"
   },
   "reseaux": {
     "instagram": "https://www.instagram.com/clem_kart_racing",

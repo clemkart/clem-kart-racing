@@ -335,6 +335,69 @@ function emailAlerteDebrief({ nom, email, raison }) {
   });
 }
 
+// ---------- Emails du diagnostic de pilotage (fonction diagnostic) ----------
+
+const PIED_DIAGNOSTIC = 'Email interne envoyé par la fonction du diagnostic (diagnostic).';
+
+// Copie pour Clément : tout ce qu'il faut pour écrire le plan d'action à la main, sans rien ouvrir d'autre.
+// L'adresse du pilote est en « répondre à » (posée par la fonction). Les réponses écrites par le pilote sont
+// du texte libre : elles passent par tableau(), qui échappe tout.
+function emailDiagnosticInterne({ prenom, email, consent, indice, marge, priorites, autres, forts, lignes, libre, source, recuLe }) {
+  const nomAffiche = String(prenom || '').replace(/\s+/g, ' ').trim().slice(0, 40) || 'pilote';
+  return composer({
+    client: false,
+    piedInterne: PIED_DIAGNOSTIC,
+    sujet: `Nouveau diagnostic : ${nomAffiche}`,
+    preheader: `Priorité 1 : ${priorites[0] ? priorites[0].nom : ''}.`,
+    tags: ['interne', 'diagnostic'],
+    blocs: [
+      titre('Nouveau diagnostic'),
+      p(['Pour lui écrire, réponds à cet email : son adresse est en « répondre à ». ', "S'il commande son plan d'action, la commande arrive dans un second email, à la même adresse."]),
+      tableau([
+        ['Pilote', nomAffiche],
+        ['Email', email],
+        ['Conseils par email', consent ? 'Oui, il a coché la case' : 'Non'],
+        ['Indice de maîtrise', `${indice}/100`],
+        ['Marge estimée', `${marge} au tour`],
+        ['Ses 3 priorités', priorites.map((pt, k) => `${k + 1}. ${pt.nom} (${pt.score})`).join(' · ')],
+        ['Les autres points', autres.map((pt) => `${pt.nom} (${pt.score})`).join(' · ')],
+        ['Ses points forts', forts.map((pt) => pt.nom).join(' · ')],
+        ['Venu de', source],
+        ['Reçu le', `${recuLe} (heure de Paris)`],
+      ]),
+      libre ? p([gras('Avec ses mots : '), libre]) : null,
+      p(gras('Ses réponses, dans l’ordre du diagnostic')),
+      tableau(lignes),
+    ],
+  });
+}
+
+// Le diagnostic envoyé au pilote : ce qu'il fait bien, ses 3 premiers points, puis le plan d'action.
+// Aucun lien direct vers le paiement dans un email : le bouton ramène à la page du diagnostic.
+function emailDiagnosticClient({ prenom, indice, marge, priorites, forts, delaiPlan, planOuvert, lienDiagnostic }) {
+  return composer({
+    sujet: 'Ton diagnostic de pilotage',
+    preheader: 'Tes 3 premiers points à travailler.',
+    tags: ['diagnostic'],
+    blocs: [
+      titre('Ton diagnostic'),
+      p(salutation(prenom)),
+      p('Merci d’avoir pris le temps de répondre. Voici ce que tes réponses montrent.'),
+      p([gras(`Indice de maîtrise : ${indice}/100. `), `Marge de progression estimée : ${marge} au tour.`]),
+      p('C’est une estimation à partir de tes réponses, pas une promesse de gain.', 'attenue'),
+      p(gras('Ce que tu fais déjà bien')),
+      ...forts.map((pt) => p([gras(`${pt.nom}. `), pt.fort])),
+      p(gras('Tes 3 premiers points à travailler')),
+      ...priorites.map((pt, k) => p([gras(`${k + 1}. ${pt.nom} (livre, chapitre ${pt.ch}). `), pt.texte])),
+      planOuvert
+        ? p(['Pour aller plus loin, je peux t’écrire ton plan d’action personnalisé. Ce n’est pas une IA : je lis tes réponses une par une et je l’écris moi-même. Tu le reçois par email sous ', gras(delaiPlan), '.'])
+        : null,
+      planOuvert ? bouton('Revoir mon diagnostic', lienDiagnostic) : null,
+      p('Clément'),
+    ],
+  });
+}
+
 module.exports = {
   MENTION_LEGALE,
   LIBELLE_RETRACTATION,
@@ -343,4 +406,6 @@ module.exports = {
   emailDebriefInterne,
   emailDebriefClient,
   emailAlerteDebrief,
+  emailDiagnosticInterne,
+  emailDiagnosticClient,
 };
