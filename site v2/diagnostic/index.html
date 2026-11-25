@@ -41,6 +41,9 @@
     <!-- Les prix, le delai, la garantie et les portes viennent de config/offres.json : rien n est ecrit dans le script. -->
     <div id="diag"
       data-prix="{{diagnostic.prix_affiche}}"
+      data-lancement-prix="{{diagnostic.lancement.prix_affiche}}"
+      data-lancement-fin="{{diagnostic.lancement.fin}}"
+      data-lancement-phrase="Prix de lancement : {{diagnostic.lancement.prix_affiche}} jusqu’au {{diagnostic.lancement.dernier_jour_affiche}} inclus"
       data-livre="{{debrief.option_guide.prix_affiche}}"
       data-livre-plein="{{guide.prix_affiche}}"
       data-onboard="{{equitable.debrief_lecteur.prix_affiche}}"

@@ -351,7 +351,7 @@ for (const p of PROSPECTS) {
    Retirer ces 2 cles demande l accord de Clement : en attendant, avertissement seulement pour
    elles. Tout AUTRE lien Stripe ajoute dans la config fait echouer le test. */
 console.log('\n=== test:prix, controle 7 : liens Stripe dans config/offres.json (depot public)');
-const CLES_STRIPE_PUBLIQUES = ['guide.stripe.url', 'debrief.stripe.url', 'diagnostic.stripe.url', 'diagnostic.stripe.url_camera'];
+const CLES_STRIPE_PUBLIQUES = ['guide.stripe.url', 'debrief.stripe.url', 'diagnostic.stripe.url', 'diagnostic.stripe.url_camera', 'diagnostic.lancement.stripe.url', 'diagnostic.lancement.stripe.url_camera'];
 const CLES_STRIPE_A_RETIRER = ['equitable.guide_lecteur.stripe.url', 'equitable.debrief_lecteur.stripe.url'];
 const clesStripe = [];
 (function parcourir(o, chemin) {

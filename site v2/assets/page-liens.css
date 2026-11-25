@@ -11,7 +11,7 @@
 
 .page-liens {
   /* Hauteur de la bande photo sur telephone (240 a 380 px) : sert aussi a placer les feux */
-  --liens-photo-h: clamp(240px, 40svh, 380px);
+  --liens-photo-h: clamp(220px, 36svh, 380px);
   --liens-remontee: 64px;
   --liens-decalage: 32px;
   --liens-case-fond: rgba(6, 6, 7, 0.55);
@@ -230,6 +230,7 @@
   .page-liens .liens-boutons { margin-top: var(--e-6); }
   .page-liens .lien-bio { padding: 30px 18px 16px; }
   .page-liens .lien-bio::before { top: 11px; left: 18px; }
+  .page-liens .lien-bio-pastille { top: 7px; left: 46px; }
   .page-liens .lien-bio-titre { font-size: 1.3125rem; }
   .page-liens .lien-bio-sous { font-size: 0.84375rem; }
 }
@@ -245,6 +246,118 @@
   .page-liens .lien-bio:active { scale: 1; }
 }
 @media print {
-  .page-liens .liens-photo, .page-liens .liens-feux { display: none; }
+  .page-liens .liens-photo, .page-liens .liens-feux, .page-liens .annonce { display: none; }
   .page-liens .liens-colonne { margin: 0; }
+}
+
+/* ---------- 8. La pastille « Nouveau » (carte du diagnostic) ----------
+   Une pastille de verre rouge, a cote du numero de grille (P2). A l arrivee : elle se pose, puis une onde
+   part deux fois de son bord. Transformations et opacite seulement. */
+.page-liens .lien-bio-pastille {
+  position: absolute; top: 5px; left: 42px;
+  padding: 4px 9px 3px; border-radius: 99px;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: 0.625rem; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--texte); background: rgba(212, 14, 8, 0.9); border: 1px solid rgba(255, 150, 140, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 16px -2px rgba(255, 59, 48, 0.8);
+}
+.page-liens .lien-bio-pastille::after {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  border: 1px solid rgba(255, 90, 80, 0.9); opacity: 0;
+}
+@keyframes pastille-pose { from { opacity: 0; transform: scale(0.6); } 60% { transform: scale(1.1); } }
+@keyframes pastille-onde { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: scale(1.5, 2.1); } }
+
+/* ---------- 9. L annonce du diagnostic : une petite fenetre de verre en bas de l ecran ----------
+   Affichee par annonce.js au premier passage seulement. Ce n est pas une fenetre modale : aucun voile,
+   la page reste utilisable. Fermee : hors de l ecran, sans clic possible. --tire suit le doigt
+   pendant le glissement. « est-ecartee » : elle se range si elle recouvrirait le lien du livre.
+   Telephone : toute la largeur, a 10 px des bords. A partir de 600 px : une carte a droite. */
+.page-liens .annonce {
+  --tire: 0px;
+  --annonce-rangee: translateY(calc(100% + 32px)) scale(0.96);
+  position: fixed; z-index: var(--z-barre); isolation: isolate; overflow: hidden;
+  left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 15px 14px 12px;
+  border: 1px solid var(--verre-bord); border-top-color: rgba(255, 255, 255, 0.28); border-radius: 24px;
+  background: var(--verre-fond), rgba(7, 7, 9, 0.68);
+  -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou);
+  box-shadow: var(--verre-ombre), 0 0 0 1px rgba(255, 90, 80, 0.22), 0 0 44px -10px rgba(255, 59, 48, 0.55);
+  color: var(--texte);
+  opacity: 0; transform: var(--annonce-rangee); transform-origin: 50% 100%;
+  transition: transform 620ms var(--ease-ressort), opacity 260ms var(--ease-sortie);
+  pointer-events: none; touch-action: none; -webkit-user-select: none; user-select: none;
+}
+.page-liens .annonce[hidden] { display: none; }
+.page-liens .annonce.est-ouverte { opacity: 1; transform: translateY(var(--tire)); pointer-events: auto; }
+.page-liens .annonce.est-ouverte.est-ecartee { opacity: 0; transform: var(--annonce-rangee); pointer-events: none; }
+.page-liens .annonce.est-tenue { transition: none; }
+
+/* La lueur rouge qui passe derriere la vitre, et le trait de lumiere qui file sur l arete : une fois, a l ouverture */
+.page-liens .annonce::before {
+  content: ''; position: absolute; z-index: -1; top: -40%; left: 0; width: 60%; height: 180%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 59, 48, 0.3), rgba(255, 59, 48, 0)); opacity: 0;
+}
+.page-liens .annonce-feu {
+  position: absolute; top: 0; left: 0; width: 46%; height: 2px; pointer-events: none;
+  background: linear-gradient(90deg, rgba(255, 59, 48, 0), var(--rouge-vif) 45%, #FFE2DD 55%, rgba(255, 59, 48, 0));
+  box-shadow: 0 0 14px 2px rgba(255, 59, 48, 0.75); opacity: 0;
+}
+.page-liens .annonce-poignee {
+  position: absolute; top: 6px; left: 50%; width: 36px; height: 4px; margin-left: -18px;
+  border-radius: 2px; background: rgba(255, 255, 255, 0.28);
+}
+
+.page-liens .annonce-tete { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.page-liens .annonce-volant { width: 34px; height: 34px; color: var(--texte); transition: transform 1100ms var(--ease-expo) 200ms; transform: rotate(-80deg); }
+.page-liens .annonce.est-ouverte .annonce-volant { transform: none; }
+.page-liens .annonce-repere { fill: var(--rouge-vif); }
+.page-liens .annonce-titre {
+  margin: 0; max-width: none;
+  font-family: var(--police-titre); font-weight: var(--graisse-titre); font-stretch: var(--largeur-titre);
+  font-size: 1.125rem; line-height: 1.05; letter-spacing: 0.02em; text-transform: uppercase;
+}
+.page-liens .annonce-label {
+  display: block; margin-bottom: 5px;
+  font-family: var(--police-mono); font-stretch: var(--largeur-mono); font-weight: var(--graisse-forte);
+  font-size: 0.625rem; line-height: 1; letter-spacing: 0.12em; color: #FF9A90;
+}
+.page-liens .annonce-texte { margin: 0; max-width: none; font-size: 0.8125rem; line-height: 1.4; color: var(--texte); opacity: 0.86; }
+.page-liens .annonce-bouton { width: 100%; min-width: 0; min-height: 40px; padding-block: 0; gap: 10px; white-space: nowrap; }
+.page-liens .annonce-fleche { font-family: var(--police-mono); font-stretch: var(--largeur-mono); }
+.page-liens .annonce-fermer {
+  position: relative; display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+  border: 1px solid var(--verre-bord); border-radius: 50%; background: rgba(255, 255, 255, 0.07);
+  color: var(--texte); cursor: pointer;
+  transition: background-color var(--d-court) var(--ease-sortie), border-color var(--d-court) var(--ease-sortie);
+}
+/* Zone de toucher de 44 px autour de la croix de 32 px */
+.page-liens .annonce-fermer::after { content: ''; position: absolute; inset: -6px; }
+.page-liens .annonce-fermer:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 90, 80, 0.6); }
+.page-liens .annonce-fermer:focus-visible { outline: var(--focus); outline-offset: 2px; }
+
+@media (min-width: 600px) {
+  .page-liens .annonce { left: auto; right: 16px; bottom: 16px; width: min(392px, calc(100vw - 32px)); padding: 18px 18px 16px; gap: 10px; }
+}
+@media (min-width: 900px) { .page-liens .annonce { right: 28px; bottom: 28px; } }
+@media (hover: hover) and (pointer: fine) { .page-liens .annonce-poignee { display: none; } }
+@media (prefers-reduced-transparency: reduce) {
+  .page-liens .annonce { background: var(--fond-2); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+@keyframes annonce-monte { from { opacity: 0; transform: translateY(8px); } }
+@keyframes annonce-feu { 0% { transform: translateX(-110%); opacity: 0; } 15%, 85% { opacity: 1; } 100% { transform: translateX(240%); opacity: 0; } }
+@keyframes annonce-lueur { 0% { transform: translateX(-110%); opacity: 0; } 30%, 70% { opacity: 1; } 100% { transform: translateX(190%); opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .page-liens .lien-bio-pastille { animation: pastille-pose 520ms var(--ease-expo) 950ms backwards; }
+  .page-liens .lien-bio-pastille::after { animation: pastille-onde 1300ms var(--ease-sortie) 1450ms 2 backwards; }
+  .page-liens .annonce.est-ouverte .annonce-tete { animation: annonce-monte 460ms var(--ease-sortie) 160ms backwards; }
+  .page-liens .annonce.est-ouverte .annonce-texte { animation: annonce-monte 460ms var(--ease-sortie) 230ms backwards; }
+  .page-liens .annonce.est-ouverte .annonce-bouton { animation: annonce-monte 460ms var(--ease-sortie) 300ms backwards; }
+  .page-liens .annonce.est-ouverte .annonce-feu { animation: annonce-feu 1500ms var(--ease-sortie) 420ms 1 both; }
+  .page-liens .annonce.est-ouverte::before { animation: annonce-lueur 2200ms var(--ease-sortie) 300ms 1 both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-liens .annonce, .page-liens .annonce-volant { transition: none; }
+  .page-liens .annonce-volant { transform: none; }
 }

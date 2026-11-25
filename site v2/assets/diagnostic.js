@@ -248,8 +248,16 @@ function porte(camera) {
   if (!a || O.pret !== 'oui') return '';
   try { var u = new URL(a.href); if (contact.email) u.searchParams.set('prefilled_email', contact.email); if (!u.searchParams.has('locale')) u.searchParams.set('locale', 'fr'); return u.toString(); } catch (e) { return ''; }
 }
+/* Prix de lancement : affiché tant que la date de fin (config) n'est pas passée, puis le prix habituel revient
+   tout seul. Jamais de prix barré, de « au lieu de » ni de pourcentage : le plan n'a jamais été vendu au prix
+   plein. La porte de paiement fait la même bascule côté serveur (lib/porte-plan.js). */
+function lancementEnCours() {
+  var fin = Date.parse(O.lancementFin || '');
+  return Boolean(O.lancementPrix && O.lancementPhrase) && isFinite(fin) && Date.now() < fin;
+}
 function vueResultat() {
   var res = D.scorer(etat.r), top = res.priorites.slice(0, 3), reste = res.priorites.slice(3), camera = etat.r.camera === 0 || etat.r.camera === 1, lienPlan = porte(camera);
+  var lancement = lancementEnCours(), prixPlan = lancement ? O.lancementPrix : O.prix;
   var options = 'Au paiement, tu peux ajouter le livre digital pour ' + esc(O.livre) + ' au lieu de ' + esc(O.livrePlein) + (camera ? ', et l’analyse de ton onboard pour ' + esc(O.onboard) + ' au lieu de ' + esc(O.onboardPlein) : '') + '.';
   return '<section class="ecran resultat"><p class="marque"><a href="' + esc(O.accueil) + '">Clem Kart Racing</a> · Diagnostic de pilotage</p><h1 class="display">' + txt('{prenom}, voici ton diagnostic') + '</h1>' +
     '<p class="notice-envoi" data-notice-envoi' + (contact.envoi === 'echec' ? '' : ' hidden') + '>Ton diagnostic n’a pas pu partir par email. Il reste affiché ici. <button type="button" class="lien" data-renvoyer>Réessayer l’envoi</button></p>' +
@@ -267,9 +275,10 @@ function vueResultat() {
     '<div class="offre vr" id="dg-offre"><p class="lbl">Pour aller plus loin</p><h2>Ton plan d’action personnalisé</h2>' +
     '<p class="main">Ce n’est pas une IA qui te répond. Je lis tes réponses une par une, y compris ce que tu as écrit avec tes mots, et j’écris ton plan moi-même.</p>' +
     '<ul class="inclus"><li>Tes 9 points passés en revue, pas seulement les 3 premiers</li><li>Un exercice précis pour chaque priorité, à faire dès ta prochaine séance</li><li>Le repère qui te dit si l’exercice est réussi</li><li>Un objectif clair pour ta prochaine sortie</li><li>Envoyé par email sous ' + esc(O.delai) + '</li></ul>' +
-    '<div class="prix"><span class="big">' + esc(O.prix) + '</span></div>' +
+    '<div class="prix"><span class="big">' + esc(prixPlan) + '</span></div>' +
+    (lancement ? '<p class="lancement">' + txt(O.lancementPhrase) + '</p>' : '') +
     (lienPlan
-      ? '<a class="bouton bouton-principal bouton-large" href="' + esc(lienPlan) + '" data-cta="diagnostic-plan">Recevoir mon plan<span class="chrono">' + esc(O.prix) + '</span></a><p class="sub">' + options + '</p>' +
+      ? '<a class="bouton bouton-principal bouton-large" href="' + esc(lienPlan) + '" data-cta="diagnostic-plan">Recevoir mon plan<span class="chrono">' + esc(prixPlan) + '</span></a><p class="sub">' + options + '</p>' +
         '<p class="mini">' + esc(O.garantie) + '. Paiement sécurisé par Stripe. En commandant, tu acceptes les <a href="' + esc(O.cgv) + '">CGV</a>.</p>'
       : '<p class="notice-envoi">Le plan d’action ouvre très bientôt. Ton diagnostic, lui, est déjà à toi.</p>') +
     '</div>' +

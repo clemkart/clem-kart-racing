@@ -156,6 +156,43 @@ describe('fonction stripe-webhook, plan d action', () => {
     assert.match(client.textContent, /sous 24 h/);
   });
 
+  it('prix de lancement : les deux liens de lancement sont reconnus comme le plan', () => {
+    const LANCEMENT = OFFRES.diagnostic.lancement.stripe;
+    assert.equal(estSessionPlan(session({ metadata: {}, payment_link: LANCEMENT.plink })), true);
+    assert.equal(estSessionPlan(session({ metadata: {}, payment_link: LANCEMENT.plink_camera })), true);
+    assert.equal(estSessionDebrief(session({ metadata: {}, payment_link: LANCEMENT.plink })), false);
+  });
+
+  it('prix de lancement, panier illisible : le livre est reconnu grâce à metadata.prix_plan_centimes', async () => {
+    process.env.GUIDE_PDF_URL = 'https://fichiers.exemple.test/livre-factice.pdf';
+    process.env.TABLEUR_URL = 'https://fichiers.exemple.test/feuille-factice.xlsx';
+    sim.sur('GET', LIGNES, { status: 500, json: { error: { message: 'panne' } } });
+    const lancement = C(OFFRES.diagnostic.lancement.prix);
+    const total = lancement + C(OFFRES.debrief.option_guide.prix);
+    const meta = { funnel: 'plan_action_diagnostic', variante: 'A_sans_camera', prix_plan_centimes: String(lancement) };
+    const rep = await appeler(evenement(session({ payment_link: OFFRES.diagnostic.lancement.stripe.plink, amount_total: total, metadata: meta })));
+    assert.equal(rep.statusCode, 200);
+    const [interne, client] = F.emailsEnvoyes(sim);
+    assert.match(interne.textContent, /livre digital/);
+    assert.match(interne.textContent, /déduit du montant/);
+    assert.match(client.htmlContent, /livre-factice\.pdf/);
+    assert.equal(F.insertions(sim, 'debriefs')[0][0].option_guide, true);
+  });
+
+  it('prix de lancement, plan seul et panier illisible : aucune option inventée', async () => {
+    sim.sur('GET', LIGNES, { status: 500, json: { error: { message: 'panne' } } });
+    const lancement = C(OFFRES.diagnostic.lancement.prix);
+    const meta = { funnel: 'plan_action_diagnostic', variante: 'A_sans_camera', prix_plan_centimes: String(lancement) };
+    await appeler(evenement(session({ amount_total: lancement, metadata: meta })));
+    assert.equal(F.insertions(sim, 'debriefs')[0][0].option_guide, false);
+  });
+
+  it('sans metadata.prix_plan_centimes : le repli garde le prix de la config', async () => {
+    sim.sur('GET', LIGNES, { status: 500, json: { error: { message: 'panne' } } });
+    await appeler(evenement(session({ amount_total: TOTAL_LIVRE })));
+    assert.equal(F.insertions(sim, 'debriefs')[0][0].option_guide, true);
+  });
+
   it('Brevo en panne sur l email interne : 500, la réservation est annulée, Stripe réessaiera', async () => {
     sim.sur('POST', F.BREVO, { status: 500, json: { message: 'panne' } });
     const rep = await appeler(evenement(session()));

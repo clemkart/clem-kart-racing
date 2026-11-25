@@ -259,28 +259,37 @@ async function traiterDebrief(session, evenement) {
 }
 
 // ---------- Plan d'action du diagnostic ----------
-// Session reconnue à metadata.funnel (posé par Stripe sur les deux liens, réel comme test) ou à l'identifiant
-// d'un des deux liens (config/offres.json : diagnostic.stripe.plink et plink_camera).
+// Session reconnue à metadata.funnel (posé par Stripe sur les quatre liens, réel comme test) ou à l'identifiant
+// d'un des liens (config/offres.json : diagnostic.stripe et diagnostic.lancement.stripe).
 // Les options (livre digital, analyse d'onboard) se cochent dans Stripe : elles se lisent par identifiant de
-// prix dans le panier, sinon par le montant payé (les quatre totaux possibles sont tous différents).
+// prix dans le panier, sinon par le montant payé, une fois le prix du plan retiré (metadata.prix_plan_centimes).
 // Réservation : la même table que le débrief (clé primaire session_id), pour un seul envoi par session.
 const PLAN_STRIPE = (OFFRES.diagnostic && OFFRES.diagnostic.stripe) || {};
 const PRIX_PLAN = PLAN_STRIPE.prix || {};
 const FUNNEL_PLAN = 'plan_action_diagnostic';
-const LIENS_PLAN = new Set([PLAN_STRIPE.plink, PLAN_STRIPE.plink_camera].filter(Boolean));
+// Quatre liens : les deux habituels et les deux du prix de lancement (diagnostic.lancement.stripe).
+const LANCEMENT_STRIPE = (OFFRES.diagnostic && OFFRES.diagnostic.lancement && OFFRES.diagnostic.lancement.stripe) || {};
+const LIENS_PLAN = new Set([PLAN_STRIPE.plink, PLAN_STRIPE.plink_camera, LANCEMENT_STRIPE.plink, LANCEMENT_STRIPE.plink_camera].filter(Boolean));
 const DELAI_PLAN_MS = 48 * 60 * 60 * 1000;
 const centimes = (euros) => Math.round(Number(euros) * 100);
-const MONTANTS_PLAN = (() => {
-  const plan = centimes(OFFRES.diagnostic.prix);
+
+// Prix du plan dans cette commande : metadata.prix_plan_centimes, recopiée par Stripe depuis le lien
+// (1199 au lancement, 2499 ensuite). Sans elle, le prix de la config.
+function prixPlanCentimes(session) {
+  const annonce = Number(session.metadata && session.metadata.prix_plan_centimes);
+  return Number.isInteger(annonce) && annonce > 0 ? annonce : centimes(OFFRES.diagnostic.prix);
+}
+
+// Les options d'après le montant payé : ce qui reste une fois le plan retiré (les quatre restes sont différents).
+function optionsSelonMontant(session) {
+  const reste = Number(session.amount_total) - prixPlanCentimes(session);
   const livre = centimes(OFFRES.debrief.option_guide.prix);
   const analyse = centimes(OFFRES.equitable.debrief_lecteur.prix);
-  return new Map([
-    [plan, { livre: false, analyse: false }],
-    [plan + livre, { livre: true, analyse: false }],
-    [plan + analyse, { livre: false, analyse: true }],
-    [plan + livre + analyse, { livre: true, analyse: true }],
-  ]);
-})();
+  if (reste === livre) return { livre: true, analyse: false };
+  if (reste === analyse) return { livre: false, analyse: true };
+  if (reste === livre + analyse) return { livre: true, analyse: true };
+  return { livre: false, analyse: false };
+}
 
 function estSessionPlan(session) {
   const funnel = session.metadata && session.metadata.funnel;
@@ -300,8 +309,7 @@ async function lireOptionsPlan(session) {
       console.warn(`${JOURNAL} ${session.id} : lignes du panier illisibles (${err.message}), repli sur le montant`);
     }
   }
-  const selonMontant = MONTANTS_PLAN.get(Number(session.amount_total)) || { livre: false, analyse: false };
-  return { ...selonMontant, deduites: true };
+  return { ...optionsSelonMontant(session), deduites: true };
 }
 
 async function traiterPlan(session, evenement) {

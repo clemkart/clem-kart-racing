@@ -90,6 +90,61 @@ if (stripe.pret === 'oui') {
   console.log('  ATTENTION le plan d action n est pas encore achetable (diagnostic.stripe.pret = non).');
 }
 
+// ---------- 4 ter. Le prix de lancement du plan : config, portes datees, affichage ----------
+console.log('\n=== test:diagnostic, controle 4 ter : prix de lancement');
+const lancement = cfg.lancement || {};
+const liensLancement = lancement.stripe || {};
+const finLancement = Date.parse(lancement.fin);
+check('lancement : prix et affichage coherents, plus bas que le prix habituel', typeof lancement.prix === 'number' && lancement.prix < cfg.prix && lancement.prix_affiche === lancement.prix.toFixed(2).replace('.', ',') + ' €');
+check('lancement : la fin est une date avec son decalage horaire', Number.isFinite(finLancement) && /[+-]\d{2}:\d{2}$|Z$/.test(lancement.fin));
+check('lancement : deux liens buy.stripe.com, leurs identifiants et le prix Stripe', /^https:\/\/buy\.stripe\.com\//.test(liensLancement.url) && /^https:\/\/buy\.stripe\.com\//.test(liensLancement.url_camera) && /^plink_/.test(liensLancement.plink) && /^plink_/.test(liensLancement.plink_camera) && /^price_/.test(liensLancement.prix_plan));
+check('lancement : quatre liens differents (jamais le meme lien a deux prix)', new Set([stripe.url, stripe.url_camera, liensLancement.url, liensLancement.url_camera]).size === 4);
+const PORTE = require(path.join(SITE, 'netlify', 'lib', 'porte-plan.js'));
+const AVANT = finLancement - 1000, APRES = finLancement;
+check('porte : avant la fin, les liens de lancement (sans camera, avec camera)', PORTE.cible(false, AVANT) === liensLancement.url && PORTE.cible(true, AVANT) === liensLancement.url_camera);
+check('porte : a la fin et apres, retour aux liens habituels, sans publication', PORTE.cible(false, APRES) === stripe.url && PORTE.cible(true, APRES + 86400000) === stripe.url_camera);
+check('porte : le 2 decembre a 23 h 59 heure de Paris est encore au prix de lancement', PORTE.lancementActif(Date.parse('2026-12-02T23:59:30+01:00')) && !PORTE.lancementActif(Date.parse('2026-12-03T00:00:00+01:00')));
+const reponsePorte = PORTE.repondre({ queryStringParameters: { locale: 'fr', prefilled_email: 'pilote+test@exemple.fr', client_reference_id: 's1-diagnostic-sid-abc123' } }, true, AVANT);
+check('porte : 302 vers Stripe, les parametres suivent et sont encodes, jamais mis en cache', reponsePorte.statusCode === 302 && reponsePorte.headers.Location === liensLancement.url_camera + '?locale=fr&prefilled_email=pilote%2Btest%40exemple.fr&client_reference_id=s1-diagnostic-sid-abc123' && reponsePorte.headers['Cache-Control'] === 'no-store');
+check('porte : sans parametre, le lien Stripe nu', PORTE.repondre({}, false, APRES).headers.Location === stripe.url);
+check('porte : plan pas en vente (pret = non), aucune redirection', PORTE.cible(false, AVANT, { diagnostic: { ...cfg, stripe: { ...stripe, pret: 'non' } } }) === '');
+const FN_PORTES = ['aller-plan.js', 'aller-plan-camera.js'].map((f) => fs.readFileSync(path.join(SITE, 'netlify', 'functions', f), 'utf8'));
+check('deux fonctions de porte : sans camera et avec camera', /repondre\(event, false\)/.test(FN_PORTES[0]) && /repondre\(event, true\)/.test(FN_PORTES[1]));
+const BUILD = fs.readFileSync(path.join(RACINE, 'scripts', 'build.js'), 'utf8');
+check('build : les deux portes passent par les fonctions (plus de lien fige dans _redirects)', /\$\{diag\.aller\}  \/\.netlify\/functions\/aller-plan  200/.test(BUILD) && /\$\{diag\.aller_camera\}  \/\.netlify\/functions\/aller-plan-camera  200/.test(BUILD));
+const PAGE_DIAG = fs.readFileSync(path.join(SITE, 'diagnostic', 'index.html'), 'utf8');
+const SCRIPT_DIAG = fs.readFileSync(path.join(SITE, 'assets', 'diagnostic.js'), 'utf8');
+const phrase = balisePhrase(PAGE_DIAG);
+function balisePhrase(page) { return (page.match(/data-lancement-phrase="([^"]*)"/) || ['', ''])[1]; }
+check('page : la phrase de lancement vient de la config (prix et dernier jour)', phrase === 'Prix de lancement : {{diagnostic.lancement.prix_affiche}} jusqu’au {{diagnostic.lancement.dernier_jour_affiche}} inclus' && /data-lancement-fin="\{\{diagnostic\.lancement\.fin\}\}"/.test(PAGE_DIAG));
+check('page : jamais de prix barre, de « au lieu de » ni de pourcentage pour le plan', !/au lieu|%|barr/i.test(phrase) && !/<(s|del|strike)\b|line-through/i.test(SCRIPT_DIAG) && !/line-through/.test(fs.readFileSync(path.join(SITE, 'assets', 'page-diagnostic.css'), 'utf8')) && !/au lieu de ' \+ esc\(O\.prix\)/.test(SCRIPT_DIAG));
+check('script : le prix affiche bascule tout seul a la date de fin', /function lancementEnCours\(\)/.test(SCRIPT_DIAG) && /Date\.now\(\) < fin/.test(SCRIPT_DIAG) && /lancement \? O\.lancementPrix : O\.prix/.test(SCRIPT_DIAG));
+
+// ---------- 4 bis. La page de liens : la carte « Nouveau » et la fenetre d annonce ----------
+console.log('\n=== test:diagnostic, controle 4 bis : page de liens');
+const LIENS = fs.readFileSync(path.join(SITE, 'liens', 'index.html'), 'utf8');
+const ANNONCE_JS = fs.readFileSync(path.join(SITE, 'assets', 'annonce.js'), 'utf8');
+const LIENS_CSS = fs.readFileSync(path.join(SITE, 'assets', 'page-liens.css'), 'utf8');
+const balise = (source, motif) => (source.match(motif) || [''])[0];
+const cartes = LIENS.match(/<a class="lien-bio[^>]*>/g) || [];
+const carteDiag = balise(LIENS, /<a class="lien-bio[^>]*data-bio="diagnostic"[^>]*>/);
+const fenetre = balise(LIENS, /<aside class="annonce"[\s\S]*?<\/aside>/);
+const lienFenetre = balise(fenetre, /<a [^>]*>/);
+const PORTE_DIAG = 'href="{{routes.diagnostic}}/"';
+check('le livre reste la premiere case de la grille', /lien-bio-principal/.test(cartes[0] || '') && /\{\{routes\.livre\}\}/.test(cartes[0] || ''));
+check('une carte « Nouveau » mene au diagnostic, suivie comme les autres boutons', carteDiag.includes(PORTE_DIAG) && /data-cta="liens-diagnostic-carte"/.test(carteDiag) && />Nouveau</.test(LIENS));
+check('l ancien test a disparu : un seul test sur la page', !/#test/.test(LIENS) && !/es-tu un bon pilote/i.test(LIENS) && (LIENS.match(/data-bio="diagnostic"/g) || []).length === 1);
+check('la fenetre d annonce existe et reste cachee sans script', /^<aside class="annonce"[^>]* hidden>/.test(fenetre));
+check('la fenetre mene au diagnostic et son clic est suivi', lienFenetre.includes(PORTE_DIAG) && /data-bio="diagnostic-fenetre"/.test(lienFenetre) && /data-cta="liens-diagnostic-fenetre"/.test(lienFenetre));
+check('la fenetre se ferme : un bouton nomme', /<button type="button" class="annonce-fermer" aria-label="[^"]+">/.test(fenetre));
+check('ni la carte ni la fenetre ne menent a un paiement', !/\/aller\/|buy\.stripe\.com|\{\{diagnostic\.aller/.test(carteDiag + fenetre));
+check('aucun prix sur la page de liens', !/\d+[,.]\d{2}\s*(€|&euro;)|prix_affiche/.test(LIENS));
+check('annonce.js : une seule fois (memoire du navigateur), jamais sur le lien du livre', /localStorage/.test(ANNONCE_JS) && /lien-bio-principal/.test(ANNONCE_JS) && /est-ecartee/.test(ANNONCE_JS));
+check('mouvement reduit : ni la fenetre ni la pastille ne bougent', /prefers-reduced-motion: reduce\)[^}]*\{[^}]*\.annonce/.test(LIENS_CSS.replace(/\s+/g, ' ')));
+const TEXTE_LIENS = LIENS.replace(/<!--[\s\S]*?-->/g, '') + ANNONCE_JS;
+check('page de liens : aucun tiret cadratin ni demi-cadratin, aucun emoji', !new RegExp('[' + String.fromCharCode(0x2013, 0x2014) + ']').test(TEXTE_LIENS) && !/[\u{1F000}-\u{1FAFF}]/u.test(TEXTE_LIENS));
+check('page de liens : jamais « PDF », « guide », coach, entraineur, moniteur dans le texte', !/\bPDF\b/.test(TEXTE_LIENS) && !/>[^<{]*\bguide\b[^<]*</i.test(TEXTE_LIENS) && !/(?<![\p{L}])(coach|coaching|entra[iî]neur|moniteur)(?![\p{L}])/iu.test(TEXTE_LIENS));
+
 // ---------- 5. La fonction ----------
 console.log('\n=== test:diagnostic, controle 5 : fonction');
 const appels = [];

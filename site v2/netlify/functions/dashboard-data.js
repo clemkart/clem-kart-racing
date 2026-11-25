@@ -91,6 +91,10 @@ plink(EQ.debrief_lecteur, 'debrief', 'debrief_lecteur');
 const DIAG_STRIPE = (OFFRES.diagnostic && OFFRES.diagnostic.stripe) || {};
 plink({ stripe: { plink: DIAG_STRIPE.plink } }, 'plan', 'plan');
 plink({ stripe: { plink: DIAG_STRIPE.plink_camera } }, 'plan', 'plan_camera');
+// Prix de lancement du plan : deux liens de plus, le meme produit.
+const DIAG_LANCEMENT = (OFFRES.diagnostic && OFFRES.diagnostic.lancement && OFFRES.diagnostic.lancement.stripe) || {};
+plink({ stripe: { plink: DIAG_LANCEMENT.plink } }, 'plan', 'plan_lancement');
+plink({ stripe: { plink: DIAG_LANCEMENT.plink_camera } }, 'plan', 'plan_camera_lancement');
 // Paiements de verification passes par la session Stripe le 24/11/2026 : jamais comptes comme des ventes.
 const REFERENCES_DE_TEST = new Set(['diag-verif-sid-test24nov']);
 
@@ -135,6 +139,8 @@ function ctaLabel(raw) { return CTA_LABELS[raw] || raw || '(sans nom)'; }
 const BIO_LABELS = {
   guide: 'Le guide',
   onboard: (OFFRES.debrief && OFFRES.debrief.titre) || 'Analyse de ton onboard',
+  diagnostic: 'Diagnostic de pilotage (carte)',
+  'diagnostic-fenetre': 'Diagnostic de pilotage (fenêtre)',
   journee: (OFFRES.journee && OFFRES.journee.titre) || 'Journée sur piste',
   marques: 'Marques et partenaires',
   site: 'Le site',

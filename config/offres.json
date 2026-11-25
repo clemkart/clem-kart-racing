@@ -6,7 +6,7 @@
     "tests/run-prix.js fait echouer la mise en ligne si un prix, un lien Stripe, un lien Gumroad ou gmail.com traine ailleurs qu ici."
   ],
   "version": 1,
-  "mis_a_jour": "2026-11-24",
+  "mis_a_jour": "2026-11-25",
   "marque": {
     "nom": "Clem Kart Racing",
     "auteur": "Clément Daniel",
@@ -113,7 +113,7 @@
     "aller_camera": "/aller/plan-camera",
     "fonction": "/.netlify/functions/diagnostic",
     "stripe": {
-      "pret": "non",
+      "pret": "oui",
       "url": "https://buy.stripe.com/9B66oGewXeMT2fW5F104806",
       "plink": "plink_1UfRZsBcT0bl6GNXWoZwE4pH",
       "url_camera": "https://buy.stripe.com/28E14m1Kb5cj1bS9Vh04807",
@@ -124,16 +124,30 @@
         "analyse": "price_1UIp4FBcT0bl6GNXjFR4ggBR"
       }
     },
+    "lancement": {
+      "prix": 11.99,
+      "prix_affiche": "11,99 €",
+      "fin": "2026-12-03T00:00:00+01:00",
+      "dernier_jour_affiche": "mercredi 2 décembre",
+      "stripe": {
+        "url": "https://buy.stripe.com/fZu3cu88zfQX9Io0kH04808",
+        "plink": "plink_1UflwnBcT0bl6GNXB1FTBlVm",
+        "url_camera": "https://buy.stripe.com/fZu9AS3Sj5cj7Agd7t04809",
+        "plink_camera": "plink_1UflwoBcT0bl6GNX5LiLixdC",
+        "prix_plan": "price_1UflvqBcT0bl6GNXnWwWuCiS"
+      },
+      "note": "Prix de lancement du plan d action. fin = premier instant APRES le lancement (le 2 decembre 2026 a 23 h 59 heure de Paris est encore au prix de lancement). Avant fin : les portes /aller/plan et /aller/plan-camera (fonctions aller-plan et aller-plan-camera) menent aux liens de lancement et la page du diagnostic affiche la phrase de lancement. Apres : retour tout seul aux liens et au prix de diagnostic.stripe, sans publication. Jamais de prix barre, de « au lieu de » ni de pourcentage : le plan n a jamais ete vendu au prix plein."
+    },
     "note": "Diagnostic gratuit (25 questions), puis plan d action ecrit a la main par Clement, sans IA, envoye par email sous 24 a 48 h. Lien A (url) : pilote sans camera. Lien B (url_camera) : pilote avec camera. Options cochees dans Stripe : livre digital a debrief.option_guide.prix_affiche, analyse d onboard a equitable.debrief_lecteur.prix_affiche. Tant que stripe.pret vaut non, la page n affiche pas le bouton de paiement et le build n ecrit pas les portes /aller/plan : passer a oui seulement quand les CGV et le webhook du mode reel sont en ligne.",
     "garantie_affiche": "Garantie 7 jours après réception du plan, en plus de tes droits légaux"
   },
   "lecteurs": {
-    "nombre": 79,
-    "date": "2026-09-23",
-    "source": "ventes Gumroad",
-    "affiche": "environ 80",
+    "nombre": 100,
+    "date": "2026-11-25",
+    "source": "plancher donné par Clément le 25/11/2026 : 85 ventes Gumroad et une trentaine sur Stripe",
+    "affiche": "plus de 100",
     "depuis": "janvier 2026",
-    "phrase": "Environ 80 lecteurs entre janvier et septembre 2026"
+    "phrase": "Plus de 100 lecteurs depuis janvier 2026"
   },
   "garantie_jours": 7,
   "delai_h": 72,

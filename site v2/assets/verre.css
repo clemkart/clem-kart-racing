@@ -208,8 +208,19 @@ body:not(#v) .hud { border-radius: 99px; padding: 8px 14px; }
 
 /* ---------- 12. Page de liens ---------- */
 .liens-boutons { gap: 12px; }
-body:not(#v) .lien-bio { min-height: 66px; border-radius: 20px; }
-body:not(#v) .lien-bio-principal { background: var(--verre-rouge); border-color: rgba(255, 120, 110, 0.5); box-shadow: var(--verre-rouge-ombre); }
+/* « .liens-boutons » en plus dans chaque selecteur : sans lui, la regle generale du verre (section 4,
+   plus precise a cause de « .preuves-ligne li ») passait devant, et le livre perdait son rouge. */
+body:not(#v) .liens-boutons .lien-bio { min-height: 66px; border-radius: 20px; }
+/* Les anciens voiles de survol, carres, ne passent plus sur le verre arrondi (dont la bande rouge sombre qui balayait le livre) */
+body:not(#v) .liens-boutons .lien-bio::after { content: none; }
+/* Le livre : la seule case en verre rouge, d une seule couleur */
+body:not(#v) .liens-boutons .lien-bio-principal { background: var(--verre-rouge); border-color: rgba(255, 120, 110, 0.5); box-shadow: var(--verre-rouge-ombre); }
+body:not(#v) .liens-boutons .lien-bio-principal:active { border-color: rgba(255, 170, 160, 0.9); }
+@media (hover: hover) and (pointer: fine) {
+  body:not(#v) .liens-boutons .lien-bio-principal:hover { border-color: rgba(255, 170, 160, 0.9); box-shadow: var(--verre-rouge-ombre), 0 0 0 1px rgba(255, 150, 140, 0.55), 0 0 34px rgba(255, 59, 48, 0.8); }
+}
+/* La carte « Nouveau » (diagnostic) : le meme verre que les autres, avec un bord de neon rouge au repos */
+body:not(#v) .liens-boutons .lien-bio-nouveau { border-color: rgba(255, 90, 80, 0.5); box-shadow: var(--verre-ombre), 0 0 0 1px rgba(255, 90, 80, 0.16), 0 0 26px -8px rgba(255, 59, 48, 0.6); }
 
 /* ---------- 13. Accueil ---------- */
 /* Les faits (8 ans de competition, champion regional...) : quatre pastilles de verre, reliees par un filet de lumiere */

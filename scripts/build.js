@@ -243,7 +243,10 @@ function ecrireRedirects(cfg, dist) {
 
   /* Plan d action du diagnostic : deux portes (sans camera, avec camera). Elles ne sont ecrites que lorsque
      Stripe est pret (diagnostic.stripe.pret = oui et les deux adresses renseignees) : avant, la page n affiche
-     pas le bouton de paiement. */
+     pas le bouton de paiement.
+     Elles passent par deux fonctions (aller-plan, aller-plan-camera, lib/porte-plan.js) qui choisissent le
+     lien Stripe a l heure du clic : liens de lancement avant diagnostic.lancement.fin, liens habituels apres.
+     La fin du lancement ne demande donc aucune publication. La chaine de requete suit. */
   const diag = cfg.diagnostic || {};
   const diagStripe = diag.stripe || {};
   if (diagStripe.pret === 'oui') {
@@ -251,7 +254,14 @@ function ecrireRedirects(cfg, dist) {
     if (!lienStripe.test(diagStripe.url || '') || !lienStripe.test(diagStripe.url_camera || '')) {
       echec('diagnostic.stripe.pret vaut oui mais url ou url_camera ne sont pas des liens buy.stripe.com');
     }
-    lignes.push(`${diag.aller}  ${diagStripe.url}  302`, `${diag.aller_camera}  ${diagStripe.url_camera}  302`);
+    const lancement = diag.lancement;
+    if (lancement) {
+      const liens = lancement.stripe || {};
+      if (!lienStripe.test(liens.url || '') || !lienStripe.test(liens.url_camera || '') || !Number.isFinite(Date.parse(lancement.fin))) {
+        echec('diagnostic.lancement : url, url_camera (liens buy.stripe.com) et fin (date ISO) sont obligatoires');
+      }
+    }
+    lignes.push(`${diag.aller}  /.netlify/functions/aller-plan  200`, `${diag.aller_camera}  /.netlify/functions/aller-plan-camera  200`);
   }
 
   /* /onboard/ vit sur le site 2 tant que la page n est pas dans "site v2/" (lot 3). 302 : temporaire. */

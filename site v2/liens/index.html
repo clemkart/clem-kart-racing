@@ -22,7 +22,8 @@
      Les cinq liens sont de vrais liens. site.js propage les UTM et envoie bio_click (attribut data-bio).
      Aucun prix sur cette page (decision du 13/10) : chaque case mene a une petite page de vente (/livre, /analyse)
      ou a la page du consulting, qui annoncent le prix au bon moment.
-     Ordre : le livre de pilotage (seule case rouge, la pole), l analyse d onboard,
+     Ordre : le livre de pilotage (seule case rouge, la pole), le diagnostic de pilotage (carte « Nouveau »,
+     depuis le 25/11/2026, a la place de l ancien test du site 2 : un seul test sur la page),
      le consulting en piste, les marques (vouvoiement), le site. L extrait gratuit reste en lien texte dessous.
      Photo : piste-25-contre-jour (4:5), Clement de face dans son kart, casque et visiere baissee : aucun visage.
      Telephone : bande photo de 40svh, le nom remonte de 64 px dessus, les feux en haut a gauche de la bande.
@@ -60,9 +61,10 @@
         <span class="lien-bio-sous">{{guide.titre}} · {{guide.format}}, {{guide.pages}} pages</span>
         <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>
-      <a class="lien-bio" href="{{routes.onboard}}#test" data-bio="onboard" data-bouton="onboard" data-position="2">
-        <span class="lien-bio-titre">Le test : es-tu un bon pilote ?</span>
-        <span class="lien-bio-sous">7 questions, 2 minutes, sans email. À la fin, je te dis où chercher tes dixièmes.</span>
+      <a class="lien-bio lien-bio-nouveau" href="{{routes.diagnostic}}/" data-bio="diagnostic" data-cta="liens-diagnostic-carte" data-bouton="diagnostic" data-position="2">
+        <span class="lien-bio-titre">{{diagnostic.titre}}</span>
+        <span class="lien-bio-pastille">Nouveau</span>
+        <span class="lien-bio-sous">{{diagnostic.resume_ligne}}</span>
         <span class="lien-bio-fleche" aria-hidden="true">&rarr;</span>
       </a>
       <a class="lien-bio" href="{{routes.journee}}" data-bio="journee" data-bouton="journee" data-position="3">
@@ -112,5 +114,23 @@
   </div>
 
 </main>
+
+<!-- L annonce du diagnostic : une petite fenetre de verre en bas de l ecran, au premier passage seulement
+     (annonce.js, memoire du navigateur). Cachee sans script. Elle mene au diagnostic, jamais a un paiement,
+     se ferme par la croix, un glissement vers le bas ou Echap, et s ecarte d elle-meme si elle venait a
+     recouvrir le lien du livre. Ce n est pas une fenetre modale : la page reste utilisable derriere. -->
+<aside class="annonce" id="annonce-diagnostic" aria-label="Nouveau : {{diagnostic.titre}}" hidden>
+  <span class="annonce-feu" aria-hidden="true"></span>
+  <span class="annonce-poignee" aria-hidden="true"></span>
+  <div class="annonce-tete">
+    <svg class="annonce-volant" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9.6" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M2.8 11.3h6.7M14.5 11.3h6.7M12 14.5v6.9" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path class="annonce-repere" d="M10.9 1.4h2.2v3h-2.2z"/></svg>
+    <p class="annonce-titre"><span class="annonce-label">Nouveau · Gratuit · 4 minutes</span>{{diagnostic.titre}}</p>
+    <button type="button" class="annonce-fermer" aria-label="Fermer l’annonce"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+  </div>
+  <p class="annonce-texte">Je te pose des questions, tu y réponds, et je sais comment t’aider à devenir un meilleur pilote.</p>
+  <a class="bouton bouton-principal annonce-bouton" href="{{routes.diagnostic}}/" data-bio="diagnostic-fenetre" data-cta="liens-diagnostic-fenetre">Je fais le diagnostic <span class="annonce-fleche" aria-hidden="true">&rarr;</span></a>
+</aside>
+
+<script src="/assets/annonce.js" defer></script>
 </body>
 </html>

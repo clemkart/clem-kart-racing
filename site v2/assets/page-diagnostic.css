@@ -194,6 +194,12 @@
 .page-diagnostic .inclus li { display: flex; gap: 10px; font-size: 0.9375rem; line-height: 1.4; }
 .page-diagnostic .inclus li::before { content: ''; flex: none; width: 7px; height: 7px; margin-top: 8px; border-radius: 50%; background: var(--rouge-vif); box-shadow: 0 0 8px var(--rouge-vif); }
 .page-diagnostic .prix .big { font-size: 2.75rem; }
+/* Prix de lancement : une pastille de verre sous le prix, la phrase entiere, sans prix barre */
+.page-diagnostic .offre .lancement {
+  align-self: flex-start; margin-top: -6px; padding: 7px 12px; border-radius: 12px;
+  border: 1px solid rgba(255, 120, 110, 0.45); background: rgba(212, 14, 8, 0.2);
+  font-size: 0.8125rem; line-height: 1.35; font-weight: var(--graisse-forte); color: var(--texte);
+}
 .page-diagnostic .notice-envoi { padding: 12px 14px; border-radius: 14px; background: rgba(0, 0, 0, 0.3); border-left: 2px solid var(--rouge-vif); font-size: 0.875rem; }
 .page-diagnostic .pied-diag { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
 .page-diagnostic .dg-noscript { padding: 24px; margin-top: 40px; }
