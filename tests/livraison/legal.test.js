@@ -13,9 +13,10 @@ const RACINE = path.resolve(__dirname, '..', '..');
 const SITE = path.join(RACINE, 'site v2');
 const lire = (nom) => fs.readFileSync(path.join(SITE, nom), 'utf8');
 
-// Empreinte de pages-legales/cgv.pdf, version du 24/09/2026 (7 pages A4, identité remplie, sans médiateur).
+// Empreinte de cgv.pdf, version du 25/11/2026 (12 pages A4, plan d'action ajouté, imprimée depuis la page /cgv du site avec Edge).
+// Version précédente : 24/09/2026 (7 pages, dossier pages-legales de la session Stripe).
 // Le PDF change : régénérer depuis cgv.html du dossier pages-legales, puis mettre à jour cette empreinte.
-const EMPREINTE_CGV_PDF = '736e7db2ad5d2f6ed1c800cd01f269ed1840a955693203e8c265c321776749bc';
+const EMPREINTE_CGV_PDF = 'adeb5e368f5fc400ab4c0456554537e73c8577276148759d5f4eb1a3af3d9a41';
 
 const PAGES = {
   'cgv.html': { route: 'routes.cgv', identite: ['{{legal.adresse}}', '{{legal.siren}}', '{{legal.registre}}', 'href="tel:{{legal.telephone_lien}}">{{legal.telephone}}</a>'], articles: 14 },
@@ -69,7 +70,7 @@ describe('pages légales', () => {
     assert.ok(cgv.includes('Garantie légale de conformité des contenus numériques'));
   });
 
-  it('cgv.pdf : copie octet pour octet de la version vérifiée du 24/09', () => {
+  it('cgv.pdf : copie octet pour octet de la version du 25/11', () => {
     const pdf = fs.readFileSync(path.join(SITE, 'cgv.pdf'));
     assert.equal(pdf.subarray(0, 5).toString('latin1'), '%PDF-');
     assert.equal(crypto.createHash('sha256').update(pdf).digest('hex'), EMPREINTE_CGV_PDF);

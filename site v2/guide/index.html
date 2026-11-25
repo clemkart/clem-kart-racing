@@ -75,7 +75,7 @@
           <p class="chrono hero-resume" data-entree="texte" data-t="340">{{guide.format}}, {{guide.pages}} pages, {{guide.chapitres}} chapitres, accès immédiat</p>
           <div class="hero-actions" data-entree="texte" data-t="380">
             <div class="hero-achat">
-              <a class="bouton bouton-principal" href="{{guide.aller}}" data-aimant data-cta="hero" data-zone="hero">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+              <a class="bouton bouton-principal" href="{{guide.aller}}" data-aimant data-cta="hero" data-zone="hero">Je comprends mes bons tours <span class="chrono">{{guide.prix_affiche}}</span></a>
               <p class="hero-sous hero-garantie">Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</p>
               <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
             </div>
@@ -131,7 +131,7 @@
       </div>
 
       <div class="feuilleter-suite reveal">
-        <a class="bouton bouton-fantome" href="{{guide.aller}}" data-cta="feuilleter" data-zone="feuilleter">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+        <a class="bouton bouton-fantome" href="{{guide.aller}}" data-cta="feuilleter" data-zone="feuilleter">Je comprends mes bons tours <span class="chrono">{{guide.prix_affiche}}</span></a>
         <span class="bouton-sous">Accès immédiat après le paiement. Garantie <span class="chrono">{{garantie_jours}} jours</span>, en plus de tes droits légaux.</span>
         <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
       </div>
@@ -452,7 +452,7 @@
             <li>L’accès tout de suite après le paiement, sur la page qui suit.</li>
           </ul>
           <div class="prix-action">
-            <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-aimant data-cta="prix" data-zone="prix">Obtenir le livre <span class="chrono">{{guide.prix_affiche}}</span></a>
+            <a class="bouton bouton-principal bouton-large" href="{{guide.aller}}" data-aimant data-cta="prix" data-zone="prix">Je comprends mes bons tours <span class="chrono">{{guide.prix_affiche}}</span></a>
             <span class="bouton-sous">Paiement sécurisé par Stripe, accès immédiat après le paiement.</span>
             <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
           </div>
@@ -531,12 +531,12 @@
 
 <!-- Barre collante : apparait quand le premier ecran est sorti, se cache devant le prix et le bouton final.
      Son bord haut est la barre de secteurs (progression de la lecture). -->
-<div class="barre" role="region" aria-label="Obtenir le livre">
+<div class="barre" role="region" aria-label="Je comprends mes bons tours">
   <div class="secteurs" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
   <div class="conteneur barre-inner">
     <p class="barre-texte">Le guide <span class="chrono">{{guide.prix_affiche}}</span></p>
     <div class="barre-achat">
-      <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="barre" data-zone="barre">Obtenir le livre</a>
+      <a class="bouton bouton-principal" href="{{guide.aller}}" data-cta="barre" data-zone="barre">Je comprends mes bons tours</a>
       <span class="bouton-cgv">En commandant, tu acceptes les <a href="{{routes.cgv}}">CGV</a>.</span>
     </div>
   </div>

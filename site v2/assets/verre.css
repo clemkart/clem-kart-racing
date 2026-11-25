@@ -322,3 +322,9 @@ body:not(#v) .pied-grille ul a:hover::after { translate: 3px 0; color: var(--rou
   body:not(#v) :is(.lien-bio, .portes a, .preuves-ligne li, .formule, .quote-colonne):hover { transform: none; }
   .bouton-principal::before { display: none; }
 }
+
+/* ---------- 17. Petits telephones : un libelle long passe sur deux lignes au lieu de depasser de l ecran ---------- */
+@media (max-width: 430px) {
+  .bouton-principal, .bouton-fantome { max-width: 100%; white-space: normal; text-align: center; line-height: 1.15; padding-block: 10px; }
+  .bouton .chrono { flex: none; white-space: nowrap; }
+}
