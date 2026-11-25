@@ -226,3 +226,11 @@
   .page-diagnostic .ecran, .page-diagnostic .opt, .page-diagnostic .saisie, .page-diagnostic .inter .lignes p { animation: none; }
   .page-diagnostic .roue .gear, .page-diagnostic .roue .anneau .av, .page-diagnostic .jauge .av, .page-diagnostic .opt { transition: none; }
 }
+
+/* ---------- Reflets (25/11) : le reflet suit la souris sur les reponses, un trait de lumiere les traverse ---------- */
+.page-diagnostic .opt { transition: --lum 400ms var(--ease-sortie), --balai 0s, transform 300ms var(--dg-ressort), border-color 300ms, background-color 300ms, box-shadow 300ms; }
+@media (hover: hover) and (pointer: fine) {
+  .page-diagnostic .opt:hover { --lum: 1; --balai: -40%; box-shadow: var(--verre-ombre), var(--verre-neon); transition: --lum 300ms var(--ease-sortie), --balai 900ms var(--ease-sortie), transform 300ms var(--dg-ressort), border-color 300ms, box-shadow 300ms; }
+  .page-diagnostic .opt.choisi:hover { box-shadow: var(--verre-rouge-ombre), 0 0 34px rgba(255, 59, 48, 0.8); }
+}
+.page-diagnostic .opt:active { --lum: 1; --balai: -40%; transition: --lum 120ms linear, --balai 600ms var(--ease-sortie); }

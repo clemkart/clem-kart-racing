@@ -381,12 +381,14 @@ body.diag{padding-bottom:112px;}
 :root{
  --red:#E10600;--red-btn:#DC140A;--red-dark:#B00500;--rv:#FF3B30;
  --black:#050506;--b2:#0B0B0D;--b3:#131316;--b4:#1B1B1F;
- --verre:radial-gradient(130% 90% at 0% 0%,rgba(255,255,255,.1),rgba(255,255,255,0) 46%),linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.025) 45%,rgba(255,255,255,.05));
- --verre-flou:blur(20px) saturate(185%) brightness(1.08);
- --verre-bord:rgba(255,255,255,.13);
- --verre-ombre:inset 0 1px 0 rgba(255,255,255,.3),inset 1px 0 0 rgba(255,255,255,.07),inset -1px -1px 0 rgba(255,90,80,.16),inset 0 0 36px rgba(255,255,255,.03),0 24px 60px -34px rgba(0,0,0,.9);
- --verre-rouge:linear-gradient(135deg,#DC140A,#8A0400);
- --verre-rouge-ombre:inset 0 1px 0 rgba(255,255,255,.38),0 14px 34px -12px rgba(225,6,0,.85);
+ --verre-fond: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0) 26%), radial-gradient(130% 90% at 0% 0%, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 46%), linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025) 45%, rgba(255, 255, 255, 0.05));
+ --verre: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, calc(0.2 * var(--lum, 0))), rgba(255, 90, 80, calc(0.1 * var(--lum, 0))) 45%, transparent 70%), linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.22) 50%, transparent 58%) var(--balai, 140%) 0 / 240% 100% no-repeat, var(--verre-fond);
+ --verre-flou: blur(22px) saturate(190%) brightness(1.1);
+ --verre-bord: rgba(255, 255, 255, 0.14);
+ --verre-ombre: inset 0 1.5px 0 rgba(255, 255, 255, 0.42), inset 1px 0 0 rgba(255, 255, 255, 0.08), inset -1px -1px 0 rgba(255, 90, 80, 0.18), inset 0 -14px 22px -16px rgba(0, 0, 0, 0.55), inset 0 0 36px rgba(255, 255, 255, 0.03), 0 1px 0 rgba(0, 0, 0, 0.6), 0 26px 60px -30px rgba(0, 0, 0, 0.95);
+ --verre-neon: 0 0 0 1px rgba(255, 90, 80, 0.5), 0 0 26px -2px rgba(255, 59, 48, 0.55), 0 22px 54px -24px rgba(225, 6, 0, 0.75);
+ --verre-rouge: radial-gradient(200px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, calc(0.34 * var(--lum, 0))), transparent 62%), linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 45%), linear-gradient(135deg, #DC140A, #8A0400);
+ --verre-rouge-ombre: inset 0 1.5px 0 rgba(255, 255, 255, 0.45), inset 0 -10px 16px -10px rgba(60, 0, 0, 0.7), 0 14px 34px -12px rgba(225, 6, 0, 0.85);
 }
 html{background:radial-gradient(70% 45% at 88% 4%,rgba(225,6,0,.22),transparent 70%),radial-gradient(60% 40% at 2% 96%,rgba(225,6,0,.16),transparent 70%),radial-gradient(45% 30% at 50% 50%,rgba(255,59,48,.05),transparent 70%),var(--black);background-attachment:fixed;}
 body{background:transparent;}
@@ -401,22 +403,36 @@ body{background:transparent;}
 .dc-lueur{stroke:rgba(255,59,48,.15);stroke-width:9;}
 .dc-trace{stroke:var(--rv);stroke-width:2;opacity:.6;}
 .decor-tete{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:#FFE2DD;box-shadow:0 0 0 3px rgba(255,59,48,.35),0 0 22px 8px rgba(255,59,48,.6),0 0 60px 20px rgba(225,6,0,.35);}
+.piece{position:absolute;overflow:visible;max-width:none;}
+.piece .metal{fill:url(#dc-metal);stroke:rgba(255,255,255,.4);stroke-width:.8;}
+.piece .braise{fill:url(#dc-braise);stroke:rgba(255,160,150,.6);stroke-width:.8;}
+.piece .gomme{fill:#0C0C0E;stroke:rgba(255,255,255,.22);stroke-width:1;}
+.piece .creux{fill:#050506;stroke:rgba(255,255,255,.16);stroke-width:.8;}
+.piece .filet{fill:none;stroke:rgba(255,255,255,.25);stroke-width:1.2;}
 .decor-meca{position:absolute;right:-58px;top:60%;width:218px;height:144px;opacity:.42;}
-.decor-roue{position:absolute;overflow:visible;max-width:none;}
-.decor-roue path{fill:url(#dc-metal);stroke:rgba(255,255,255,.4);stroke-width:.8;}
-.decor-roue circle{fill:none;stroke:rgba(255,255,255,.25);stroke-width:1.2;}
 .dr-1{left:0;top:0;width:144px;height:144px;}
 .dr-2{left:122px;top:24px;width:96px;height:96px;transform:rotate(22.5deg);}
-.dr-2 path{fill:url(#dc-braise);stroke:rgba(255,160,150,.6);}
+.decor-volant{left:-74px;top:24%;width:190px;height:190px;opacity:.26;display:none;}
+@media (min-width:1100px){.decor-volant{display:block;}}
 @media (max-width:899px){
  .dc-halo{stroke-width:20;stroke:rgba(225,6,0,.06);}
  .dc-lueur{stroke-width:6;stroke:rgba(255,59,48,.1);}
  .dc-trace{stroke-width:1.5;opacity:.42;}
  .decor-meca{right:-96px;top:64%;opacity:.2;scale:.8;transform-origin:right center;}
 }
+/* Reflets : le reflet suit la souris (decor.js), un trait de lumiere traverse la surface, le bord passe au rouge */
+@property --lum{syntax:'<number>';inherits:false;initial-value:0;}
+@property --balai{syntax:'<percentage>';inherits:false;initial-value:140%;}
+.opt,details{transition:--lum 400ms var(--ease-sortie),--balai 0s,border-color var(--d-court) var(--ease-sortie),box-shadow 320ms var(--ease-sortie),scale var(--d-instant) var(--ease-sortie);}
+@media (hover:hover) and (pointer:fine){
+ .opt:hover,details:hover{--lum:1;--balai:-40%;border-color:rgba(255,90,80,.62);box-shadow:var(--verre-ombre),var(--verre-neon);transition:--lum 300ms var(--ease-sortie),--balai 900ms var(--ease-sortie),border-color var(--d-court) var(--ease-sortie),box-shadow 320ms var(--ease-sortie);}
+ .next:hover,.btp:hover{--lum:1;border-color:rgba(255,170,160,.9);box-shadow:var(--verre-rouge-ombre),0 0 0 1px rgba(255,150,140,.55),0 0 34px rgba(255,59,48,.8);}
+ .next:hover::before,.btp:hover::before{transform:translateX(130%);transition:transform 750ms var(--ease-sortie);}
+}
+.opt:active{--lum:1;--balai:-40%;transition:--lum 120ms linear,--balai 600ms var(--ease-sortie);}
 /* Boutons */
 .next,.btp{border-radius:14px;background:var(--verre-rouge);border-color:rgba(255,120,110,.5);box-shadow:var(--verre-rouge-ombre);}
-.next::before,.btp::before{background:linear-gradient(135deg,#B00500,#6E0300);}
+.next::before,.btp::before{inset:0;background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.5) 50%,transparent 68%);transform:translateX(-130%);transform-origin:center;transition:none;}
 .next:active,.btp:active{background:var(--verre-rouge);}
 /* Les reponses du test : des touches de verre */
 .opt{border:1px solid var(--verre-bord);border-radius:20px;background:var(--verre);-webkit-backdrop-filter:var(--verre-flou);backdrop-filter:var(--verre-flou);box-shadow:var(--verre-ombre);}
