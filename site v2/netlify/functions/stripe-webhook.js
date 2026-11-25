@@ -1,6 +1,7 @@
 'use strict';
 // Webhook Stripe : POST /.netlify/functions/stripe-webhook (même endpoint, plus tard, pour la livraison du guide).
-// Aujourd'hui : les commandes de débrief onboard. Pour chaque session payée d'un des deux liens du débrief
+// Aujourd'hui : les commandes de débrief onboard, et celles du plan d'action du diagnostic (plus bas : « Plan d'action »).
+// Débrief : Pour chaque session payée d'un des deux liens du débrief
 // (config/offres.json : debrief.stripe.plink et equitable.debrief_lecteur.stripe.plink) :
 //   1. email « Nouveau débrief : <nom> » à EMAIL_INTERNE (défaut contact.email) : lien vidéo, circuit et kart,
 //      accord d'utilisation, montant, option guide, dates, lien du paiement dans le Dashboard ;
@@ -59,10 +60,12 @@ async function handler(event) {
     return reponseJson(200, { ok: true, ignore: 'objet' });
   }
   if (session.payment_status !== 'paid') return reponseJson(200, { ok: true, ignore: 'non_paye' });
-  if (!estSessionDebrief(session)) return reponseJson(200, { ok: true, ignore: 'autre_produit' });
+  // Le plan d'action d'abord : en mode test, son champ lienonboard le ferait passer pour un débrief.
+  const plan = estSessionPlan(session);
+  if (!plan && !estSessionDebrief(session)) return reponseJson(200, { ok: true, ignore: 'autre_produit' });
 
   try {
-    const resultat = await traiterDebrief(session, evenement);
+    const resultat = plan ? await traiterPlan(session, evenement) : await traiterDebrief(session, evenement);
     return reponseJson(200, { ok: true, ...resultat });
   } catch (err) {
     console.error(`${JOURNAL} ${session.id} : ${err.message}`);
@@ -255,6 +258,148 @@ async function traiterDebrief(session, evenement) {
   }
 }
 
+// ---------- Plan d'action du diagnostic ----------
+// Session reconnue à metadata.funnel (posé par Stripe sur les deux liens, réel comme test) ou à l'identifiant
+// d'un des deux liens (config/offres.json : diagnostic.stripe.plink et plink_camera).
+// Les options (livre digital, analyse d'onboard) se cochent dans Stripe : elles se lisent par identifiant de
+// prix dans le panier, sinon par le montant payé (les quatre totaux possibles sont tous différents).
+// Réservation : la même table que le débrief (clé primaire session_id), pour un seul envoi par session.
+const PLAN_STRIPE = (OFFRES.diagnostic && OFFRES.diagnostic.stripe) || {};
+const PRIX_PLAN = PLAN_STRIPE.prix || {};
+const FUNNEL_PLAN = 'plan_action_diagnostic';
+const LIENS_PLAN = new Set([PLAN_STRIPE.plink, PLAN_STRIPE.plink_camera].filter(Boolean));
+const DELAI_PLAN_MS = 48 * 60 * 60 * 1000;
+const centimes = (euros) => Math.round(Number(euros) * 100);
+const MONTANTS_PLAN = (() => {
+  const plan = centimes(OFFRES.diagnostic.prix);
+  const livre = centimes(OFFRES.debrief.option_guide.prix);
+  const analyse = centimes(OFFRES.equitable.debrief_lecteur.prix);
+  return new Map([
+    [plan, { livre: false, analyse: false }],
+    [plan + livre, { livre: true, analyse: false }],
+    [plan + analyse, { livre: false, analyse: true }],
+    [plan + livre + analyse, { livre: true, analyse: true }],
+  ]);
+})();
+
+function estSessionPlan(session) {
+  const funnel = session.metadata && session.metadata.funnel;
+  return funnel === FUNNEL_PLAN || LIENS_PLAN.has(idLien(session.payment_link));
+}
+
+// deduites = true quand le montant a tranché (panier illisible ou mode test).
+async function lireOptionsPlan(session) {
+  if (session.livemode !== false) {
+    try {
+      const lignes = await lireLignesSession(session.id);
+      if (lignes && lignes.length) {
+        const prix = lignes.map((l) => (l && l.price && l.price.id) || '');
+        return { livre: prix.includes(PRIX_PLAN.livre), analyse: prix.includes(PRIX_PLAN.analyse), deduites: false };
+      }
+    } catch (err) {
+      console.warn(`${JOURNAL} ${session.id} : lignes du panier illisibles (${err.message}), repli sur le montant`);
+    }
+  }
+  const selonMontant = MONTANTS_PLAN.get(Number(session.amount_total)) || { livre: false, analyse: false };
+  return { ...selonMontant, deduites: true };
+}
+
+async function traiterPlan(session, evenement) {
+  const commande = new Date((Number(evenement.created) || Math.floor(Date.now() / 1000)) * 1000);
+  const echeance = new Date(commande.getTime() + DELAI_PLAN_MS);
+  const options = await lireOptionsPlan(session);
+  // Jamais les vrais fichiers pour un paiement de test : un lien de test partagé les donnerait.
+  const fichiers = options.livre && session.livemode !== false ? fichiersGuide() : null;
+
+  const reserves = await supabase.inserer(
+    'debriefs',
+    [{ session_id: session.id, echeance: echeance.toISOString(), option_guide: options.livre, statut: 'a_faire' }],
+    { ignorerDoublons: true, renvoyer: true }
+  );
+  if (!reserves.length) {
+    const etat = await etatReservation(session.id);
+    if (etat === 'faite') {
+      console.log(`${JOURNAL} ${session.id} : déjà traitée, aucun email`);
+      return { deja_traite: true };
+    }
+    if (etat === 'en_cours') throw new Error('réservation en cours, nouvel essai attendu');
+    console.warn(`${JOURNAL} ${session.id} : réservation périmée sans email interne, reprise`);
+  }
+
+  const { nom, email } = lireClient(session);
+  const lienVideo = normaliserLienVideo(champ(session, 'lienonboard'));
+  const usage = champ(session, 'usagevideo');
+  const echeanceTexte = formaterDateHeure(echeance);
+  const delaiLivreH = OFFRES.delais.option_guide_h;
+  const delaiAnalyseH = OFFRES.delais.debrief_h;
+
+  const interne = emails.emailPlanInterne({
+    nom,
+    email,
+    // Stripe borne déjà client_reference_id (lettres, chiffres, tirets, 200 caractères) : on ne garde que ça.
+    reference: String(session.client_reference_id || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 200),
+    variante: String((session.metadata && session.metadata.variante) || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40),
+    options,
+    lienVideo,
+    usageLibelle: USAGES[usage] || (usage ? `Réponse inconnue (${usage})` : 'Non renseigné : vidéo privée'),
+    montant: formaterMontant(session.amount_total, session.currency),
+    commandeLe: formaterDateHeure(commande),
+    echeancePlan: echeanceTexte,
+    delaiLivreH,
+    delaiAnalyseH,
+    lienDashboard: lienDashboardPaiement(session.payment_intent, session.livemode),
+    sessionId: session.id,
+    livreAEnvoyer: options.livre && !fichiers && session.livemode !== false,
+  });
+  const sujetInterne = session.livemode === false ? `[TEST] ${interne.sujet}` : interne.sujet;
+  try {
+    await envoyerEmail({
+      destinataire: { email: avecDefaut('EMAIL_INTERNE') },
+      ...interne,
+      sujet: sujetInterne,
+      repondreA: estEmailValide(email) ? email : undefined,
+    });
+  } catch (err) {
+    await liberer(session.id);
+    throw err;
+  }
+  try {
+    await supabase.mettreAJour('debriefs', { session_id: `eq.${session.id}` }, { interne_envoye_le: new Date(Date.now()).toISOString() });
+  } catch (err) {
+    console.error(`${JOURNAL} ${session.id} : envoi interne non marqué (${err.message})`);
+  }
+
+  if (!estEmailValide(email)) {
+    await alerterPlan(session.id, { nom, email, raison: 'adresse email du client invalide' });
+    return { interne: true, client: false };
+  }
+  try {
+    const confirmation = emails.emailPlanClient({
+      prenom: prenomDepuisNom(nom),
+      delaiPlan: OFFRES.diagnostic.delai_affiche,
+      options,
+      fichiers,
+      lienVideo,
+      delaiLivreH,
+      delaiAnalyseH,
+    });
+    await envoyerEmail({ destinataire: { email, nom }, ...confirmation });
+    return { interne: true, client: true };
+  } catch (err) {
+    console.error(`${JOURNAL} ${session.id} : confirmation client non envoyée (${err.message})`);
+    await alerterPlan(session.id, { nom, email, raison: err.message });
+    return { interne: true, client: false };
+  }
+}
+
+async function alerterPlan(sessionId, details) {
+  try {
+    await envoyerEmail({ destinataire: { email: avecDefaut('EMAIL_INTERNE') }, ...emails.emailAlertePlan(details) });
+  } catch (err) {
+    console.error(`${JOURNAL} ${sessionId} : alerte non envoyée (${err.message})`);
+  }
+}
+
 async function alerter(sessionId, details) {
   try {
     await envoyerEmail({ destinataire: { email: avecDefaut('EMAIL_INTERNE') }, ...emails.emailAlerteDebrief(details) });
@@ -263,4 +408,4 @@ async function alerter(sessionId, details) {
   }
 }
 
-module.exports = { handler, estSessionDebrief, champ, normaliserLienVideo, SEUIL_OPTION_CENTIMES };
+module.exports = { handler, estSessionDebrief, estSessionPlan, champ, normaliserLienVideo, SEUIL_OPTION_CENTIMES };

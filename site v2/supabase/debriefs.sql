@@ -10,6 +10,8 @@
 -- n'est effacé.
 -- =============================================
 
+-- Depuis le 25/11/2026, le webhook y reserve aussi les commandes du plan d action du diagnostic
+-- (meme cle session_id, echeance a 48 h, option_guide = livre digital pris en option) : aucune colonne en plus.
 create table if not exists public.debriefs (
   session_id   text primary key,
   echeance     timestamptz not null,

@@ -114,12 +114,18 @@
     "fonction": "/.netlify/functions/diagnostic",
     "stripe": {
       "pret": "non",
-      "url": "",
-      "plink": "",
-      "url_camera": "",
-      "plink_camera": ""
+      "url": "https://buy.stripe.com/9B66oGewXeMT2fW5F104806",
+      "plink": "plink_1UfRZsBcT0bl6GNXWoZwE4pH",
+      "url_camera": "https://buy.stripe.com/28E14m1Kb5cj1bS9Vh04807",
+      "plink_camera": "plink_1UfRaEBcT0bl6GNXrCqUeh4v",
+      "prix": {
+        "plan": "price_1UfRYyBcT0bl6GNXGecBO3R4",
+        "livre": "price_1UFUy4BcT0bl6GNXT6iGiDIZ",
+        "analyse": "price_1UIp4FBcT0bl6GNXjFR4ggBR"
+      }
     },
-    "note": "Diagnostic gratuit (25 questions), puis plan d action ecrit a la main par Clement, sans IA, envoye par email sous 24 a 48 h. Options au paiement (dans Stripe) : livre digital a debrief.option_guide.prix_affiche, analyse d onboard a equitable.debrief_lecteur.prix_affiche. Tant que stripe.pret vaut non, la page n affiche pas le bouton de paiement et le build n ecrit pas les portes /aller/plan."
+    "note": "Diagnostic gratuit (25 questions), puis plan d action ecrit a la main par Clement, sans IA, envoye par email sous 24 a 48 h. Lien A (url) : pilote sans camera. Lien B (url_camera) : pilote avec camera. Options cochees dans Stripe : livre digital a debrief.option_guide.prix_affiche, analyse d onboard a equitable.debrief_lecteur.prix_affiche. Tant que stripe.pret vaut non, la page n affiche pas le bouton de paiement et le build n ecrit pas les portes /aller/plan : passer a oui seulement quand les CGV et le webhook du mode reel sont en ligne.",
+    "garantie_affiche": "Garantie 7 jours après réception du plan, en plus de tes droits légaux"
   },
   "lecteurs": {
     "nombre": 79,

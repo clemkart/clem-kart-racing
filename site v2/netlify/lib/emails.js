@@ -398,6 +398,86 @@ function emailDiagnosticClient({ prenom, indice, marge, priorites, forts, delaiP
   });
 }
 
+// ---------- Emails du plan d'action (commande passée depuis le diagnostic, webhook Stripe) ----------
+
+// Commande de plan d'action pour Clément : ce qu'il doit livrer et pour quand. Les réponses du pilote sont dans
+// l'email « Nouveau diagnostic », reçu à la même adresse (même email client).
+function emailPlanInterne({ nom, email, reference, variante, options, lienVideo, usageLibelle, montant, commandeLe,
+  echeancePlan, delaiLivreH, delaiAnalyseH, lienDashboard, sessionId, livreAEnvoyer }) {
+  const nomAffiche = String(nom || '').replace(/\s+/g, ' ').trim().slice(0, 80) || email || 'client sans nom';
+  const commande = ["Plan d'action"].concat(options.livre ? ['livre digital'] : [], options.analyse ? ["analyse d'onboard"] : []);
+  return composer({
+    client: false,
+    piedInterne: PIED_WEBHOOK,
+    sujet: `Nouveau plan d'action : ${nomAffiche}`,
+    preheader: `Plan à envoyer avant le ${echeancePlan}.`,
+    tags: ['interne', 'plan'],
+    blocs: [
+      titre("Nouveau plan d'action"),
+      p(['Plan à envoyer avant le ', gras(echeancePlan), ' (heure de Paris). Ses réponses sont dans l’email « Nouveau diagnostic », reçu à la même adresse.']),
+      tableau([
+        ['Client', nom || '(non renseigné)'],
+        ['Email', email || '(non renseigné)'],
+        ['Commande', `${commande.join(' + ')}${options.deduites ? ' (déduit du montant payé)' : ''}`],
+        ['Montant payé', montant],
+        ['Identifiant du diagnostic', reference || '(aucun)'],
+        ['Variante du lien', variante || '(non renseignée)'],
+        options.analyse ? ['Vidéo onboard', lienVideo ? lien(lienVideo, lienVideo) : 'Pas de lien : je le lui ai demandé dans la confirmation'] : null,
+        options.analyse ? ["Accord d'utilisation", usageLibelle] : null,
+        ["Échéance du plan d'action", `${echeancePlan} (heure de Paris)`],
+        options.livre ? ['Échéance du livre digital', livreAEnvoyer ? `Sous ${delaiLivreH} h, à envoyer à la main` : 'Envoyé dans la confirmation'] : null,
+        options.analyse ? ["Échéance de l'analyse", `Sous ${delaiAnalyseH} h après réception de la vidéo`] : null,
+        ['Commandé le', `${commandeLe} (heure de Paris)`],
+        ['Paiement Stripe', lienDashboard ? lien('Ouvrir dans le Dashboard', lienDashboard) : sessionId],
+      ].filter(Boolean)),
+      livreAEnvoyer
+        ? p([gras('Livre digital à envoyer à la main : '), 'les adresses du livre et du tableur ne sont pas réglées dans Netlify (GUIDE_PDF_URL, TABLEUR_URL).'])
+        : null,
+      p('La confirmation est partie au client.', 'attenue'),
+    ],
+  });
+}
+
+// Confirmation au client : le plan arrive, écrit à la main ; le livre et le tableur s'il les a pris ;
+// la demande du lien vidéo s'il a pris l'analyse sans le donner.
+function emailPlanClient({ prenom, delaiPlan, options, fichiers, lienVideo, delaiLivreH, delaiAnalyseH }) {
+  return composer({
+    sujet: "Ta commande est bien reçue : ton plan d'action arrive",
+    preheader: `Ton plan d'action arrive sous ${delaiPlan}.`,
+    tags: ['plan', 'confirmation'],
+    blocs: [
+      titre('Commande bien reçue'),
+      p(salutation(prenom)),
+      p(['Merci pour ta confiance. Je lis tes réponses une par une et j’écris ton plan d’action moi-même, sans IA. Tu le reçois par email sous ', gras(delaiPlan), '.']),
+      options.livre && fichiers ? p([gras('Ton livre digital'), ' : le voici, avec ton tableur de réglages.']) : null,
+      options.livre && fichiers ? bouton('Télécharger le livre', fichiers.guide) : null,
+      options.livre && fichiers ? bouton('Télécharger le tableur', fichiers.tableur, 'secondaire') : null,
+      options.livre && fichiers ? p('Garde cet email : ces deux liens te servent à les retélécharger.', 'attenue') : null,
+      options.livre && !fichiers ? p(`Ton livre digital et ton tableur de réglages arrivent par email sous ${delaiLivreH} h.`) : null,
+      options.analyse && lienVideo ? p(['Ton analyse d’onboard : j’ai bien reçu le lien de ta vidéo. Elle arrive par email sous ', gras(`${delaiAnalyseH} h`), '.']) : null,
+      options.analyse && !lienVideo
+        ? p(['Pour ton analyse d’onboard, il me manque ta vidéo. ', gras('Réponds à cet email avec son lien'), ` (YouTube non répertorié, Drive, WeTransfer). L’analyse arrive sous ${delaiAnalyseH} h après réception.`])
+        : null,
+      p('Clément'),
+    ],
+  });
+}
+
+// Alerte interne : la confirmation du plan n'est pas partie (la commande, elle, est arrivée).
+function emailAlertePlan({ nom, email, raison }) {
+  return composer({
+    client: false,
+    piedInterne: PIED_WEBHOOK,
+    sujet: `Confirmation non envoyée : ${String(nom || email || "plan d'action").replace(/\s+/g, ' ').slice(0, 80)}`,
+    tags: ['interne', 'plan', 'alerte'],
+    blocs: [
+      titre('Confirmation non envoyée'),
+      p(["L'email « Nouveau plan d'action » est arrivé, mais la confirmation au client a échoué : ", gras(raison || 'erreur inconnue'), '.']),
+      p(['Écris-lui à la main : ', gras(email || '(email inconnu)'), '.']),
+    ],
+  });
+}
+
 module.exports = {
   MENTION_LEGALE,
   LIBELLE_RETRACTATION,
@@ -408,4 +488,7 @@ module.exports = {
   emailAlerteDebrief,
   emailDiagnosticInterne,
   emailDiagnosticClient,
+  emailPlanInterne,
+  emailPlanClient,
+  emailAlertePlan,
 };

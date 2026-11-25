@@ -39,8 +39,9 @@
   /* L epaisseur : arete claire en haut, ombre interieure en bas, ombre portee profonde */
   --verre-ombre: inset 0 1.5px 0 rgba(255, 255, 255, 0.42), inset 1px 0 0 rgba(255, 255, 255, 0.08), inset -1px -1px 0 rgba(255, 90, 80, 0.18), inset 0 -14px 22px -16px rgba(0, 0, 0, 0.55), inset 0 0 36px rgba(255, 255, 255, 0.03), 0 1px 0 rgba(0, 0, 0, 0.6), 0 26px 60px -30px rgba(0, 0, 0, 0.95);
   --verre-neon: 0 0 0 1px rgba(255, 90, 80, 0.5), 0 0 26px -2px rgba(255, 59, 48, 0.55), 0 22px 54px -24px rgba(225, 6, 0, 0.75);
-  --verre-rouge: radial-gradient(200px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, calc(0.34 * var(--lum, 0))), transparent 62%), linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 45%), linear-gradient(135deg, #DC140A, #8A0400);
-  --verre-rouge-ombre: inset 0 1.5px 0 rgba(255, 255, 255, 0.45), inset 0 -10px 16px -10px rgba(60, 0, 0, 0.7), 0 14px 34px -12px rgba(225, 6, 0, 0.85);
+  /* Le rouge : UNE seule couleur, en verre teinte (un leger lisere de lumiere en haut, le reflet de la souris) */
+  --verre-rouge: radial-gradient(200px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, calc(0.3 * var(--lum, 0))), transparent 62%), linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 42%), rgba(212, 14, 8, 0.9);
+  --verre-rouge-ombre: inset 0 1.5px 0 rgba(255, 255, 255, 0.42), inset 0 -1px 0 rgba(120, 0, 0, 0.5), 0 14px 34px -12px rgba(225, 6, 0, 0.8);
   --ease-ressort: cubic-bezier(0.2, 0.9, 0.25, 1.15);
 }
 
@@ -96,7 +97,7 @@ body:not(#v) :is(
   .verre, .notice, .form-envoye, .merci-suite, .plaque-bloc, .bloc-prix, .sommaire-carte,
   .formule, .bloc-formulaire, .legal-encadre, .quote-colonne, .registre-ligne, .gratuit-carte, .faq details,
   .extrait-envoye, .tableur-envoye, .marques-comptable, .retractation-formulaire, .retractation-confirmation,
-  .lien-bio, .bouton-fantome, .hud, .preuves-ligne li, .portes a, .pied-grille ul a,
+  .lien-bio, .bouton-fantome, .hud, .preuves-ligne li, .portes a,
   .vente-mythes li, .vente-rassure, .vente-quotes blockquote
 ) {
   background: var(--verre);
@@ -107,11 +108,11 @@ body:not(#v) :is(
   box-shadow: var(--verre-ombre);
 }
 /* Survol (souris) et appui (doigt) : le reflet s allume, le trait de lumiere balaie, le bord passe au rouge */
-body:not(#v) :is(.lien-bio, .bouton-fantome, .preuves-ligne li, .portes a, .pied-grille ul a, .formule, .quote-colonne, .faq details, .vente-mythes li, .registre-ligne, .gratuit-carte, .sommaire-carte, .bloc-prix) {
+body:not(#v) :is(.lien-bio, .bouton-fantome, .preuves-ligne li, .portes a, .formule, .quote-colonne, .faq details, .vente-mythes li, .registre-ligne, .gratuit-carte, .sommaire-carte, .bloc-prix) {
   transition: --lum 400ms var(--ease-sortie), --balai 0s, translate var(--d-court) var(--ease-ressort), transform 260ms var(--ease-sortie), border-color var(--d-court) var(--ease-sortie), box-shadow 320ms var(--ease-sortie);
 }
 @media (hover: hover) and (pointer: fine) {
-  body:not(#v) :is(.lien-bio, .bouton-fantome, .preuves-ligne li, .portes a, .pied-grille ul a, .formule, .quote-colonne, .faq details, .vente-mythes li, .registre-ligne, .gratuit-carte, .sommaire-carte, .bloc-prix):hover {
+  body:not(#v) :is(.lien-bio, .bouton-fantome, .preuves-ligne li, .portes a, .formule, .quote-colonne, .faq details, .vente-mythes li, .registre-ligne, .gratuit-carte, .sommaire-carte, .bloc-prix):hover {
     --lum: 1; --balai: -40%;
     border-color: rgba(255, 90, 80, 0.62);
     box-shadow: var(--verre-ombre), var(--verre-neon);
@@ -122,12 +123,12 @@ body:not(#v) :is(.lien-bio, .bouton-fantome, .preuves-ligne li, .portes a, .pied
     transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px);
   }
 }
-body:not(#v) :is(.lien-bio, .bouton-fantome, .portes a, .pied-grille ul a, .faq details):active {
+body:not(#v) :is(.lien-bio, .bouton-fantome, .portes a, .faq details):active {
   --lum: 1; --balai: -40%; border-color: rgba(255, 90, 80, 0.62);
   transition: --lum 120ms linear, --balai 600ms var(--ease-sortie);
 }
 @media (prefers-reduced-transparency: reduce) {
-  body:not(#v) :is(.verre, .notice, .form-envoye, .merci-suite, .plaque-bloc, .bloc-prix, .sommaire-carte, .formule, .bloc-formulaire, .legal-encadre, .quote-colonne, .registre-ligne, .gratuit-carte, .faq details, .extrait-envoye, .tableur-envoye, .marques-comptable, .retractation-formulaire, .retractation-confirmation, .lien-bio, .bouton-fantome, .hud, .preuves-ligne li, .portes a, .pied-grille ul a, .vente-mythes li, .vente-rassure, .vente-quotes blockquote) {
+  body:not(#v) :is(.verre, .notice, .form-envoye, .merci-suite, .plaque-bloc, .bloc-prix, .sommaire-carte, .formule, .bloc-formulaire, .legal-encadre, .quote-colonne, .registre-ligne, .gratuit-carte, .faq details, .extrait-envoye, .tableur-envoye, .marques-comptable, .retractation-formulaire, .retractation-confirmation, .lien-bio, .bouton-fantome, .hud, .preuves-ligne li, .portes a, .vente-mythes li, .vente-rassure, .vente-quotes blockquote) {
     background: var(--fond-2); -webkit-backdrop-filter: none; backdrop-filter: none;
   }
 }
@@ -136,7 +137,7 @@ body:not(#v) :is(.lien-bio, .bouton-fantome, .portes a, .pied-grille ul a, .faq 
 
 /* ---------- 5. Boutons ---------- */
 .bouton { border-radius: var(--rayon); transition: --lum 400ms var(--ease-sortie), scale var(--d-instant) var(--ease-sortie), translate var(--d-court) var(--ease-ressort), filter var(--d-court) var(--ease-sortie), border-color var(--d-court) var(--ease-sortie), box-shadow 320ms var(--ease-sortie); }
-.bouton-principal { background: var(--verre-rouge); border-color: rgba(255, 120, 110, 0.5); box-shadow: var(--verre-rouge-ombre); }
+.bouton-principal { background: var(--verre-rouge); border-color: rgba(255, 120, 110, 0.5); box-shadow: var(--verre-rouge-ombre); -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%); }
 .bouton-principal:active { background: var(--verre-rouge); }
 /* Le reflet de vitre : un trait de lumiere traverse le bouton, une fois, a l arrivee de la souris ou a l appui */
 .bouton-principal::before {
@@ -281,14 +282,38 @@ body:not(#v) .vente-quotes blockquote { padding: 16px 18px; border-left: 2px sol
 .pm-engrenages .piece { position: absolute; }
 .pm-e1 { left: 0; top: 0; width: 78px; height: 78px; }
 .pm-e2 { left: 66px; top: 13px; width: 52px; height: 52px; transform: rotate(22.5deg); }
-body:not(#v) .pied-grille ul { display: flex; flex-wrap: wrap; gap: 8px; }
-body:not(#v) .pied-grille ul a { min-height: 40px; padding: 8px 14px; border-radius: 16px; color: var(--texte); font-size: var(--t-petit); line-height: 1.3; }
-.pied-bas { border-top: 0; }
+/* Quatre tuiles de verre (la marque, puis trois familles de liens), puis la barre legale */
+.pied-grille { gap: 12px; }
+.pied-grille > div {
+  padding: 20px; border: 1px solid var(--verre-bord); border-top-color: rgba(255, 255, 255, 0.24); border-radius: var(--rayon-carte);
+  background: var(--verre-fond); -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou); box-shadow: var(--verre-ombre);
+}
+.pied h2 { margin-bottom: var(--e-3); color: var(--texte-2); }
+body:not(#v) .pied-grille ul { display: grid; gap: 2px; }
+body:not(#v) .pied-grille ul a {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; margin-inline: -10px; padding: 6px 10px;
+  border-radius: 10px; color: var(--texte); line-height: 1.3; transition: background-color var(--d-court) var(--ease-sortie);
+}
+body:not(#v) .pied-grille ul a::after { content: '→'; flex: none; font-family: var(--police-mono); font-size: 0.8125rem; color: var(--texte-3); transition: translate var(--d-court) var(--ease-sortie), color var(--d-court) var(--ease-sortie); }
+body:not(#v) .pied-grille ul a:hover { background: rgba(255, 255, 255, 0.07); }
+body:not(#v) .pied-grille ul a:hover::after { translate: 3px 0; color: var(--rouge-vif); }
+.pied-bas { margin-top: 12px; padding-top: 0; border-top: 0; justify-content: center; text-align: center; }
+.pied .pied-legal {
+  justify-content: center; gap: 2px; margin-bottom: var(--e-4); padding: 6px; border: 1px solid var(--verre-bord); border-radius: 16px;
+  background: var(--verre-fond); -webkit-backdrop-filter: var(--verre-flou); backdrop-filter: var(--verre-flou); box-shadow: var(--verre-ombre);
+}
+.pied-bas .pied-legal a { display: flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 14px; border-radius: 10px; color: var(--texte); text-decoration: none; transition: background-color var(--d-court) var(--ease-sortie); }
+.pied-bas .pied-legal a:hover { background: rgba(255, 255, 255, 0.07); }
+.pied-bas > p { flex-basis: 100%; }
 @media (max-width: 899px) {
   .pied-meca { max-width: 340px; height: 76px; }
   .pm-roue, .pm-volant { width: 58px; height: 58px; }
   .pm-engrenages { scale: 0.82; }
+  .pied-grille { gap: 10px; }
+  .pied-grille > div { padding: 16px; }
+  .pied .pied-legal { display: grid; grid-template-columns: 1fr 1fr; }
 }
+@media (prefers-reduced-transparency: reduce) { .pied-grille > div, .pied .pied-legal { background: var(--fond-2); -webkit-backdrop-filter: none; backdrop-filter: none; } }
 
 /* ---------- 16. Mouvement reduit ---------- */
 @media (prefers-reduced-motion: reduce) {

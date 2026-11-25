@@ -86,7 +86,7 @@ const stripe = cfg.stripe || {};
 if (stripe.pret === 'oui') {
   check('Stripe pret : deux liens buy.stripe.com et leurs identifiants', /^https:\/\/buy\.stripe\.com\//.test(stripe.url) && /^https:\/\/buy\.stripe\.com\//.test(stripe.url_camera) && /^plink_/.test(stripe.plink) && /^plink_/.test(stripe.plink_camera));
 } else {
-  check('Stripe pas encore pret : aucun lien dans la config, la page cache le bouton', stripe.pret === 'non' && !stripe.url && !stripe.url_camera);
+  check('Stripe pas encore pret : la page cache le bouton (stripe.pret = non)', stripe.pret === 'non');
   console.log('  ATTENTION le plan d action n est pas encore achetable (diagnostic.stripe.pret = non).');
 }
 

@@ -87,6 +87,12 @@ plink(OFFRES.guide, 'guide', 'guide');
 plink(EQ.guide_lecteur, 'guide', 'guide_lecteur');
 plink(OFFRES.debrief, 'debrief', 'debrief');
 plink(EQ.debrief_lecteur, 'debrief', 'debrief_lecteur');
+// Plan d action du diagnostic : deux liens (sans camera, avec camera), un seul produit.
+const DIAG_STRIPE = (OFFRES.diagnostic && OFFRES.diagnostic.stripe) || {};
+plink({ stripe: { plink: DIAG_STRIPE.plink } }, 'plan', 'plan');
+plink({ stripe: { plink: DIAG_STRIPE.plink_camera } }, 'plan', 'plan_camera');
+// Paiements de verification passes par la session Stripe le 24/11/2026 : jamais comptes comme des ventes.
+const REFERENCES_DE_TEST = new Set(['diag-verif-sid-test24nov']);
 
 // Classes CSS ou data-cta des boutons -> libelles lisibles (fallback : la valeur brute).
 const CTA_LABELS = {
@@ -416,9 +422,10 @@ function produitVide() {
 // Aucune donnee client (email, nom, lien video) ne sort de cette fonction.
 function aggregateStripe(sessions, curStart, prevStart, sourceParSession) {
   // liees : ventes de la periode avec leur cle de visite (ou null), pour le parcours video -> achat
-  const out = { guide: produitVide(), debrief: produitVide(), payees: 0, rembourses: 0, partiels: 0, liees: [] };
+  const out = { guide: produitVide(), debrief: produitVide(), plan: produitVide(), payees: 0, rembourses: 0, partiels: 0, liees: [] };
   for (const s of sessions || []) {
     if (!s || s.status !== 'complete' || s.payment_status !== 'paid' || s.livemode === false) continue;
+    if (REFERENCES_DE_TEST.has(s.client_reference_id)) continue;
     const p = produitStripe(s);
     if (p.produit === 'autre') continue; // une future offre ne doit gonfler ni le guide ni le debrief
     const cible = out[p.produit];
@@ -732,16 +739,18 @@ function aggregate(rows, days, salesRows, stripeLu, since, premierTs) {
   // ---------- Ventes Stripe du debrief, CA total ----------
   // `ventes` reste « ventes du guide » (entonnoir et taux d'achat de dashboard.html).
   // `ventes_total` = guide + debrief, a utiliser avec `revenu_total_cents` (Pit Wall).
-  cur.revenu_total_cents = cur.revenu_cents + st.debrief.revenu_cents;
+  cur.revenu_total_cents = cur.revenu_cents + st.debrief.revenu_cents + st.plan.revenu_cents;
   cur.ventes_debrief = st.debrief.ventes;
-  cur.ventes_total = cur.ventes + st.debrief.ventes;
-  prev.revenu_total_cents = prev.revenu_cents + st.debrief.revenu_prev_cents;
+  cur.ventes_plan = st.plan.ventes;
+  cur.ventes_total = cur.ventes + st.debrief.ventes + st.plan.ventes;
+  prev.revenu_total_cents = prev.revenu_cents + st.debrief.revenu_prev_cents + st.plan.revenu_prev_cents;
   prev.ventes_debrief = st.debrief.ventes_prev;
-  prev.ventes_total = prev.ventes + st.debrief.ventes_prev;
+  prev.ventes_plan = st.plan.ventes_prev;
+  prev.ventes_total = prev.ventes + st.debrief.ventes_prev + st.plan.ventes_prev;
 
   // ---------- Remboursements (Stripe guide + debrief, Gumroad historique) ----------
   const rembourses = st.rembourses + salesAgg.curRembourses;
-  const ventesPayees = cur.ventes + st.debrief.ventes;
+  const ventesPayees = cur.ventes + st.debrief.ventes + st.plan.ventes;
   const remboursements = {
     total: rembourses,
     guide: st.guide.rembourses + salesAgg.curRembourses,
@@ -776,7 +785,7 @@ function aggregate(rows, days, salesRows, stripeLu, since, premierTs) {
       gumroad_clicks: gumroadClics,
       clics_achat: stripeClics + gumroadClics,
       inscriptions: daySignups.get(dd) || 0,
-      ventes: (salesAgg.daySales.get(dd) || 0) + (st.guide.parJour.get(dd) || 0) + (st.debrief.parJour.get(dd) || 0),
+      ventes: (salesAgg.daySales.get(dd) || 0) + (st.guide.parJour.get(dd) || 0) + (st.debrief.parJour.get(dd) || 0) + (st.plan.parJour.get(dd) || 0),
     });
   }
 
@@ -885,6 +894,7 @@ function aggregate(rows, days, salesRows, stripeLu, since, premierTs) {
     statut: lu.statut,
     cle_absente: lu.statut === 'non_configure',
     guide: { ventes: st.guide.ventes, ventes_lecteur: st.guide.ventes_lecteur, revenu_cents: st.guide.revenu_cents, derniere_vente: st.guide.derniere_vente },
+    plan: { ventes: st.plan.ventes, revenu_cents: st.plan.revenu_cents, derniere_vente: st.plan.derniere_vente },
     debrief: { ventes: st.debrief.ventes, ventes_lecteur: st.debrief.ventes_lecteur, options_guide: st.debrief.options_guide, revenu_cents: st.debrief.revenu_cents, derniere_vente: st.debrief.derniere_vente },
   };
   if (lu.detail) stripe.detail = lu.detail;
