@@ -339,3 +339,70 @@ body:not(#v) .pied-grille ul a:hover::after { translate: 3px 0; color: var(--rou
   .bouton-principal, .bouton-fantome { max-width: 100%; white-space: normal; text-align: center; line-height: 1.15; padding-block: 10px; }
   .bouton .chrono { flex: none; white-space: nowrap; }
 }
+
+/* ---------- 18. Troisieme passe (25/11/2026, soir) : photos fondues, bouton bulle, barres d achat rouges ---------- */
+
+/* 18.1 Le rouge : une seule couleur, en bulle. Un reflet arrondi en haut, un peu d ombre en bas, le reflet de la souris. */
+:root {
+  --verre-rouge: radial-gradient(200px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, calc(0.3 * var(--lum, 0))), transparent 62%), radial-gradient(92% 130% at 50% -62%, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0) 60%), linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 46%, rgba(100, 0, 0, 0.26) 100%), rgba(212, 14, 8, 0.9);
+  --verre-rouge-ombre: inset 0 1.5px 0 rgba(255, 255, 255, 0.5), inset 0 -9px 14px -9px rgba(90, 0, 0, 0.8), inset 0 -1px 0 rgba(120, 0, 0, 0.5), 0 14px 34px -12px rgba(225, 6, 0, 0.8);
+  /* Le fondu des photos de tete : opaque en haut, puis la photo se dissout dans le vrai fond de la page */
+  --fondu-bas: linear-gradient(to bottom, #000 0, #000 50%, rgba(0, 0, 0, 0.74) 66%, rgba(0, 0, 0, 0.3) 84%, transparent 100%);
+  --fondu-haut-bas: linear-gradient(to bottom, transparent 0, #000 14%, #000 78%, transparent 100%);
+}
+
+/* 18.2 Photos de tete en pleine largeur : plus de bord net entre la photo et le fond. Le masque porte aussi sur
+   les voiles : en bas il ne reste que le fond de la page (halos rouges, circuit), sans couture. */
+:is(.affiche-cine, .hero-guide-cine, .hero-bande-photo, .hors-piste-cine) { -webkit-mask-image: var(--fondu-bas); mask-image: var(--fondu-bas); }
+@media (max-width: 899px) {
+  .page-vente .vente-photo, .marques-hero-photo { border-radius: 0; -webkit-mask-image: var(--fondu-bas); mask-image: var(--fondu-bas); }
+}
+@media (max-width: 599px) {
+  :is(.qui-photo, .final-photo).cine { border-radius: 0; outline: 0; -webkit-mask-image: var(--fondu-haut-bas); mask-image: var(--fondu-haut-bas); }
+}
+/* L ancien trace rouge du hero du guide : il passait sur le nouveau decor */
+.hero-trace { display: none; }
+
+/* 18.3 Photos dans le texte : la meme vitre partout (bord clair en haut, coins arrondis, ombre profonde) */
+:is(.auteur-photo, .consulting-change-photo, .consulting-auteur-cadre, .marques-cadre-portrait, .marques-photo-large, .tableur-photo).cine {
+  border-radius: 22px; outline: 0; overflow: hidden;
+  border: 1px solid var(--verre-bord); border-top-color: rgba(255, 255, 255, 0.26); box-shadow: var(--verre-ombre);
+}
+@media (min-width: 600px) { .qui-photo.cine { border-radius: 0 24px 24px 0; } }
+
+/* 18.4 La couverture du livre (accueil) : la vitre epouse la couverture. L image porte une marge transparente
+   d environ 5 % de chaque cote : sans la rogner, le cadre flottait autour du livre au lieu de le border. */
+.offre-cadre-objet picture {
+  display: block; overflow: hidden; padding: 0; border-radius: 16px;
+  border: 1px solid var(--verre-bord); border-top-color: rgba(255, 255, 255, 0.32);
+  background: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: var(--verre-ombre), 0 40px 80px -36px rgba(225, 6, 0, 0.6);
+}
+.offre-cadre-objet .objet { display: block; scale: 1.11; border: 0; border-radius: 0; outline: 0; box-shadow: none; }
+/* Le reflet de vitre, en biais, par-dessus la couverture */
+.offre-cadre-objet picture::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.17) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 72%, rgba(255, 255, 255, 0.05));
+}
+body:not(#v) .offre-texte h3 { max-width: none; text-wrap: balance; }
+
+/* 18.5 Barres d achat : une bulle de verre rouge, d un seul tenant. Plus de bouton rouge pose sur une vitre grise.
+   Ce qui defile derriere passe a travers, flou et teinte de rouge. */
+.barre, .page-vente .vente-barre {
+  border-radius: 22px;
+  background: radial-gradient(92% 130% at 50% -62%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 60%), linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 46%, rgba(100, 0, 0, 0.3) 100%), rgba(206, 14, 8, 0.76);
+  border: 1px solid rgba(255, 150, 140, 0.5); border-top-color: rgba(255, 215, 210, 0.8);
+  -webkit-backdrop-filter: blur(20px) saturate(200%) brightness(1.12); backdrop-filter: blur(20px) saturate(200%) brightness(1.12);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.5), inset 0 -10px 16px -10px rgba(90, 0, 0, 0.8), 0 18px 44px -14px rgba(225, 6, 0, 0.8), 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+:is(.barre, .page-vente .vente-barre) .bouton-principal { background: transparent; border-color: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.barre .secteurs { display: none; }
+.barre :is(.barre-texte, .bouton-cgv, p, small), .barre :is(.bouton-cgv, p) a { color: var(--texte); }
+@media (min-width: 600px) {
+  /* Ecran large : une bulle compacte au centre, et le bouton reste lisible dedans (une touche plus claire) */
+  .barre { left: 50%; right: auto; width: min(700px, calc(100vw - 32px)); translate: -50% 0; }
+  :is(.barre, .page-vente .vente-barre) .bouton-principal { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.42); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .barre, .page-vente .vente-barre { background: var(--rouge-bouton); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
